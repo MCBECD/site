@@ -30,7 +30,7 @@ const components = {
       <a
         href={href}
         {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="text-[var(--color-accent)] no-underline hover:underline"
+        className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
         {...props}
       >
         {children}
