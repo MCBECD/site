@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "MCCD - Minecraft Commands Documentation",
-  description: "Professional, immersive, multi-language Minecraft commands documentation.",
+  title: "MCCD - Minecraft Bedrock Commands Documentation",
+  description: "基岩版 Minecraft 命令文档 — 最全面的 Bedrock Edition 命令参考。",
+  icons: {
+    icon: "https://avatars.githubusercontent.com/u/312049267?s=64",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
