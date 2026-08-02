@@ -45,10 +45,9 @@ html {
   font-size: calc(16px * var(--font-size-multiplier));
 }
 
+/* @constraint body 不能设背景色，否则挡住 BackgroundLayer */
 body {
-  background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Shiki code block styles */

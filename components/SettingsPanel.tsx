@@ -49,11 +49,11 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
       {/* 面板 */}
       <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-        w-80 rounded-xl shadow-2xl
+        w-[420px] rounded-xl shadow-2xl
         bg-[var(--color-bg-primary)] border border-[var(--color-border)]">
 
         {/* 头部 */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-0">
+        <div className="flex items-center justify-between px-6 pt-5 pb-0">
           <h2 className="text-base font-semibold text-[var(--color-text-primary)]">
             {t("settings.title")}
           </h2>
@@ -67,7 +67,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         </div>
 
         {/* Tab 栏 */}
-        <div className="flex gap-0 px-5 pt-3 pb-0 border-b border-[var(--color-border)]">
+        <div className="flex gap-0 px-6 pt-4 pb-0 border-b border-[var(--color-border)]">
           <TabButton active={tab === "appearance"} onClick={() => setTab("appearance")}>
             外观
           </TabButton>
@@ -77,7 +77,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         </div>
 
         {/* 内容区 */}
-        <div className="px-5 py-4 space-y-5 max-h-[60vh] overflow-y-auto">
+        <div className="px-6 py-5 space-y-6 max-h-[60vh] overflow-y-auto">
           {tab === "appearance" ? (
             <>
               {/* 主题 */}
@@ -272,7 +272,7 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-xs font-medium text-[var(--color-text-primary)] mb-2">{title}</div>
+      <div className="text-sm font-medium text-[var(--color-text-primary)] mb-3">{title}</div>
       {children}
     </div>
   );

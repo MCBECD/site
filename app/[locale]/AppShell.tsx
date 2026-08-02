@@ -33,6 +33,8 @@ function AppShellInner({ children, locale, docs }: AppShellProps) {
     <SettingsProvider>
       <ThemeProvider>
         <DocTitleProvider>
+          {/* @why 底层纯色，BackgroundLayer 在它上面用 blur+overlay 叠加背景图 */}
+          <div className="fixed inset-0 bg-[var(--color-bg-primary)] -z-20" aria-hidden="true" />
           <BackgroundLayer />
           <Navbar
             docTitle={docTitle ?? undefined}
@@ -49,7 +51,7 @@ function AppShellInner({ children, locale, docs }: AppShellProps) {
           <SettingsPanel open={settingsOpen} onClose={closeSettings} />
           {/* @constraint 主内容区偏移导航栏和侧边栏 */}
           {/* @why AnimatePresence + key 实现一镜到底页面渐变滑动过渡 */}
-          <main className="pt-[var(--navbar-height)] md:pl-[var(--sidebar-width)]">
+          <main className="pt-[var(--navbar-height)] md:pl-[var(--sidebar-width)] min-h-screen">
             <AnimatePresence mode="wait">
               <motion.div
                 key={pathname}
