@@ -3,6 +3,7 @@ import { createHighlighter } from "shiki";
 import type { JSX } from "react";
 import { Skeleton } from "./Skeleton";
 import { Suspense } from "react";
+import { CodeBlockClient } from "./CodeBlockClient";
 
 const components = {
   pre: ({ children, ...props }: JSX.IntrinsicElements["pre"]) => (
@@ -55,7 +56,7 @@ async function getHighlighter() {
 async function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const hl = await getHighlighter();
 
-  /* @constraint 预留 Minecraft 命令自定义语言支持，当前回退到 shell */
+  /* @constraint 预留 Minecraft 命令自定义语言支持，当前回退到 text */
   const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "text";
 
   const html = hl.codeToHtml(code, {
@@ -63,7 +64,7 @@ async function CodeBlock({ code, lang }: { code: string; lang: string }) {
     themes: { light: "github-light", dark: "github-dark" },
   });
 
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  return <CodeBlockClient html={html} code={code} lang={resolvedLang} />;
 }
 
 interface MDXRendererProps {
