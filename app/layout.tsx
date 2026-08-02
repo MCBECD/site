@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "MCCD - Minecraft Bedrock Commands Documentation",
+  title: "MCBECD - Minecraft Bedrock Commands Documentation",
   description: "基岩版 Minecraft 命令文档 — 最全面的 Bedrock Edition 命令参考。",
   icons: {
     icon: "https://avatars.githubusercontent.com/u/312049267?s=64",
@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               (function() {
                 try {
-                  var settings = JSON.parse(localStorage.getItem('mccd-settings'));
+                  var settings = JSON.parse(localStorage.getItem('mcbecd-settings'));
                   var theme = settings && settings.theme;
                   if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');

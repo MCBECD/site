@@ -35,7 +35,7 @@ const FONT_SIZE_MAP: Record<FontSize, number> = {
   large: 1.125,
 };
 
-const STORAGE_KEY = "mccd-settings";
+const STORAGE_KEY = "mcbecd-settings";
 
 function loadSettings(): Settings {
   if (typeof window === "undefined") return defaultSettings();

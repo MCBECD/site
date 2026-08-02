@@ -49,14 +49,14 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
         <Link href="/docs" className="flex items-center gap-2 no-underline">
           <img
             src="https://avatars.githubusercontent.com/u/312049267?s=48"
-            alt="MCCD"
+            alt="MCBECD"
             width={24}
             height={24}
             className="w-6 h-6 rounded-md"
           />
           <span className="text-base font-bold tracking-tight text-[var(--color-accent)]
             hover:text-[var(--color-accent-hover)] transition-colors">
-            MCCD
+            MCBECD
           </span>
         </Link>
       </div>
@@ -84,7 +84,7 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
         </button>
 
         <a
-          href="https://github.com/MC-Com-Docs/mccd-site"
+          href="https://github.com/MCBECD/mcbecd-site"
           target="_blank"
           rel="noopener noreferrer"
           className="p-1.5 rounded-md text-[var(--color-text-secondary)]
