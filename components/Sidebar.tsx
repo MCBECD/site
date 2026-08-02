@@ -14,7 +14,10 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const FEATURED_COUNT = 10;
+const SIDEBAR_SECTIONS = [
+  { label: "介绍", ids: ["mccd-intro"] },
+  { label: "基础", ids: ["getting-started", "command-syntax"] },
+];
 const SEARCH_RESULT_LIMIT = 30;
 const DEBOUNCE_MS = 150;
 
@@ -94,10 +97,15 @@ function SidebarContent({
 
   const hasQuery = debouncedQuery.trim().length > 0;
 
-  /* @why 无搜索：仅展示前 FEATURED_COUNT 篇；有搜索：展示过滤结果 */
-  const { visibleDocs, totalHits } = useMemo(() => {
+  /* @why 无搜索：按分组展示精选文档；有搜索：展示过滤结果 */
+  const { sections, searchResults, totalHits } = useMemo(() => {
     if (!hasQuery) {
-      return { visibleDocs: docs.slice(0, FEATURED_COUNT), totalHits: 0 };
+      const docMap = new Map(docs.map((d) => [d.id, d]));
+      const sections = SIDEBAR_SECTIONS.map((s) => ({
+        ...s,
+        docs: s.ids.map((id) => docMap.get(id)).filter(Boolean) as DocMeta[],
+      })).filter((s) => s.docs.length > 0);
+      return { sections, searchResults: [], totalHits: 0 };
     }
     const q = debouncedQuery.trim().toLowerCase();
     const hits = docs.filter(
@@ -105,7 +113,7 @@ function SidebarContent({
         d.title.toLowerCase().includes(q) ||
         (d.description && d.description.toLowerCase().includes(q)),
     );
-    return { visibleDocs: hits.slice(0, SEARCH_RESULT_LIMIT), totalHits: hits.length };
+    return { sections: [], searchResults: hits.slice(0, SEARCH_RESULT_LIMIT), totalHits: hits.length };
   }, [docs, debouncedQuery, hasQuery]);
 
   const hiddenCount = hasQuery ? Math.max(0, totalHits - SEARCH_RESULT_LIMIT) : 0;
@@ -122,12 +130,12 @@ function SidebarContent({
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex((i) => Math.min(i + 1, visibleDocs.length - 1));
+        setSelectedIndex((i) => Math.min(i + 1, searchResults.length - 1));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedIndex((i) => Math.max(i - 1, 0));
       } else if (e.key === "Enter" && selectedIndex >= 0) {
-        const doc = visibleDocs[selectedIndex];
+        const doc = searchResults[selectedIndex];
         if (doc) {
           window.location.href = `/${locale}/docs/${doc.id}`;
         }
@@ -139,7 +147,26 @@ function SidebarContent({
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [visibleDocs, selectedIndex, locale]);
+  }, [searchResults, selectedIndex, locale]);
+
+  const renderLink = (doc: DocMeta, selected: boolean) => {
+    const active = isActive(doc.id);
+    return (
+      <Link
+        key={doc.id}
+        href={`/docs/${doc.id}`}
+        locale={locale}
+        onClick={onClose}
+        className={`block px-2.5 py-1.5 rounded-md text-sm transition-colors no-underline
+          ${active || selected
+            ? "bg-[var(--color-sidebar-active)] text-[var(--color-accent)] font-medium"
+            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)]"
+          }`}
+      >
+        <span className="truncate block">{doc.title}</span>
+      </Link>
+    );
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -186,52 +213,35 @@ function SidebarContent({
 
       {/* 文档列表 */}
       <div ref={listRef} className="flex-1 overflow-y-auto p-3 pt-2">
-        {!hasQuery && (
-          <div className="flex items-center gap-1.5 px-2 py-1.5 mb-1">
-            <Star className="w-3 h-3 text-[var(--color-accent)]" />
-            <span className="text-xs font-medium text-[var(--color-text-tertiary)]">
-              {t("sidebar.featured")}
-            </span>
-          </div>
-        )}
-
-        {hasQuery && totalHits > 0 && (
-          <p className="px-2 mb-1 text-xs text-[var(--color-text-tertiary)]">
-            {t("sidebar.searchResults").replace("{count}", String(totalHits))}
-          </p>
-        )}
-
-        {visibleDocs.length === 0 ? (
+        {!hasQuery ? (
+          sections.map((section) => (
+            <div key={section.label} className="mb-3">
+              <div className="flex items-center gap-1.5 px-2 py-1.5">
+                <Star className="w-3 h-3 text-[var(--color-accent)]" />
+                <span className="text-xs font-medium text-[var(--color-text-tertiary)]">
+                  {section.label}
+                </span>
+              </div>
+              <nav className="space-y-0.5">
+                {section.docs.map((doc) => renderLink(doc, false))}
+              </nav>
+            </div>
+          ))
+        ) : searchResults.length === 0 ? (
           <p className="px-2 py-4 text-sm text-center text-[var(--color-text-tertiary)]">
-            {hasQuery ? t("sidebar.noResults") : t("doc.noDocs")}
+            {t("sidebar.noResults")}
           </p>
         ) : (
-          <nav className="space-y-0.5">
-            {visibleDocs.map((doc, idx) => {
-              const active = isActive(doc.id);
-              const selected = idx === selectedIndex;
-              return (
-                <Link
-                  key={doc.id}
-                  href={`/docs/${doc.id}`}
-                  locale={locale}
-                  onClick={onClose}
-                  className={`block px-2.5 py-1.5 rounded-md text-sm transition-colors no-underline
-                    ${active || selected
-                      ? "bg-[var(--color-sidebar-active)] text-[var(--color-accent)] font-medium"
-                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)]"
-                    }`}
-                >
-                  <span className="truncate block">{doc.title}</span>
-                  {doc.description && hasQuery && (
-                    <span className="text-xs text-[var(--color-text-tertiary)] truncate block mt-0.5">
-                      {doc.description}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+          <>
+            {totalHits > 0 && (
+              <p className="px-2 mb-1 text-xs text-[var(--color-text-tertiary)]">
+                {t("sidebar.searchResults").replace("{count}", String(totalHits))}
+              </p>
+            )}
+            <nav className="space-y-0.5">
+              {searchResults.map((doc, idx) => renderLink(doc, idx === selectedIndex))}
+            </nav>
+          </>
         )}
 
         {hiddenCount > 0 && (
