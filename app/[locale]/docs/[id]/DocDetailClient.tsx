@@ -8,7 +8,6 @@ import { MDXRenderer } from "@/components/MDXRenderer";
 import { CopyButton } from "@/components/CopyButton";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useDocTitle } from "@/contexts/DocTitleContext";
-import { DocSkeleton } from "@/components/Skeleton";
 import type { DocContent } from "@/lib/docs";
 
 interface DocDetailClientProps {
