@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Menu, X } from "lucide-react";
+import { Settings, Menu, X, Github } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -46,8 +46,18 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
         </div>
       )}
 
-      {/* 右侧：语言切换 + 设置 */}
+      {/* 右侧：GitHub + 语言切换 + 设置 */}
       <div className="flex items-center gap-1 ml-auto">
+        <a
+          href="https://github.com/MC-Com-Docs/mccd-site"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-1.5 rounded-md text-[var(--color-text-secondary)]
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+          title="GitHub"
+        >
+          <Github className="w-5 h-5" />
+        </a>
         <LanguageSwitcher />
         <button
           onClick={onOpenSettings}
