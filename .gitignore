@@ -1,4 +1,5 @@
 node_modules/
 .next/
+.open-next/
 *.tsbuildinfo
 next-env.d.ts
