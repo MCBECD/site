@@ -1,0 +1,62 @@
+{
+  "common": {
+    "siteName": "MCCD",
+    "tagline": "Minecraft Commands Documentation"
+  },
+  "nav": {
+    "docs": "ドキュメント",
+    "settings": "設定"
+  },
+  "sidebar": {
+    "documentation": "ドキュメント一覧",
+    "toggleSidebar": "サイドバー切り替え",
+    "searchPlaceholder": "ドキュメントを検索...",
+    "noResults": "結果が見つかりません",
+    "moreResults": "さらに {count} 件の結果があります。検索語を絞り込んでください",
+    "searchResults": "{count} 件のドキュメントが見つかりました",
+    "featured": "おすすめ"
+  },
+  "settings": {
+    "title": "設定",
+    "theme": "テーマ",
+    "themeLight": "ライト",
+    "themeDark": "ダーク",
+    "themeSystem": "システムに従う",
+    "language": "言語",
+    "fontSize": "フォントサイズ",
+    "fontSizeSmall": "小",
+    "fontSizeMedium": "中",
+    "fontSizeLarge": "大",
+    "codeTheme": "コードテーマ",
+    "codeThemeFollow": "テーマに従う",
+    "codeThemeIndependent": "個別選択",
+    "background": "背景画像",
+    "backgroundEnable": "背景を有効にする",
+    "backgroundSource": "画像ソース",
+    "backgroundBing": "Bing 今日の画像",
+    "backgroundCustom": "カスタム URL",
+    "backgroundUrlPlaceholder": "画像 URL を入力...",
+    "backgroundOverlayOpacity": "オーバーレイの不透明度",
+    "backgroundBlur": "ぼかし",
+    "close": "閉じる"
+  },
+  "doc": {
+    "copyButton": "テキストをコピー",
+    "copySuccess": "コピーしました",
+    "downloadButton": "ソースをダウンロード",
+    "noDocs": "ドキュメントがありません",
+    "docNotFound": "ドキュメントが見つかりません",
+    "backToDocs": "ドキュメント一覧に戻る",
+    "loading": "読み込み中..."
+  },
+  "language": {
+    "zh-CN": "简体中文",
+    "en": "English",
+    "zh-TW": "繁體中文",
+    "ja": "日本語",
+    "ko": "한국어",
+    "de": "Deutsch",
+    "fr": "Français"
+  },
+  "locale": "ja"
+}
