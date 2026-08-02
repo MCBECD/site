@@ -14,10 +14,12 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const SIDEBAR_SECTIONS = [
-  { label: "介绍", ids: ["mccd-intro"] },
-  { label: "基础", ids: ["getting-started", "command-syntax"] },
-];
+const SIDEBAR_CATEGORIES = ["intro", "basics"];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  intro: "介绍",
+  basics: "基础",
+};
 const SEARCH_RESULT_LIMIT = 30;
 const DEBOUNCE_MS = 150;
 
@@ -97,14 +99,21 @@ function SidebarContent({
 
   const hasQuery = debouncedQuery.trim().length > 0;
 
-  /* @why 无搜索：按分组展示精选文档；有搜索：展示过滤结果 */
+  /* @why 按 category 自动分组，不硬编码文档 ID */
   const { sections, searchResults, totalHits } = useMemo(() => {
     if (!hasQuery) {
-      const docMap = new Map(docs.map((d) => [d.id, d]));
-      const sections = SIDEBAR_SECTIONS.map((s) => ({
-        ...s,
-        docs: s.ids.map((id) => docMap.get(id)).filter(Boolean) as DocMeta[],
-      })).filter((s) => s.docs.length > 0);
+      const byCategory = new Map<string, DocMeta[]>();
+      for (const doc of docs) {
+        const cat = doc.category ?? "other";
+        if (!byCategory.has(cat)) byCategory.set(cat, []);
+        byCategory.get(cat)!.push(doc);
+      }
+      const sections = SIDEBAR_CATEGORIES
+        .filter((cat) => byCategory.has(cat))
+        .map((cat) => ({
+          label: CATEGORY_LABELS[cat] ?? cat,
+          docs: byCategory.get(cat)!,
+        }));
       return { sections, searchResults: [], totalHits: 0 };
     }
     const q = debouncedQuery.trim().toLowerCase();
