@@ -23,6 +23,20 @@ const components = {
   code: ({ children }: JSX.IntrinsicElements["code"]) => (
     <InlineCode code={String(children)} />
   ),
+  /* @constraint 外站链接加安全属性防 tabnabbing */
+  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) => {
+    const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
+    return (
+      <a
+        href={href}
+        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        className="text-[var(--color-accent)] no-underline hover:underline"
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  },
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
     <div className="overflow-x-auto my-4">
       <table className="min-w-full border-collapse border border-[var(--color-border)]" {...props}>

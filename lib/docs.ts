@@ -7,6 +7,7 @@ export interface DocMeta {
   title: string;
   description?: string;
   order: number;
+  category?: string;
 }
 
 export interface DocContent {
@@ -48,6 +49,7 @@ export function getAllDocs(locale: string): DocMeta[] {
       title: data.title ?? id,
       description: data.description ?? undefined,
       order: typeof data.order === "number" ? data.order : Number.MAX_SAFE_INTEGER,
+      category: data.category ?? undefined,
     });
   }
 
