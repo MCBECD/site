@@ -14,7 +14,12 @@
     "noResults": "結果が見つかりません",
     "moreResults": "さらに {count} 件の結果があります。検索語を絞り込んでください",
     "searchResults": "{count} 件のドキュメントが見つかりました",
-    "featured": "おすすめ"
+    "featured": "おすすめ",
+    "category": {
+      "intro": "紹介",
+      "basics": "基本",
+      "commands": "コマンド"
+    }
   },
   "settings": {
     "title": "設定",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "画像 URL を入力...",
     "backgroundOverlayOpacity": "オーバーレイの不透明度",
     "backgroundBlur": "ぼかし",
-    "close": "閉じる"
+    "close": "閉じる",
+    "tabAppearance": "外観",
+    "tabLanguage": "言語"
+  },
+  "code": {
+    "copy": "コピー",
+    "copied": "コピーしました"
   },
   "doc": {
     "copyButton": "テキストをコピー",

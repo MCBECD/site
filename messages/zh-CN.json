@@ -14,7 +14,12 @@
     "noResults": "无匹配结果",
     "moreResults": "还有 {count} 条结果，请细化搜索词",
     "searchResults": "找到 {count} 篇文档",
-    "featured": "精选文档"
+    "featured": "精选文档",
+    "category": {
+      "intro": "介绍",
+      "basics": "基础",
+      "commands": "命令"
+    }
   },
   "settings": {
     "title": "设置",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "输入图片 URL...",
     "backgroundOverlayOpacity": "遮罩透明度",
     "backgroundBlur": "模糊度",
-    "close": "关闭"
+    "close": "关闭",
+    "tabAppearance": "外观",
+    "tabLanguage": "语言"
+  },
+  "code": {
+    "copy": "复制",
+    "copied": "已复制"
   },
   "doc": {
     "copyButton": "复制纯文本",

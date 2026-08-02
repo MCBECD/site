@@ -14,7 +14,12 @@
     "noResults": "無匹配結果",
     "moreResults": "還有 {count} 條結果，請細化搜尋詞",
     "searchResults": "找到 {count} 篇文件",
-    "featured": "精選文件"
+    "featured": "精選文件",
+    "category": {
+      "intro": "介紹",
+      "basics": "基礎",
+      "commands": "指令"
+    }
   },
   "settings": {
     "title": "設定",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "輸入圖片 URL...",
     "backgroundOverlayOpacity": "遮罩透明度",
     "backgroundBlur": "模糊度",
-    "close": "關閉"
+    "close": "關閉",
+    "tabAppearance": "外觀",
+    "tabLanguage": "語言"
+  },
+  "code": {
+    "copy": "複製",
+    "copied": "已複製"
   },
   "doc": {
     "copyButton": "複製純文字",

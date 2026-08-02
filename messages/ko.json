@@ -14,7 +14,12 @@
     "noResults": "검색 결과 없음",
     "moreResults": "{count}개의 추가 결과, 검색어를 구체화하세요",
     "searchResults": "{count}개의 문서를 찾았습니다",
-    "featured": "추천 문서"
+    "featured": "추천 문서",
+    "category": {
+      "intro": "소개",
+      "basics": "기초",
+      "commands": "명령어"
+    }
   },
   "settings": {
     "title": "설정",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "이미지 URL 입력...",
     "backgroundOverlayOpacity": "오버레이 투명도",
     "backgroundBlur": "블러",
-    "close": "닫기"
+    "close": "닫기",
+    "tabAppearance": "외관",
+    "tabLanguage": "언어"
+  },
+  "code": {
+    "copy": "복사",
+    "copied": "복사됨"
   },
   "doc": {
     "copyButton": "텍스트 복사",

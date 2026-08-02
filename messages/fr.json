@@ -14,7 +14,12 @@
     "noResults": "Aucun résultat",
     "moreResults": "{count} résultats supplémentaires, affinez votre recherche",
     "searchResults": "{count} documents trouvés",
-    "featured": "Recommandés"
+    "featured": "Recommandés",
+    "category": {
+      "intro": "Introduction",
+      "basics": "Bases",
+      "commands": "Commandes"
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "Entrez l'URL de l'image...",
     "backgroundOverlayOpacity": "Opacité du calque",
     "backgroundBlur": "Flou",
-    "close": "Fermer"
+    "close": "Fermer",
+    "tabAppearance": "Apparence",
+    "tabLanguage": "Langue"
+  },
+  "code": {
+    "copy": "Copier",
+    "copied": "Copié"
   },
   "doc": {
     "copyButton": "Copier le texte",

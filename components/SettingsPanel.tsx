@@ -69,10 +69,10 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         {/* Tab 栏 */}
         <div className="flex gap-0 px-6 pt-4 pb-0 border-b border-[var(--color-border)]">
           <TabButton active={tab === "appearance"} onClick={() => setTab("appearance")}>
-            外观
+            {t("settings.tabAppearance")}
           </TabButton>
           <TabButton active={tab === "language"} onClick={() => setTab("language")}>
-            语言
+            {t("settings.tabLanguage")}
           </TabButton>
         </div>
 

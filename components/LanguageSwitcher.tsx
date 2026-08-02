@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import { Globe } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -8,6 +9,7 @@ import { locales, type Locale } from "@/i18n/shared";
 
 export function LanguageSwitcher() {
   const t = useTranslations();
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -38,6 +40,7 @@ export function LanguageSwitcher() {
         title={t("settings.language")}
       >
         <Globe className="w-4 h-4" />
+        <span className="hidden sm:inline">{t(`language.${locale}`)}</span>
       </button>
 
       {open && (
