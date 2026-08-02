@@ -1,9 +1,10 @@
 "use client";
 
-import { Settings, Menu, X, Github } from "lucide-react";
+import { Settings, Menu, X, Github, Sun, Moon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useSettings, type Theme } from "@/contexts/SettingsContext";
 
 interface NavbarProps {
   docTitle?: string;
@@ -12,8 +13,23 @@ interface NavbarProps {
   onOpenSettings: () => void;
 }
 
+const NEXT_THEME: Record<Theme, Theme> = {
+  light: "dark",
+  dark: "system",
+  system: "light",
+};
+
+const THEME_ICON: Record<Theme, typeof Sun> = {
+  light: Sun,
+  dark: Moon,
+  system: Sun, /* @constraint 跟随系统用太阳图标，靠下划线区分 */
+};
+
 export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings }: NavbarProps) {
   const t = useTranslations();
+  const { settings, updateTheme } = useSettings();
+
+  const cycleTheme = () => updateTheme(NEXT_THEME[settings.theme]);
 
   return (
     <nav
@@ -30,12 +46,18 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
         >
           {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
-        <Link
-          href="/docs"
-          className="text-lg font-bold tracking-tight text-[var(--color-accent)]
-            hover:text-[var(--color-accent-hover)] transition-colors no-underline"
-        >
-          MCCD
+        <Link href="/docs" className="flex items-center gap-2 no-underline">
+          <img
+            src="https://avatars.githubusercontent.com/u/312049267?s=48"
+            alt="MCCD"
+            width={24}
+            height={24}
+            className="w-6 h-6 rounded-md"
+          />
+          <span className="text-base font-bold tracking-tight text-[var(--color-accent)]
+            hover:text-[var(--color-accent-hover)] transition-colors">
+            MCCD
+          </span>
         </Link>
       </div>
 
@@ -46,8 +68,21 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
         </div>
       )}
 
-      {/* 右侧：GitHub + 语言切换 + 设置 */}
+      {/* 右侧 */}
       <div className="flex items-center gap-1 ml-auto">
+        {/* 主题切换 */}
+        <button
+          onClick={cycleTheme}
+          className="p-1.5 rounded-md text-[var(--color-text-secondary)]
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+          title={t(`settings.theme${settings.theme === "light" ? "Light" : settings.theme === "dark" ? "Dark" : "System"}`)}
+        >
+          {(() => {
+            const Icon = THEME_ICON[settings.theme];
+            return <Icon className="w-5 h-5" />;
+          })()}
+        </button>
+
         <a
           href="https://github.com/MC-Com-Docs/mccd-site"
           target="_blank"
