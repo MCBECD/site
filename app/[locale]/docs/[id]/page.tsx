@@ -8,12 +8,10 @@ interface Props {
   params: Promise<{ locale: string; id: string }>;
 }
 
-/** @why static export 需要预生成所有文档页面 */
 export async function generateStaticParams() {
   const paths: { locale: string; id: string }[] = [];
   for (const locale of docLocales) {
-    const docs = getAllDocs(locale);
-    for (const doc of docs) {
+    for (const doc of getAllDocs(locale)) {
       paths.push({ locale, id: doc.id });
     }
   }
@@ -37,7 +35,6 @@ export default async function DocDetailPage({ params }: Props) {
     notFound();
   }
 
-  /* @constraint rawContent 用于下载功能，需原始内容 */
   const rawContent = getDocRawContent(locale, id) ?? "";
 
   return (
