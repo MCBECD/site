@@ -6,10 +6,11 @@ import { Copy, Check } from "lucide-react";
 interface CodeBlockClientProps {
   html: string;
   code: string;
-  lang: string;
+  /** @why 显示用户原文指定的语言标签，不做强制转换 */
+  displayLang: string;
 }
 
-export function CodeBlockClient({ html, code, lang }: CodeBlockClientProps) {
+export function CodeBlockClient({ html, code, displayLang }: CodeBlockClientProps) {
   const [copied, setCopied] = useState(false);
   const clickTargetRef = useRef<"button" | "block">("block");
 
@@ -46,7 +47,7 @@ export function CodeBlockClient({ html, code, lang }: CodeBlockClientProps) {
     <div className="group relative my-4 rounded-lg border border-[var(--color-border)] overflow-hidden">
       {/* 顶部栏 */}
       <div className="flex items-center justify-between px-4 py-1.5 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border)]">
-        <span className="text-xs text-[var(--color-text-tertiary)] font-mono">{lang}</span>
+        <span className="text-xs text-[var(--color-text-tertiary)] font-mono">{displayLang}</span>
         <button
           onClick={handleCopyClick}
           className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs

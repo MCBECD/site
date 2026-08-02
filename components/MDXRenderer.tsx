@@ -1,9 +1,10 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { createHighlighter } from "shiki";
 import type { JSX } from "react";
-import { Skeleton } from "./Skeleton";
 import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 import { CodeBlockClient } from "./CodeBlockClient";
+import { InlineCode } from "./InlineCode";
 
 const components = {
   pre: ({ children, ...props }: JSX.IntrinsicElements["pre"]) => (
@@ -16,11 +17,7 @@ const components = {
     if (match) {
       return <CodeBlock code={String(children).trim()} lang={match[1]!} />;
     }
-    return (
-      <code className="px-1 py-0.5 rounded bg-[var(--color-code-bg)] text-sm font-mono" {...props}>
-        {children}
-      </code>
-    );
+    return <InlineCode code={String(children)} />;
   },
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
     <div className="overflow-x-auto my-4">
@@ -56,7 +53,7 @@ async function getHighlighter() {
 async function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const hl = await getHighlighter();
 
-  /* @constraint 预留 Minecraft 命令自定义语言支持，当前回退到 text */
+  /* @constraint shiki 不支持 mcfunction 等 Minecraft 语言，高亮回退 text，标签保留原文 */
   const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "text";
 
   const html = hl.codeToHtml(code, {
@@ -64,7 +61,7 @@ async function CodeBlock({ code, lang }: { code: string; lang: string }) {
     themes: { light: "github-light", dark: "github-dark" },
   });
 
-  return <CodeBlockClient html={html} code={code} lang={resolvedLang} />;
+  return <CodeBlockClient html={html} code={code} displayLang={lang} />;
 }
 
 interface MDXRendererProps {
@@ -73,7 +70,11 @@ interface MDXRendererProps {
 
 export function MDXRenderer({ source }: MDXRendererProps) {
   return (
-    <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
+      </div>
+    }>
       <MDXRemote
         source={source}
         components={components}
