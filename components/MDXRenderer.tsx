@@ -3,6 +3,7 @@ import { createHighlighter } from "shiki";
 import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
+import remarkGfm from "remark-gfm";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { InlineCode } from "./InlineCode";
 
@@ -91,6 +92,7 @@ export function MDXRenderer({ source }: MDXRendererProps) {
       <MDXRemote
         source={source}
         components={components}
+        options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
       />
     </Suspense>
   );
