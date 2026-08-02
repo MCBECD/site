@@ -10,7 +10,11 @@ interface InlineCodeProps {
 export function InlineCode({ code, className = "" }: InlineCodeProps) {
   const [copied, setCopied] = useState(false);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(async (e: React.MouseEvent) => {
+    /* @constraint 在链接内时不复制，让点击正常跳转 */
+    if ((e.target as HTMLElement).closest("a")) return;
+
+    e.preventDefault();
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
