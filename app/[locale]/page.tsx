@@ -1,4 +1,5 @@
-import { redirect } from "@/i18n/navigation";
+import { permanentRedirect } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -6,5 +7,6 @@ interface Props {
 
 export default async function LocalePage({ params }: Props) {
   const { locale } = await params;
-  redirect({ href: "/docs", locale });
+  setRequestLocale(locale);
+  permanentRedirect(`/${locale}/docs`);
 }

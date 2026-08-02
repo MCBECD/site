@@ -26,10 +26,10 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npx @opennextjs/cloudflare build
+        run: npm run build
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: pages deploy .open-next --project-name mccd-site --branch main
+          command: pages deploy out --project-name mccd-site --branch main

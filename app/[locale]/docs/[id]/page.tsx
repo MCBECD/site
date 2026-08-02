@@ -1,10 +1,23 @@
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { getDocById, getDocRawContent } from "@/lib/docs";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getDocById, getDocRawContent, getAllDocs } from "@/lib/docs";
+import { docLocales } from "@/i18n/shared";
 import { DocDetailClient } from "./DocDetailClient";
 
 interface Props {
   params: Promise<{ locale: string; id: string }>;
+}
+
+/** @why static export 需要预生成所有文档页面 */
+export async function generateStaticParams() {
+  const paths: { locale: string; id: string }[] = [];
+  for (const locale of docLocales) {
+    const docs = getAllDocs(locale);
+    for (const doc of docs) {
+      paths.push({ locale, id: doc.id });
+    }
+  }
+  return paths;
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -16,6 +29,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function DocDetailPage({ params }: Props) {
   const { locale, id } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale });
 
   const doc = getDocById(locale, id);
