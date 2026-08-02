@@ -14,12 +14,7 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const SIDEBAR_CATEGORIES = ["intro", "basics"];
-
-const CATEGORY_LABELS: Record<string, string> = {
-  intro: "介绍",
-  basics: "基础",
-};
+const SIDEBAR_CATEGORIES = ["intro", "basics", "commands"];
 const SEARCH_RESULT_LIMIT = 30;
 const DEBOUNCE_MS = 150;
 
@@ -111,7 +106,7 @@ function SidebarContent({
       const sections = SIDEBAR_CATEGORIES
         .filter((cat) => byCategory.has(cat))
         .map((cat) => ({
-          label: CATEGORY_LABELS[cat] ?? cat,
+          label: t(`sidebar.category.${cat}`),
           docs: byCategory.get(cat)!,
         }));
       return { sections, searchResults: [], totalHits: 0 };
@@ -123,7 +118,7 @@ function SidebarContent({
         (d.description && d.description.toLowerCase().includes(q)),
     );
     return { sections: [], searchResults: hits.slice(0, SEARCH_RESULT_LIMIT), totalHits: hits.length };
-  }, [docs, debouncedQuery, hasQuery]);
+  }, [docs, debouncedQuery, hasQuery, t]);
 
   const hiddenCount = hasQuery ? Math.max(0, totalHits - SEARCH_RESULT_LIMIT) : 0;
 

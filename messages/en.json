@@ -14,7 +14,12 @@
     "noResults": "No results found",
     "moreResults": "{count} more results, refine your search",
     "searchResults": "{count} documents found",
-    "featured": "Featured"
+    "featured": "Featured",
+    "category": {
+      "intro": "Introduction",
+      "basics": "Basics",
+      "commands": "Commands"
+    }
   },
   "settings": {
     "title": "Settings",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "Enter image URL...",
     "backgroundOverlayOpacity": "Overlay opacity",
     "backgroundBlur": "Blur",
-    "close": "Close"
+    "close": "Close",
+    "tabAppearance": "Appearance",
+    "tabLanguage": "Language"
+  },
+  "code": {
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "doc": {
     "copyButton": "Copy plain text",

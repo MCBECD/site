@@ -14,7 +14,12 @@
     "noResults": "Keine Ergebnisse",
     "moreResults": "{count} weitere Ergebnisse, Suche verfeinern",
     "searchResults": "{count} Dokumente gefunden",
-    "featured": "Empfohlen"
+    "featured": "Empfohlen",
+    "category": {
+      "intro": "Einführung",
+      "basics": "Grundlagen",
+      "commands": "Befehle"
+    }
   },
   "settings": {
     "title": "Einstellungen",
@@ -38,7 +43,13 @@
     "backgroundUrlPlaceholder": "Bild-URL eingeben...",
     "backgroundOverlayOpacity": "Overlay-Deckkraft",
     "backgroundBlur": "Unschärfe",
-    "close": "Schließen"
+    "close": "Schließen",
+    "tabAppearance": "Aussehen",
+    "tabLanguage": "Sprache"
+  },
+  "code": {
+    "copy": "Kopieren",
+    "copied": "Kopiert"
   },
   "doc": {
     "copyButton": "Text kopieren",

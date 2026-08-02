@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Menu, X, Github, Sun, Moon } from "lucide-react";
+import { Settings, Menu, X, Github, Sun, Moon, Monitor } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -22,7 +22,7 @@ const NEXT_THEME: Record<Theme, Theme> = {
 const THEME_ICON: Record<Theme, typeof Sun> = {
   light: Sun,
   dark: Moon,
-  system: Sun, /* @constraint 跟随系统用太阳图标，靠下划线区分 */
+  system: Monitor,
 };
 
 export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings }: NavbarProps) {
