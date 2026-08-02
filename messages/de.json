@@ -1,0 +1,62 @@
+{
+  "common": {
+    "siteName": "MCCD",
+    "tagline": "Minecraft Commands Documentation"
+  },
+  "nav": {
+    "docs": "Dokumente",
+    "settings": "Einstellungen"
+  },
+  "sidebar": {
+    "documentation": "Dokumentation",
+    "toggleSidebar": "Seitenleiste umschalten",
+    "searchPlaceholder": "Dokumente durchsuchen...",
+    "noResults": "Keine Ergebnisse",
+    "moreResults": "{count} weitere Ergebnisse, Suche verfeinern",
+    "searchResults": "{count} Dokumente gefunden",
+    "featured": "Empfohlen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "theme": "Design",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "System",
+    "language": "Sprache",
+    "fontSize": "Schriftgröße",
+    "fontSizeSmall": "Klein",
+    "fontSizeMedium": "Mittel",
+    "fontSizeLarge": "Groß",
+    "codeTheme": "Code-Design",
+    "codeThemeFollow": "Design folgen",
+    "codeThemeIndependent": "Unabhängig",
+    "background": "Hintergrundbild",
+    "backgroundEnable": "Hintergrund aktivieren",
+    "backgroundSource": "Bildquelle",
+    "backgroundBing": "Bing Tagesbild",
+    "backgroundCustom": "Benutzerdefinierte URL",
+    "backgroundUrlPlaceholder": "Bild-URL eingeben...",
+    "backgroundOverlayOpacity": "Overlay-Deckkraft",
+    "backgroundBlur": "Unschärfe",
+    "close": "Schließen"
+  },
+  "doc": {
+    "copyButton": "Text kopieren",
+    "copySuccess": "Kopiert",
+    "downloadButton": "Quelle herunterladen",
+    "noDocs": "Keine Dokumentation verfügbar",
+    "docNotFound": "Dokument nicht gefunden",
+    "backToDocs": "Zurück zur Dokumentation",
+    "loading": "Wird geladen..."
+  },
+  "language": {
+    "zh-CN": "简体中文",
+    "en": "English",
+    "zh-TW": "繁體中文",
+    "ja": "日本語",
+    "ko": "한국어",
+    "de": "Deutsch",
+    "fr": "Français"
+  },
+  "locale": "de"
+}

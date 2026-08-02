@@ -1,0 +1,3 @@
+[submodule "content/docs"]
+	path = content/docs
+	url = https://github.com/mc-com-docs/mccd-docs.git
