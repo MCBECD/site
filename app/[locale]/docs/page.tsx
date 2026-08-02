@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAllDocs } from "@/lib/docs";
 import { Link } from "@/i18n/navigation";
 import { FileText, ArrowRight } from "lucide-react";
@@ -9,6 +9,7 @@ interface Props {
 
 export default async function DocsPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale });
   const docs = getAllDocs(locale);
 

@@ -14,10 +14,12 @@ export function BackgroundLayer() {
   useEffect(() => {
     if (!background.enabled || background.source !== "bing") return;
     let cancelled = false;
-    fetch("/api/bing-image")
+    fetch("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1")
       .then((r) => r.json())
-      .then((data: { url: string } | null) => {
-        if (!cancelled && data?.url) setBingUrl(data.url);
+      .then((data: { images?: Array<{ url: string }> }) => {
+        if (!cancelled && data.images?.[0]?.url) {
+          setBingUrl(`https://www.bing.com${data.images[0].url}`);
+        }
       })
       .catch(() => {});
     return () => { cancelled = true; };
