@@ -20,7 +20,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   return {
-    metadataBase: new URL("https://mccd.dev"),
+    metadataBase: new URL("https://mcbecd.dev"),
     alternates: {
       languages: Object.fromEntries(
         locales.map((l) => [l, `/${l}`]),
