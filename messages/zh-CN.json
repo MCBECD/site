@@ -58,6 +58,8 @@
     "noDocs": "暂无文档",
     "docNotFound": "文档未找到",
     "backToDocs": "返回文档列表",
+    "prevPage": "上一篇",
+    "nextPage": "下一篇",
     "loading": "加载中..."
   },
   "language": {

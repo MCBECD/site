@@ -58,7 +58,9 @@
     "noDocs": "Keine Dokumentation verfügbar",
     "docNotFound": "Dokument nicht gefunden",
     "backToDocs": "Zurück zur Dokumentation",
-    "loading": "Wird geladen..."
+    "loading": "Wird geladen...",
+    "prevPage": "Zurück",
+    "nextPage": "Weiter"
   },
   "language": {
     "zh-CN": "简体中文",

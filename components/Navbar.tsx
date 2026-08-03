@@ -52,6 +52,7 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
             alt="MCBECD"
             width={24}
             height={24}
+            fetchPriority="high"
             className="w-6 h-6 rounded-md"
           />
           <span className="text-base font-bold tracking-tight text-[var(--color-accent)]

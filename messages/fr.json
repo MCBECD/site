@@ -58,7 +58,9 @@
     "noDocs": "Aucune documentation disponible",
     "docNotFound": "Document introuvable",
     "backToDocs": "Retour aux documents",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "prevPage": "Précédent",
+    "nextPage": "Suivant"
   },
   "language": {
     "zh-CN": "简体中文",

@@ -58,7 +58,9 @@
     "noDocs": "暫無文件",
     "docNotFound": "文件未找到",
     "backToDocs": "返回文件列表",
-    "loading": "載入中..."
+    "loading": "載入中...",
+    "prevPage": "上一篇",
+    "nextPage": "下一篇"
   },
   "language": {
     "zh-CN": "简体中文",
