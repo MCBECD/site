@@ -3,21 +3,19 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Download, Check, ChevronDown } from "lucide-react";
+import { ArrowLeft, Copy, Check, ChevronDown } from "lucide-react";
 import { MDXRenderer } from "@/components/MDXRenderer";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useDocTitle } from "@/contexts/DocTitleContext";
-import type { DocContent, DocMeta } from "@/lib/docs";
+import type { DocContent } from "@/lib/docs";
 
 interface DocDetailClientProps {
   doc: DocContent;
   locale: string;
   rawContent: string;
-  prevDoc: DocMeta | null;
-  nextDoc: DocMeta | null;
 }
 
-export function DocDetailClient({ doc, locale, rawContent, prevDoc, nextDoc }: DocDetailClientProps) {
+export function DocDetailClient({ doc, locale, rawContent }: DocDetailClientProps) {
   const t = useTranslations();
   const { setTitle } = useDocTitle();
 
@@ -72,42 +70,6 @@ export function DocDetailClient({ doc, locale, rawContent, prevDoc, nextDoc }: D
           <MDXRenderer source={doc.rawContent} />
         </div>
       </div>
-
-      {/* 上一篇/下一篇导航 */}
-      {(prevDoc || nextDoc) && (
-        <div className="px-6 pb-10 flex items-center justify-between gap-4">
-          {prevDoc ? (
-            <Link
-              href={`/docs/${prevDoc.id}`}
-              locale={locale}
-              className="flex items-start gap-2 p-3 rounded-lg border border-[var(--color-border)]
-                hover:border-[var(--color-accent)] hover:bg-[var(--color-sidebar-active)]
-                transition-all no-underline flex-1 min-w-0"
-            >
-              <ChevronLeft className="w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" />
-              <div className="min-w-0 text-left">
-                <div className="text-xs text-[var(--color-text-tertiary)]">{t("doc.prevPage")}</div>
-                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">{prevDoc.title}</div>
-              </div>
-            </Link>
-          ) : <div className="flex-1" />}
-          {nextDoc ? (
-            <Link
-              href={`/docs/${nextDoc.id}`}
-              locale={locale}
-              className="flex items-start justify-end gap-2 p-3 rounded-lg border border-[var(--color-border)]
-                hover:border-[var(--color-accent)] hover:bg-[var(--color-sidebar-active)]
-                transition-all no-underline flex-1 min-w-0"
-            >
-              <div className="min-w-0 text-right">
-                <div className="text-xs text-[var(--color-text-tertiary)]">{t("doc.nextPage")}</div>
-                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">{nextDoc.title}</div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" />
-            </Link>
-          ) : <div className="flex-1" />}
-        </div>
-      )}
     </div>
   );
 }
