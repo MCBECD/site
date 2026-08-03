@@ -75,11 +75,16 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  /* @why lazy initializer: 客户端同步读取，纯客户端导航无闪烁 */
+  const [settings, setSettings] = useState<Settings>(() => loadSettings());
 
-  /* @why 仅在客户端初始化，避免 hydration mismatch */
+  /* @why hydration 后同步 React state（SSR 时 state 为默认值，需纠正） */
   useEffect(() => {
-    setSettings(loadSettings());
+    const stored = loadSettings();
+    setSettings((prev) => {
+      if (JSON.stringify(prev) === JSON.stringify(stored)) return prev;
+      return stored;
+    });
   }, []);
 
   /* @side-effect 写入 localStorage */

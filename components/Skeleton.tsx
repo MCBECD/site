@@ -7,20 +7,21 @@ export function Skeleton({ className = "" }: { className?: string }) {
   );
 }
 
-export function DocSkeleton() {
+export function DocSkeleton({ count = 1 }: { count?: number }) {
   return (
-    <div className="space-y-4 p-6" aria-label="Loading content">
-      <Skeleton className="h-8 w-2/3" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-5/6" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-3/4" />
-      <div className="pt-4">
-        <Skeleton className="h-48 w-full" />
-      </div>
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-4/5" />
+    <div className="space-y-3 p-6" aria-label="Loading content">
+      {Array.from({ length: count }, (_, i) => (
+        <div key={i} className="p-4 rounded-lg border border-[var(--color-border)]">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-5 h-5 shrink-0 rounded" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-4 w-2/3" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+            <Skeleton className="w-4 h-4 shrink-0 rounded" />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

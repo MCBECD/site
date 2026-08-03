@@ -58,6 +58,8 @@
     "noDocs": "No documentation available",
     "docNotFound": "Document not found",
     "backToDocs": "Back to docs",
+    "prevPage": "Previous",
+    "nextPage": "Next",
     "loading": "Loading..."
   },
   "language": {

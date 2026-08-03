@@ -58,7 +58,9 @@
     "noDocs": "ドキュメントがありません",
     "docNotFound": "ドキュメントが見つかりません",
     "backToDocs": "ドキュメント一覧に戻る",
-    "loading": "読み込み中..."
+    "loading": "読み込み中...",
+    "prevPage": "前へ",
+    "nextPage": "次へ"
   },
   "language": {
     "zh-CN": "简体中文",
