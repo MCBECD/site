@@ -57,10 +57,12 @@
     "downloadButton": "소스 다운로드",
     "noDocs": "문서가 없습니다",
     "docNotFound": "문서를 찾을 수 없습니다",
-    "backToDocs": "문서 목록으로 돌아가기",
+    "backToDocs": "뒤로",
     "loading": "로딩 중...",
     "prevPage": "이전",
-    "nextPage": "다음"
+    "nextPage": "다음",
+    "copyMD": "MD 복사",
+    "copyPlain": "일반 텍스트"
   },
   "language": {
     "zh-CN": "简体中文",

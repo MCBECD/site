@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Download, Check, ChevronDown } from "lucide-react";
 import { MDXRenderer } from "@/components/MDXRenderer";
-import { CopyButton } from "@/components/CopyButton";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useDocTitle } from "@/contexts/DocTitleContext";
 import type { DocContent, DocMeta } from "@/lib/docs";
@@ -31,22 +30,23 @@ export function DocDetailClient({ doc, locale, rawContent, prevDoc, nextDoc }: D
   return (
     <div className="max-w-4xl mx-auto">
       {/* 操作栏 */}
-      <div className="flex items-center justify-between px-6 py-3 border-b border-[var(--color-border)]
+      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-border)]
         bg-[var(--color-bg-primary)]/80 backdrop-blur-sm sticky top-[var(--navbar-height)] z-10">
         <Link
           href="/docs"
           locale={locale}
-          className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)]
+          className="inline-flex items-center gap-1 text-sm text-[var(--color-text-secondary)]
             hover:text-[var(--color-accent)] transition-colors no-underline"
         >
           <ArrowLeft className="w-4 h-4" />
-          {t("doc.backToDocs")}
+          <span className="hidden sm:inline">{t("doc.backToDocs")}</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <CopyButton
-            getText={() => extractPlainText(rawContent)}
-            label={t("doc.copyButton")}
+        <div className="flex items-center gap-1.5">
+          <CopyDropdown
+            rawContent={rawContent}
+            labelMD={t("doc.copyMD")}
+            labelPlain={t("doc.copyPlain")}
             successLabel={t("doc.copySuccess")}
           />
           <DownloadButton
@@ -86,17 +86,11 @@ export function DocDetailClient({ doc, locale, rawContent, prevDoc, nextDoc }: D
             >
               <ChevronLeft className="w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" />
               <div className="min-w-0 text-left">
-                <div className="text-xs text-[var(--color-text-tertiary)]">
-                  {t("doc.prevPage")}
-                </div>
-                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                  {prevDoc.title}
-                </div>
+                <div className="text-xs text-[var(--color-text-tertiary)]">{t("doc.prevPage")}</div>
+                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">{prevDoc.title}</div>
               </div>
             </Link>
-          ) : (
-            <div className="flex-1" />
-          )}
+          ) : <div className="flex-1" />}
           {nextDoc ? (
             <Link
               href={`/docs/${nextDoc.id}`}
@@ -106,18 +100,81 @@ export function DocDetailClient({ doc, locale, rawContent, prevDoc, nextDoc }: D
                 transition-all no-underline flex-1 min-w-0"
             >
               <div className="min-w-0 text-right">
-                <div className="text-xs text-[var(--color-text-tertiary)]">
-                  {t("doc.nextPage")}
-                </div>
-                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                  {nextDoc.title}
-                </div>
+                <div className="text-xs text-[var(--color-text-tertiary)]">{t("doc.nextPage")}</div>
+                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">{nextDoc.title}</div>
               </div>
               <ChevronRight className="w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" />
             </Link>
-          ) : (
-            <div className="flex-1" />
-          )}
+          ) : <div className="flex-1" />}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CopyDropdown({
+  rawContent,
+  labelMD,
+  labelPlain,
+  successLabel,
+}: {
+  rawContent: string;
+  labelMD: string;
+  labelPlain: string;
+  successLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    if (open) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const doCopy = useCallback(async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setOpen(false);
+    setTimeout(() => setCopied(false), 2000);
+  }, []);
+
+  const plainText = extractPlainText(rawContent);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-sm
+          bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)]
+          hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)]
+          transition-colors"
+      >
+        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+        <span className="hidden sm:inline">{successLabel && copied ? successLabel : "复制"}</span>
+        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-36 py-1 rounded-md border border-[var(--color-border)]
+          bg-[var(--color-bg-primary)] shadow-lg z-50">
+          <button
+            onClick={() => doCopy(rawContent)}
+            className="w-full text-left px-3 py-1.5 text-sm text-[var(--color-text-secondary)]
+              hover:bg-[var(--color-sidebar-active)] hover:text-[var(--color-text-primary)] transition-colors"
+          >
+            {labelMD}
+          </button>
+          <button
+            onClick={() => doCopy(plainText)}
+            className="w-full text-left px-3 py-1.5 text-sm text-[var(--color-text-secondary)]
+              hover:bg-[var(--color-sidebar-active)] hover:text-[var(--color-text-primary)] transition-colors"
+          >
+            {labelPlain}
+          </button>
         </div>
       )}
     </div>
@@ -126,8 +183,8 @@ export function DocDetailClient({ doc, locale, rawContent, prevDoc, nextDoc }: D
 
 function extractPlainText(mdx: string): string {
   return mdx
-    .replace(/---[\s\S]*?---/, "")     // remove frontmatter
-    .replace(/[#*`~>\[\]()!_|{}.<>&-]/g, "") // remove markdown syntax
+    .replace(/---[\s\S]*?---/, "")
+    .replace(/[#*`~>\[\]()!_|{}.<>&-]/g, "")
     .replace(/\n{2,}/g, "\n\n")
     .trim();
 }

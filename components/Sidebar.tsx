@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { type DocMeta } from "@/lib/docs";
-import { Search, X, ChevronLeft, Star } from "lucide-react";
+import { Search, X, Star } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface SidebarProps {
@@ -26,14 +26,16 @@ export function Sidebar({ docs, locale, open, onClose }: SidebarProps) {
 
   return (
     <>
+      {/* 桌面端固定侧边栏 */}
       <aside
         className="hidden md:flex flex-col fixed top-[var(--navbar-height)] left-0 bottom-0
           w-[var(--sidebar-width)] bg-[var(--color-sidebar-bg)] border-r border-[var(--color-border)]
           z-30"
       >
-        <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} onClose={onClose} />
+        <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} />
       </aside>
 
+      {/* 移动端抽屉 */}
       <AnimatePresence>
         {open && (
           <>
@@ -43,19 +45,28 @@ export function Sidebar({ docs, locale, open, onClose }: SidebarProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.15 }}
               aria-hidden="true"
             />
             <motion.aside
-              className="md:hidden fixed top-[var(--navbar-height)] left-0 bottom-0
-                w-[var(--sidebar-width)] max-w-[80vw] bg-[var(--color-sidebar-bg)]
-                border-r border-[var(--color-border)] z-50 shadow-xl flex flex-col"
+              className="md:hidden fixed top-0 left-0 bottom-0 w-72 max-w-[85vw]
+                bg-[var(--color-sidebar-bg)] z-50 shadow-2xl flex flex-col"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} onClose={onClose} />
+              {/* 移动端关闭按钮 */}
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 z-10 p-1.5 rounded-md
+                  text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
+                  hover:bg-[var(--color-bg-tertiary)] transition-colors"
+                aria-label="Close sidebar"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} />
             </motion.aside>
           </>
         )}
@@ -69,13 +80,11 @@ function SidebarContent({
   locale,
   isActive,
   t,
-  onClose,
 }: {
   docs: DocMeta[];
   locale: string;
   isActive: (id: string) => boolean;
   t: ReturnType<typeof useTranslations>;
-  onClose: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -160,7 +169,6 @@ function SidebarContent({
         key={doc.id}
         href={`/docs/${doc.id}`}
         locale={locale}
-        onClick={onClose}
         className={`block px-2.5 py-1.5 rounded-md text-sm transition-colors no-underline
           ${active || selected
             ? "bg-[var(--color-sidebar-active)] text-[var(--color-accent)] font-medium"
@@ -176,17 +184,10 @@ function SidebarContent({
     <div className="flex flex-col h-full">
       {/* 搜索栏 */}
       <div className="p-3 pb-2 border-b border-[var(--color-border)] shrink-0">
-        <div className="flex items-center justify-between mb-2 px-1">
+        <div className="mb-2 px-1">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
             {t("sidebar.documentation")}
           </h2>
-          <button
-            onClick={onClose}
-            className="md:hidden p-0.5 rounded text-[var(--color-text-tertiary)]
-              hover:text-[var(--color-text-primary)] transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
         </div>
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />

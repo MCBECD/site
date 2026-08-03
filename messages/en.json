@@ -57,10 +57,12 @@
     "downloadButton": "Download source",
     "noDocs": "No documentation available",
     "docNotFound": "Document not found",
-    "backToDocs": "Back to docs",
+    "backToDocs": "Back",
     "prevPage": "Previous",
     "nextPage": "Next",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "copyMD": "Copy MD",
+    "copyPlain": "Copy plain text"
   },
   "language": {
     "zh-CN": "简体中文",
