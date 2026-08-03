@@ -57,10 +57,12 @@
     "downloadButton": "ソースをダウンロード",
     "noDocs": "ドキュメントがありません",
     "docNotFound": "ドキュメントが見つかりません",
-    "backToDocs": "ドキュメント一覧に戻る",
+    "backToDocs": "戻る",
     "loading": "読み込み中...",
     "prevPage": "前へ",
-    "nextPage": "次へ"
+    "nextPage": "次へ",
+    "copyMD": "MDをコピー",
+    "copyPlain": "プレーンテキスト"
   },
   "language": {
     "zh-CN": "简体中文",

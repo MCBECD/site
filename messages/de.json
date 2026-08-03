@@ -57,10 +57,12 @@
     "downloadButton": "Quelle herunterladen",
     "noDocs": "Keine Dokumentation verfügbar",
     "docNotFound": "Dokument nicht gefunden",
-    "backToDocs": "Zurück zur Dokumentation",
+    "backToDocs": "Zurück",
     "loading": "Wird geladen...",
     "prevPage": "Zurück",
-    "nextPage": "Weiter"
+    "nextPage": "Weiter",
+    "copyMD": "MD kopieren",
+    "copyPlain": "Klartext"
   },
   "language": {
     "zh-CN": "简体中文",

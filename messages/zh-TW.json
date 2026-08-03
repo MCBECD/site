@@ -57,10 +57,12 @@
     "downloadButton": "下載原始檔案",
     "noDocs": "暫無文件",
     "docNotFound": "文件未找到",
-    "backToDocs": "返回文件列表",
+    "backToDocs": "返回",
     "loading": "載入中...",
     "prevPage": "上一篇",
-    "nextPage": "下一篇"
+    "nextPage": "下一篇",
+    "copyMD": "複製 MD",
+    "copyPlain": "複製純文字"
   },
   "language": {
     "zh-CN": "简体中文",

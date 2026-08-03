@@ -57,10 +57,12 @@
     "downloadButton": "Télécharger la source",
     "noDocs": "Aucune documentation disponible",
     "docNotFound": "Document introuvable",
-    "backToDocs": "Retour aux documents",
+    "backToDocs": "Retour",
     "loading": "Chargement...",
     "prevPage": "Précédent",
-    "nextPage": "Suivant"
+    "nextPage": "Suivant",
+    "copyMD": "Copier MD",
+    "copyPlain": "Texte brut"
   },
   "language": {
     "zh-CN": "简体中文",
