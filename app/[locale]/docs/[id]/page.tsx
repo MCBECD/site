@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getDocById, getDocRawContent, getAllDocs } from "@/lib/docs";
+import { getDocById, getDocRawContent, getAllDocs, getAdjacentDocs, getChapterProgress } from "@/lib/docs";
 import { docLocales } from "@/i18n/shared";
 import { DocDetailClient } from "./DocDetailClient";
 
@@ -36,8 +36,16 @@ export default async function DocDetailPage({ params }: Props) {
   }
 
   const rawContent = getDocRawContent(locale, id) ?? "";
+  const adjacent = getAdjacentDocs(locale, id);
+  const chapterProgress = getChapterProgress(locale, id);
 
   return (
-    <DocDetailClient doc={doc} locale={locale} rawContent={rawContent} />
+    <DocDetailClient
+      doc={doc}
+      locale={locale}
+      rawContent={rawContent}
+      adjacent={adjacent}
+      chapterProgress={chapterProgress}
+    />
   );
 }

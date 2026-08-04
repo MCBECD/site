@@ -3,19 +3,27 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, Copy, Check, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, Copy, Check, ChevronDown, BookOpen } from "lucide-react";
 import { MDXRenderer } from "@/components/MDXRenderer";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useDocTitle } from "@/contexts/DocTitleContext";
-import type { DocContent } from "@/lib/docs";
+import type { DocContent, AdjacentDocs } from "@/lib/docs";
 
 interface DocDetailClientProps {
   doc: DocContent;
   locale: string;
   rawContent: string;
+  adjacent?: AdjacentDocs;
+  chapterProgress?: { chapterTitle: string; current: number; total: number } | null;
 }
 
-export function DocDetailClient({ doc, locale, rawContent }: DocDetailClientProps) {
+export function DocDetailClient({
+  doc,
+  locale,
+  rawContent,
+  adjacent,
+  chapterProgress,
+}: DocDetailClientProps) {
   const t = useTranslations();
   const { setTitle } = useDocTitle();
 
@@ -28,8 +36,10 @@ export function DocDetailClient({ doc, locale, rawContent }: DocDetailClientProp
   return (
     <div className="max-w-4xl mx-auto">
       {/* 操作栏 */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-border)]
-        bg-[var(--color-bg-primary)]/80 backdrop-blur-sm sticky top-[var(--navbar-height)] z-10">
+      <div
+        className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-border)]
+        bg-[var(--color-bg-primary)]/80 backdrop-blur-sm sticky top-[var(--navbar-height)] z-10"
+      >
         <Link
           href="/docs"
           locale={locale}
@@ -57,7 +67,28 @@ export function DocDetailClient({ doc, locale, rawContent }: DocDetailClientProp
 
       {/* 文档内容 */}
       <div className="px-6 py-8">
-        <div className="prose prose-slate dark:prose-invert max-w-none
+        {/* 章节进度条 */}
+        {chapterProgress && (
+          <div className="mb-6 flex items-center gap-2 text-xs text-[var(--color-text-tertiary)]">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="font-medium">{chapterProgress.chapterTitle}</span>
+            <span>·</span>
+            <span>
+              {chapterProgress.current} / {chapterProgress.total}
+            </span>
+            <div className="flex-1 max-w-[120px] h-1 rounded-full bg-[var(--color-bg-tertiary)] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[var(--color-accent)] transition-all duration-300"
+                style={{
+                  width: `${(chapterProgress.current / chapterProgress.total) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        <div
+          className="prose prose-slate dark:prose-invert max-w-none
           prose-headings:text-[var(--color-text-primary)]
           prose-p:text-[var(--color-text-secondary)]
           prose-a:text-[var(--color-accent)] prose-a:no-underline hover:prose-a:underline
@@ -66,10 +97,64 @@ export function DocDetailClient({ doc, locale, rawContent }: DocDetailClientProp
           prose-li:text-[var(--color-text-secondary)]
           prose-hr:border-[var(--color-border)]
           prose-blockquote:border-[var(--color-accent)]
-          prose-blockquote:text-[var(--color-text-secondary)]">
+          prose-blockquote:text-[var(--color-text-secondary)]"
+        >
           <MDXRenderer source={doc.rawContent} />
         </div>
+
+        {doc.meta.readingTime && (
+          <p className="mt-4 text-xs text-[var(--color-text-tertiary)]">
+            ~{doc.meta.readingTime} min read
+          </p>
+        )}
       </div>
+
+      {/* Prev/Next 导航 */}
+      {adjacent && (adjacent.prev || adjacent.next) && (
+        <div className="px-6 pb-12 pt-4 border-t border-[var(--color-border)]">
+          <div className="flex items-center justify-between gap-4">
+            {adjacent.prev ? (
+              <Link
+                href={`/docs/${adjacent.prev.id}`}
+                locale={locale}
+                className="flex-1 group p-4 rounded-lg border border-[var(--color-border)]
+                  hover:border-[var(--color-accent)] hover:bg-[var(--color-sidebar-active)]
+                  transition-all no-underline text-left"
+              >
+                <div className="flex items-center gap-2 text-xs text-[var(--color-text-tertiary)] mb-1">
+                  <ArrowLeft className="w-3 h-3" />
+                  <span>{t("doc.previous")}</span>
+                </div>
+                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+                  {adjacent.prev.title}
+                </div>
+              </Link>
+            ) : (
+              <div className="flex-1" />
+            )}
+
+            {adjacent.next ? (
+              <Link
+                href={`/docs/${adjacent.next.id}`}
+                locale={locale}
+                className="flex-1 group p-4 rounded-lg border border-[var(--color-border)]
+                  hover:border-[var(--color-accent)] hover:bg-[var(--color-sidebar-active)]
+                  transition-all no-underline text-right"
+              >
+                <div className="flex items-center justify-end gap-2 text-xs text-[var(--color-text-tertiary)] mb-1">
+                  <span>{t("doc.next")}</span>
+                  <ArrowRight className="w-3 h-3" />
+                </div>
+                <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+                  {adjacent.next.title}
+                </div>
+              </Link>
+            ) : (
+              <div className="flex-1" />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

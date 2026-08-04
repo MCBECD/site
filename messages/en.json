@@ -58,6 +58,8 @@
     "noDocs": "No documentation available",
     "docNotFound": "Document not found",
     "backToDocs": "Back",
+    "previous": "Previous",
+    "next": "Next",
     "prevPage": "Previous",
     "nextPage": "Next",
     "loading": "Loading...",
