@@ -75,17 +75,11 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  /* @why lazy initializer: 客户端同步读取，纯客户端导航无闪烁 */
+  /* @why lazy initializer：客户端同步读取 localStorage，纯客户端导航无闪烁。
+   *      不再需要 useEffect 二次同步 —— SSR 时 loadSettings() 返回默认值，
+   *      客户端 hydration 时 lazy initializer 直接读到正确值，避免多余的
+   *      setState 触发 AppShell 整树重渲染 → AnimatePresence 动画重播。 */
   const [settings, setSettings] = useState<Settings>(() => loadSettings());
-
-  /* @why hydration 后同步 React state（SSR 时 state 为默认值，需纠正） */
-  useEffect(() => {
-    const stored = loadSettings();
-    setSettings((prev) => {
-      if (JSON.stringify(prev) === JSON.stringify(stored)) return prev;
-      return stored;
-    });
-  }, []);
 
   /* @side-effect 写入 localStorage */
   const persist = useCallback((s: Settings) => {
