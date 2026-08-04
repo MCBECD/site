@@ -18,6 +18,53 @@ const SIDEBAR_CATEGORIES = ["intro", "basics", "commands"];
 const SEARCH_RESULT_LIMIT = 30;
 const DEBOUNCE_MS = 150;
 
+/* @why 将移动端 sidebar 动画提取为独立组件，
+ *      避免内部搜索 state 变更导致 AnimatePresence 重评估 */
+function MobileSidebar({ open, onClose, children }: {
+  open: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            className="md:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={onClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            aria-hidden="true"
+          />
+          <motion.aside
+            className="md:hidden fixed top-0 left-0 bottom-0 w-72 max-w-[85vw]
+              bg-[var(--color-sidebar-bg)] z-50 shadow-2xl flex flex-col"
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            style={{ willChange: "transform" }}
+          >
+            {/* 移动端关闭按钮 */}
+            <button
+              onClick={onClose}
+              className="absolute top-3 right-3 z-10 p-1.5 rounded-md
+                text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
+                hover:bg-[var(--color-bg-tertiary)] transition-colors"
+              aria-label="Close sidebar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            {children}
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export function Sidebar({ docs, locale, open, onClose }: SidebarProps) {
   const t = useTranslations();
   const pathname = usePathname();
@@ -36,41 +83,9 @@ export function Sidebar({ docs, locale, open, onClose }: SidebarProps) {
       </aside>
 
       {/* 移动端抽屉 */}
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div
-              className="md:hidden fixed inset-0 bg-black/50 z-40"
-              onClick={onClose}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              aria-hidden="true"
-            />
-            <motion.aside
-              className="md:hidden fixed top-0 left-0 bottom-0 w-72 max-w-[85vw]
-                bg-[var(--color-sidebar-bg)] z-50 shadow-2xl flex flex-col"
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-            >
-              {/* 移动端关闭按钮 */}
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 z-10 p-1.5 rounded-md
-                  text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
-                  hover:bg-[var(--color-bg-tertiary)] transition-colors"
-                aria-label="Close sidebar"
-              >
-                <X className="w-4 h-4" />
-              </button>
-              <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} />
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+      <MobileSidebar open={open} onClose={onClose}>
+        <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} />
+      </MobileSidebar>
     </>
   );
 }
