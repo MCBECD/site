@@ -3,8 +3,8 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locales } from "@/i18n/shared";
-import { getAllDocs } from "@/lib/docs";
-import type { DocMeta } from "@/lib/docs";
+import { getAllDocs, getDocsByChapter } from "@/lib/docs";
+import type { DocMeta, Chapter } from "@/lib/docs";
 import { AppShell } from "./AppShell";
 
 interface Props {
@@ -43,15 +43,19 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   const messages = await getMessages();
-  let docs: DocMeta[] = getAllDocs(locale); // @performance 同步读取
-  /* @why 界面语言可能没有对应文档，回退英文 */
+  let docs: DocMeta[] = getAllDocs(locale);
   if (docs.length === 0) {
     docs = getAllDocs("en");
   }
 
+  let chapters: Chapter[] = getDocsByChapter(locale);
+  if (chapters.length === 0) {
+    chapters = getDocsByChapter("en");
+  }
+
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <AppShell locale={locale} docs={docs}>
+      <AppShell locale={locale} docs={docs} chapters={chapters}>
         {children}
       </AppShell>
     </NextIntlClientProvider>

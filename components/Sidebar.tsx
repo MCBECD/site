@@ -3,23 +3,21 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { type DocMeta } from "@/lib/docs";
-import { Search, X, Star } from "lucide-react";
+import { type DocMeta, type Chapter } from "@/lib/docs";
+import { Search, X, BookOpen, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface SidebarProps {
   docs: DocMeta[];
+  chapters: Chapter[];
   locale: string;
   open: boolean;
   onClose: () => void;
 }
 
-const SIDEBAR_CATEGORIES = ["intro", "basics", "commands"];
 const SEARCH_RESULT_LIMIT = 30;
 const DEBOUNCE_MS = 150;
 
-/* @why 将移动端 sidebar 动画提取为独立组件，
- *      避免内部搜索 state 变更导致 AnimatePresence 重评估 */
 function MobileSidebar({ open, onClose, children }: {
   open: boolean;
   onClose: () => void;
@@ -47,7 +45,6 @@ function MobileSidebar({ open, onClose, children }: {
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
             style={{ willChange: "transform" }}
           >
-            {/* 移动端关闭按钮 */}
             <button
               onClick={onClose}
               className="absolute top-3 right-3 z-10 p-1.5 rounded-md
@@ -65,26 +62,19 @@ function MobileSidebar({ open, onClose, children }: {
   );
 }
 
-export function Sidebar({ docs, locale, open, onClose }: SidebarProps) {
-  const t = useTranslations();
-  const pathname = usePathname();
-
-  const isActive = (id: string) => pathname.includes(`/docs/${id}`);
-
+export function Sidebar({ docs, chapters, locale, open, onClose }: SidebarProps) {
   return (
     <>
-      {/* 桌面端固定侧边栏 */}
       <aside
         className="hidden md:flex flex-col fixed top-[var(--navbar-height)] left-0 bottom-0
           w-[var(--sidebar-width)] bg-[var(--color-sidebar-bg)] border-r border-[var(--color-border)]
           z-30"
       >
-        <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} />
+        <SidebarContent docs={docs} chapters={chapters} locale={locale} />
       </aside>
 
-      {/* 移动端抽屉 */}
       <MobileSidebar open={open} onClose={onClose}>
-        <SidebarContent docs={docs} locale={locale} isActive={isActive} t={t} />
+        <SidebarContent docs={docs} chapters={chapters} locale={locale} />
       </MobileSidebar>
     </>
   );
@@ -92,23 +82,34 @@ export function Sidebar({ docs, locale, open, onClose }: SidebarProps) {
 
 function SidebarContent({
   docs,
+  chapters,
   locale,
-  isActive,
-  t,
 }: {
   docs: DocMeta[];
+  chapters: Chapter[];
   locale: string;
-  isActive: (id: string) => boolean;
-  t: ReturnType<typeof useTranslations>;
 }) {
+  const t = useTranslations();
+  const pathname = usePathname();
+
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(() => {
+    const currentId = pathname.split("/docs/")[1]?.split("#")[0];
+    if (currentId) {
+      const chapter = chapters.find((ch) =>
+        ch.docs.some((d) => d.id === currentId),
+      );
+      if (chapter) return new Set([chapter.id]);
+    }
+    return new Set(chapters.length > 0 && chapters[0] ? [chapters[0].id] : []);
+  });
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const listRef = useRef<HTMLDivElement>(null);
 
-  /* @side-effect 防抖搜索 */
+  const isActive = (id: string) => pathname.includes(`/docs/${id}`);
+
   const handleInput = useCallback((value: string) => {
     setQuery(value);
     setSelectedIndex(-1);
@@ -118,35 +119,28 @@ function SidebarContent({
 
   const hasQuery = debouncedQuery.trim().length > 0;
 
-  /* @why 按 category 自动分组，不硬编码文档 ID */
-  const { sections, searchResults, totalHits } = useMemo(() => {
-    if (!hasQuery) {
-      const byCategory = new Map<string, DocMeta[]>();
-      for (const doc of docs) {
-        const cat = doc.category ?? "other";
-        if (!byCategory.has(cat)) byCategory.set(cat, []);
-        byCategory.get(cat)!.push(doc);
-      }
-      const sections = SIDEBAR_CATEGORIES
-        .filter((cat) => byCategory.has(cat))
-        .map((cat) => ({
-          label: t(`sidebar.category.${cat}`),
-          docs: byCategory.get(cat)!,
-        }));
-      return { sections, searchResults: [], totalHits: 0 };
-    }
+  const { searchResults, totalHits } = useMemo(() => {
+    if (!hasQuery) return { searchResults: [], totalHits: 0 };
     const q = debouncedQuery.trim().toLowerCase();
     const hits = docs.filter(
       (d) =>
         d.title.toLowerCase().includes(q) ||
         (d.description && d.description.toLowerCase().includes(q)),
     );
-    return { sections: [], searchResults: hits.slice(0, SEARCH_RESULT_LIMIT), totalHits: hits.length };
-  }, [docs, debouncedQuery, hasQuery, t]);
+    return { searchResults: hits.slice(0, SEARCH_RESULT_LIMIT), totalHits: hits.length };
+  }, [docs, debouncedQuery, hasQuery]);
 
   const hiddenCount = hasQuery ? Math.max(0, totalHits - SEARCH_RESULT_LIMIT) : 0;
 
-  /* @side-effect 键盘导航 */
+  const toggleChapter = (chapterId: string) => {
+    setExpandedChapters((prev) => {
+      const next = new Set(prev);
+      if (next.has(chapterId)) next.delete(chapterId);
+      else next.add(chapterId);
+      return next;
+    });
+  };
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "/" && document.activeElement !== inputRef.current) {
@@ -164,9 +158,7 @@ function SidebarContent({
         setSelectedIndex((i) => Math.max(i - 1, 0));
       } else if (e.key === "Enter" && selectedIndex >= 0) {
         const doc = searchResults[selectedIndex];
-        if (doc) {
-          window.location.href = `/${locale}/docs/${doc.id}`;
-        }
+        if (doc) window.location.href = `/${locale}/docs/${doc.id}`;
       } else if (e.key === "Escape") {
         setQuery("");
         setDebouncedQuery("");
@@ -177,14 +169,21 @@ function SidebarContent({
     return () => document.removeEventListener("keydown", handler);
   }, [searchResults, selectedIndex, locale]);
 
-  const renderLink = (doc: DocMeta, selected: boolean) => {
+  const getChapterStats = (chapter: Chapter) => {
+    const total = chapter.docs.length;
+    const currentId = pathname.split("/docs/")[1]?.split("#")[0];
+    const idx = chapter.docs.findIndex((d) => d.id === currentId);
+    return { total, idx: idx >= 0 ? idx + 1 : 0, hasActive: idx >= 0 };
+  };
+
+  const renderDocLink = (doc: DocMeta, selected: boolean) => {
     const active = isActive(doc.id);
     return (
       <Link
         key={doc.id}
         href={`/docs/${doc.id}`}
         locale={locale}
-        className={`block px-2.5 py-1.5 rounded-md text-sm transition-colors no-underline
+        className={`block pl-7 pr-2.5 py-1.5 rounded-md text-sm transition-colors no-underline
           ${active || selected
             ? "bg-[var(--color-sidebar-active)] text-[var(--color-accent)] font-medium"
             : "text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)]"
@@ -231,22 +230,52 @@ function SidebarContent({
         </div>
       </div>
 
-      {/* 文档列表 */}
-      <div ref={listRef} className="flex-1 overflow-y-auto p-3 pt-2">
+      {/* 内容区 */}
+      <div className="flex-1 overflow-y-auto p-3 pt-2">
         {!hasQuery ? (
-          sections.map((section) => (
-            <div key={section.label} className="mb-3">
-              <div className="flex items-center gap-1.5 px-2 py-1.5">
-                <Star className="w-3 h-3 text-[var(--color-accent)]" />
-                <span className="text-xs font-medium text-[var(--color-text-tertiary)]">
-                  {section.label}
-                </span>
-              </div>
-              <nav className="space-y-0.5">
-                {section.docs.map((doc) => renderLink(doc, false))}
-              </nav>
+          chapters.length > 0 ? (
+            <div className="space-y-0.5">
+              {chapters.map((chapter) => {
+                const isExpanded = expandedChapters.has(chapter.id);
+                const { total, idx, hasActive } = getChapterStats(chapter);
+
+                return (
+                  <div key={chapter.id}>
+                    <button
+                      onClick={() => toggleChapter(chapter.id)}
+                      className="flex items-center w-full gap-1.5 px-2 py-1.5 text-left
+                        rounded-md hover:bg-[var(--color-sidebar-hover)] transition-colors group"
+                    >
+                      <ChevronRight
+                        className={`w-3 h-3 text-[var(--color-text-tertiary)] transition-transform shrink-0
+                          ${isExpanded ? "rotate-90" : ""}`}
+                      />
+                      <BookOpen className="w-3 h-3 text-[var(--color-accent)] shrink-0" />
+                      <span className={`text-xs font-semibold truncate flex-1
+                        ${hasActive ? "text-[var(--color-accent)]" : "text-[var(--color-text-secondary)]"}`}>
+                        {chapter.id}
+                      </span>
+                      {idx > 0 && (
+                        <span className="text-[10px] text-[var(--color-text-tertiary)] shrink-0">
+                          {idx}/{total}
+                        </span>
+                      )}
+                    </button>
+
+                    {isExpanded && (
+                      <nav className="mt-0.5 space-y-0.5">
+                        {chapter.docs.map((doc) => renderDocLink(doc, false))}
+                      </nav>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          ))
+          ) : (
+            <nav className="space-y-0.5">
+              {docs.map((doc) => renderDocLink(doc, false))}
+            </nav>
+          )
         ) : searchResults.length === 0 ? (
           <p className="px-2 py-4 text-sm text-center text-[var(--color-text-tertiary)]">
             {t("sidebar.noResults")}
@@ -254,12 +283,12 @@ function SidebarContent({
         ) : (
           <>
             {totalHits > 0 && (
-              <p className="px-2 mb-1 text-xs text-[var(--color-text-tertiary)]">
+              <p className="px-2 mb-2 text-xs text-[var(--color-text-tertiary)]">
                 {t("sidebar.searchResults").replace("{count}", String(totalHits))}
               </p>
             )}
             <nav className="space-y-0.5">
-              {searchResults.map((doc, idx) => renderLink(doc, idx === selectedIndex))}
+              {searchResults.map((doc, idx) => renderDocLink(doc, idx === selectedIndex))}
             </nav>
           </>
         )}

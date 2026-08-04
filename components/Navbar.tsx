@@ -4,6 +4,7 @@ import { Settings, Menu, X, Github, Sun, Moon, Monitor } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LoginButton } from "./LoginButton";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 
 interface NavbarProps {
@@ -95,6 +96,7 @@ export function Navbar({ docTitle, sidebarOpen, onToggleSidebar, onOpenSettings 
           <Github className="w-5 h-5" />
         </a>
         <LanguageSwitcher />
+        <LoginButton />
         <button
           onClick={onOpenSettings}
           className="p-1.5 rounded-md text-[var(--color-text-secondary)]
