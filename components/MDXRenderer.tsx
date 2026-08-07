@@ -5,7 +5,6 @@ import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { CodeBlockClient } from "./CodeBlockClient";
-import { InlineCode } from "./InlineCode";
 
 const components = {
   pre: async ({ children }: { children: ReactNode }) => {
@@ -20,8 +19,10 @@ const components = {
     const code = String(props.children ?? "").trim();
     return <CodeBlock code={code} lang={lang} />;
   },
-  code: ({ children }: JSX.IntrinsicElements["code"]) => (
-    <InlineCode code={String(children)} />
+  code: ({ children, ...props }: JSX.IntrinsicElements["code"]) => (
+    <code className="text-[var(--color-accent)] bg-[var(--color-code-bg)] px-1.5 py-0.5 rounded text-sm" {...props}>
+      {children}
+    </code>
   ),
   /* @constraint 外站链接加安全属性防 tabnabbing */
   a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) => {

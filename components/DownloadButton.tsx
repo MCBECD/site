@@ -26,10 +26,10 @@ export function DownloadButton({ filename, getContent, label }: DownloadButtonPr
   return (
     <button
       onClick={handleDownload}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm
+      className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-md text-sm
         bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)]
-        hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)]
-        transition-colors focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+        hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]
+        transition-colors"
       title={label}
     >
       <Download className="w-4 h-4" />
