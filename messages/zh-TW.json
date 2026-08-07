@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "載入中...",
+    "notFound": "頁面未找到",
+    "backToList": "返回列表"
+  },
+  "nav": {
+    "settings": "設定",
+    "github": "GitHub"
+  },
+  "settings": {
+    "title": "設定",
+    "theme": "主題",
+    "themeLight": "淺色",
+    "themeDark": "深色",
+    "themeSystem": "跟隨系統",
+    "fontSize": "字體大小",
+    "fontSizeSmall": "小",
+    "fontSizeMedium": "中",
+    "fontSizeLarge": "大",
+    "language": "語言"
+  },
+  "code": {
+    "copy": "複製",
+    "copied": "已複製",
+    "copyMd": "複製 MD",
+    "copyPlain": "複製純文字",
+    "copiedMd": "已複製 MD 到剪貼簿",
+    "copiedPlain": "已複製純文字到剪貼簿",
+    "download": "下載"
+  },
+  "doc": {
+    "searchPlaceholder": "搜尋指令...",
+    "resultCount": "{count} 條結果",
+    "noResults": "沒有找到符合的指令",
+    "home": "首頁",
+    "updatedAt": "更新於 {date}"
+  }
+}

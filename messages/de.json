@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "notFound": "Seite nicht gefunden",
+    "backToList": "Zurück zur Liste"
+  },
+  "nav": {
+    "settings": "Einstellungen",
+    "github": "GitHub"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "theme": "Design",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "System",
+    "fontSize": "Schriftgröße",
+    "fontSizeSmall": "Klein",
+    "fontSizeMedium": "Mittel",
+    "fontSizeLarge": "Groß",
+    "language": "Sprache"
+  },
+  "code": {
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "copyMd": "MD kopieren",
+    "copyPlain": "Text kopieren",
+    "copiedMd": "MD in die Zwischenablage kopiert",
+    "copiedPlain": "Text in die Zwischenablage kopiert",
+    "download": "Herunterladen"
+  },
+  "doc": {
+    "searchPlaceholder": "Befehle suchen...",
+    "resultCount": "{count} Ergebnisse",
+    "noResults": "Keine passenden Befehle gefunden",
+    "home": "Startseite",
+    "updatedAt": "Aktualisiert {date}"
+  }
+}

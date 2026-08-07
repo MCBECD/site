@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import type { Locale } from "@/lib/i18n/types";
 
 export type Theme = "light" | "dark" | "system";
 export type FontSize = "small" | "medium" | "large";
@@ -15,6 +16,7 @@ export type FontSize = "small" | "medium" | "large";
 export interface Settings {
   theme: Theme;
   fontSize: FontSize;
+  locale: Locale;
 }
 
 const FONT_SIZE_MAP: Record<FontSize, number> = {
@@ -41,6 +43,7 @@ function defaultSettings(): Settings {
   return {
     theme: "system",
     fontSize: "medium",
+    locale: "zh-CN",
   };
 }
 
@@ -48,6 +51,7 @@ interface SettingsContextValue {
   settings: Settings;
   updateTheme: (theme: Theme) => void;
   updateFontSize: (fontSize: FontSize) => void;
+  updateLocale: (locale: Locale) => void;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -86,8 +90,19 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [persist],
   );
 
+  const updateLocale = useCallback(
+    (locale: Locale) => {
+      setSettings((prev) => {
+        const next = { ...prev, locale };
+        persist(next);
+        return next;
+      });
+    },
+    [persist],
+  );
+
   return (
-    <SettingsContext value={{ settings, updateTheme, updateFontSize }}>
+    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale }}>
       {children}
     </SettingsContext>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Copy, Check, ChevronDown, ChevronRight } from "lucide-react";
 import { MDXRenderer } from "@/components/MDXRenderer";
 import { DownloadButton } from "@/components/DownloadButton";
+import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export function DocDetailClient({ doc, rawContent }: Props) {
+  const { t } = useLocale();
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* 操作栏 */}
@@ -26,7 +29,7 @@ export function DocDetailClient({ doc, rawContent }: Props) {
             hover:text-[var(--color-accent)] transition-colors no-underline"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">返回列表</span>
+          <span className="hidden sm:inline">{t("common.backToList")}</span>
         </Link>
 
         <div className="flex items-center gap-1.5">
@@ -34,17 +37,16 @@ export function DocDetailClient({ doc, rawContent }: Props) {
           <DownloadButton
             filename={doc.meta.id}
             getContent={() => rawContent}
-            label="下载"
           />
         </div>
       </div>
 
       {/* 文档内容 */}
       <div className="px-4 py-6">
-        {/* 面包屑导航 */}
+        {/* 面包屑 */}
         <nav className="flex items-center gap-1 text-xs text-[var(--color-text-tertiary)] mb-4">
           <Link href="/docs" className="hover:text-[var(--color-accent)] transition-colors no-underline text-[var(--color-text-tertiary)]">
-            首页
+            {t("doc.home")}
           </Link>
           <ChevronRight className="w-3 h-3" />
           <span className="text-[var(--color-text-secondary)]">{doc.meta.title}</span>
@@ -54,7 +56,9 @@ export function DocDetailClient({ doc, rawContent }: Props) {
         {(doc.meta.author || doc.meta.updatedAt) && (
           <div className="flex items-center gap-3 text-xs text-[var(--color-text-tertiary)] mb-4">
             {doc.meta.author && <span>{doc.meta.author}</span>}
-            {doc.meta.updatedAt && <span>更新于 {doc.meta.updatedAt}</span>}
+            {doc.meta.updatedAt && (
+              <span>{t("doc.updatedAt", { date: doc.meta.updatedAt })}</span>
+            )}
           </div>
         )}
 
@@ -78,6 +82,7 @@ export function DocDetailClient({ doc, rawContent }: Props) {
 }
 
 function CopyDropdown({ rawContent }: { rawContent: string }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -116,40 +121,40 @@ function CopyDropdown({ rawContent }: { rawContent: string }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-md text-sm
+        className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-lg text-sm
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)]
           hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]
           transition-colors"
       >
         {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-        <span className="hidden sm:inline">{copied ? "已复制" : "复制"}</span>
+        <span className="hidden sm:inline">{copied ? t("code.copied") : t("code.copy")}</span>
         <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-36 py-1 rounded-md border border-[var(--color-border)]
+        <div className="absolute right-0 top-full mt-1 w-40 py-1 rounded-lg border border-[var(--color-border)]
           bg-[var(--color-bg-primary)] shadow-lg z-50">
           <button
-            onClick={() => doCopy(rawContent, "已复制 MD 到剪贴板")}
+            onClick={() => doCopy(rawContent, t("code.copiedMd"))}
             className="w-full text-left px-3 py-2 text-sm text-[var(--color-text-secondary)]
               hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
           >
-            复制 MD
+            {t("code.copyMd")}
           </button>
           <button
-            onClick={() => doCopy(plainText, "已复制纯文本到剪贴板")}
+            onClick={() => doCopy(plainText, t("code.copiedPlain"))}
             className="w-full text-left px-3 py-2 text-sm text-[var(--color-text-secondary)]
               hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
           >
-            复制纯文本
+            {t("code.copyPlain")}
           </button>
         </div>
       )}
 
-      {/* Toast 提示 */}
+      {/* Toast */}
       {toastMsg && (
-        <div className="absolute right-0 top-full mt-2 px-3 py-2 rounded-md text-xs text-white
-          bg-gray-800 dark:bg-gray-700 shadow-lg z-50 whitespace-nowrap animate-[fadeIn_0.15s_ease]">
+        <div className="absolute right-0 top-full mt-2 px-3 py-2 rounded-lg text-xs text-white
+          bg-gray-800 dark:bg-gray-600 shadow-lg z-50 whitespace-nowrap animate-[fadeIn_0.15s_ease]">
           {toastMsg}
         </div>
       )}

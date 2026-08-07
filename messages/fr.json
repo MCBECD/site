@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "notFound": "Page introuvable",
+    "backToList": "Retour à la liste"
+  },
+  "nav": {
+    "settings": "Paramètres",
+    "github": "GitHub"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "fontSize": "Taille de police",
+    "fontSizeSmall": "Petit",
+    "fontSizeMedium": "Moyen",
+    "fontSizeLarge": "Grand",
+    "language": "Langue"
+  },
+  "code": {
+    "copy": "Copier",
+    "copied": "Copié",
+    "copyMd": "Copier MD",
+    "copyPlain": "Copier le texte",
+    "copiedMd": "MD copié dans le presse-papiers",
+    "copiedPlain": "Texte copié dans le presse-papiers",
+    "download": "Télécharger"
+  },
+  "doc": {
+    "searchPlaceholder": "Rechercher des commandes...",
+    "resultCount": "{count} résultats",
+    "noResults": "Aucune commande correspondante trouvée",
+    "home": "Accueil",
+    "updatedAt": "Mis à jour {date}"
+  }
+}

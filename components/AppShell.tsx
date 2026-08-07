@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { SettingsProvider } from "@/contexts/SettingsContext";
+import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import { Navbar } from "@/components/Navbar";
 import { SettingsPanel } from "@/components/SettingsPanel";
 
@@ -23,11 +24,22 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   );
 }
 
+function SettingsAndLocale({ children }: { children: React.ReactNode }) {
+  const { settings } = useSettings();
+  return (
+    <LocaleProvider locale={settings.locale}>
+      {children}
+    </LocaleProvider>
+  );
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <SettingsProvider>
       <ThemeProvider>
-        <ShellInner>{children}</ShellInner>
+        <SettingsAndLocale>
+          <ShellInner>{children}</ShellInner>
+        </SettingsAndLocale>
       </ThemeProvider>
     </SettingsProvider>
   );

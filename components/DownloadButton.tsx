@@ -2,14 +2,16 @@
 
 import { useCallback } from "react";
 import { Download } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface DownloadButtonProps {
   filename: string;
   getContent: () => string;
-  label: string;
 }
 
-export function DownloadButton({ filename, getContent, label }: DownloadButtonProps) {
+export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
+  const { t } = useLocale();
+
   const handleDownload = useCallback(() => {
     const content = getContent();
     const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
@@ -26,14 +28,14 @@ export function DownloadButton({ filename, getContent, label }: DownloadButtonPr
   return (
     <button
       onClick={handleDownload}
-      className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-md text-sm
+      className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-lg text-sm
         bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)]
         hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]
         transition-colors"
-      title={label}
+      title={t("code.download")}
     >
       <Download className="w-4 h-4" />
-      <span>{label}</span>
+      <span className="hidden sm:inline">{t("code.download")}</span>
     </button>
   );
 }
