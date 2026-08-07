@@ -1,8 +1,8 @@
-# MCCD Site
+# MCBECD Site
 
-Professional, immersive, multi-language Minecraft Commands Documentation site.
+社区贡献的 Minecraft 基岩版命令库网站。
 
-Built with Next.js 16, TypeScript, Tailwind CSS 4, Framer Motion, and more.
+Built with Next.js 16, TypeScript, Tailwind CSS 4.
 
 ## Prerequisites
 
@@ -12,57 +12,40 @@ Built with Next.js 16, TypeScript, Tailwind CSS 4, Framer Motion, and more.
 ## Local Development
 
 ```bash
-# Clone site repo with documentation submodule
-git clone --recurse-submodules <site-repo-url>
-cd mccd-site
+git clone --recurse-submodules https://github.com/MCBECD/site.git
+cd site
 npm install
 npm run dev
 ```
 
-## Link Documentation Repository
+## Project Structure
 
-```bash
-# Add docs submodule (first time or when switching doc source)
-git submodule add https://github.com/mc-com-docs/mccd-docs.git content/docs
-git submodule update --init --recursive
+```
+site/
+  app/                  # Next.js App Router
+    docs/                # Documentation pages
+  components/           # React UI components
+  contexts/             # React contexts (settings, theme, locale)
+  lib/                  # Utility libraries
+    i18n/                # i18n type definitions
+  messages/             # i18n message files (7 languages)
+  content/docs/         # Git Submodule: documentation content
+  styles/               # Global CSS
 ```
 
-## Update Documentation
+## Supported UI Languages
 
-```bash
-# Pull latest docs from the documentation repository
-cd content/docs && git pull origin main
-```
+zh-CN, en, zh-TW, ja, ko, de, fr
 
 ## Cloudflare Pages Deployment
 
 - **Build command**: `npm run build`
-- **Output directory**: `.next`
-- **Important**: Check "Include submodules" in Build settings > Advanced
-
-## Project Structure
-
-```
-mccd-site/
-  app/                  # Next.js App Router
-    [locale]/           # Internationalized routes
-      docs/             # Documentation pages
-  components/           # React UI components
-  contexts/             # React contexts (settings, theme)
-  lib/                  # Utility libraries
-  messages/             # i18n message files (7 languages)
-  content/docs/         # Git Submodule: mccd-docs
-  i18n/                 # next-intl configuration
-```
-
-## Supported Languages
-
-### UI
-zh-CN, en, zh-TW, ja, ko, de, fr
-
-### Documentation
-zh-CN, en, zh-TW (more available by adding language directories in mccd-docs)
+- **Output directory**: `out`
 
 ## License
 
 MIT
+
+## Third-Party Attribution
+
+Minecraft is a trademark of Mojang Studios. This project is not affiliated with, endorsed by, or connected with Mojang Studios or Microsoft Corporation. The organization avatar and website icon reference visual elements from Minecraft, which is the intellectual property of Mojang Studios.
