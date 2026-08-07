@@ -1,4 +1,4 @@
-# Contributing to MCBECD Documentation
+# Contributing to MCBECD
 
 Thanks for helping improve Minecraft Bedrock Edition command documentation!
 
@@ -7,26 +7,32 @@ Thanks for helping improve Minecraft Bedrock Edition command documentation!
 ### File Structure
 
 ```
-en/        — English documentation
-zh-CN/     — Simplified Chinese (简体中文)
-zh-TW/     — Traditional Chinese (繁體中文)
+content/docs/
+  ├── command-name/index.mdx    # Document content
+  ├── command-name/meta.json     # Document metadata
+  └── ...
 ```
-
-Each language directory contains `.mdx` files — one per document.
 
 ### Adding a New Command
 
-1. Choose an `order` number (use gaps of 10: 10, 20, 30...)
-2. Set `category: commands`
-3. Create the `.mdx` file in **all three language directories**
+1. Create a folder under `content/docs/` with the command name
+2. Add `index.mdx` with the document content
+3. Add `meta.json` with title, description, author, and dates
 
 ### Document Template
 
+**meta.json:**
+```json
+{
+  "title": "/command — Description",
+  "description": "Brief description of the command"
+}
+```
+
+**index.mdx:**
 ```mdx
 ---
 title: "/command — Description"
-order: <number>
-category: commands
 description: "Brief description of the command"
 ---
 
@@ -46,37 +52,18 @@ Brief introduction.
 ### Examples
 
 **Example description:**
-\`\`\`
+```shell
 /command example
-\`\`\`
+```
 
 ### Bedrock Notes
 
 - Important Bedrock-specific information
 ```
 
-### Cross-References
-
-Use **relative links** for internal references:
-```md
-See also [other command](./other-command)
-```
-
-Do NOT use absolute paths like `/zh-CN/docs/...`.
-
-### Frontmatter Fields
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `title` | Yes | Display title shown in sidebar and navbar |
-| `order` | Yes | Sorting weight (lower = first) |
-| `category` | Yes | One of: `intro`, `basics`, `commands` |
-| `description` | Yes | SEO meta description |
-
 ### Quality Checklist
 
-- [ ] Content exists in all three languages
-- [ ] All cross-references use relative paths (`./xxx`)
+- [ ] Cross-references use relative paths (`./xxx`)
 - [ ] Bedrock-specific notes are included
-- [ ] Examples use proper `\`\`\`` code blocks
+- [ ] Examples use proper code blocks
 - [ ] Parameters are clearly described
