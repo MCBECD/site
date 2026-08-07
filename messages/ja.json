@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "notFound": "ページが見つかりません",
+    "backToList": "一覧に戻る"
+  },
+  "nav": {
+    "settings": "設定",
+    "github": "GitHub"
+  },
+  "settings": {
+    "title": "設定",
+    "theme": "テーマ",
+    "themeLight": "ライト",
+    "themeDark": "ダーク",
+    "themeSystem": "システム",
+    "fontSize": "フォントサイズ",
+    "fontSizeSmall": "小",
+    "fontSizeMedium": "中",
+    "fontSizeLarge": "大",
+    "language": "言語"
+  },
+  "code": {
+    "copy": "コピー",
+    "copied": "コピー済み",
+    "copyMd": "MD をコピー",
+    "copyPlain": "テキストをコピー",
+    "copiedMd": "MD をクリップボードにコピー",
+    "copiedPlain": "テキストをクリップボードにコピー",
+    "download": "ダウンロード"
+  },
+  "doc": {
+    "searchPlaceholder": "コマンドを検索...",
+    "resultCount": "{count} 件の結果",
+    "noResults": "一致するコマンドが見つかりません",
+    "home": "ホーム",
+    "updatedAt": "{date} 更新"
+  }
+}

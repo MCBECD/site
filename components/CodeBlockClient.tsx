@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { Copy, Check } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface CodeBlockClientProps {
   html: string;
@@ -10,6 +11,7 @@ interface CodeBlockClientProps {
 }
 
 export function CodeBlockClient({ html, code, displayLang }: CodeBlockClientProps) {
+  const { t } = useLocale();
   const [copied, setCopied] = useState(false);
   const clickTargetRef = useRef<"button" | "block">("block");
 
@@ -50,12 +52,12 @@ export function CodeBlockClient({ html, code, displayLang }: CodeBlockClientProp
           className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs
             text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
             hover:bg-[var(--color-bg-secondary)] transition-colors"
-          title="复制"
+          title={t("code.copy")}
         >
           {copied ? (
             <span className="flex items-center gap-1 text-green-500">
               <Check className="w-3.5 h-3.5" />
-              已复制
+              {t("code.copied")}
             </span>
           ) : (
             <Copy className="w-3.5 h-3.5" />

@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 
 const PAGE_SIZE = 20;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function DocsPageClient({ docs }: Props) {
+  const { t } = useLocale();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);
@@ -87,7 +89,7 @@ export default function DocsPageClient({ docs }: Props) {
           type="text"
           value={query}
           onChange={(e) => handleInput(e.target.value)}
-          placeholder="搜索命令..."
+          placeholder={t("doc.searchPlaceholder")}
           className="search-input w-full pl-10 pr-20 py-2.5 text-sm rounded-lg
             bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
             placeholder:text-[var(--color-text-tertiary)]
@@ -117,14 +119,14 @@ export default function DocsPageClient({ docs }: Props) {
       {/* 结果计数 */}
       {debouncedQuery.trim() && (
         <p className="text-xs text-[var(--color-text-tertiary)] mb-3">
-          {filteredDocs.length} 条结果
+          {t("doc.resultCount", { count: filteredDocs.length })}
         </p>
       )}
 
       {/* 命令列表 */}
       {pageDocs.length === 0 ? (
         <div className="py-16 text-center">
-          <p className="text-[var(--color-text-tertiary)]">没有找到匹配的命令</p>
+          <p className="text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
         <div className="space-y-2">

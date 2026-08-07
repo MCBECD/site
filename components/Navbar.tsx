@@ -3,6 +3,7 @@
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface NavbarProps {
   onOpenSettings: () => void;
@@ -20,14 +21,15 @@ const THEME_ICON: Record<Theme, typeof Sun> = {
   system: Monitor,
 };
 
-const THEME_LABEL: Record<Theme, string> = {
-  light: "浅色",
-  dark: "深色",
-  system: "跟随系统",
+const THEME_TITLE_KEY: Record<Theme, string> = {
+  light: "settings.themeLight",
+  dark: "settings.themeDark",
+  system: "settings.themeSystem",
 };
 
 export function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateTheme } = useSettings();
+  const { t } = useLocale();
   const cycleTheme = () => updateTheme(NEXT_THEME[settings.theme]);
 
   return (
@@ -35,7 +37,6 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
       className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-4
         bg-[var(--color-bg-primary)]/90 backdrop-blur-sm border-b border-[var(--color-border)]"
     >
-      {/* Logo */}
       <Link href="/docs" className="flex items-center gap-2 no-underline">
         <img
           src="https://avatars.githubusercontent.com/u/312049267?s=48"
@@ -50,14 +51,13 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         </span>
       </Link>
 
-      {/* 右侧 */}
       <div className="flex items-center gap-1 ml-auto">
         <button
           onClick={cycleTheme}
           className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
             text-[var(--color-text-secondary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-          title={THEME_LABEL[settings.theme]}
+          title={t(THEME_TITLE_KEY[settings.theme])}
         >
           {(() => {
             const Icon = THEME_ICON[settings.theme];
@@ -72,7 +72,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
             text-[var(--color-text-secondary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-          title="GitHub"
+          title={t("nav.github")}
         >
           <Github className="w-5 h-5" />
         </a>
@@ -82,7 +82,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
             text-[var(--color-text-secondary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-          title="设置"
+          title={t("nav.settings")}
         >
           <Settings className="w-5 h-5" />
         </button>
