@@ -6,10 +6,7 @@
 
 :root {
   --font-size-multiplier: 1;
-  --sidebar-width: 260px;
   --navbar-height: 56px;
-  --bg-overlay-opacity: 0.5;
-  --bg-blur: 0px;
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f8fafc;
   --color-bg-tertiary: #f1f5f9;
@@ -19,33 +16,30 @@
   --color-border: #e2e8f0;
   --color-accent: #6366f1;
   --color-accent-hover: #4f46e5;
-  --color-sidebar-bg: #f8fafc;
-  --color-sidebar-hover: #e2e8f0;
-  --color-sidebar-active: #eef2ff;
   --color-code-bg: #f1f5f9;
+  --color-card-bg: #ffffff;
+  --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .dark {
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-tertiary: #64748b;
-  --color-border: #334155;
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1F2937;
+  --color-bg-tertiary: #374151;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #9CA3AF;
+  --color-text-tertiary: #6B7280;
+  --color-border: #4B5563;
   --color-accent: #818cf8;
   --color-accent-hover: #6366f1;
-  --color-sidebar-bg: #1e293b;
-  --color-sidebar-hover: #334155;
-  --color-sidebar-active: #1e1b4b;
-  --color-code-bg: #1e293b;
+  --color-code-bg: #1F2937;
+  --color-card-bg: #1F2937;
+  --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 html {
   font-size: calc(16px * var(--font-size-multiplier));
 }
 
-/* @constraint body 不能设背景色，否则挡住 BackgroundLayer */
 body {
   color: var(--color-text-primary);
 }
@@ -90,4 +84,70 @@ pre.shiki {
 *:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* ----------------------------------------------------------
+ * iOS Safari 防止 <select> 触发页面自动放大
+ * ---------------------------------------------------------- */
+select {
+  font-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239CA3AF' d='M2.5 4.5L6 8l3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+/* ----------------------------------------------------------
+ * Prose 排版紧凑化 + 表格滚动容器
+ * ---------------------------------------------------------- */
+.prose {
+  --tw-prose-headings: var(--color-text-primary);
+  --tw-prose-body: var(--color-text-secondary);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-code: var(--color-accent);
+  --tw-prose-bold: var(--color-text-primary);
+  --tw-prose-counters: var(--color-text-secondary);
+  --tw-prose-bullets: var(--color-text-secondary);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-text-secondary);
+  --tw-prose-quote-borders: var(--color-accent);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
+}
+
+.prose h1 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+.prose h2 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+.prose h3 { margin-top: 1.25rem; margin-bottom: 0.5rem; }
+.prose h4 { margin-top: 1rem; margin-bottom: 0.5rem; }
+.prose p + p { margin-top: 0.75rem; }
+.prose p + pre,
+.prose p + .group { margin-top: 0.75rem; }
+.prose pre + p { margin-top: 0.75rem; }
+.prose ul, .prose ol { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+.prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
+.prose blockquote { margin-top: 0.75rem; margin-bottom: 0.75rem; }
+.prose hr { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+
+/* 表格滚动容器已在 MDXRenderer 组件中处理 (overflow-x-auto wrapper) */
+
+/* ----------------------------------------------------------
+ * 搜索框聚焦发光效果
+ * ---------------------------------------------------------- */
+.search-input:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.dark .search-input:focus {
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+}
+
+/* ----------------------------------------------------------
+ * Toast 动画
+ * ---------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
