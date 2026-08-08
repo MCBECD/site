@@ -1,0 +1,69 @@
+---
+title: "/particle — 粒子效果"
+order: 24
+category: commands
+description: "在指定位置创建粒子效果"
+---
+
+## `/particle` — 粒子效果
+
+在指定位置创建粒子效果。
+
+### 语法
+
+`/particle <效果> <位置>`
+
+### 参数
+
+- `<效果>` — 粒子效果标识符
+- `<位置>` — 坐标 `x y z`
+
+### 常用粒子效果
+
+| 效果 | 说明 |
+|------|------|
+| `minecraft:huge_explosion_emitter` | 大型爆炸爆发 |
+| `minecraft:large_explosion` | 爆炸粒子 |
+| `minecraft:heart_particle` | 飘浮爱心 |
+| `minecraft:portal_directional` | 紫色传送门粒子 |
+| `minecraft:villager_happy` | 绿色火花（交易） |
+| `minecraft:flame_particle` | 火焰粒子 |
+| `minecraft:lava_particle` | 熔岩滴落粒子 |
+| `minecraft:water_splash_particle` | 水花飞溅 |
+| `minecraft:mobflame_emitter` | 生物火焰（烈焰人） |
+| `minecraft:smoke` | 烟雾粒子 |
+| `minecraft:dragon_death_explosion_emitter` | 末影龙死亡效果 |
+| `minecraft:totem_of_undying` | 不死图腾粒子 |
+| `minecraft:enchanting_table_particle` | 附魔符文 |
+| `minecraft:rain_splash_particle` | 雨水飞溅 |
+| `minecraft:campfire_smoke_particle` | 营火烟雾 |
+
+### 示例
+
+**在自己位置创建爱心粒子：**
+```
+/particle minecraft:heart_particle ~ ~ ~
+```
+
+**在指定位置创建爆炸效果：**
+```
+/particle minecraft:huge_explosion_emitter 100 64 100
+```
+
+**在最近玩家上方创建火焰粒子：**
+```
+/particle minecraft:flame_particle ~ ~2 ~
+```
+
+**在坐标处创建绿色火花：**
+```
+/particle minecraft:villager_happy 50 70 50
+```
+
+### 基岩版注意
+
+- 粒子效果仅用于视觉，不与实体交互
+- 基岩版中的粒子 ID 使用 `minecraft:` 命名空间前缀
+- 大多数粒子产生后立即消散；发射器可持续更长时间
+- 可与命令方块或 `/execute` 配合使用实现动画效果
+- 粒子效果除非大量生成，否则不会造成卡顿

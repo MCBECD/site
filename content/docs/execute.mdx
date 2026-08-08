@@ -1,0 +1,40 @@
+---
+title: "/execute — 执行命令"
+order: 40
+category: commands
+description: "以其他实体的身份、位置执行命令，支持条件判断"
+---
+
+## `/execute` — 执行命令
+
+基岩版最强大的命令。改变命令的执行上下文。
+
+### 语法
+
+`/execute <子命令>... run <命令>`
+
+### 子命令
+
+| 子命令 | 说明 |
+|--------|------|
+| `as <实体>` | 以该实体的身份执行 |
+| `at <实体>` | 以该实体的位置执行 |
+| `positioned <坐标>` | 以指定坐标执行 |
+| `positioned as <实体>` | 以实体的位置执行 |
+| `if <条件>` | 条件为真时执行 |
+| `unless <条件>` | 条件为假时执行 |
+| `in <维度>` | 在指定维度执行 |
+
+### 示例
+
+`/execute as @a at @s run setblock ~ ~-1 ~ diamond_block`
+
+在每个玩家脚下放置钻石块。
+
+`/execute at @p run summon lightning_bolt ~ ~2 ~`
+
+在最近玩家头顶召唤闪电。
+
+`/execute as @e[type=zombie] at @s if block ~ ~-1 ~ sand run kill @s`
+
+杀死站在沙子上的僵尸。
