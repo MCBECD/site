@@ -29,14 +29,20 @@ description: "以其他实体的身份、位置执行命令，支持条件判断
 
 ### 示例
 
-`/execute as @a at @s run setblock ~ ~-1 ~ diamond_block`
+''
+ /execute as @a at @s run setblock ~ ~-1 ~ diamond_block
+```
 
 在每个玩家脚下放置钻石块。
 
-`/execute at @p run summon lightning_bolt ~ ~2 ~`
+''
+ /execute at @p run summon lightning_bolt ~ ~2 ~
+```
 
 在最近玩家头顶召唤闪电。
 
-`/execute as @e[type=zombie] at @s if block ~ ~-1 ~ sand run kill @s`
+''
+ /execute as @e[type=zombie] at @s if block ~ ~-1 ~ sand run kill @s
+```
 
 杀死站在沙子上的僵尸。
