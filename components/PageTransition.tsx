@@ -3,6 +3,11 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+/* Register G2 continuous-curvature paint worklet */
+if (typeof window !== "undefined" && "paintWorklet" in CSS) {
+  (CSS as unknown as { paintWorklet: { addModule: (url: string) => void } }).paintWorklet.addModule("/smooth-corners.js");
+}
+
 /**
  * Cross-page transition — pure CSS, opacity only.
  *
