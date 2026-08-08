@@ -49,22 +49,43 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   } = useSettings();
   const { t } = useLocale();
   const [tab, setTab] = useState<Tab>("general");
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  if (!open) return null;
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    closeTimer.current = setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 180);
+  }, [onClose]);
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  if (!open && !closing) return null;
+
+  const panelAnim = closing
+    ? "settings-panel-out"
+    : "settings-panel-in";
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50" onClick={onClose} aria-hidden="true" />
-      <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-        w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
-        bg-[var(--color-bg-primary)] border border-[var(--color-border)]
-        animate-[fadeIn_0.22s_var(--ease-out)]">
+      <div
+        className={`fixed inset-0 z-50 backdrop-blur-[2px] ${closing ? "overlay-out" : "overlay-in"}`}
+        onClick={handleClose}
+        aria-hidden="true"
+      />
+
+      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+        <div className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
+          bg-[var(--color-bg-primary)] border border-[var(--color-border)] pointer-events-auto
+          ${panelAnim}`}>
 
         {/* header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
           <h2 className="text-[13px] font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="w-8 h-8 flex items-center justify-center -mr-1 rounded-[var(--radius)]
               text-[var(--color-text-tertiary)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
@@ -85,7 +106,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"}`}
             >
               {t(key === "general" ? "settings.tabGeneral" : "settings.tabPlugins")}
-              {tab === key && <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full" />}
+              {tab === key && <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full tab-indicator" key={`indicator-${key}`} />}
             </button>
           ))}
         </div>
@@ -141,6 +162,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
           )}
         </div>
       </div>
+      </div>
     </>
   );
 }
@@ -184,7 +206,7 @@ function PluginCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`rounded-lg border transition-colors ${
+    <div className={`rounded-lg border transition-all duration-200 ${
       enabled
         ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
         : "border-[var(--color-border)] bg-[var(--color-bg-secondary)] opacity-60"
@@ -206,7 +228,7 @@ function PluginCard({
 
       {/* expanded settings */}
       {enabled && (
-        <div className="px-4 pb-4 pt-1 border-t border-[var(--color-border)]">
+        <div className="px-4 pb-4 pt-1 border-t border-[var(--color-border)] collapse-in" key="plugin-body">
           <div className="pt-3">{children}</div>
         </div>
       )}
@@ -467,7 +489,7 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
         <div
           ref={listRef}
           className="fixed py-1 rounded-[var(--radius)] border border-[var(--color-border)]
-            bg-[var(--color-bg-primary)] shadow-lg z-[60] overflow-y-auto"
+            bg-[var(--color-bg-primary)] shadow-lg z-[60] overflow-y-auto dropdown-in"
           style={{
             top: flipUp ? undefined : pos.top + pos.height + 6,
             bottom: flipUp ? window.innerHeight - pos.top + 6 : undefined,
