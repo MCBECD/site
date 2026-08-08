@@ -36,7 +36,8 @@
     "bgUpload": "上傳圖片",
     "bgClear": "清除背景",
     "bgOverlayOpacity": "遮罩透明度",
-    "bgOverlayBlur": "模糊度"
+    "bgOverlayBlur": "模糊度",
+    "bgParallax": "視差效果"
   },
   "code": {
     "copy": "複製",

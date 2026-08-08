@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocaleProvider } from "@/contexts/LocaleContext";
@@ -20,6 +20,41 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
   }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
 
+  /* ---------- Parallax ---------- */
+  const bgRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef(0);
+  const tickingRef = useRef(false);
+
+  useEffect(() => {
+    if (!bgEnabled || !settings.bgParallax) return;
+
+    const el = bgRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
+      rafRef.current = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        el.style.transform = `translate3d(0, ${y * 0.3}px, 0)`;
+        tickingRef.current = false;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [bgEnabled, settings.bgParallax]);
+
+  /* Reset transform when parallax is off */
+  useEffect(() => {
+    if (bgRef.current && (!bgEnabled || !settings.bgParallax)) {
+      bgRef.current.style.transform = "";
+    }
+  }, [bgEnabled, settings.bgParallax]);
+
   return (
     <>
       {/* base background */}
@@ -28,7 +63,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       {bgEnabled && (
         <>
           <div
-            className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat"
+            ref={bgRef}
+            className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat will-change-transform"
             style={{ backgroundImage: `url(${settings.bgImage})` }}
             aria-hidden="true"
           />

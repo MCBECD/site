@@ -51,6 +51,7 @@ export interface Messages {
     bgClear: string;
     bgOverlayOpacity: string;
     bgOverlayBlur: string;
+    bgParallax: string;
   };
   code: {
     copy: string;

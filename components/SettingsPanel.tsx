@@ -145,6 +145,29 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 }
 
 /* ============================================================
+ * Toggle Switch — shared accessible switch
+ * ============================================================ */
+
+function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 border ${
+        checked
+          ? "bg-[var(--color-accent)] border-[var(--color-accent)]"
+          : "bg-[var(--color-bg-tertiary)] border-[var(--color-border)]"
+      }`}
+    >
+      <span className={`block absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform ${
+        checked ? "translate-x-5" : "translate-x-0"
+      }`} />
+    </button>
+  );
+}
+
+/* ============================================================
  * Plugin Card — toggle header + collapsible settings body
  * ============================================================ */
 
@@ -176,18 +199,7 @@ function PluginCard({
           <div className="text-[11px] text-[var(--color-text-tertiary)] mt-0.5 leading-snug">{desc}</div>
         </div>
         {/* toggle switch */}
-        <button
-          role="switch"
-          aria-checked={enabled}
-          onClick={() => onToggle(!enabled)}
-          className={`relative w-10 h-[22px] rounded-full transition-colors flex-shrink-0 ${
-            enabled ? "bg-[var(--color-accent)]" : "bg-[var(--color-bg-tertiary)]"
-          }`}
-        >
-          <span className={`absolute top-[3px] left-[3px] w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-            enabled ? "translate-x-[18px]" : "translate-x-0"
-          }`} />
-        </button>
+        <ToggleSwitch checked={enabled} onChange={onToggle} />
       </div>
 
       {/* expanded settings */}
@@ -268,7 +280,7 @@ function ColorThemePluginCard() {
 
 function BackgroundImagePluginCard() {
   const { t } = useLocale();
-  const { settings, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, isPluginEnabled, togglePlugin } = useSettings();
+  const { settings, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, updateBgParallax, isPluginEnabled, togglePlugin } = useSettings();
   const id = "background-image";
   const enabled = isPluginEnabled(id);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -346,6 +358,12 @@ function BackgroundImagePluginCard() {
 
         {/* overlay blur */}
         <SliderRow label={t("settings.bgOverlayBlur")} value={settings.bgOverlayBlur} onChange={updateBgOverlayBlur} max={20} />
+
+        {/* parallax toggle */}  
+        <div className="flex items-center justify-between">
+          <span className="text-[12px] text-[var(--color-text-secondary)]">{t("settings.bgParallax")}</span>
+          <ToggleSwitch checked={settings.bgParallax} onChange={() => updateBgParallax(!settings.bgParallax)} />
+        </div>
       </div>
     </PluginCard>
   );

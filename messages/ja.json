@@ -36,7 +36,8 @@
     "bgUpload": "画像をアップロード",
     "bgClear": "背景をクリア",
     "bgOverlayOpacity": "オーバーレイ",
-    "bgOverlayBlur": "ぼかし"
+    "bgOverlayBlur": "ぼかし",
+    "bgParallax": "パララックス"
   },
   "code": {
     "copy": "コピー",

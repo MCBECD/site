@@ -36,7 +36,8 @@
     "bgUpload": "Télécharger une image",
     "bgClear": "Supprimer l'arrière-plan",
     "bgOverlayOpacity": "Superposition",
-    "bgOverlayBlur": "Flou"
+    "bgOverlayBlur": "Flou",
+    "bgParallax": "Parallax"
   },
   "code": {
     "copy": "Copier",
