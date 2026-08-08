@@ -1,34 +1,59 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ----------------------------------------------------------
- * Design Tokens
+ * Design Tokens — Modern 2026
  * ---------------------------------------------------------- */
 :root {
   --font-size-multiplier: 1;
-  --navbar-height: 52px;
-  --radius: 8px;
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8fafc;
-  --color-bg-tertiary: #f1f5f9;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #94a3b8;
-  --color-border: #e2e8f0;
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-accent-muted: rgba(59, 130, 246, 0.08);
-  --color-code-bg: #f8fafc;
+  --navbar-height: 56px;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-lg: 14px;
+
+  /* Surface */
+  --color-bg-primary: #f9fafb;
+  --color-bg-secondary: #f3f4f6;
+  --color-bg-tertiary: #e5e7eb;
+  --color-bg-elevated: #ffffff;
+
+  /* Text */
+  --color-text-primary: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-tertiary: #9ca3af;
+
+  /* Border */
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+
+  /* Accent — Indigo-based modern blue */
+  --color-accent: #4f46e5;
+  --color-accent-hover: #4338ca;
+  --color-accent-muted: rgba(79, 70, 229, 0.08);
+  --color-accent-subtle: rgba(79, 70, 229, 0.04);
+
+  /* Code */
+  --color-code-bg: #f3f4f6;
+
+  /* Card */
   --color-card-bg: #ffffff;
-  --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --color-card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
-  --color-navbar-bg: rgba(255, 255, 255, 0.82);
-  --color-kbd-bg: #f1f5f9;
-  --color-kbd-border: #e2e8f0;
-  --color-kbd-text: #94a3b8;
-  --color-toast-bg: #1e293b;
-  /* Motion tokens */
+  --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+
+  /* Navbar */
+  --color-navbar-bg: rgba(249, 250, 251, 0.78);
+
+  /* Kbd */
+  --color-kbd-bg: #e5e7eb;
+  --color-kbd-border: #d1d5db;
+  --color-kbd-text: #9ca3af;
+
+  /* Toast */
+  --color-toast-bg: #111827;
+
+  /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -38,25 +63,28 @@
 }
 
 .dark {
-  --color-bg-primary: #0f1117;
-  --color-bg-secondary: #1a1d27;
-  --color-bg-tertiary: #252833;
-  --color-text-primary: #e8eaed;
-  --color-text-secondary: #9aa0a6;
-  --color-text-tertiary: #5f6368;
-  --color-border: #2d3039;
-  --color-accent: #60a5fa;
-  --color-accent-hover: #93bbfd;
-  --color-accent-muted: rgba(96, 165, 250, 0.08);
-  --color-code-bg: #1a1d27;
-  --color-card-bg: #1a1d27;
-  --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --color-navbar-bg: rgba(15, 17, 23, 0.82);
-  --color-kbd-bg: #252833;
-  --color-kbd-border: #2d3039;
-  --color-kbd-text: #5f6368;
-  --color-toast-bg: #3c4049;
+  --color-bg-primary: #0b0d14;
+  --color-bg-secondary: #131620;
+  --color-bg-tertiary: #1c1f2b;
+  --color-bg-elevated: #181b25;
+  --color-text-primary: #e8eaf0;
+  --color-text-secondary: #9da1ae;
+  --color-text-tertiary: #5c6072;
+  --color-border: #232733;
+  --color-border-light: #1c1f2b;
+  --color-accent: #818cf8;
+  --color-accent-hover: #a5b4fc;
+  --color-accent-muted: rgba(129, 140, 248, 0.1);
+  --color-accent-subtle: rgba(129, 140, 248, 0.04);
+  --color-code-bg: #131620;
+  --color-card-bg: #181b25;
+  --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
+  --color-card-hover-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --color-navbar-bg: rgba(11, 13, 20, 0.78);
+  --color-kbd-bg: #1c1f2b;
+  --color-kbd-border: #232733;
+  --color-kbd-text: #5c6072;
+  --color-toast-bg: #232637;
 }
 
 /* ----------------------------------------------------------
@@ -202,7 +230,7 @@
 
 html {
   font-size: calc(16px * var(--font-size-multiplier));
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -210,6 +238,11 @@ html {
 
 body {
   color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+}
+
+code, pre, kbd {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
 }
 
 /* ----------------------------------------------------------
@@ -265,17 +298,17 @@ pre.shiki {
   --tw-prose-td-borders: var(--color-border);
 }
 
-.prose h2 { margin-top: 2rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.01em; font-size: 1.25em; }
+.prose h2 { margin-top: 2.25rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.015em; font-size: 1.25em; }
 .prose h3 { margin-top: 1.75rem; margin-bottom: 0.5rem; font-weight: 600; font-size: 1.1em; }
-.prose h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1em; }
-.prose p + p { margin-top: 0.875rem; }
+.prose h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1em; font-weight: 600; }
+.prose p + p { margin-top: 1rem; }
 .prose p + pre,
-.prose p + .group { margin-top: 1rem; }
-.prose pre + p { margin-top: 1rem; }
+.prose p + .group { margin-top: 1.25rem; }
+.prose pre + p { margin-top: 1.25rem; }
 .prose ul, .prose ol { margin-top: 0.5rem; margin-bottom: 0.5rem; }
 .prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
-.prose blockquote { margin-top: 0.75rem; margin-bottom: 0.75rem; }
-.prose hr { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+.prose blockquote { margin-top: 1rem; margin-bottom: 1rem; }
+.prose hr { margin-top: 2rem; margin-bottom: 2rem; }
 
 /* ----------------------------------------------------------
  * GitHub Alerts (NOTE / TIP / IMPORTANT / WARNING / CAUTION)
@@ -462,7 +495,7 @@ pre.shiki {
 .search-input:focus {
   border-color: var(--color-accent) !important;
   box-shadow: 0 0 0 3px var(--color-accent-muted);
-  background-color: var(--color-bg-primary) !important;
+  background-color: var(--color-bg-elevated) !important;
 }
 
 .search-input::placeholder {
@@ -503,18 +536,10 @@ pre.shiki {
  * Doc detail glass card
  * ---------------------------------------------------------- */
 .doc-glass-card {
-  border-radius: calc(var(--radius) + 4px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.03);
-}
-
-.dark .doc-glass-card {
-  background: rgba(15, 17, 23, 0.6);
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--color-card-shadow);
 }
 
 /* ---------------------------------------------------------- * UI animations (overlay, panel, dropdown, collapse)
