@@ -11,6 +11,7 @@ const mcfunctionSyntax = {
   name: "mcfunction",
   scopeName: "source.mcfunction",
   fileTypes: ["mcfunction"],
+  repository: {},
   patterns: [
     {
       name: "keyword.control",
