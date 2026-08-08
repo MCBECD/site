@@ -22,21 +22,29 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
   /* ---------- bg image ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
-  const [bg, setBg] = useState<{ s: number; ox: number; oy: number; ex: number; ey: number } | null>(null);
+  const [bg, setBg] = useState<{ s: number; cx: number; cy: number; ex: number; ey: number } | null>(null);
 
   useEffect(() => {
     if (!bgEnabled) { setBg(null); return; }
-    const img = new Image();
-    img.onload = () => {
-      const vpW = window.innerWidth, vpH = window.innerHeight;
-      const s = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight) * 1.8;
-      const vw = img.naturalWidth * s, vh = img.naturalHeight * s;
-      setBg({ s, ox: (vpW - vw) / 2, oy: (vpH - vh) / 2, ex: (vw - vpW) / 2, ey: (vh - vpH) / 2 });
+    const calc = () => {
+      const img = new Image();
+      img.onload = () => {
+        const vpW = innerWidth, vpH = innerHeight;
+        const nw = img.naturalWidth, nh = img.naturalHeight;
+        const s = Math.max(vpW / nw, vpH / nh) * 1.8;
+        setBg({
+          s,
+          cx: (vpW - nw) / 2,   // center translate (before scale)
+          cy: (vpH - nh) / 2,
+          ex: (nw * s - vpW) / 2, // extra px each side
+          ey: (nh * s - vpH) / 2,
+        });
+      };
+      img.src = settings.bgImage;
     };
-    img.src = settings.bgImage;
-    const onResize = () => { img.src = settings.bgImage; };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    calc();
+    addEventListener("resize", calc);
+    return () => removeEventListener("resize", calc);
   }, [bgEnabled, settings.bgImage]);
 
   /* ---------- parallax ---------- */
@@ -44,11 +52,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const el = imgRef.current;
     if (!el || !bg) return;
 
-    // parallax off → just center
-    if (!settings.bgParallax) {
-      el.style.transform = `translate(${bg.ox}px,${bg.oy}px) scale(${bg.s})`;
-      return;
-    }
+    const centered = `translate(${bg.cx}px,${bg.cy}px) scale(${bg.s})`;
+    if (!settings.bgParallax) { el.style.transform = centered; return; }
 
     let mx = 0.5, my = 0.5, sx = 0.5, sy = 0.5;
     const ptr = (x: number, y: number) => { mx = x / innerWidth; my = y / innerHeight; };
@@ -61,7 +66,9 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const tick = () => {
       sx += (mx - sx) * 0.08;
       sy += (my - sy) * 0.08;
-      el.style.transform = `translate(${bg.ox + (sx - 0.5) * 2 * bg.ex}px,${bg.oy + (sy - 0.5) * 2 * bg.ey}px) scale(${bg.s})`;
+      const dx = (sx - 0.5) * bg.ex;
+      const dy = (sy - 0.5) * bg.ey;
+      el.style.transform = `translate(${bg.cx + dx}px,${bg.cy + dy}px) scale(${bg.s})`;
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -86,8 +93,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             draggable={false}
             className="fixed top-0 left-0 -z-20 pointer-events-none select-none"
             style={{
-              transformOrigin: "0 0",
-              transform: `translate(${bg.ox}px,${bg.oy}px) scale(${bg.s})`,
+              transformOrigin: "center",
+              transform: `translate(${bg.cx}px,${bg.cy}px) scale(${bg.s})`,
               willChange: settings.bgParallax ? "transform" : undefined,
             }}
           />
