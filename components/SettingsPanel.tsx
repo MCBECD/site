@@ -58,7 +58,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
       <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
         w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
         bg-[var(--color-bg-primary)] border border-[var(--color-border)]
-        animate-[fadeIn_0.15s_var(--ease-out)]">
+        animate-[fadeIn_0.22s_var(--ease-out)]">
 
         {/* header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
