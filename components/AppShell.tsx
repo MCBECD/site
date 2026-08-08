@@ -20,16 +20,58 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
   }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
 
-  /* ---------- Parallax (pointer-follow with zoom + easing) ---------- */
+  /* ---------- Background sizing (cover + 25% extra, aspect-ratio preserved) ---------- */
   const bgRef = useRef<HTMLDivElement>(null);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });       // normalised 0‒1
-  const currentRef = useRef({ x: 0.5, y: 0.5 });     // smoothed
+  const sizeRef = useRef({ baseX: 0, baseY: 0, maxX: 0, maxY: 0 });
+
+  useEffect(() => {
+    if (!bgEnabled) return;
+    const el = bgRef.current;
+    if (!el) return;
+
+    const calc = () => {
+      const img = new Image();
+      img.onload = () => {
+        const vpW = window.innerWidth;
+        const vpH = window.innerHeight;
+        // Cover scale (fill viewport, maintain aspect ratio)
+        const coverScale = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight);
+        // 25% extra for parallax room
+        const scale = coverScale * 1.25;
+        const bgW = img.naturalWidth * scale;
+        const bgH = img.naturalHeight * scale;
+
+        el.style.backgroundSize = `${bgW}px ${bgH}px`;
+
+        // Centered position (negative because image is larger than viewport)
+        const baseX = (vpW - bgW) / 2;
+        const baseY = (vpH - bgH) / 2;
+        sizeRef.current = {
+          baseX, baseY,
+          maxX: Math.abs(baseX) * 0.9,
+          maxY: Math.abs(baseY) * 0.9,
+        };
+        // Reset to center when not parallaxing
+        if (!settings.bgParallax) {
+          el.style.backgroundPosition = `${baseX}px ${baseY}px`;
+        }
+      };
+      img.src = settings.bgImage;
+    };
+
+    calc();
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
+  }, [bgEnabled, settings.bgImage, settings.bgParallax]);
+
+  /* ---------- Parallax (pointer-follow via background-position + easing) ---------- */
+  const mouseRef = useRef({ x: 0.5, y: 0.5 });
+  const currentRef = useRef({ x: 0.5, y: 0.5 });
   const rafRef = useRef(0);
 
   useEffect(() => {
     if (!bgEnabled || !settings.bgParallax) return;
 
-    // Normalise pointer position to 0‒1 relative to viewport
     const updateTarget = (clientX: number, clientY: number) => {
       mouseRef.current = {
         x: clientX / window.innerWidth,
@@ -46,11 +88,6 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     window.addEventListener("mousemove", onMouse, { passive: true });
     window.addEventListener("touchmove", onTouch, { passive: true });
 
-    // Lerp animation loop
-    // Zoom is 125%, so extra room on each side = (1.25 - 1) / 2 = 12.5% of viewport
-    // Multiply by 0.9 safety margin so edges never show
-    const ZOOM = 1.25;
-    const MARGIN = 0.9;
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const tick = () => {
@@ -61,11 +98,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
       const el = bgRef.current;
       if (el) {
-        const extraX = (ZOOM - 1) / 2 * window.innerWidth * MARGIN;
-        const extraY = (ZOOM - 1) / 2 * window.innerHeight * MARGIN;
-        const dx = (cur.x - 0.5) * 2 * extraX;
-        const dy = (cur.y - 0.5) * 2 * extraY;
-        el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+        const { baseX, baseY, maxX, maxY } = sizeRef.current;
+        const dx = (cur.x - 0.5) * 2 * maxX;
+        const dy = (cur.y - 0.5) * 2 * maxY;
+        el.style.backgroundPosition = `${baseX + dx}px ${baseY + dy}px`;
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -78,10 +114,12 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     };
   }, [bgEnabled, settings.bgParallax]);
 
-  /* Reset transform when parallax is off */
+  /* Reset background-position when parallax is off */
   useEffect(() => {
-    if (bgRef.current && (!bgEnabled || !settings.bgParallax)) {
-      bgRef.current.style.transform = "";
+    const el = bgRef.current;
+    if (el && bgEnabled && !settings.bgParallax) {
+      const { baseX, baseY } = sizeRef.current;
+      el.style.backgroundPosition = `${baseX}px ${baseY}px`;
     }
   }, [bgEnabled, settings.bgParallax]);
 
@@ -94,8 +132,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         <>
           <div
             ref={bgRef}
-            className="fixed inset-0 -z-20 bg-no-repeat bg-center will-change-transform overflow-hidden"
-            style={{ backgroundImage: `url(${settings.bgImage})`, backgroundSize: '125% 125%' }}
+            className="fixed inset-0 -z-20 bg-no-repeat"
+            style={{ backgroundImage: `url(${settings.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             aria-hidden="true"
           />
           <div
