@@ -22,18 +22,16 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
   /* ---------- bg image ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
-  const [bg, setBg] = useState<{ s: number; cx: number; cy: number } | null>(null);
+  const [bg, setBg] = useState<{ s: number; tx: number; ty: number } | null>(null);
 
   useEffect(() => {
     if (!bgEnabled) { setBg(null); return; }
     const calc = () => {
-      const img = new Image();
-      img.onload = () => {
-        const vpW = innerWidth, vpH = innerHeight;
-        const s = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight) * 1.8;
-        setBg({ s, cx: (vpW - img.naturalWidth) / 2, cy: (vpH - img.naturalHeight) / 2 });
-      };
-      img.src = settings.bgImage;
+      const vpW = innerWidth, vpH = innerHeight;
+      const s = 1.08;
+      const tx = -vpW * (s - 1) / 2;
+      const ty = -vpH * (s - 1) / 2;
+      setBg({ s, tx, ty });
     };
     calc();
     addEventListener("resize", calc);
@@ -45,7 +43,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const el = imgRef.current;
     if (!el || !bg) return;
 
-    const centered = `translate(${bg.cx}px,${bg.cy}px) scale(${bg.s})`;
+    const centered = `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`;
     if (!settings.bgParallax) { el.style.transform = centered; return; }
 
     let mx = innerWidth / 2, my = innerHeight / 2;
@@ -63,7 +61,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       sy += (my - sy) * 0.08;
       const dx = (sx - innerWidth / 2) / F;
       const dy = (sy - innerHeight / 2) / F;
-      el.style.transform = `translate(${bg.cx + dx}px,${bg.cy + dy}px) scale(${bg.s})`;
+      el.style.transform = `translate(${bg.tx + dx}px,${bg.ty + dy}px) scale(${bg.s})`;
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -86,10 +84,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             alt=""
             aria-hidden="true"
             draggable={false}
-            className="fixed top-0 left-0 -z-20 pointer-events-none select-none"
+            className="fixed inset-0 w-full h-full -z-20 pointer-events-none select-none object-cover"
             style={{
-              transformOrigin: "center",
-              transform: `translate(${bg.cx}px,${bg.cy}px) scale(${bg.s})`,
+              transformOrigin: "0 0",
+              transform: `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`,
               willChange: settings.bgParallax ? "transform" : undefined,
             }}
           />
