@@ -1,54 +1,43 @@
 # MCBECD Docs
 
-Minecraft Bedrock Edition Commands Documentation — reference content in MDX format.
+Minecraft Bedrock Edition Commands Documentation — MDX 格式命令参考文档。
 
-## Structure
+## 结构
+
+所有文档以扁平 `.mdx` 文件存放在 `content/docs/` 目录下，支持子目录形式（如 `give-diamonds/`）。
 
 ```
-en/        English (26 documents)
-zh-CN/     Simplified Chinese / 简体中文 (26 documents)
-zh-TW/     Traditional Chinese / 繁體中文 (26 documents)
+content/docs/
+  mccd-intro.mdx     # 介绍
+  getting-started.mdx  # 快速开始
+  command-syntax.mdx   # 语法基础
+  commands-reference.mdx # 命令目录
+  give.mdx             # 单个命令文档
+  give-diamonds/       # 子目录文档
+    index.mdx
+    meta.json
+  ...
 ```
 
-Each language directory contains `.mdx` files organized by category.
-
-## Document Categories
-
-| Category | Key | Description |
-|----------|-----|-------------|
-| Introduction | `intro` | Project overview |
-| Basics | `basics` | Getting started, syntax, command index |
-| Commands | `commands` | Per-command reference (22 commands) |
-
-## Commands Documented
-
-`/ability` `/alwaysday` `/camera` `/clear` `/clone` `/damage` `/daylock` `/deop` `/difficulty` `/effect` `/enchant` `/event` `/execute` `/fill` `/gamemode` `/gamerule` `/give` `/kick` `/kill` `/list` `/locate` `/me` `/msg` `/op` `/particle` `/playsound` `/replaceitem` `/say` `/scoreboard` `/setblock` `/setworldspawn` `/spawnpoint` `/spreadplayers` `/stopsound` `/structure` `/summon` `/tag` `/teleport` `/tell` `/tellraw` `/testfor` `/testforblock` `/testforblocks` `/time` `/title` `/toggledownfall` `/tp` `/weather` `/worldbuilder` `/xp`
-
-## Adding a New Document
-
-1. Pick an `order` number (use 10-unit gaps)
-2. Set `category`: `intro`, `basics`, or `commands`
-3. Create the `.mdx` file in **all three** language directories
-4. Use **relative links** for internal references: `[text](./target)`
-
-### Frontmatter
+## Frontmatter
 
 ```yaml
 ---
-title: "/command — Description"
-order: 40
+title: "/command — 描述"
+order: 10
 category: commands
-description: "Brief description for SEO"
+description: "简短描述"
+author: "作者名"
+updatedAt: "2026-08-08"
 ---
 ```
 
-## Contributing
+## 添加新文档
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide.
-
-## Usage
-
-This repository is consumed by [mcbecd-site](https://github.com/mcbecd/mcbecd-site) as a Git Submodule.
+1. 创建 `.mdx` 文件
+2. 设置 `order`（使用 10 的间隔，如 10、20、30）
+3. 设置 `category`: `intro`、`basics` 或 `commands`
+4. 使用**相对链接**引用其他文档: `[text](./target)`
 
 ## License
 
