@@ -1,6 +1,7 @@
 "use client";
 
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { SquircleButton } from "./SquircleButton";
 
 interface Props {
   children: ReactNode;
@@ -10,6 +11,18 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
+}
+
+function RetryBtn({ onRetry }: { onRetry: () => void }) {
+  return (
+    <SquircleButton
+      cornerRadius={8}
+      onClick={onRetry}
+      className="mt-4 px-4 py-2 text-xs bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+    >
+      重试
+    </SquircleButton>
+  );
 }
 
 /**
@@ -46,12 +59,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="text-xs text-[var(--color-text-tertiary)] max-w-sm">
             页面遇到了一个意外错误，请尝试刷新页面。
           </p>
-          <button
-            onClick={() => this.setState({ hasError: false, error: null })}
-            className="mt-4 px-4 py-2 text-xs rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
-          >
-            重试
-          </button>
+          <RetryBtn onRetry={() => this.setState({ hasError: false, error: null })} />
         </div>
       );
     }

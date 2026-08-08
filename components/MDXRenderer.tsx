@@ -13,6 +13,7 @@ import { CmdConditionalImpulse } from "./mdx/CmdConditionalImpulse";
 import { CmdConditionalRepeat } from "./mdx/CmdConditionalRepeat";
 import { CmdConditionalChain } from "./mdx/CmdConditionalChain";
 import { CmdChat } from "./mdx/CmdChat";
+import { SquircleDiv } from "./SquircleDiv";
 
 const mcfunctionSyntax = {
   name: "mcfunction",
@@ -53,7 +54,11 @@ const components = {
   pre: async ({ children }: { children: ReactNode }) => {
     const codeEl = extractCodeChild(children);
     if (!codeEl) {
-      return <pre className="overflow-x-auto rounded-lg p-4 bg-[var(--color-code-bg)] text-sm">{children}</pre>;
+      return (
+        <SquircleDiv cornerRadius={10} className="my-4 overflow-x-auto bg-[var(--color-code-bg)] text-sm">
+          <pre className="p-4">{children}</pre>
+        </SquircleDiv>
+      );
     }
     const props = codeEl.props as Record<string, unknown>;
     const className = (props.className as string) ?? "";
@@ -114,12 +119,12 @@ const components = {
   },
   /* Details/summary for collapsible sections */
   details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (
-    <details className="gh-details my-4 rounded-lg border border-[var(--color-border)]" {...props}>
-      {children}
-    </details>
+    <SquircleDiv cornerRadius={10} className="gh-details my-4 border border-[var(--color-border)]">
+      <details {...props}>{children}</details>
+    </SquircleDiv>
   ),
   summary: ({ children, ...props }: JSX.IntrinsicElements["summary"]) => (
-    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-lg select-none hover:bg-[var(--color-bg-secondary)] transition-colors" {...props}>
+    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] select-none hover:bg-[var(--color-bg-secondary)] transition-colors" {...props}>
       {children}
     </summary>
   ),

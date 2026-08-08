@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { Download } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
+import { SquircleButton } from "@/components/SquircleButton";
 
 interface DownloadButtonProps {
   filename: string;
@@ -26,9 +27,10 @@ export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
   }, [filename, getContent]);
 
   return (
-    <button
+    <SquircleButton
+      cornerRadius={8}
       onClick={handleDownload}
-      className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-[var(--radius)] text-[13px]
+      className="inline-flex items-center gap-1.5 h-8 px-2.5 text-[13px]
         text-[var(--color-text-secondary)]
         hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
         transition-colors"
@@ -36,6 +38,6 @@ export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
     >
       <Download className="w-3.5 h-3.5" />
       <span className="hidden sm:inline">{t("code.download")}</span>
-    </button>
+    </SquircleButton>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode, type CSSProperties } from "react";
+import { useEffect, useRef, useCallback, forwardRef, type ReactNode, type CSSProperties } from "react";
 
 interface SquircleProps {
   children: ReactNode;
@@ -11,30 +11,36 @@ interface SquircleProps {
   borderColor?: string;
   borderOpacity?: string;
   shadow?: string;
-  /** If true, renders as inline-flex instead of block */
-  inline?: boolean;
   onClick?: () => void;
 }
 
 let idCounter = 0;
 
-export function Squircle({
-  children,
-  cornerRadius = 10,
-  cornerSmoothing = 1,
-  className = "",
-  style,
-  borderColor,
-  borderOpacity = "1",
-  shadow,
-  inline = false,
-  onClick,
-}: SquircleProps) {
-  const ref = useRef<HTMLDivElement>(null);
+export const Squircle = forwardRef<HTMLDivElement, SquircleProps>(function Squircle(
+  {
+    children,
+    cornerRadius = 10,
+    cornerSmoothing = 1,
+    className = "",
+    style,
+    borderColor,
+    borderOpacity = "1",
+    shadow,
+    onClick,
+  },
+  forwardedRef,
+) {
+  const internalRef = useRef<HTMLDivElement>(null);
   const uid = useRef(`sqc-${++idCounter}`);
 
+  const setRef = useCallback((node: HTMLDivElement | null) => {
+    (internalRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    if (typeof forwardedRef === "function") forwardedRef(node);
+    else if (forwardedRef) forwardedRef.current = node;
+  }, [forwardedRef]);
+
   useEffect(() => {
-    const el = ref.current;
+    const el = internalRef.current;
     if (!el) return;
 
     let raf = 0;
@@ -52,12 +58,10 @@ export function Squircle({
       const bp = document.getElementById(`${uid.current}-bp`);
       if (bp) bp.setAttribute("d", d);
 
-      // Update border SVG viewBox to match element dimensions
       const borderSvg = bp?.closest("svg");
       if (borderSvg) borderSvg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     };
 
-    // Create defs SVG in body (hidden)
     const defsSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     defsSvg.id = `${uid.current}-defs`;
     defsSvg.setAttribute("width", "0");
@@ -90,12 +94,10 @@ export function Squircle({
     ? `drop-shadow(${shadow.trim()})`
     : undefined;
 
-  const display = inline ? "inline-flex" : "flex";
-
   return (
     <div
-      ref={ref}
-      className={`${display} ${className}`}
+      ref={setRef}
+      className={className}
       style={{
         ...style,
         position: "relative",
@@ -104,7 +106,6 @@ export function Squircle({
       onClick={onClick}
     >
       {children}
-      {/* Border stroke — on top of content, NOT clipped */}
       {borderColor && (
         <svg
           className="absolute inset-0 pointer-events-none"
@@ -124,4 +125,4 @@ export function Squircle({
       )}
     </div>
   );
-}
+});

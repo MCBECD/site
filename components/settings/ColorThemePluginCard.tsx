@@ -33,7 +33,7 @@ export function ColorThemePluginCard() {
           {COLOR_PRESETS.map((p) => (
             <Squircle
               key={p.value}
-              cornerRadius={8}
+              cornerRadius={10}
               borderColor={settings.colorTheme === p.value ? "var(--color-accent)" : undefined}
               className={`flex flex-col items-center gap-2 p-3 transition-colors cursor-pointer
                 ${settings.colorTheme === p.value
@@ -49,7 +49,7 @@ export function ColorThemePluginCard() {
 
         {/* custom color */}
         <Squircle
-          cornerRadius={8}
+          cornerRadius={10}
           borderColor={settings.colorTheme === "custom" ? "var(--color-accent)" : undefined}
           className={`flex items-center gap-3 px-3 py-3 transition-colors
             ${settings.colorTheme === "custom"

@@ -248,7 +248,6 @@ code, pre, kbd {
  * Shiki code block
  * ---------------------------------------------------------- */
 pre.shiki {
-  border-radius: var(--radius);
   overflow-x: auto;
   padding: 1rem;
   background-color: var(--color-code-bg) !important;

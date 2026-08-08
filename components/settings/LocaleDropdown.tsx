@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { ChevronDown, ChevronUp, Check } from "lucide-react";
 import { LOCALES, NATIVE_NAMES, type Locale } from "@/lib/i18n/types";
 import { useSquircle } from "@/hooks/useSquircle";
+import { Squircle } from "@/components/Squircle";
 
 /** 语言选择下拉 — 带 portal 定位，防裁剪 */
 export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Locale) => void }) {
@@ -86,12 +87,14 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
 
       {open &&
         createPortal(
-          <div
+          <Squircle
             ref={listRef}
-            role="listbox"
-            className="fixed py-1 border border-[var(--color-border)]
-              bg-[var(--color-bg-primary)] shadow-lg z-[60] overflow-y-auto dropdown-in"
+            cornerRadius={8}
+            borderColor="var(--color-border)"
+            shadow="0 4px 12px rgba(0,0,0,0.12)"
+            className="py-1 bg-[var(--color-bg-primary)] z-[60] overflow-y-auto dropdown-in"
             style={{
+              position: "fixed",
               top: flipUp ? undefined : pos.top + pos.height + 6,
               bottom: flipUp ? window.innerHeight - pos.top + 6 : undefined,
               left: pos.left,
@@ -115,7 +118,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
                 {loc === value && <Check className="w-3.5 h-3.5" />}
               </button>
             ))}
-          </div>,
+          </Squircle>,
           document.body,
         )}
     </div>
