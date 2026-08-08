@@ -27,7 +27,16 @@
     "colorRed": "赤",
     "colorBlue": "青",
     "colorGreen": "緑",
-    "colorCustom": "カスタム"
+    "colorCustom": "カスタム",
+    "pluginBgImage": "背景画像",
+    "pluginBgImageDesc": "ページに背景画像を追加し、オーバーレイの透明度とぼかしを調整できます",
+    "bgPreset1": "Cargil 1",
+    "bgPreset2": "Cargil 2",
+    "bgPreset3": "Cargil 3",
+    "bgUpload": "画像をアップロード",
+    "bgClear": "背景をクリア",
+    "bgOverlayOpacity": "オーバーレイ",
+    "bgOverlayBlur": "ぼかし"
   },
   "code": {
     "copy": "コピー",
