@@ -41,22 +41,22 @@ description: "将一个区域的方块复制到另一个区域"
 ### 示例
 
 **克隆一个 5×5×5 的立方体：**
-```
+```mcfunction
 /clone ~ ~ ~ ~4 ~4 ~4 100 64 0
 ```
 
 **克隆一个建筑并移动到新位置：**
-```
+```mcfunction
 /clone ~ ~ ~ ~10 ~5 ~10 200 64 200 replace move
 ```
 
 **只克隆非空气方块：**
-```
+```mcfunction
 /clone 0 60 0 10 70 10 50 64 50 masked
 ```
 
 **只克隆钻石块：**
-```
+```mcfunction
 /clone 0 0 0 10 10 10 50 64 50 filtered normal diamond_block
 ```
 
