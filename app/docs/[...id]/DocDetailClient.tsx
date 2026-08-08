@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useCallback, type ReactNode } from "react"
 import Link from "next/link";
 import { Home, Copy, Check, ChevronDown } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
-import { Squircle } from "@/components/Squircle";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 
@@ -19,13 +18,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto px-5 pt-6 pb-20">
-      <Squircle
-        cornerRadius={14}
-        borderColor="var(--color-border)"
-        shadow="var(--color-card-shadow)"
-        className="doc-glass-card overflow-hidden"
-        style={{ background: "var(--color-bg-elevated)" }}
-      >
+      <div className="doc-glass-card overflow-hidden">
         {/* 顶部操作栏 */}
         <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
           <Link
@@ -73,18 +66,6 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
           )}
         </header>
 
-        {/* 面包屑 */}
-        {/* <nav className="flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)] px-5 pt-3 pb-4">
-          <Link href="/docs" className="hover:text-[var(--color-accent)] transition-colors no-underline">
-            {t("doc.home")}
-          </Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-[var(--color-text-secondary)] truncate max-w-[280px]">{doc.meta.title}</span>
-        </nav> */}
-
-        {/* 分割线 */}
-        {/* <div className="mx-5 border-t border-[var(--color-border)]" /> */}
-
         {/* 文档正文 */}
         <div
           className="px-6 pt-5 pb-8
@@ -101,7 +82,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         >
           {children}
         </div>
-      </Squircle>
+      </div>
     </div>
   );
 }
