@@ -1,9 +1,10 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { createHighlighter } from "shiki";
+import { createHighlighter, type Highlighter } from "shiki";
 import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
+import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 
 const components = {
@@ -24,7 +25,6 @@ const components = {
       {children}
     </code>
   ),
-  /* @constraint 外站链接加安全属性防 tabnabbing */
   a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) => {
     const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
     return (
@@ -55,9 +55,45 @@ const components = {
       {children}
     </td>
   ),
+  /* GitHub-style task list checkbox */
+  input: ({ checked, disabled, type, ...props }: JSX.IntrinsicElements["input"]) => {
+    if (type === "checkbox") {
+      return (
+        <input
+          type="checkbox"
+          checked={checked}
+          disabled={disabled ?? true}
+          className="gh-checkbox"
+          {...props}
+        />
+      );
+    }
+    return <input type={type} checked={checked} disabled={disabled} {...props} />;
+  },
+  /* Details/summary for collapsible sections */
+  details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (
+    <details className="gh-details my-4 rounded-lg border border-[var(--color-border)]" {...props}>
+      {children}
+    </details>
+  ),
+  summary: ({ children, ...props }: JSX.IntrinsicElements["summary"]) => (
+    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-lg select-none hover:bg-[var(--color-bg-secondary)] transition-colors" {...props}>
+      {children}
+    </summary>
+  ),
+  /* Keyboard shortcut */
+  kbd: ({ children, ...props }: JSX.IntrinsicElements["kbd"]) => (
+    <kbd
+      className="inline-flex items-center h-5 px-1.5 rounded text-[11px] font-mono leading-none
+        bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)] text-[var(--color-kbd-text)]"
+      {...props}
+    >
+      {children}
+    </kbd>
+  ),
 };
 
-/** @why 从 <pre><code>...</code></pre> 结构中提取 <code> 元素 */
+/** Extract <code> element from <pre><code>...</code></pre> structure */
 function extractCodeChild(children: ReactNode): React.ReactElement | null {
   if (isValidElement(children) && children.type === "code") return children as React.ReactElement;
   if (Array.isArray(children) && children.length === 1) {
@@ -67,47 +103,49 @@ function extractCodeChild(children: ReactNode): React.ReactElement | null {
   return null;
 }
 
-let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
+let highlighter: Highlighter | null = null;
 
-async function getHighlighter() {
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
+async function getHighlighter(): Promise<Highlighter> {
+  if (!highlighter) {
+    highlighter = await createHighlighter({
       themes: ["github-light", "github-dark"],
-      langs: ["shell", "javascript", "typescript", "json", "text"],
+      langs: [
+        "text", "shell", "bash", "javascript", "typescript", "json",
+        "html", "css", "markdown", "yaml", "toml", "python",
+        "java", "c", "cpp", "lua",
+      ],
     });
   }
-  return highlighterPromise;
+  return highlighter;
 }
 
 async function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const hl = await getHighlighter();
-
-  /* @constraint shiki 不支持 mcfunction 等语言，高亮回退 text，标签保留原文 */
   const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "text";
-
   const html = hl.codeToHtml(code, {
     lang: resolvedLang,
     themes: { light: "github-light", dark: "github-dark" },
   });
-
   return <CodeBlockClient html={html} code={code} displayLang={lang === "text" ? "" : lang} />;
 }
 
-interface MDXRendererProps {
-  source: string;
-}
-
-export function MDXRenderer({ source }: MDXRendererProps) {
+export function MDXRenderer({ source }: { source: string }) {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
+        </div>
+      }
+    >
       <MDXRemote
         source={source}
         components={components}
-        options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+        options={{
+          mdxOptions: {
+            remarkPlugins: [remarkGfm, remarkGithubAlerts],
+          },
+        }}
       />
     </Suspense>
   );

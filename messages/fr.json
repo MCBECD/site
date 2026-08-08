@@ -27,7 +27,16 @@
     "colorRed": "Rouge",
     "colorBlue": "Bleu",
     "colorGreen": "Vert",
-    "colorCustom": "Personnalisé"
+    "colorCustom": "Personnalisé",
+    "pluginBgImage": "Image d'arrière-plan",
+    "pluginBgImageDesc": "Ajouter une image d'arrière-plan avec opacité et flou de superposition réglables",
+    "bgPreset1": "Cargil 1",
+    "bgPreset2": "Cargil 2",
+    "bgPreset3": "Cargil 3",
+    "bgUpload": "Télécharger une image",
+    "bgClear": "Supprimer l'arrière-plan",
+    "bgOverlayOpacity": "Superposition",
+    "bgOverlayBlur": "Flou"
   },
   "code": {
     "copy": "Copier",

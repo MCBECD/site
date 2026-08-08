@@ -33,6 +33,24 @@ export interface Messages {
     fontSizeMedium: string;
     fontSizeLarge: string;
     language: string;
+    tabGeneral: string;
+    tabPlugins: string;
+    pluginColorTheme: string;
+    pluginColorThemeDesc: string;
+    colorDefault: string;
+    colorRed: string;
+    colorBlue: string;
+    colorGreen: string;
+    colorCustom: string;
+    pluginBgImage: string;
+    pluginBgImageDesc: string;
+    bgPreset1: string;
+    bgPreset2: string;
+    bgPreset3: string;
+    bgUpload: string;
+    bgClear: string;
+    bgOverlayOpacity: string;
+    bgOverlayBlur: string;
   };
   code: {
     copy: string;
@@ -49,5 +67,8 @@ export interface Messages {
     noResults: string;
     home: string;
     updatedAt: string;
+    title: string;
+    subtitle: string;
+    notFound: string;
   };
 }

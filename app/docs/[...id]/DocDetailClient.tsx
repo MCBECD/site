@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, Copy, Check, ChevronDown, ChevronRight } from "lucide-react";
-import { MDXRenderer } from "@/components/MDXRenderer";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
@@ -11,9 +10,10 @@ import type { DocContent } from "@/lib/docs";
 interface Props {
   doc: DocContent;
   rawContent: string;
+  children: ReactNode;
 }
 
-export function DocDetailClient({ doc, rawContent }: Props) {
+export function DocDetailClient({ doc, rawContent, children }: Props) {
   const { t } = useLocale();
 
   return (
@@ -91,7 +91,7 @@ export function DocDetailClient({ doc, rawContent }: Props) {
           prose-blockquote:border-[var(--color-accent)]
           prose-blockquote:text-[var(--color-text-secondary)]"
         >
-          <MDXRenderer source={doc.rawContent} />
+          {children}
         </div>
       </div>
     </div>
@@ -130,7 +130,7 @@ function CopyDropdown({ rawContent }: { rawContent: string }) {
 
   const plainText = rawContent
     .replace(/---[\s\S]*?---/, "")
-    .replace(/[#*`~>\[\]()!_|{}.<>&-]/g, "")
+    .replace(/[#*`~>[\]()!_|{}.<>&-]/g, "")
     .replace(/\n{2,}/g, "\n\n")
     .trim();
 

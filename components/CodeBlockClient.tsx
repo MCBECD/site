@@ -31,7 +31,7 @@ export function CodeBlockClient({ html, code, displayLang }: CodeBlockClientProp
   );
 
   const handleBlockClick = useCallback(
-    (e: React.MouseEvent) => {
+    (_e: React.MouseEvent) => {
       if (clickTargetRef.current === "button") {
         clickTargetRef.current = "block";
         return;
