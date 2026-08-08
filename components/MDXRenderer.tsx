@@ -151,7 +151,7 @@ async function getHighlighter(): Promise<Highlighter> {
 
 async function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const hl = await getHighlighter();
-  const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "text";
+  const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
   const html = hl.codeToHtml(code, {
     lang: resolvedLang,
     themes: { light: "github-light", dark: "github-dark" },

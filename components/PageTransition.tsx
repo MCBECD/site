@@ -1,39 +1,41 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 /**
- * Cross-page transition — pure CSS, opacity only.
+ * Cross-page transition — enter only, no exit.
  *
- * No framer-motion: JS-driven animation on the main thread causes jank.
- * No y-translate: vertical movement during page swap looks stuttery
- * because content height differs between pages.
- * No exit animation: avoids the "two flash" sequential feel.
- *
- * The `key` forces a fresh DOM element on each route, restarting
- * the CSS animation. `animation-fill-mode: both` ensures the new
- * element starts at opacity 0 from the very first paint (no flash).
+ * Why no AnimatePresence / exit animation:
+ * mode="wait" creates a sequential exit→enter that feels like
+ * two separate flashes. Removing exit and only animating enter
+ * gives a single, clean visual event.
  */
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isFirst = useRef(true);
+  const isFirstMount = useRef(true);
 
-  useEffect(() => { isFirst.current = false; }, []);
+  useEffect(() => {
+    isFirstMount.current = false;
+  }, []);
 
   /* Scroll to top on navigation (not on first mount) */
   useEffect(() => {
-    if (!isFirst.current) window.scrollTo({ top: 0 });
+    if (!isFirstMount.current) {
+      window.scrollTo({ top: 0 });
+    }
   }, [pathname]);
 
-  /* First mount: bare fragment, no wrapper, no animation */
-  if (isFirst.current) return <>{children}</>;
-
-  /* Navigation: key change remounts the div → CSS animation restarts */
   return (
-    <div key={pathname} className="page-fade-in">
+    <motion.div
+      key={pathname}
+      initial={isFirstMount.current ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }
