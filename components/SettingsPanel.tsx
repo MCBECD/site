@@ -8,6 +8,7 @@ import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
 import { Section } from "./settings/Section";
+import { Squircle } from "./Squircle";
 
 /* ---------- Constants ---------- */
 
@@ -56,9 +57,12 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
         aria-hidden="true"
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-        <div
-          className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
-            bg-[var(--color-bg-primary)] border border-[var(--color-border)] pointer-events-auto squircle ${panelAnim}`}
+        <Squircle
+          cornerRadius={12}
+          borderColor="var(--color-border)"
+          shadow="0 4px 20px rgba(0,0,0,0.1)"
+          className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] flex flex-col
+            bg-[var(--color-bg-primary)] pointer-events-auto ${panelAnim}`}
         >
           {/* header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
@@ -143,7 +147,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
               </div>
             )}
           </div>
-        </div>
+        </Squircle>
       </div>
     </>
   );
