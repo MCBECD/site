@@ -4,9 +4,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ----------------------------------------------------------
+ * Design Tokens
+ * ---------------------------------------------------------- */
 :root {
   --font-size-multiplier: 1;
-  --navbar-height: 56px;
+  --navbar-height: 52px;
+  --radius: 8px;
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f8fafc;
   --color-bg-tertiary: #f1f5f9;
@@ -16,37 +20,56 @@
   --color-border: #e2e8f0;
   --color-accent: #6366f1;
   --color-accent-hover: #4f46e5;
-  --color-code-bg: #f1f5f9;
+  --color-accent-muted: rgba(99, 102, 241, 0.08);
+  --color-code-bg: #f8fafc;
   --color-card-bg: #ffffff;
-  --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --color-card-hover-shadow: 0 4px 12px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --color-navbar-bg: rgba(255, 255, 255, 0.82);
+  --color-kbd-bg: #f1f5f9;
+  --color-kbd-border: #e2e8f0;
+  --color-kbd-text: #94a3b8;
+  --color-toast-bg: #1e293b;
 }
 
 .dark {
-  --color-bg-primary: #111827;
-  --color-bg-secondary: #1F2937;
-  --color-bg-tertiary: #374151;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #9CA3AF;
-  --color-text-tertiary: #6B7280;
-  --color-border: #4B5563;
-  --color-accent: #818cf8;
-  --color-accent-hover: #6366f1;
-  --color-code-bg: #1F2937;
-  --color-card-bg: #1F2937;
-  --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --color-bg-primary: #0f1117;
+  --color-bg-secondary: #1a1d27;
+  --color-bg-tertiary: #252833;
+  --color-text-primary: #e8eaed;
+  --color-text-secondary: #9aa0a6;
+  --color-text-tertiary: #5f6368;
+  --color-border: #2d3039;
+  --color-accent: #a5b4fc;
+  --color-accent-hover: #818cf8;
+  --color-accent-muted: rgba(165, 180, 252, 0.08);
+  --color-code-bg: #1a1d27;
+  --color-card-bg: #1a1d27;
+  --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(165, 180, 252, 0.12);
+  --color-navbar-bg: rgba(15, 17, 23, 0.82);
+  --color-kbd-bg: #252833;
+  --color-kbd-border: #2d3039;
+  --color-kbd-text: #5f6368;
+  --color-toast-bg: #3c4049;
 }
 
 html {
   font-size: calc(16px * var(--font-size-multiplier));
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   color: var(--color-text-primary);
 }
 
-/* Shiki code block styles */
+/* ----------------------------------------------------------
+ * Shiki code block
+ * ---------------------------------------------------------- */
 pre.shiki {
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
   overflow-x: auto;
   padding: 1rem;
   background-color: var(--color-code-bg) !important;
@@ -61,33 +84,24 @@ pre.shiki {
   color: var(--shiki-dark, inherit) !important;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+/* ----------------------------------------------------------
+ * Scrollbar
+ * ---------------------------------------------------------- */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-text-tertiary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-text-tertiary);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
-}
-
-/* Focus visible */
+/* ----------------------------------------------------------
+ * Focus
+ * ---------------------------------------------------------- */
 *:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
 /* ----------------------------------------------------------
- * Prose 排版紧凑化
+ * Prose 排版
  * ---------------------------------------------------------- */
 .prose {
   --tw-prose-headings: var(--color-text-primary);
@@ -104,31 +118,28 @@ pre.shiki {
   --tw-prose-td-borders: var(--color-border);
 }
 
-.prose h1 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
-.prose h2 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
-.prose h3 { margin-top: 1.25rem; margin-bottom: 0.5rem; }
-.prose h4 { margin-top: 1rem; margin-bottom: 0.5rem; }
-.prose p + p { margin-top: 0.75rem; }
+.prose h2 { margin-top: 1.75rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.01em; }
+.prose h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 600; }
+.prose h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; }
+.prose p + p { margin-top: 0.875rem; }
 .prose p + pre,
-.prose p + .group { margin-top: 0.75rem; }
-.prose pre + p { margin-top: 0.75rem; }
+.prose p + .group { margin-top: 1rem; }
+.prose pre + p { margin-top: 1rem; }
 .prose ul, .prose ol { margin-top: 0.5rem; margin-bottom: 0.5rem; }
 .prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
 .prose blockquote { margin-top: 0.75rem; margin-bottom: 0.75rem; }
 .prose hr { margin-top: 1.5rem; margin-bottom: 1.5rem; }
 
-/* 表格滚动容器已在 MDXRenderer 组件中处理 (overflow-x-auto wrapper) */
-
 /* ----------------------------------------------------------
- * 搜索框聚焦发光效果
+ * 搜索框
  * ---------------------------------------------------------- */
-.search-input:focus {
-  border-color: var(--color-accent) !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+.search-input {
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.dark .search-input:focus {
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+.search-input:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
 }
 
 /* ----------------------------------------------------------
@@ -136,5 +147,10 @@ pre.shiki {
  * ---------------------------------------------------------- */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }

@@ -80,71 +80,75 @@ export default function DocsPageClient({ docs }: Props) {
   }, [totalPages, safePage]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6">
+    <div className="max-w-2xl mx-auto px-4 pt-8 pb-12">
       {/* 搜索栏 */}
-      <div className="relative mb-4">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
         <input
           ref={searchRef}
           type="text"
           value={query}
           onChange={(e) => handleInput(e.target.value)}
           placeholder={t("doc.searchPlaceholder")}
-          className="search-input w-full pl-10 pr-20 py-2.5 text-sm rounded-lg
+          className="search-input w-full pl-9 pr-10 py-2.5 text-[13px] rounded-[var(--radius)]
             bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
             placeholder:text-[var(--color-text-tertiary)]
             border border-[var(--color-border)]
-            focus:outline-none transition-all"
+            focus:outline-none"
         />
-        {query && (
+        {query ? (
           <button
             onClick={() => { setQuery(""); setDebouncedQuery(""); }}
-            className="absolute right-11 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px]
-              flex items-center justify-center rounded
-              text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7
+              flex items-center justify-center rounded-md
+              text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
+              hover:bg-[var(--color-bg-tertiary)] transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
+        ) : (
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono leading-none
+            text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
+            pointer-events-none hidden sm:block">
+            /
+          </kbd>
         )}
-        <kbd className="absolute right-3 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px]
-          flex items-center justify-center rounded text-[10px] font-mono
-          text-[var(--color-text-tertiary)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]
-          pointer-events-none hidden sm:flex"
-          style={query ? { visibility: "hidden" } : undefined}
-        >
-          /
-        </kbd>
       </div>
 
       {/* 结果计数 */}
       {debouncedQuery.trim() && (
-        <p className="text-xs text-[var(--color-text-tertiary)] mb-3">
+        <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
           {t("doc.resultCount", { count: filteredDocs.length })}
         </p>
       )}
 
       {/* 命令列表 */}
       {pageDocs.length === 0 ? (
-        <div className="py-16 text-center">
-          <p className="text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
+        <div className="py-20 text-center">
+          <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {pageDocs.map((doc) => (
             <Link
               key={doc.id}
               href={`/docs/${doc.id}`}
-              className="block group p-3.5 rounded-lg
-                bg-[var(--color-card-bg)] shadow-[var(--color-card-shadow)]
-                hover:shadow-md hover:shadow-[var(--color-accent)]/5
-                hover:border-[var(--color-accent)]
-                transition-all no-underline"
+              className="block group px-3.5 py-3 rounded-[var(--radius)]
+                bg-[var(--color-card-bg)]
+                hover:bg-[var(--color-accent-muted)]
+                transition-all duration-150 no-underline
+                border border-transparent hover:border-[var(--color-accent)]/15"
             >
-              <h2 className="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
-                {doc.title}
-              </h2>
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors">
+                  {doc.title}
+                </h2>
+                <svg className="w-3.5 h-3.5 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-all shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
               {doc.description && (
-                <p className="text-xs text-[var(--color-text-tertiary)] mt-0.5 truncate">
+                <p className="text-xs text-[var(--color-text-tertiary)] mt-1 truncate leading-relaxed">
                   {doc.description}
                 </p>
               )}
@@ -155,13 +159,13 @@ export default function DocsPageClient({ docs }: Props) {
 
       {/* 分页 */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 mt-8">
+        <div className="flex items-center justify-center gap-1 mt-10">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={safePage === 0}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
+            className="min-w-[36px] h-9 flex items-center justify-center rounded-[var(--radius)]
               text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -170,14 +174,12 @@ export default function DocsPageClient({ docs }: Props) {
 
           {pageNumbers.map((p, i) =>
             p === -1 ? (
-              <span key={`e-${i}`} className="w-11 h-11 flex items-center justify-center text-sm text-[var(--color-text-tertiary)]">
-                ...
-              </span>
+              <span key={`e-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-[var(--color-text-tertiary)]">…</span>
             ) : (
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`min-w-[44px] min-h-[44px] rounded-md text-sm transition-colors ${
+                className={`min-w-[36px] h-9 flex items-center justify-center rounded-[var(--radius)] text-[13px] transition-colors ${
                   p === safePage
                     ? "bg-[var(--color-accent)] text-white font-medium"
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
@@ -191,9 +193,9 @@ export default function DocsPageClient({ docs }: Props) {
           <button
             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
             disabled={safePage === totalPages - 1}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
+            className="min-w-[36px] h-9 flex items-center justify-center rounded-[var(--radius)]
               text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
