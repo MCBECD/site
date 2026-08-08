@@ -24,16 +24,19 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
       className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-4
         bg-[var(--color-navbar-bg)] backdrop-blur-xl border-b border-[var(--color-border)]"
     >
-      <Link href="/docs" className="flex items-center gap-2 no-underline group min-h-[44px]">
+      <Link
+        href="/docs"
+        className="flex items-center gap-2 no-underline group min-h-[44px]"
+      >
         <img
           src="https://avatars.githubusercontent.com/u/312049267?s=64"
           alt="MCBECD"
           width={28}
           height={28}
           fetchPriority="high"
-          className="w-7 h-7 rounded-[7px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/30 transition-all"
+          className="w-7 h-7 rounded-[7px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-all duration-200"
         />
-        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
+        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
           MCBECD
         </span>
       </Link>
@@ -47,17 +50,17 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
               <button
                 key={key}
                 onClick={() => updateTheme(key)}
-                className="w-8 h-8 flex items-center justify-center rounded-md
-                  transition-colors duration-150
+                className="nav-icon-btn w-8 h-8 flex items-center justify-center rounded-md
+                  transition-all duration-150
                   text-[var(--color-text-tertiary)]
                   hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-                  active:scale-[0.97]
+                  active:scale-[0.92]
                   data-[active=true]:text-[var(--color-accent)] data-[active=true]:bg-[var(--color-accent-muted)]"
                 data-active={active}
                 title={t(titleKey)}
                 aria-pressed={active}
               >
-                <Icon className="w-[16px] h-[16px]" />
+                <Icon className="w-[16px] h-[16px] transition-transform duration-200" />
               </button>
             );
           })}
@@ -70,13 +73,14 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           href="https://github.com/MCBECD"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-8 h-8 flex items-center justify-center rounded-md
+          className="nav-icon-btn w-8 h-8 flex items-center justify-center rounded-md
             text-[var(--color-text-tertiary)]
-            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-150 active:scale-[0.97]"
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+            transition-all duration-150 active:scale-[0.92]"
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
-          <Github className="w-[16px] h-[16px]" />
+          <Github className="w-[16px] h-[16px] transition-transform duration-200" />
         </a>
 
         <div className="nav-divider" aria-hidden="true" />
@@ -84,13 +88,14 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         {/* 设置 */}
         <button
           onClick={onOpenSettings}
-          className="w-8 h-8 flex items-center justify-center rounded-md
+          className="nav-icon-btn w-8 h-8 flex items-center justify-center rounded-md
             text-[var(--color-text-tertiary)]
-            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-150 active:scale-[0.97]"
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+            transition-all duration-150 active:scale-[0.92]"
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >
-          <Settings className="w-[16px] h-[16px]" />
+          <Settings className="w-[16px] h-[16px] transition-transform duration-200" />
         </button>
       </div>
     </nav>

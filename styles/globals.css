@@ -29,10 +29,12 @@
   --color-kbd-text: #94a3b8;
   --color-toast-bg: #1e293b;
   /* Motion tokens */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --duration-fast: 150ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
   --duration-normal: 200ms;
+  --duration-slow: 350ms;
 }
 
 .dark {
@@ -203,6 +205,7 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -579,13 +582,13 @@ pre.shiki {
 /* ---------------------------------------------------------- * Page transition (pure CSS, compositor-only)
  * ---------------------------------------------------------- */
 @keyframes pageIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .page-fade-in {
-  animation: pageIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) both;
-  will-change: opacity;
+  animation: pageIn var(--duration-slow) var(--ease-out) both;
+  will-change: opacity, transform;
 }
 
 /* ----------------------------------------------------------
@@ -597,4 +600,59 @@ pre.shiki {
   background: var(--color-border);
   margin: 0 4px;
   flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+ * Staggered card entry — doc list
+ * ---------------------------------------------------------- */
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.doc-card {
+  animation: cardEnter 0.4s var(--ease-out) both;
+  animation-delay: calc(var(--card-index, 0) * 40ms);
+}
+
+/* Staggered content sections in doc detail */
+@keyframes sectionEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.doc-header-enter {
+  animation: sectionEnter 0.35s var(--ease-out) 0.05s both;
+}
+
+.doc-body-enter {
+  animation: sectionEnter 0.35s var(--ease-out) 0.12s both;
+}
+
+/* Doc card hover — subtle lift */
+.doc-card {
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              background-color var(--duration-normal) var(--ease-out);
+}
+
+.doc-card:hover {
+  transform: translateY(-1px);
+}
+
+.doc-card:active {
+  transform: translateY(0);
+}
+
+/* ----------------------------------------------------------
+ * Nav button micro-interaction
+ * ---------------------------------------------------------- */
+@keyframes btnPulse {
+  0%   { box-shadow: 0 0 0 0 var(--color-accent-muted); }
+  100% { box-shadow: 0 0 0 6px transparent; }
+}
+
+.nav-icon-btn:active {
+  animation: btnPulse 0.4s var(--ease-out);
 }
