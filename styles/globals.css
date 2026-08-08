@@ -233,7 +233,6 @@ html {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -607,13 +606,13 @@ pre.shiki {
 /* ---------------------------------------------------------- * Page transition (pure CSS, compositor-only)
  * ---------------------------------------------------------- */
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .page-fade-in {
-  animation: pageIn var(--duration-slow) var(--ease-out) both;
-  will-change: opacity, transform;
+  animation: pageIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  will-change: opacity;
 }
 
 /* ----------------------------------------------------------
@@ -625,33 +624,6 @@ pre.shiki {
   background: var(--color-border);
   margin: 0 4px;
   flex-shrink: 0;
-}
-
-/* ----------------------------------------------------------
- * Staggered card entry — doc list
- * ---------------------------------------------------------- */
-@keyframes cardEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.doc-card {
-  animation: cardEnter 0.4s var(--ease-out) both;
-  animation-delay: calc(var(--card-index, 0) * 40ms);
-}
-
-/* Staggered content sections in doc detail */
-@keyframes sectionEnter {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.doc-header-enter {
-  animation: sectionEnter 0.35s var(--ease-out) 0.05s both;
-}
-
-.doc-body-enter {
-  animation: sectionEnter 0.35s var(--ease-out) 0.12s both;
 }
 
 /* Doc card hover — subtle lift */
