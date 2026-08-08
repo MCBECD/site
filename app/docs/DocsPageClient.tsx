@@ -163,10 +163,19 @@ export default function DocsPageClient({ docs }: Props) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </div>
-              {doc.description && (
-                <p className="text-xs text-[var(--color-text-tertiary)] mt-1 truncate leading-relaxed">
-                  {doc.description}
-                </p>
+              {(doc.description || doc.author || doc.updatedAt) && (
+                <div className="flex items-center justify-between gap-3 mt-1">
+                  {doc.description && (
+                    <p className="text-xs text-[var(--color-text-tertiary)] truncate leading-relaxed flex-1 min-w-0">
+                      {doc.description}
+                    </p>
+                  )}
+                  {(doc.author || doc.updatedAt) && (
+                    <span className="text-[11px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums">
+                      {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
+                    </span>
+                  )}
+                </div>
               )}
             </Link>
           ))}
