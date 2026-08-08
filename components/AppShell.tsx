@@ -20,41 +20,38 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
   }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
 
-  /* ---------- Background sizing (cover + 25% extra, aspect-ratio preserved) ---------- */
-  const bgRef = useRef<HTMLDivElement>(null);
-  const sizeRef = useRef({ baseX: 0, baseY: 0, maxX: 0, maxY: 0 });
+  /* ---------- Background image sizing ---------- */
+  // Load image, get natural size, ensure it covers viewport (+25% extra for parallax).
+  // On regular screens the original resolution is usually enough;
+  // on 4K we scale up so it still fills the screen.
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [bgLayout, setBgLayout] = useState<{
+    w: number; h: number;        // rendered pixel size
+    baseX: number; baseY: number; // centering offset (negative)
+    maxX: number; maxY: number;   // safe shift range (px)
+  } | null>(null);
 
   useEffect(() => {
-    if (!bgEnabled) return;
-    const el = bgRef.current;
-    if (!el) return;
+    if (!bgEnabled) { setBgLayout(null); return; }
 
     const calc = () => {
       const img = new Image();
       img.onload = () => {
         const vpW = window.innerWidth;
         const vpH = window.innerHeight;
-        // Cover scale (fill viewport, maintain aspect ratio)
-        const coverScale = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight);
-        // 25% extra for parallax room
-        const scale = coverScale * 1.25;
-        const bgW = img.naturalWidth * scale;
-        const bgH = img.naturalHeight * scale;
-
-        el.style.backgroundSize = `${bgW}px ${bgH}px`;
-
-        // Centered position (negative because image is larger than viewport)
-        const baseX = (vpW - bgW) / 2;
-        const baseY = (vpH - bgH) / 2;
-        sizeRef.current = {
-          baseX, baseY,
+        // At least 1× (natural size); scale up only if image can't cover viewport
+        const minScale = Math.max(1, vpW / img.naturalWidth, vpH / img.naturalHeight);
+        // +25 % headroom for parallax movement
+        const scale = minScale * 1.25;
+        const w = img.naturalWidth * scale;
+        const h = img.naturalHeight * scale;
+        const baseX = (vpW - w) / 2;
+        const baseY = (vpH - h) / 2;
+        setBgLayout({
+          w, h, baseX, baseY,
           maxX: Math.abs(baseX) * 0.9,
           maxY: Math.abs(baseY) * 0.9,
-        };
-        // Reset to center when not parallaxing
-        if (!settings.bgParallax) {
-          el.style.backgroundPosition = `${baseX}px ${baseY}px`;
-        }
+        });
       };
       img.src = settings.bgImage;
     };
@@ -62,27 +59,32 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     calc();
     window.addEventListener("resize", calc);
     return () => window.removeEventListener("resize", calc);
-  }, [bgEnabled, settings.bgImage, settings.bgParallax]);
+  }, [bgEnabled, settings.bgImage]);
 
-  /* ---------- Parallax (pointer-follow via background-position + easing) ---------- */
+  /* ---------- Parallax: pointer-follow + lerp easing ---------- */
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const currentRef = useRef({ x: 0.5, y: 0.5 });
+  const smoothRef = useRef({ x: 0.5, y: 0.5 });
   const rafRef = useRef(0);
 
   useEffect(() => {
-    if (!bgEnabled || !settings.bgParallax) return;
+    const el = imgRef.current;
+    if (!el) return;
 
-    const updateTarget = (clientX: number, clientY: number) => {
-      mouseRef.current = {
-        x: clientX / window.innerWidth,
-        y: clientY / window.innerHeight,
-      };
+    // When parallax is off, just center the image
+    if (!bgEnabled || !settings.bgParallax || !bgLayout) {
+      el.style.transform = bgLayout
+        ? `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px)`
+        : "";
+      return;
+    }
+
+    const onPointer = (cx: number, cy: number) => {
+      mouseRef.current = { x: cx / window.innerWidth, y: cy / window.innerHeight };
     };
-
-    const onMouse = (e: MouseEvent) => updateTarget(e.clientX, e.clientY);
+    const onMouse = (e: MouseEvent) => onPointer(e.clientX, e.clientY);
     const onTouch = (e: TouchEvent) => {
       const t = e.touches[0];
-      if (t) updateTarget(t.clientX, t.clientY);
+      if (t) onPointer(t.clientX, t.clientY);
     };
 
     window.addEventListener("mousemove", onMouse, { passive: true });
@@ -91,18 +93,16 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const tick = () => {
-      const cur = currentRef.current;
-      const tgt = mouseRef.current;
-      cur.x = lerp(cur.x, tgt.x, 0.08);
-      cur.y = lerp(cur.y, tgt.y, 0.08);
+ const s = smoothRef.current;
+      const m = mouseRef.current;
+      s.x = lerp(s.x, m.x, 0.08);
+      s.y = lerp(s.y, m.y, 0.08);
 
-      const el = bgRef.current;
-      if (el) {
-        const { baseX, baseY, maxX, maxY } = sizeRef.current;
-        const dx = (cur.x - 0.5) * 2 * maxX;
-        const dy = (cur.y - 0.5) * 2 * maxY;
-        el.style.backgroundPosition = `${baseX + dx}px ${baseY + dy}px`;
-      }
+      const { baseX, baseY, maxX, maxY } = bgLayout;
+      const dx = (s.x - 0.5) * 2 * maxX;
+      const dy = (s.y - 0.5) * 2 * maxY;
+      el.style.transform = `translate(${baseX + dx}px, ${baseY + dy}px)`;
+
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -112,29 +112,29 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       window.removeEventListener("touchmove", onTouch);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [bgEnabled, settings.bgParallax]);
-
-  /* Reset background-position when parallax is off */
-  useEffect(() => {
-    const el = bgRef.current;
-    if (el && bgEnabled && !settings.bgParallax) {
-      const { baseX, baseY } = sizeRef.current;
-      el.style.backgroundPosition = `${baseX}px ${baseY}px`;
-    }
-  }, [bgEnabled, settings.bgParallax]);
+  }, [bgEnabled, settings.bgParallax, bgLayout]);
 
   return (
     <>
-      {/* base background */}
+      {/* solid base colour */}
       <div className="fixed inset-0 bg-[var(--color-bg-primary)] -z-30" aria-hidden="true" />
-      {/* background image layer */}
-      {bgEnabled && (
+
+      {/* background image */}
+      {bgEnabled && bgLayout && (
         <>
-          <div
-            ref={bgRef}
-            className="fixed inset-0 -z-20 bg-no-repeat"
-            style={{ backgroundImage: `url(${settings.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          <img
+            ref={imgRef}
+            src={settings.bgImage}
+            alt=""
             aria-hidden="true"
+            draggable={false}
+            className="fixed top-0 left-0 -z-20 pointer-events-none select-none"
+            style={{
+              width: bgLayout.w,
+              height: bgLayout.h,
+              transform: `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px)`,
+              willChange: settings.bgParallax ? "transform" : undefined,
+            }}
           />
           <div
             className="fixed inset-0 -z-10"
@@ -143,6 +143,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
           />
         </>
       )}
+
       <Navbar onOpenSettings={openSettings} />
       <SettingsPanel open={settingsOpen} onClose={closeSettings} />
       <main className="pt-[var(--navbar-height)] min-h-screen">
