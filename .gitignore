@@ -1,29 +1,7 @@
-# Dependencies
 node_modules/
-
-# Next.js
 .next/
 .open-next/
 out/
-*.tsbuildinfo
-
-# Cloudflare
 .wrangler/
-
-# Lock files (only one should be tracked)
+*.tsbuildinfo
 pnpm-lock.yaml
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Env
-.env
-.env.local
-.env.*.local

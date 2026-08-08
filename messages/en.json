@@ -2,7 +2,7 @@
   "common": {
     "loading": "Loading...",
     "notFound": "Page Not Found",
-    "backToList": "Back to List"
+    "backToList": "Home"
   },
   "nav": {
     "settings": "Settings",

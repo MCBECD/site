@@ -2,7 +2,7 @@
   "common": {
     "loading": "Chargement...",
     "notFound": "Page introuvable",
-    "backToList": "Retour à la liste"
+    "backToList": "Accueil"
   },
   "nav": {
     "settings": "Paramètres",

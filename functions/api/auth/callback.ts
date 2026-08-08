@@ -23,6 +23,7 @@ export async function onRequest(context: {
   const code = url.searchParams.get("code");
   const error = url.searchParams.get("error");
   // state param reserved for future CSRF validation
+  url.searchParams.get("state");
 
   const homeUrl = "https://mcbecd.pages.dev";
 
@@ -95,7 +96,7 @@ export async function onRequest(context: {
   }));
 
   return Response.redirect(
-    `${homeUrl}/docs?token=${encodeURIComponent(tokenData.access_token)}&user=${userJson}`,
+    `${homeUrl}/zh-CN/docs?token=${encodeURIComponent(tokenData.access_token)}&user=${userJson}`,
     302,
   );
 }
