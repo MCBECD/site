@@ -4,6 +4,7 @@ import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useSquircle } from "@/hooks/useSquircle";
 
 interface NavbarProps {
   onOpenSettings: () => void;
@@ -18,6 +19,9 @@ const THEMES: { key: Theme; icon: typeof Sun; titleKey: string }[] = [
 export function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateTheme } = useSettings();
   const { t } = useLocale();
+  const themeGroupRef = useSquircle<HTMLDivElement>(8);
+  const ghBtnRef = useSquircle<HTMLAnchorElement>(8);
+  const settingsBtnRef = useSquircle<HTMLButtonElement>(8);
 
   return (
     <nav
@@ -43,14 +47,17 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
       <div className="flex items-center ml-auto">
         {/* 主题切换组 */}
-        <div className="flex items-center gap-0.5 bg-[var(--color-bg-tertiary)] rounded-lg p-0.5">
+        <div
+          ref={themeGroupRef}
+          className="flex items-center gap-0.5 bg-[var(--color-bg-tertiary)] p-0.5"
+        >
           {THEMES.map(({ key, icon: Icon, titleKey }) => {
             const active = settings.theme === key;
             return (
               <button
                 key={key}
                 onClick={() => updateTheme(key)}
-                className="nav-icon-btn w-[30px] h-[30px] flex items-center justify-center rounded-md
+                className="nav-icon-btn w-[30px] h-[30px] flex items-center justify-center
                   transition-all duration-200
                   text-[var(--color-text-tertiary)]
                   hover:text-[var(--color-text-secondary)]
@@ -70,10 +77,11 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
         {/* GitHub */}
         <a
+          ref={ghBtnRef}
           href="https://github.com/MCBECD"
           target="_blank"
           rel="noopener noreferrer"
-          className="nav-icon-btn w-9 h-9 flex items-center justify-center rounded-lg
+          className="nav-icon-btn w-9 h-9 flex items-center justify-center
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
             transition-all duration-150 active:scale-[0.92]"
@@ -87,8 +95,9 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
         {/* 设置 */}
         <button
+          ref={settingsBtnRef}
           onClick={onOpenSettings}
-          className="nav-icon-btn w-9 h-9 flex items-center justify-center rounded-lg
+          className="nav-icon-btn w-9 h-9 flex items-center justify-center
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
             transition-all duration-150 active:scale-[0.92]"

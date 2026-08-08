@@ -7,6 +7,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { PluginCard } from "./PluginCard";
 import { SliderRow } from "./SliderRow";
 import { ToggleSwitch } from "./ToggleSwitch";
+import { SquircleButton } from "@/components/SquircleButton";
 
 const BG_PRESETS = [
   { value: "/bg/cargil-1.png", labelKey: "settings.bgPreset1" },
@@ -49,35 +50,37 @@ export function BackgroundImagePluginCard() {
         {/* presets grid */}
         <div className="grid grid-cols-3 gap-2">
           {BG_PRESETS.map((p) => (
-            <button
+            <SquircleButton
               key={p.value}
-              onClick={() => updateBgImage(p.value)}
-              className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] transition-colors overflow-hidden
+              cornerRadius={10}
+              className={`relative flex flex-col items-center gap-2 p-2.5 transition-colors overflow-hidden
                 ${settings.bgImage === p.value
                   ? "ring-1 ring-[var(--color-accent)]"
                   : "hover:bg-[var(--color-bg-tertiary)]"}`}
+              onClick={() => updateBgImage(p.value)}
             >
               <span
-                className="w-full h-12 rounded bg-cover bg-center border border-[var(--color-border)]"
+                className="w-full h-12 bg-cover bg-center border border-[var(--color-border)]"
                 style={{ backgroundImage: `url(${p.value})` }}
               />
               <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
-            </button>
+            </SquircleButton>
           ))}
         </div>
 
         {/* upload button */}
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-        <button
-          onClick={handleUpload}
-          className={`w-full flex items-center justify-center gap-2 h-9 rounded-[var(--radius)] text-[12px] transition-colors
+        <SquircleButton
+          cornerRadius={10}
+          className={`w-full flex items-center justify-center gap-2 h-9 text-[12px] transition-colors
             ${settings.bgImage && !BG_PRESETS.some((p) => p.value === settings.bgImage)
               ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
               : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
+          onClick={handleUpload}
         >
           <Image className="w-3.5 h-3.5" />
           {t("settings.bgUpload")}
-        </button>
+        </SquircleButton>
 
         {/* clear button */}
         {settings.bgImage && (

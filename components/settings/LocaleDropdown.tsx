@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, ChevronUp, Check } from "lucide-react";
 import { LOCALES, NATIVE_NAMES, type Locale } from "@/lib/i18n/types";
+import { useSquircle } from "@/hooks/useSquircle";
 
 /** 语言选择下拉 — 带 portal 定位，防裁剪 */
 export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Locale) => void }) {
@@ -11,6 +12,13 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
   const [flipUp, setFlipUp] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const triggerSquircleRef = useSquircle<HTMLButtonElement>(10);
+
+  // Merge refs
+  const setRefs = useCallback((node: HTMLButtonElement | null) => {
+    (triggerRef as React.MutableRefObject<HTMLButtonElement | null>).current = node;
+    (triggerSquircleRef as React.MutableRefObject<HTMLButtonElement | null>).current = node;
+  }, []);
 
   const select = useCallback(
     (v: Locale) => { onChange(v); setOpen(false); },
@@ -61,10 +69,10 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
   return (
     <div className="relative">
       <button
-        ref={triggerRef}
+        ref={setRefs}
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-10 flex items-center justify-between px-3 rounded-[var(--radius)] text-[13px]
+        className="w-full h-10 flex items-center justify-between px-3 text-[13px]
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
           border border-[var(--color-border)]
           hover:border-[var(--color-accent)]/30
@@ -81,7 +89,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
           <div
             ref={listRef}
             role="listbox"
-            className="fixed py-1 rounded-[var(--radius)] border border-[var(--color-border)]
+            className="fixed py-1 border border-[var(--color-border)]
               bg-[var(--color-bg-primary)] shadow-lg z-[60] overflow-y-auto dropdown-in"
             style={{
               top: flipUp ? undefined : pos.top + pos.height + 6,

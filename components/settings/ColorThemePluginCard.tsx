@@ -4,6 +4,7 @@ import { Palette } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useSettings, type ColorTheme } from "@/contexts/SettingsContext";
 import { PluginCard } from "./PluginCard";
+import { Squircle } from "@/components/Squircle";
 
 const COLOR_PRESETS: { value: ColorTheme; labelKey: string; swatch: string }[] = [
   { value: "default", labelKey: "settings.colorDefault", swatch: "linear-gradient(135deg, #94a3b8, #475569)" },
@@ -30,25 +31,29 @@ export function ColorThemePluginCard() {
         {/* presets grid */}
         <div className="grid grid-cols-4 gap-2">
           {COLOR_PRESETS.map((p) => (
-            <button
+            <Squircle
               key={p.value}
-              onClick={() => updateColorTheme(p.value)}
-              className={`flex flex-col items-center gap-2 p-3 rounded-[var(--radius)] transition-colors
+              cornerRadius={8}
+              borderColor={settings.colorTheme === p.value ? "var(--color-accent)" : undefined}
+              className={`flex flex-col items-center gap-2 p-3 transition-colors cursor-pointer
                 ${settings.colorTheme === p.value
-                  ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
+                  ? "bg-[var(--color-accent-muted)]"
                   : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)]"}`}
+              onClick={() => updateColorTheme(p.value)}
             >
               <span className="w-7 h-7 rounded-full border border-[var(--color-border)]" style={{ background: p.swatch }} />
               <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
-            </button>
+            </Squircle>
           ))}
         </div>
 
         {/* custom color */}
-        <div
-          className={`flex items-center gap-3 px-3 py-3 rounded-[var(--radius)] transition-colors
+        <Squircle
+          cornerRadius={8}
+          borderColor={settings.colorTheme === "custom" ? "var(--color-accent)" : undefined}
+          className={`flex items-center gap-3 px-3 py-3 transition-colors
             ${settings.colorTheme === "custom"
-              ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
+              ? "bg-[var(--color-accent-muted)]"
               : "bg-[var(--color-bg-tertiary)]"}`}
         >
           <label className="relative w-8 h-8 rounded-full overflow-hidden border border-[var(--color-border)] cursor-pointer flex-shrink-0">
@@ -64,7 +69,7 @@ export function ColorThemePluginCard() {
             <span className="w-full h-full block rounded-full" style={{ background: settings.customColor }} />
           </label>
           <span className="text-[12px] text-[var(--color-text-secondary)]">{t("settings.colorCustom")}</span>
-        </div>
+        </Squircle>
       </div>
     </PluginCard>
   );

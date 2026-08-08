@@ -1,13 +1,17 @@
 "use client";
 
+import { useSquircle } from "@/hooks/useSquircle";
+
 /** 通用开关组件 — 支持 role="switch" 无障碍 */
 export function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  const ref = useSquircle<HTMLButtonElement>(100);
   return (
     <button
+      ref={ref}
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 border ${
+      className={`relative w-11 h-6 transition-colors flex-shrink-0 border ${
         checked
           ? "bg-[var(--color-accent)] border-[var(--color-accent)]"
           : "bg-[var(--color-bg-tertiary)] border-[var(--color-border)]"

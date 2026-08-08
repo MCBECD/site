@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Moon, Monitor, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -8,13 +8,15 @@ import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
 import { Section } from "./settings/Section";
+import { Squircle } from "./Squircle";
+import { SquircleButton } from "./SquircleButton";
 
 /* ---------- Constants ---------- */
 
-const THEME_OPTIONS: { value: Theme; icon: typeof Sun; labelKey: string }[] = [
-  { value: "light", icon: Sun, labelKey: "settings.themeLight" },
-  { value: "dark", icon: Moon, labelKey: "settings.themeDark" },
-  { value: "system", icon: Monitor, labelKey: "settings.themeSystem" },
+const THEME_OPTIONS: { value: Theme; icon: typeof import("lucide-react").Sun; labelKey: string }[] = [
+  { value: "light", icon: require("lucide-react").Sun, labelKey: "settings.themeLight" },
+  { value: "dark", icon: require("lucide-react").Moon, labelKey: "settings.themeDark" },
+  { value: "system", icon: require("lucide-react").Monitor, labelKey: "settings.themeSystem" },
 ];
 
 const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
@@ -56,16 +58,19 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
         aria-hidden="true"
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-        <div
-          className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
-            bg-[var(--color-bg-primary)] border border-[var(--color-border)] pointer-events-auto ${panelAnim}`}
+        <Squircle
+          cornerRadius={12}
+          borderColor="var(--color-border)"
+          shadow="0 25px 50px -12px rgba(0,0,0,0.25)"
+          className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] flex flex-col
+            bg-[var(--color-bg-primary)] pointer-events-auto ${panelAnim}`}
         >
           {/* header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
             <h2 className="text-[13px] font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
             <button
               onClick={handleClose}
-              className="w-8 h-8 flex items-center justify-center -mr-1 rounded-[var(--radius)]
+              className="w-8 h-8 flex items-center justify-center -mr-1
                 text-[var(--color-text-tertiary)]
                 hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
               aria-label={t("common.backToList")}
@@ -100,17 +105,18 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                 <Section title={t("settings.theme")}>
                   <div className="flex gap-1.5">
                     {THEME_OPTIONS.map((opt) => (
-                      <button
+                      <SquircleButton
                         key={opt.value}
-                        onClick={() => updateTheme(opt.value)}
-                        className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-[var(--radius)] text-[13px] transition-colors
+                        cornerRadius={10}
+                        className={`flex-1 flex items-center justify-center gap-1.5 h-10 text-[13px] transition-colors
                           ${settings.theme === opt.value
                             ? "bg-[var(--color-accent)] text-white"
                             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
+                        onClick={() => updateTheme(opt.value)}
                       >
                         <opt.icon className="w-3.5 h-3.5" />
                         {t(opt.labelKey)}
-                      </button>
+                      </SquircleButton>
                     ))}
                   </div>
                 </Section>
@@ -118,16 +124,17 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                 <Section title={t("settings.fontSize")}>
                   <div className="flex gap-1.5">
                     {FONT_OPTIONS.map((opt) => (
-                      <button
+                      <SquircleButton
                         key={opt.value}
-                        onClick={() => updateFontSize(opt.value)}
-                        className={`flex-1 h-10 rounded-[var(--radius)] text-[13px] transition-colors
+                        cornerRadius={10}
+                        className={`flex-1 h-10 text-[13px] transition-colors
                           ${settings.fontSize === opt.value
                             ? "bg-[var(--color-accent)] text-white"
                             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
+                        onClick={() => updateFontSize(opt.value)}
                       >
                         {t(opt.labelKey)}
-                      </button>
+                      </SquircleButton>
                     ))}
                   </div>
                 </Section>
@@ -143,7 +150,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
               </div>
             )}
           </div>
-        </div>
+        </Squircle>
       </div>
     </>
   );

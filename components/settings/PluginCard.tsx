@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { ToggleSwitch } from "./ToggleSwitch";
+import { Squircle } from "@/components/Squircle";
 
 interface PluginCardProps {
   name: string;
@@ -16,17 +17,20 @@ interface PluginCardProps {
 /** 可折叠插件卡片 — toggle 开关 + 展开设置区域 */
 export function PluginCard({ name, desc, Icon, enabled, onToggle, children }: PluginCardProps) {
   return (
-    <div
-      className={`rounded-lg border transition-all duration-200 ${
+    <Squircle
+      cornerRadius={10}
+      borderColor={enabled ? "var(--color-accent)" : "var(--color-border)"}
+      borderOpacity={enabled ? "0.3" : "1"}
+      className={`transition-all duration-200 ${
         enabled
-          ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
-          : "border-[var(--color-border)] bg-[var(--color-bg-secondary)] opacity-60"
+          ? "bg-[var(--color-bg-primary)]"
+          : "bg-[var(--color-bg-secondary)] opacity-60"
       }`}
     >
       {/* header row */}
       <div className="flex items-center gap-3.5 px-4 py-3.5">
         <div
-          className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+          className={`w-9 h-9 flex items-center justify-center flex-shrink-0 transition-colors ${
             enabled
               ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
               : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]"
@@ -47,6 +51,6 @@ export function PluginCard({ name, desc, Icon, enabled, onToggle, children }: Pl
           <div className="pt-3">{children}</div>
         </div>
       )}
-    </div>
+    </Squircle>
   );
 }

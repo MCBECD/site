@@ -534,13 +534,7 @@ pre.shiki {
 /* ----------------------------------------------------------
  * Doc detail glass card
  * ---------------------------------------------------------- */
-/* Doc detail glass card */
-.doc-glass-card {
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-elevated);
-  box-shadow: var(--color-card-shadow);
-}
+/* Doc detail glass card — styling is handled by Squircle component */
 
 /* ---------------------------------------------------------- * UI animations (overlay, panel, dropdown, collapse)
  * ---------------------------------------------------------- */

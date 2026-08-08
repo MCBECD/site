@@ -15,6 +15,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -120,10 +121,20 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(() => loadSettings());
+  // Start with SSR-safe defaults to avoid hydration mismatch.
+  // Actual persisted settings are merged in on mount (useEffect below).
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const mounted = useRef(false);
 
   const persist = useCallback((s: Settings) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  }, []);
+
+  // Hydrate persisted settings on mount (after first paint)
+  useEffect(() => {
+    const stored = loadSettings();
+    setSettings(stored);
+    mounted.current = true;
   }, []);
 
   // ---- Effects ----
