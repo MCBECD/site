@@ -514,6 +514,80 @@ pre.shiki {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
+/* ---------------------------------------------------------- * UI animations (overlay, panel, dropdown, collapse)
+ * ---------------------------------------------------------- */
+
+/* Overlay (settings backdrop) */
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.overlay-in {
+  background-color: rgba(0, 0, 0, 0.4);
+  animation: overlayIn 0.2s ease both;
+}
+.overlay-out {
+  background-color: rgba(0, 0, 0, 0.4);
+  animation: overlayIn 0.18s ease reverse both;
+}
+
+/* Settings panel — uses opacity + scale only;
+   centering is handled by margin:auto on a fixed inset:0 box,
+   so the keyframe transform never collides with positioning. */
+@keyframes panelIn {
+  from { opacity: 0; scale: 0.96; }
+  to   { opacity: 1; scale: 1; }
+}
+.settings-panel-in {
+  animation: panelIn 0.22s var(--ease-out) both;
+  will-change: opacity, scale;
+}
+.settings-panel-out {
+  animation: panelIn 0.18s var(--ease-out) reverse both;
+  will-change: opacity, scale;
+}
+
+/* Dropdown (locale, copy) */
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.dropdown-in {
+  animation: dropIn 0.18s var(--ease-out) both;
+}
+
+/* Collapse (plugin card body) */
+@keyframes collapseIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.collapse-in {
+  animation: collapseIn 0.22s var(--ease-out) both;
+  will-change: opacity, transform;
+}
+
+/* Tab indicator slide */
+@keyframes tabSlideIn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.tab-indicator {
+  animation: tabSlideIn 0.2s var(--ease-out) both;
+  transform-origin: left;
+}
+
+/* ---------------------------------------------------------- * Page transition (pure CSS, compositor-only)
+ * ---------------------------------------------------------- */
+@keyframes pageIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.page-fade-in {
+  animation: pageIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  will-change: opacity;
+}
+
 /* ----------------------------------------------------------
  * Navbar 分隔线
  * ---------------------------------------------------------- */
