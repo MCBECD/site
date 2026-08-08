@@ -36,7 +36,8 @@
     "bgUpload": "이미지 업로드",
     "bgClear": "배경 지우기",
     "bgOverlayOpacity": "오버레이",
-    "bgOverlayBlur": "흐림"
+    "bgOverlayBlur": "흐림",
+    "bgParallax": "시차 효과"
   },
   "code": {
     "copy": "복사",

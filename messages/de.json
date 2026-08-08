@@ -36,7 +36,8 @@
     "bgUpload": "Bild hochladen",
     "bgClear": "Hintergrund entfernen",
     "bgOverlayOpacity": "Überlagerung",
-    "bgOverlayBlur": "Unschärfe"
+    "bgOverlayBlur": "Unschärfe",
+    "bgParallax": "Parallax"
   },
   "code": {
     "copy": "Kopieren",

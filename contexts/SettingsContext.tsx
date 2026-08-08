@@ -28,6 +28,7 @@ export interface Settings {
   bgImage: string;
   bgOverlayOpacity: number;
   bgOverlayBlur: number;
+  bgParallax: boolean;
 }
 
 const FONT_SIZE_MAP: Record<FontSize, number> = {
@@ -157,6 +158,7 @@ function defaultSettings(): Settings {
     bgImage: "",
     bgOverlayOpacity: 60,
     bgOverlayBlur: 0,
+    bgParallax: false,
   };
 }
 
@@ -170,6 +172,7 @@ interface SettingsContextValue {
   updateBgImage: (url: string) => void;
   updateBgOverlayOpacity: (v: number) => void;
   updateBgOverlayBlur: (v: number) => void;
+  updateBgParallax: (v: boolean) => void;
   isPluginEnabled: (id: string) => boolean;
   togglePlugin: (id: string, enabled?: boolean) => void;
 }
@@ -276,6 +279,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [persist],
   );
 
+  const updateBgParallax = useCallback(
+    (bgParallax: boolean) => {
+      setSettings((prev) => { const next = { ...prev, bgParallax }; persist(next); return next; });
+    },
+    [persist],
+  );
+
   const isPluginEnabled = useCallback(
     (id: string) => !!settings.plugins[id],
     [settings.plugins],
@@ -294,7 +304,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, isPluginEnabled, togglePlugin }}>
+    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, updateBgParallax, isPluginEnabled, togglePlugin }}>
       {children}
     </SettingsContext>
   );

@@ -36,7 +36,8 @@
     "bgUpload": "Upload Image",
     "bgClear": "Clear Background",
     "bgOverlayOpacity": "Overlay",
-    "bgOverlayBlur": "Blur"
+    "bgOverlayBlur": "Blur",
+    "bgParallax": "Parallax"
   },
   "code": {
     "copy": "Copy",
