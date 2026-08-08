@@ -34,7 +34,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           width={30}
           height={30}
           fetchPriority="high"
-          className="w-[30px] h-[30px] rounded-lg ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-all duration-200"
+          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-all duration-200"
         />
         <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
           MCBECD
