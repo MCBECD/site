@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: CI / Deploy
 
 on:
   push:
@@ -7,7 +7,43 @@ on:
     branches: [main]
 
 jobs:
+  quality:
+    name: Lint + TypeCheck + Validate + Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Validate docs & i18n
+        run: npm run validate
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
   deploy:
+    name: Deploy to Cloudflare Pages
+    needs: quality
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -15,6 +51,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,8 +66,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
