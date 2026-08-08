@@ -2,7 +2,7 @@
   "common": {
     "loading": "加载中...",
     "notFound": "页面未找到",
-    "backToList": "返回列表"
+    "backToList": "首页"
   },
   "nav": {
     "settings": "设置",

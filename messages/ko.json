@@ -2,7 +2,7 @@
   "common": {
     "loading": "로딩 중...",
     "notFound": "페이지를 찾을 수 없습니다",
-    "backToList": "목록으로"
+    "backToList": "홈으로"
   },
   "nav": {
     "settings": "설정",

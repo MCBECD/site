@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft, Copy, Check, ChevronDown, ChevronRight } from "lucide-react";
+import { Home, Copy, Check, ChevronDown } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
@@ -26,7 +26,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
             className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
               hover:text-[var(--color-accent)] transition-colors no-underline min-h-[44px]"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <Home className="w-4 h-4" />
             <span className="hidden sm:inline">{t("common.backToList")}</span>
           </Link>
 
@@ -67,16 +67,16 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         </header>
 
         {/* 面包屑 */}
-        <nav className="flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)] px-5 pt-3 pb-4">
+        {/* <nav className="flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)] px-5 pt-3 pb-4">
           <Link href="/docs" className="hover:text-[var(--color-accent)] transition-colors no-underline">
             {t("doc.home")}
           </Link>
           <ChevronRight className="w-3 h-3" />
           <span className="text-[var(--color-text-secondary)] truncate max-w-[280px]">{doc.meta.title}</span>
-        </nav>
+        </nav> */}
 
         {/* 分割线 */}
-        <div className="mx-5 border-t border-[var(--color-border)]" />
+        {/* <div className="mx-5 border-t border-[var(--color-border)]" /> */}
 
         {/* 文档正文 */}
         <div
