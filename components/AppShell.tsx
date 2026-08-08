@@ -20,15 +20,12 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
   }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
 
-  /* ---------- Background image sizing ---------- */
-  // Load image, get natural size, ensure it covers viewport (+25% extra for parallax).
-  // On regular screens the original resolution is usually enough;
-  // on 4K we scale up so it still fills the screen.
+  /* ---------- Background image: scale to cover + 25% extra ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
   const [bgLayout, setBgLayout] = useState<{
-    w: number; h: number;        // rendered pixel size
-    baseX: number; baseY: number; // centering offset (negative)
-    maxX: number; maxY: number;   // safe shift range (px)
+    scale: number;             // CSS scale() value
+    baseX: number; baseY: number; // centering offset (px)
+    maxX: number; maxY: number;   // safe parallax shift (px)
   } | null>(null);
 
   useEffect(() => {
@@ -39,16 +36,18 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       img.onload = () => {
         const vpW = window.innerWidth;
         const vpH = window.innerHeight;
-        // At least 1× (natural size); scale up only if image can't cover viewport
+        // Natural size if it covers viewport; scale up for 4K / small images
         const minScale = Math.max(1, vpW / img.naturalWidth, vpH / img.naturalHeight);
-        // +25 % headroom for parallax movement
         const scale = minScale * 1.25;
-        const w = img.naturalWidth * scale;
-        const h = img.naturalHeight * scale;
-        const baseX = (vpW - w) / 2;
-        const baseY = (vpH - h) / 2;
+        // After scale, visual size = natW*scale × natH*scale.
+        // Center it via translate (transform-origin: 0 0).
+        const visW = img.naturalWidth * scale;
+        const visH = img.naturalHeight * scale;
+        const baseX = (vpW - visW) / 2;
+        const baseY = (vpH - visH) / 2;
         setBgLayout({
-          w, h, baseX, baseY,
+          scale,
+          baseX, baseY,
           maxX: Math.abs(baseX) * 0.9,
           maxY: Math.abs(baseY) * 0.9,
         });
@@ -68,13 +67,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const el = imgRef.current;
-    if (!el) return;
+    if (!el || !bgLayout) return;
 
-    // When parallax is off, just center the image
-    if (!bgEnabled || !settings.bgParallax || !bgLayout) {
-      el.style.transform = bgLayout
-        ? `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px)`
-        : "";
+    if (!bgEnabled || !settings.bgParallax) {
+      el.style.transform = `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px) scale(${bgLayout.scale})`;
       return;
     }
 
@@ -93,15 +89,15 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const tick = () => {
- const s = smoothRef.current;
+      const s = smoothRef.current;
       const m = mouseRef.current;
       s.x = lerp(s.x, m.x, 0.08);
       s.y = lerp(s.y, m.y, 0.08);
 
-      const { baseX, baseY, maxX, maxY } = bgLayout;
+      const { baseX, baseY, maxX, maxY, scale } = bgLayout;
       const dx = (s.x - 0.5) * 2 * maxX;
       const dy = (s.y - 0.5) * 2 * maxY;
-      el.style.transform = `translate(${baseX + dx}px, ${baseY + dy}px)`;
+      el.style.transform = `translate(${baseX + dx}px, ${baseY + dy}px) scale(${scale})`;
 
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -130,9 +126,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             draggable={false}
             className="fixed top-0 left-0 -z-20 pointer-events-none select-none"
             style={{
-              width: bgLayout.w,
-              height: bgLayout.h,
-              transform: `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px)`,
+              transformOrigin: "0 0",
+              transform: `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px) scale(${bgLayout.scale})`,
               willChange: settings.bgParallax ? "transform" : undefined,
             }}
           />
