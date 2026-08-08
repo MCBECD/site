@@ -18,7 +18,15 @@
     "fontSizeSmall": "小",
     "fontSizeMedium": "中",
     "fontSizeLarge": "大",
-    "language": "语言"
+    "language": "语言",
+    "tabGeneral": "通用",
+    "tabPlugins": "插件",
+    "pluginColorTheme": "色彩主题",
+    "colorDefault": "默认",
+    "colorRed": "红",
+    "colorBlue": "蓝",
+    "colorGreen": "绿",
+    "colorCustom": "自定义"
   },
   "code": {
     "copy": "复制",

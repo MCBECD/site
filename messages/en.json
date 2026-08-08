@@ -18,7 +18,15 @@
     "fontSizeSmall": "S",
     "fontSizeMedium": "M",
     "fontSizeLarge": "L",
-    "language": "Language"
+    "language": "Language",
+    "tabGeneral": "General",
+    "tabPlugins": "Plugins",
+    "pluginColorTheme": "Color Theme",
+    "colorDefault": "Default",
+    "colorRed": "Red",
+    "colorBlue": "Blue",
+    "colorGreen": "Green",
+    "colorCustom": "Custom"
   },
   "code": {
     "copy": "Copy",
