@@ -531,16 +531,20 @@ pre.shiki {
   animation: overlayIn 0.18s ease reverse both;
 }
 
-/* Settings panel */
+/* Settings panel — uses opacity + scale only;
+   centering is handled by margin:auto on a fixed inset:0 box,
+   so the keyframe transform never collides with positioning. */
 @keyframes panelIn {
-  from { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
-  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  from { opacity: 0; scale: 0.96; }
+  to   { opacity: 1; scale: 1; }
 }
 .settings-panel-in {
   animation: panelIn 0.22s var(--ease-out) both;
+  will-change: opacity, scale;
 }
 .settings-panel-out {
   animation: panelIn 0.18s var(--ease-out) reverse both;
+  will-change: opacity, scale;
 }
 
 /* Dropdown (locale, copy) */
@@ -554,11 +558,22 @@ pre.shiki {
 
 /* Collapse (plugin card body) */
 @keyframes collapseIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .collapse-in {
-  animation: collapseIn 0.2s var(--ease-out) both;
+  animation: collapseIn 0.22s var(--ease-out) both;
+  will-change: opacity, transform;
+}
+
+/* Tab indicator slide */
+@keyframes tabSlideIn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.tab-indicator {
+  animation: tabSlideIn 0.2s var(--ease-out) both;
+  transform-origin: left;
 }
 
 /* ---------------------------------------------------------- * Page transition (pure CSS, compositor-only)

@@ -76,10 +76,10 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         aria-hidden="true"
       />
 
-      <div className={`fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-        w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
-        bg-[var(--color-bg-primary)] border border-[var(--color-border)]
-        ${panelAnim}`}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+        <div className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
+          bg-[var(--color-bg-primary)] border border-[var(--color-border)] pointer-events-auto
+          ${panelAnim}`}>
 
         {/* header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
@@ -106,7 +106,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"}`}
             >
               {t(key === "general" ? "settings.tabGeneral" : "settings.tabPlugins")}
-              {tab === key && <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full" />}
+              {tab === key && <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full tab-indicator" key={`indicator-${key}`} />}
             </button>
           ))}
         </div>
@@ -162,6 +162,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
           )}
         </div>
       </div>
+      </div>
     </>
   );
 }
@@ -205,7 +206,7 @@ function PluginCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`rounded-lg border transition-colors ${
+    <div className={`rounded-lg border transition-all duration-200 ${
       enabled
         ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
         : "border-[var(--color-border)] bg-[var(--color-bg-secondary)] opacity-60"
@@ -227,7 +228,7 @@ function PluginCard({
 
       {/* expanded settings */}
       {enabled && (
-        <div className="px-4 pb-4 pt-1 border-t border-[var(--color-border)] collapse-in">
+        <div className="px-4 pb-4 pt-1 border-t border-[var(--color-border)] collapse-in" key="plugin-body">
           <div className="pt-3">{children}</div>
         </div>
       )}
