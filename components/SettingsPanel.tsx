@@ -31,55 +31,53 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={onClose} aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50" onClick={onClose} aria-hidden="true" />
       <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-        w-[min(400px,calc(100vw-32px))] rounded-xl shadow-2xl
-        bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+        w-[min(360px,calc(100vw-32px))] rounded-xl shadow-2xl
+        bg-[var(--color-bg-primary)] border border-[var(--color-border)]">
 
-        <div className="flex items-center justify-between px-6 pt-5 pb-0">
-          <h2 className="text-base font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
+        <div className="flex items-center justify-between px-5 pt-5 pb-0">
+          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
           <button
             onClick={onClose}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 rounded-md
+            className="w-8 h-8 flex items-center justify-center -mr-1 rounded-[var(--radius)]
               text-[var(--color-text-tertiary)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="px-6 py-5 space-y-6">
-          {/* 主题 */}
+        <div className="px-5 py-5 space-y-5">
           <Section title={t("settings.theme")}>
             <div className="flex gap-1.5">
               {THEME_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => updateTheme(opt.value)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 min-h-[44px] rounded-lg text-sm transition-colors
+                  className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-[var(--radius)] text-[13px] transition-colors
                     ${settings.theme === opt.value
                       ? "bg-[var(--color-accent)] text-white"
-                      : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-primary)]" }
+                      : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]" }
                   `}
                 >
-                  <opt.icon className="w-4 h-4" />
+                  <opt.icon className="w-3.5 h-3.5" />
                   {t(opt.labelKey)}
                 </button>
               ))}
             </div>
           </Section>
 
-          {/* 字体大小 */}
           <Section title={t("settings.fontSize")}>
             <div className="flex gap-1.5">
               {FONT_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => updateFontSize(opt.value)}
-                  className={`flex-1 min-h-[44px] rounded-lg text-sm transition-colors
+                  className={`flex-1 h-10 rounded-[var(--radius)] text-[13px] transition-colors
                     ${settings.fontSize === opt.value
                       ? "bg-[var(--color-accent)] text-white"
-                      : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-primary)]" }
+                      : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]" }
                   `}
                 >
                   {t(opt.labelKey)}
@@ -88,7 +86,6 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
             </div>
           </Section>
 
-          {/* 语言 - 自定义下拉菜单 */}
           <Section title={t("settings.language")}>
             <LocaleDropdown
               value={settings.locale}
@@ -101,24 +98,12 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   );
 }
 
-/* ----------------------------------------------------------
- * 自定义语言下拉菜单（非原生 <select>）
- * ---------------------------------------------------------- */
-function LocaleDropdown({
-  value,
-  onChange,
-}: {
-  value: Locale;
-  onChange: (v: Locale) => void;
-}) {
+function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Locale) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const select = useCallback(
-    (v: Locale) => {
-      onChange(v);
-      setOpen(false);
-    },
+    (v: Locale) => { onChange(v); setOpen(false); },
     [onChange],
   );
 
@@ -136,37 +121,32 @@ function LocaleDropdown({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full min-h-[44px] flex items-center justify-between px-3 rounded-lg text-sm
+        className="w-full h-10 flex items-center justify-between px-3 rounded-[var(--radius)] text-[13px]
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
           border border-[var(--color-border)]
-          hover:border-[var(--color-accent)]
+          hover:border-[var(--color-accent)]/30
           transition-colors text-left"
       >
         <span>{NATIVE_NAMES[value]}</span>
-        <ChevronDown
-          className={`w-4 h-4 text-[var(--color-text-tertiary)] transition-transform ${open ? "rotate-180" : ""}`}
-        />
+        <ChevronDown className={`w-3.5 h-3.5 text-[var(--color-text-tertiary)] transition-transform duration-150 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div
-          className="absolute left-0 right-0 top-full mt-1 py-1 rounded-lg border border-[var(--color-border)]
-            bg-[var(--color-bg-primary)] shadow-lg z-50 max-h-60 overflow-y-auto"
-        >
+        <div className="absolute left-0 right-0 top-full mt-1.5 py-1 rounded-[var(--radius)] border border-[var(--color-border)]
+          bg-[var(--color-bg-primary)] shadow-lg z-50 max-h-56 overflow-y-auto animate-[slideUp_0.12s_ease]">
           {LOCALES.map((loc) => (
             <button
               key={loc}
               type="button"
               onClick={() => select(loc)}
-              className={`w-full text-left px-3 py-2.5 text-sm flex items-center justify-between
-                transition-colors
+              className={`w-full text-left px-3 py-2 text-[13px] flex items-center justify-between transition-colors
                 ${loc === value
-                  ? "text-[var(--color-accent)] bg-[var(--color-accent)]/5"
-                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"}
+                  ? "text-[var(--color-accent)]"
+                  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"}
               `}
             >
               <span>{NATIVE_NAMES[loc]}</span>
-              {loc === value && <Check className="w-4 h-4" />}
+              {loc === value && <Check className="w-3.5 h-3.5" />}
             </button>
           ))}
         </div>
@@ -178,7 +158,7 @@ function LocaleDropdown({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-sm font-medium text-[var(--color-text-primary)] mb-3">{title}</div>
+      <div className="text-[13px] font-medium text-[var(--color-text-primary)] mb-2.5">{title}</div>
       {children}
     </div>
   );

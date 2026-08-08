@@ -44,29 +44,29 @@ export function CodeBlockClient({ html, code, displayLang }: CodeBlockClientProp
   );
 
   return (
-    <div className="group relative my-4 rounded-lg border border-[var(--color-border)] overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-1.5 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border)]">
-        <span className="text-xs text-[var(--color-text-tertiary)] font-mono">{displayLang}</span>
+    <div className="group relative my-5 rounded-[var(--radius)] border border-[var(--color-border)] overflow-hidden">
+      <div className="flex items-center justify-between px-4 h-9 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border)]">
+        <span className="text-[11px] text-[var(--color-text-tertiary)] font-mono">{displayLang}</span>
         <button
           onClick={handleCopyClick}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px]
             text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
             hover:bg-[var(--color-bg-secondary)] transition-colors"
           title={t("code.copy")}
         >
           {copied ? (
-            <span className="flex items-center gap-1 text-green-500">
-              <Check className="w-3.5 h-3.5" />
+            <span className="flex items-center gap-1 text-emerald-500">
+              <Check className="w-3 h-3" />
               {t("code.copied")}
             </span>
           ) : (
-            <Copy className="w-3.5 h-3.5" />
+            <Copy className="w-3 h-3" />
           )}
         </button>
       </div>
       <div
         onClick={handleBlockClick}
-        className="cursor-copy [&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:overflow-x-auto [&_code]:!text-sm"
+        className="cursor-copy [&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:overflow-x-auto [&_code]:!text-[13px]"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>

@@ -28,13 +28,13 @@ export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
   return (
     <button
       onClick={handleDownload}
-      className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-lg text-sm
-        bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)]
-        hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]
+      className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-[var(--radius)] text-[13px]
+        text-[var(--color-text-secondary)]
+        hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
         transition-colors"
       title={t("code.download")}
     >
-      <Download className="w-4 h-4" />
+      <Download className="w-3.5 h-3.5" />
       <span className="hidden sm:inline">{t("code.download")}</span>
     </button>
   );
