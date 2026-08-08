@@ -10,13 +10,13 @@
  */
 
 import type { Plugin } from "unified";
-import type { Root, Blockquote, Paragraph, Text, Html, Node } from "mdast";
+import type { Root, Blockquote, Paragraph, Text, Html, Parent } from "mdast";
 
-function visit(tree: Node, type: string, callback: (node: Node, index: number) => void) {
-  function walk(node: Node) {
+function visit(tree: Parent, type: string, callback: (node: Parent, index: number) => void) {
+  function walk(node: Parent) {
     if (node.children && Array.isArray(node.children)) {
       for (let i = 0; i < node.children.length; i++) {
-        const child = node.children[i] as Node;
+        const child = node.children[i] as Parent;
         if (child.type === type) {
           callback(child, i);
         }
@@ -61,11 +61,11 @@ export const remarkGithubAlerts: Plugin<[], Root> = () => {
   return (tree: Root) => {
     const alerts: AlertMatch[] = [];
 
-    visit(tree, "blockquote", (node: Blockquote, index) => {
+    visit(tree, "blockquote", (node, index) => {
       if (typeof index !== "number") return;
-      const first = node.children[0];
+      const first = (node as Blockquote).children[0];
       if (!first || first.type !== "paragraph") return;
-      const textNode = first.children[0];
+      const textNode = (first as Paragraph).children[0];
       if (!textNode || textNode.type !== "text") return;
 
       const match = ALERT_RE.exec((textNode as Text).value);
@@ -77,8 +77,9 @@ export const remarkGithubAlerts: Plugin<[], Root> = () => {
 
       const title = match[2]?.trim() || meta.defaultTitle;
       const bodyParts: string[] = [];
-      for (let i = 1; i < node.children.length; i++) {
-        const child = node.children[i];
+      const bqChildren = (node as Blockquote).children;
+      for (let i = 1; i < bqChildren.length; i++) {
+        const child = bqChildren[i];
         if (!child) continue;
         if (child.type === "paragraph") {
           const text = (child as Paragraph).children.map(extractText).join("");

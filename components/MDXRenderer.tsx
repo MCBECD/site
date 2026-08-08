@@ -8,6 +8,8 @@ import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 
 const components = {
+  /* h2 is hidden in doc detail pages — the header card already shows the title */
+  h2: () => null,
   pre: async ({ children }: { children: ReactNode }) => {
     const codeEl = extractCodeChild(children);
     if (!codeEl) {
