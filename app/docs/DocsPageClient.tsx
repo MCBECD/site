@@ -143,7 +143,7 @@ export default function DocsPageClient({ docs }: Props) {
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
-        <div className="space-y-1.5">
+        <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
           {pageDocs.map((doc) => (
             <Link
               key={doc.id}
@@ -153,7 +153,7 @@ export default function DocsPageClient({ docs }: Props) {
                 border border-[var(--color-border)]
                 hover:border-[var(--color-accent)]/20
                 hover:shadow-[var(--color-card-hover-shadow)]
-                transition-all duration-150 no-underline"
+                transition-colors duration-150 active:scale-[0.995] no-underline"
             >
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors">

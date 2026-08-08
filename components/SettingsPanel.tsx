@@ -58,7 +58,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
       <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
         w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
         bg-[var(--color-bg-primary)] border border-[var(--color-border)]
-        animate-[fadeIn_0.15s_ease]">
+        animate-[fadeIn_0.15s_var(--ease-out)]">
 
         {/* header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
@@ -161,7 +161,8 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
           : "bg-[var(--color-bg-tertiary)] border-[var(--color-border)]"
       }`}
     >
-      <span className={`block absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform ${
+      <span className={`block absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform
+        duration-150 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
         checked ? "translate-x-5" : "translate-x-0"
       }`} />
     </button>
