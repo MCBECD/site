@@ -1,69 +1,44 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 /**
- * Cross-page transition wrapper.
+ * Cross-page transition.
  *
- * Detects route changes via usePathname() and plays a subtle
- * fade + directional slide animation using framer-motion's
- * AnimatePresence (keeps the old page mounted during exit).
- *
- * Direction is inferred by comparing path depth:
- *   deeper     → slide from right (forward)
- *   shallower  → slide from left  (back)
+ * Enter: fade + subtle upward slide.
+ * Exit: quick fade only (no movement, avoids direction bugs).
+ * mode="wait": exit completes before enter starts — clean sequence.
+ * initial={false}: no animation on first page load.
  */
-
-const dur = 0.22;
-const ease = [0.23, 1, 0.32, 1] as const;
-
-const forward: Variants = {
-  initial: { opacity: 0, x: 24 },
-  animate: { opacity: 1, x: 0, transition: { duration: dur, ease } },
-  exit: { opacity: 0, x: -16, transition: { duration: dur * 0.8, ease } },
-};
-
-const backward: Variants = {
-  initial: { opacity: 0, x: -24 },
-  animate: { opacity: 1, x: 0, transition: { duration: dur, ease } },
-  exit: { opacity: 0, x: 16, transition: { duration: dur * 0.8, ease } },
-};
-
-const variantsMap = { forward, backward } as const;
-
-/* Track previous path depth for direction inference */
-let prevDepth = 1;
-let isFirstMount = true;
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  const depth = pathname.split("/").filter(Boolean).length;
-  const isForward = depth > prevDepth;
-  const direction = isFirstMount ? "forward" : isForward ? "forward" : "backward";
-  const variants = variantsMap[direction];
+  const isFirstMount = useRef(true);
 
   useEffect(() => {
-    prevDepth = depth;
-    isFirstMount = false;
+    isFirstMount.current = false;
   });
 
-  /* Scroll to top on route change */
+  /* Scroll to top on navigation (not on first mount) */
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    if (!isFirstMount.current) {
+      window.scrollTo({ top: 0 });
+    }
   }, [pathname]);
 
   return (
-    <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
-        variants={variants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        className="page-transition-wrapper"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0 }}
+        transition={{
+          duration: 0.18,
+          ease: [0.23, 1, 0.32, 1],
+        }}
       >
         {children}
       </motion.div>
