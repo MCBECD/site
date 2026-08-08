@@ -34,6 +34,9 @@
     "resultCount": "{count} 條結果",
     "noResults": "沒有找到符合的指令",
     "home": "首頁",
-    "updatedAt": "更新於 {date}"
+    "updatedAt": "更新於 {date}",
+    "title": "指令庫",
+    "subtitle": "共 {count} 條指令，可直接複製使用",
+    "notFound": "頁面未找到"
   }
 }

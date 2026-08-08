@@ -34,6 +34,9 @@
     "resultCount": "{count} 件の結果",
     "noResults": "一致するコマンドが見つかりません",
     "home": "ホーム",
-    "updatedAt": "{date} 更新"
+    "updatedAt": "{date} 更新",
+    "title": "コマンドライブラリ",
+    "subtitle": "{count} 件のコマンドが利用可能",
+    "notFound": "ページが見つかりません"
   }
 }

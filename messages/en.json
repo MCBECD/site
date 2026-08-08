@@ -34,6 +34,9 @@
     "resultCount": "{count} results",
     "noResults": "No matching commands found",
     "home": "Home",
-    "updatedAt": "Updated {date}"
+    "updatedAt": "Updated {date}",
+    "title": "Command Library",
+    "subtitle": "{count} commands available, ready to copy",
+    "notFound": "Page Not Found"
   }
 }

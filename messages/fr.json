@@ -34,6 +34,9 @@
     "resultCount": "{count} résultats",
     "noResults": "Aucune commande correspondante trouvée",
     "home": "Accueil",
-    "updatedAt": "Mis à jour {date}"
+    "updatedAt": "Mis à jour {date}",
+    "title": "Bibliothèque de commandes",
+    "subtitle": "{count} commandes disponibles, prêtes à copier",
+    "notFound": "Page introuvable"
   }
 }

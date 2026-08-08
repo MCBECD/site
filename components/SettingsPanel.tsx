@@ -33,8 +33,9 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     <>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50" onClick={onClose} aria-hidden="true" />
       <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-        w-[min(360px,calc(100vw-32px))] rounded-xl shadow-2xl
-        bg-[var(--color-bg-primary)] border border-[var(--color-border)]">
+        w-[min(360px,calc(100vw-32px))] rounded-xl shadow-xl
+        bg-[var(--color-bg-primary)] border border-[var(--color-border)]
+        animate-[fadeIn_0.15s_ease]">
 
         <div className="flex items-center justify-between px-5 pt-5 pb-0">
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>

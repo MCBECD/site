@@ -118,9 +118,9 @@ pre.shiki {
   --tw-prose-td-borders: var(--color-border);
 }
 
-.prose h2 { margin-top: 1.75rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.01em; }
-.prose h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 600; }
-.prose h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; }
+.prose h2 { margin-top: 2rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.01em; font-size: 1.25em; }
+.prose h3 { margin-top: 1.75rem; margin-bottom: 0.5rem; font-weight: 600; font-size: 1.1em; }
+.prose h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1em; }
 .prose p + p { margin-top: 0.875rem; }
 .prose p + pre,
 .prose p + .group { margin-top: 1rem; }
@@ -134,12 +134,22 @@ pre.shiki {
  * 搜索框
  * ---------------------------------------------------------- */
 .search-input {
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .search-input:focus {
   border-color: var(--color-accent) !important;
   box-shadow: 0 0 0 3px var(--color-accent-muted);
+  background-color: var(--color-bg-primary) !important;
+}
+
+.search-input::placeholder {
+  transition: color 0.2s;
+}
+
+.search-input:focus::placeholder {
+  color: var(--color-text-tertiary) !important;
+  opacity: 0.5;
 }
 
 /* ----------------------------------------------------------
@@ -153,4 +163,35 @@ pre.shiki {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------------------------------------------------
+ * 卡片列表动画
+ * ---------------------------------------------------------- */
+@keyframes listIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.doc-card {
+  animation: listIn 0.2s ease both;
+}
+
+.doc-card:nth-child(2) { animation-delay: 0.02s; }
+.doc-card:nth-child(3) { animation-delay: 0.04s; }
+.doc-card:nth-child(4) { animation-delay: 0.06s; }
+.doc-card:nth-child(5) { animation-delay: 0.08s; }
+.doc-card:nth-child(6) { animation-delay: 0.10s; }
+.doc-card:nth-child(7) { animation-delay: 0.12s; }
+.doc-card:nth-child(8) { animation-delay: 0.14s; }
+
+/* ----------------------------------------------------------
+ * Navbar 分隔线
+ * ---------------------------------------------------------- */
+.nav-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--color-border);
+  margin: 0 4px;
+  flex-shrink: 0;
 }
