@@ -20,107 +20,63 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
   }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
 
-  /* ---------- Background image: cover screen × 1.8 ---------- */
+  /* ---------- bg image ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
-  const [bgLayout, setBgLayout] = useState<{
-    scale: number;
-    baseX: number; baseY: number;
-  } | null>(null);
+  const [bg, setBg] = useState<{ s: number; ox: number; oy: number; ex: number; ey: number } | null>(null);
 
   useEffect(() => {
-    if (!bgEnabled) { setBgLayout(null); return; }
-
-    const calc = () => {
-      const img = new Image();
-      img.onload = () => {
-        const vpW = window.innerWidth;
-        const vpH = window.innerHeight;
-        // Cover the screen, then ×1.8 for parallax room
-        const scale = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight) * 1.8;
-        const visW = img.naturalWidth * scale;
-        const visH = img.naturalHeight * scale;
-        setBgLayout({
-          scale,
-          baseX: (vpW - visW) / 2,
-          baseY: (vpH - visH) / 2,
-        });
-      };
-      img.src = settings.bgImage;
+    if (!bgEnabled) { setBg(null); return; }
+    const img = new Image();
+    img.onload = () => {
+      const vpW = window.innerWidth, vpH = window.innerHeight;
+      const s = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight) * 1.8;
+      const vw = img.naturalWidth * s, vh = img.naturalHeight * s;
+      setBg({ s, ox: (vpW - vw) / 2, oy: (vpH - vh) / 2, ex: (vw - vpW) / 2, ey: (vh - vpH) / 2 });
     };
-
-    calc();
-    window.addEventListener("resize", calc);
-    return () => window.removeEventListener("resize", calc);
+    img.src = settings.bgImage;
+    const onResize = () => { img.src = settings.bgImage; };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, [bgEnabled, settings.bgImage]);
 
-  /* ---------- Parallax: pointer XY / viewport + lerp easing ---------- */
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const smoothRef = useRef({ x: 0.5, y: 0.5 });
-  const rafRef = useRef(0);
-
+  /* ---------- parallax ---------- */
   useEffect(() => {
     const el = imgRef.current;
-    if (!el || !bgLayout) return;
+    if (!el || !bg) return;
 
-    const applyTransform = (dx: number, dy: number) => {
-      el.style.transform = `translate(${bgLayout.baseX + dx}px, ${bgLayout.baseY + dy}px) scale(${bgLayout.scale})`;
-    };
-
-    if (!bgEnabled || !settings.bgParallax) {
-      applyTransform(0, 0);
+    // parallax off → just center
+    if (!settings.bgParallax) {
+      el.style.transform = `translate(${bg.ox}px,${bg.oy}px) scale(${bg.s})`;
       return;
     }
 
-    // Extra pixels on each side after scaling
-    const vpW = window.innerWidth;
-    const vpH = window.innerHeight;
-    const extraX = (imgRef.current!.naturalWidth * bgLayout.scale - vpW) / 2;
-    const extraY = (imgRef.current!.naturalHeight * bgLayout.scale - vpH) / 2;
+    let mx = 0.5, my = 0.5, sx = 0.5, sy = 0.5;
+    const ptr = (x: number, y: number) => { mx = x / innerWidth; my = y / innerHeight; };
+    const onM = (e: MouseEvent) => ptr(e.clientX, e.clientY);
+    const onT = (e: TouchEvent) => { const t = e.touches[0]; if (t) ptr(t.clientX, t.clientY); };
+    addEventListener("mousemove", onM, { passive: true });
+    addEventListener("touchmove", onT, { passive: true });
 
-    const onPointer = (cx: number, cy: number) => {
-      mouseRef.current = { x: cx / vpW, y: cy / vpH };
-    };
-    const onMouse = (e: MouseEvent) => onPointer(e.clientX, e.clientY);
-    const onTouch = (e: TouchEvent) => {
-      const t = e.touches[0];
-      if (t) onPointer(t.clientX, t.clientY);
-    };
-
-    window.addEventListener("mousemove", onMouse, { passive: true });
-    window.addEventListener("touchmove", onTouch, { passive: true });
-
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
+    let raf = 0;
     const tick = () => {
-      const s = smoothRef.current;
-      const m = mouseRef.current;
-      s.x = lerp(s.x, m.x, 0.08);
-      s.y = lerp(s.y, m.y, 0.08);
-
-      // Pointer 0→1 mapped to -extra→+extra
-      applyTransform(
-        (s.x - 0.5) * 2 * extraX,
-        (s.y - 0.5) * 2 * extraY,
-      );
-
-      rafRef.current = requestAnimationFrame(tick);
+      sx += (mx - sx) * 0.08;
+      sy += (my - sy) * 0.08;
+      el.style.transform = `translate(${bg.ox + (sx - 0.5) * 2 * bg.ex}px,${bg.oy + (sy - 0.5) * 2 * bg.ey}px) scale(${bg.s})`;
+      raf = requestAnimationFrame(tick);
     };
-    rafRef.current = requestAnimationFrame(tick);
+    raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("mousemove", onMouse);
-      window.removeEventListener("touchmove", onTouch);
-      cancelAnimationFrame(rafRef.current);
+      removeEventListener("mousemove", onM);
+      removeEventListener("touchmove", onT);
+      cancelAnimationFrame(raf);
     };
-  }, [bgEnabled, settings.bgParallax, bgLayout]);
+  }, [bg, settings.bgParallax]);
 
   return (
     <>
-      {/* solid base colour */}
       <div className="fixed inset-0 bg-[var(--color-bg-primary)] -z-30" aria-hidden="true" />
-
-      {/* background image */}
-      {bgEnabled && bgLayout && (
+      {bgEnabled && bg && (
         <>
           <img
             ref={imgRef}
@@ -131,18 +87,13 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             className="fixed top-0 left-0 -z-20 pointer-events-none select-none"
             style={{
               transformOrigin: "0 0",
-              transform: `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px) scale(${bgLayout.scale})`,
+              transform: `translate(${bg.ox}px,${bg.oy}px) scale(${bg.s})`,
               willChange: settings.bgParallax ? "transform" : undefined,
             }}
           />
-          <div
-            className="fixed inset-0 -z-10"
-            style={overlayStyle}
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 -z-10" style={overlayStyle} aria-hidden="true" />
         </>
       )}
-
       <Navbar onOpenSettings={openSettings} />
       <SettingsPanel open={settingsOpen} onClose={closeSettings} />
       <main className="pt-[var(--navbar-height)] min-h-screen">
