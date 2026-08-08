@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Sun, Moon, Monitor, ChevronDown, Check, ChevronUp, Palette } from "lucide-react";
+import { X, Sun, Moon, Monitor, ChevronDown, Check, ChevronUp, Palette, Image } from "lucide-react";
 import { useSettings, type Theme, type FontSize, type ColorTheme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
 import { LOCALES, NATIVE_NAMES, type Locale } from "@/lib/i18n/types";
@@ -30,6 +30,12 @@ const COLOR_PRESETS: { value: ColorTheme; labelKey: string; swatch: string }[] =
   { value: "red",    labelKey: "settings.colorRed",    swatch: "linear-gradient(135deg, #fca5a5, #ef4444)" },
   { value: "blue",   labelKey: "settings.colorBlue",   swatch: "linear-gradient(135deg, #93c5fd, #3b82f6)" },
   { value: "green",  labelKey: "settings.colorGreen",  swatch: "linear-gradient(135deg, #86efac, #22c55e)" },
+];
+
+const BG_PRESETS = [
+  { value: "/bg/cargil-1.png", labelKey: "settings.bgPreset1" },
+  { value: "/bg/cargil-2.jpg", labelKey: "settings.bgPreset2" },
+  { value: "/bg/cargil-3.png", labelKey: "settings.bgPreset3" },
 ];
 
 type Tab = "general" | "plugins";
@@ -85,7 +91,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         </div>
 
         {/* scrollable content */}
-        <div className="px-5 py-5 space-y-5 overflow-y-auto flex-1">
+        <div className="px-5 py-5 space-y-3 overflow-y-auto flex-1">
           {tab === "general" ? (
             <>
               <Section title={t("settings.theme")}>
@@ -130,6 +136,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
           ) : (
             <div className="space-y-3">
               <ColorThemePluginCard />
+              <BackgroundImagePluginCard />
             </div>
           )}
         </div>
@@ -253,6 +260,118 @@ function ColorThemePluginCard() {
         </div>
       </div>
     </PluginCard>
+  );
+}
+
+/* ============================================================
+ * Background Image Plugin
+ * ============================================================ */
+
+function BackgroundImagePluginCard() {
+  const { t } = useLocale();
+  const { settings, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, isPluginEnabled, togglePlugin } = useSettings();
+  const id = "background-image";
+  const enabled = isPluginEnabled(id);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = useCallback(() => {
+    fileRef.current?.click();
+  }, []);
+
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        updateBgImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  }, [updateBgImage]);
+
+  return (
+    <PluginCard
+      name={t("settings.pluginBgImage")}
+      desc={t("settings.pluginBgImageDesc")}
+      Icon={Image}
+      enabled={enabled}
+      onToggle={(v) => togglePlugin(id, v)}
+    >
+      <div className="space-y-3">
+        {/* presets grid */}
+        <div className="grid grid-cols-3 gap-2">
+          {BG_PRESETS.map((p) => (
+            <button
+              key={p.value}
+              onClick={() => updateBgImage(p.value)}
+              className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] transition-colors overflow-hidden
+                ${settings.bgImage === p.value
+                  ? "ring-1 ring-[var(--color-accent)]"
+                  : "hover:bg-[var(--color-bg-tertiary)]"}`}
+            >
+              <span
+                className="w-full h-12 rounded bg-cover bg-center border border-[var(--color-border)]"
+                style={{ backgroundImage: `url(${p.value})` }}
+              />
+              <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* upload button */}
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+        <button
+          onClick={handleUpload}
+          className={`w-full flex items-center justify-center gap-2 h-9 rounded-[var(--radius)] text-[12px] transition-colors
+            ${settings.bgImage && !BG_PRESETS.some((p) => p.value === settings.bgImage)
+              ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
+              : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
+        >
+          <Image className="w-3.5 h-3.5" />
+          {t("settings.bgUpload")}
+        </button>
+
+        {/* clear button */}
+        {settings.bgImage && (
+          <button
+            onClick={() => updateBgImage("")}
+            className="w-full text-center text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors"
+          >
+            {t("settings.bgClear")}
+          </button>
+        )}
+
+        {/* overlay opacity */}
+        <SliderRow label={t("settings.bgOverlayOpacity")} value={settings.bgOverlayOpacity} onChange={updateBgOverlayOpacity} />
+
+        {/* overlay blur */}
+        <SliderRow label={t("settings.bgOverlayBlur")} value={settings.bgOverlayBlur} onChange={updateBgOverlayBlur} max={20} />
+      </div>
+    </PluginCard>
+  );
+}
+
+/* ============================================================
+ * Slider Row
+ * ============================================================ */
+
+function SliderRow({ label, value, onChange, max = 100 }: {
+  label: string; value: number; onChange: (v: number) => void; max?: number;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-[12px] text-[var(--color-text-secondary)] w-[68px] flex-shrink-0 text-right">{label}</span>
+      <input
+        type="range"
+        min={0}
+        max={max}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="flex-1 h-1.5 accent-[var(--color-accent)]"
+      />
+      <span className="text-[11px] text-[var(--color-text-tertiary)] w-8 text-right tabular-nums">{value}</span>
+    </div>
   );
 }
 
