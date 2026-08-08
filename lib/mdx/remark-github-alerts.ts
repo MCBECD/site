@@ -10,8 +10,22 @@
  */
 
 import type { Plugin } from "unified";
-import type { Root, Blockquote, Paragraph, Text, Html } from "mdast";
-import { visit } from "unist-util-visit";
+import type { Root, Blockquote, Paragraph, Text, Html, Node } from "mdast";
+
+function visit(tree: Node, type: string, callback: (node: Node, index: number) => void) {
+  function walk(node: Node) {
+    if (node.children && Array.isArray(node.children)) {
+      for (let i = 0; i < node.children.length; i++) {
+        const child = node.children[i] as Node;
+        if (child.type === type) {
+          callback(child, i);
+        }
+        walk(child);
+      }
+    }
+  }
+  walk(tree);
+}
 
 const ALERT_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)/i;
 
