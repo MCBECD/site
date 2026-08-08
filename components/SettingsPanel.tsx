@@ -45,7 +45,6 @@ type Tab = "general" | "plugins";
 export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   const {
     settings, updateTheme, updateFontSize, updateLocale,
-    isPluginEnabled, togglePlugin,
   } = useSettings();
   const { t } = useLocale();
   const [tab, setTab] = useState<Tab>("general");

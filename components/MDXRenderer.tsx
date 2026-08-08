@@ -1,5 +1,5 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { createHighlighter } from "shiki";
+import { createHighlighter, type Highlighter } from "shiki";
 import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
@@ -24,7 +24,6 @@ const components = {
       {children}
     </code>
   ),
-  /* @constraint 外站链接加安全属性防 tabnabbing */
   a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) => {
     const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
     return (
@@ -57,7 +56,7 @@ const components = {
   ),
 };
 
-/** @why 从 <pre><code>...</code></pre> 结构中提取 <code> 元素 */
+/** 从 <pre><code>...</code></pre> 结构中提取 <code> 元素 */
 function extractCodeChild(children: ReactNode): React.ReactElement | null {
   if (isValidElement(children) && children.type === "code") return children as React.ReactElement;
   if (Array.isArray(children) && children.length === 1) {
@@ -67,43 +66,37 @@ function extractCodeChild(children: ReactNode): React.ReactElement | null {
   return null;
 }
 
-let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
+let highlighter: Highlighter | null = null;
 
-async function getHighlighter() {
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
+async function getHighlighter(): Promise<Highlighter> {
+  if (!highlighter) {
+    highlighter = await createHighlighter({
       themes: ["github-light", "github-dark"],
       langs: ["shell", "javascript", "typescript", "json", "text"],
     });
   }
-  return highlighterPromise;
+  return highlighter;
 }
 
 async function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const hl = await getHighlighter();
-
-  /* @constraint shiki 不支持 mcfunction 等语言，高亮回退 text，标签保留原文 */
   const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "text";
-
   const html = hl.codeToHtml(code, {
     lang: resolvedLang,
     themes: { light: "github-light", dark: "github-dark" },
   });
-
   return <CodeBlockClient html={html} code={code} displayLang={lang === "text" ? "" : lang} />;
 }
 
-interface MDXRendererProps {
-  source: string;
-}
-
-export function MDXRenderer({ source }: MDXRendererProps) {
+export function MDXRenderer({ source }: { source: string }) {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
+        </div>
+      }
+    >
       <MDXRemote
         source={source}
         components={components}

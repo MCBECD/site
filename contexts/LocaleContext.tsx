@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 import type { Locale, Messages } from "@/lib/i18n/types";
 import zhCN from "@/messages/zh-CN.json";
 import en from "@/messages/en.json";
@@ -46,26 +46,26 @@ interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-interface LocaleProviderProps {
-  locale: Locale;
-  children: React.ReactNode;
-}
-
-export function LocaleProvider({ locale, children }: LocaleProviderProps) {
+export function LocaleProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
   const messages = MSG[locale];
 
-  const t = (key: string, vars?: Record<string, string | number>): string => {
-    let result = getNested(messages, parsePath(key), key);
-    if (vars) {
-      for (const [k, v] of Object.entries(vars)) {
-        result = result.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+  const t = useCallback(
+    (key: string, vars?: Record<string, string | number>): string => {
+      let result = getNested(messages, parsePath(key), key);
+      if (vars) {
+        for (const [k, v] of Object.entries(vars)) {
+          result = result.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+        }
       }
-    }
-    return result;
-  };
+      return result;
+    },
+    [messages],
+  );
+
+  const value = useMemo(() => ({ locale, messages, t }), [locale, messages, t]);
 
   return (
-    <LocaleContext value={{ locale, messages, t }}>
+    <LocaleContext value={value}>
       {children}
     </LocaleContext>
   );

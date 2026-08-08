@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
 import { useSettings, type Theme } from "./SettingsContext";
 
 interface ThemeContextValue {
@@ -9,28 +9,33 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue>({ resolvedTheme: "light" });
 
+function resolveTheme(theme: Theme): "light" | "dark" {
+  if (theme === "system") {
+    if (typeof window === "undefined") return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return theme;
+}
+
 /**
- * @why 独立 ThemeContext 专门负责 DOM 层主题应用，
- *      监听系统主题变化，避免主题切换闪烁
+ * 独立 ThemeContext 负责主题的 DOM 操作：dark class 和 color-scheme。
+ * 监听系统主题变化，避免切换闪烁。
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings();
   const { theme } = settings;
+  const resolvedTheme = useMemo(() => resolveTheme(theme), [theme]);
+  const prevResolved = useRef(resolvedTheme);
 
-  const resolvedTheme = resolveTheme(theme);
-
-  /* @side-effect 同步 dark class 和 color-scheme */
+  /* 同步 dark class + color-scheme */
   useEffect(() => {
     const root = document.documentElement;
-    if (resolvedTheme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    root.classList.toggle("dark", resolvedTheme === "dark");
     root.style.colorScheme = resolvedTheme;
+    prevResolved.current = resolvedTheme;
   }, [resolvedTheme]);
 
-  /* @side-effect 监听系统主题变化 */
+  /* 监听系统主题变化 */
   useEffect(() => {
     if (theme !== "system") return;
 
@@ -53,12 +58,4 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
 export function useTheme(): ThemeContextValue {
   return useContext(ThemeContext);
-}
-
-function resolveTheme(theme: Theme): "light" | "dark" {
-  if (theme === "system") {
-    if (typeof window === "undefined") return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-  return theme;
 }

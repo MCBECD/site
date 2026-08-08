@@ -41,9 +41,9 @@ const STORAGE_KEY = "mcbecd-settings";
 /* ---------- Color utility ---------- */
 
 function hexToHSL(hex: string): [number, number, number] {
-  let r = parseInt(hex.slice(1, 3), 16) / 255;
-  let g = parseInt(hex.slice(3, 5), 16) / 255;
-  let b = parseInt(hex.slice(5, 7), 16) / 255;
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
   let h = 0, s = 0;
   const l = (max + min) / 2;
