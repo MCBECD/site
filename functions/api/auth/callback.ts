@@ -22,7 +22,8 @@ export async function onRequest(context: {
   const url = new URL(context.request.url);
   const code = url.searchParams.get("code");
   const error = url.searchParams.get("error");
-  const state = url.searchParams.get("state");
+  // state param reserved for future CSRF validation
+  url.searchParams.get("state");
 
   const homeUrl = "https://mcbecd.pages.dev";
 

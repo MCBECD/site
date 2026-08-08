@@ -27,7 +27,16 @@
     "colorRed": "紅",
     "colorBlue": "藍",
     "colorGreen": "綠",
-    "colorCustom": "自訂"
+    "colorCustom": "自訂",
+    "pluginBgImage": "背景圖片",
+    "pluginBgImageDesc": "為頁面添加背景圖片，可自訂遮罩透明度和模糊度",
+    "bgPreset1": "Cargil 1",
+    "bgPreset2": "Cargil 2",
+    "bgPreset3": "Cargil 3",
+    "bgUpload": "上傳圖片",
+    "bgClear": "清除背景",
+    "bgOverlayOpacity": "遮罩透明度",
+    "bgOverlayBlur": "模糊度"
   },
   "code": {
     "copy": "複製",

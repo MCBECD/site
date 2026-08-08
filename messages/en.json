@@ -27,7 +27,16 @@
     "colorRed": "Red",
     "colorBlue": "Blue",
     "colorGreen": "Green",
-    "colorCustom": "Custom"
+    "colorCustom": "Custom",
+    "pluginBgImage": "Background Image",
+    "pluginBgImageDesc": "Add a background image to the page with customizable overlay opacity and blur",
+    "bgPreset1": "Cargil 1",
+    "bgPreset2": "Cargil 2",
+    "bgPreset3": "Cargil 3",
+    "bgUpload": "Upload Image",
+    "bgClear": "Clear Background",
+    "bgOverlayOpacity": "Overlay",
+    "bgOverlayBlur": "Blur"
   },
   "code": {
     "copy": "Copy",

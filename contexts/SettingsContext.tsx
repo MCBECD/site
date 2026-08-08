@@ -25,6 +25,9 @@ export interface Settings {
   colorTheme: ColorTheme;
   customColor: string;
   plugins: PluginStates;
+  bgImage: string;
+  bgOverlayOpacity: number;
+  bgOverlayBlur: number;
 }
 
 const FONT_SIZE_MAP: Record<FontSize, number> = {
@@ -38,9 +41,9 @@ const STORAGE_KEY = "mcbecd-settings";
 /* ---------- Color utility ---------- */
 
 function hexToHSL(hex: string): [number, number, number] {
-  let r = parseInt(hex.slice(1, 3), 16) / 255;
-  let g = parseInt(hex.slice(3, 5), 16) / 255;
-  let b = parseInt(hex.slice(5, 7), 16) / 255;
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
   let h = 0, s = 0;
   const l = (max + min) / 2;
@@ -151,6 +154,9 @@ function defaultSettings(): Settings {
     colorTheme: "default",
     customColor: "#3b82f6",
     plugins: {},
+    bgImage: "",
+    bgOverlayOpacity: 60,
+    bgOverlayBlur: 0,
   };
 }
 
@@ -161,6 +167,9 @@ interface SettingsContextValue {
   updateLocale: (locale: Locale) => void;
   updateColorTheme: (colorTheme: ColorTheme) => void;
   updateCustomColor: (color: string) => void;
+  updateBgImage: (url: string) => void;
+  updateBgOverlayOpacity: (v: number) => void;
+  updateBgOverlayBlur: (v: number) => void;
   isPluginEnabled: (id: string) => boolean;
   togglePlugin: (id: string, enabled?: boolean) => void;
 }
@@ -209,6 +218,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return () => obs.disconnect();
   }, [settings.colorTheme, settings.customColor, settings.plugins]);
 
+  /* background image state is applied directly in AppShell via style props */
+
   const updateTheme = useCallback(
     (theme: Theme) => {
       setSettings((prev) => { const next = { ...prev, theme }; persist(next); return next; });
@@ -244,6 +255,27 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [persist],
   );
 
+  const updateBgImage = useCallback(
+    (bgImage: string) => {
+      setSettings((prev) => { const next = { ...prev, bgImage }; persist(next); return next; });
+    },
+    [persist],
+  );
+
+  const updateBgOverlayOpacity = useCallback(
+    (bgOverlayOpacity: number) => {
+      setSettings((prev) => { const next = { ...prev, bgOverlayOpacity }; persist(next); return next; });
+    },
+    [persist],
+  );
+
+  const updateBgOverlayBlur = useCallback(
+    (bgOverlayBlur: number) => {
+      setSettings((prev) => { const next = { ...prev, bgOverlayBlur }; persist(next); return next; });
+    },
+    [persist],
+  );
+
   const isPluginEnabled = useCallback(
     (id: string) => !!settings.plugins[id],
     [settings.plugins],
@@ -262,7 +294,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, isPluginEnabled, togglePlugin }}>
+    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, isPluginEnabled, togglePlugin }}>
       {children}
     </SettingsContext>
   );

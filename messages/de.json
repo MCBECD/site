@@ -27,7 +27,16 @@
     "colorRed": "Rot",
     "colorBlue": "Blau",
     "colorGreen": "Grün",
-    "colorCustom": "Benutzerdefiniert"
+    "colorCustom": "Benutzerdefiniert",
+    "pluginBgImage": "Hintergrundbild",
+    "pluginBgImageDesc": "Hintergrundbild zur Seite hinzufügen mit einstellbarer Überlagerungsdeckkraft und Unschärfe",
+    "bgPreset1": "Cargil 1",
+    "bgPreset2": "Cargil 2",
+    "bgPreset3": "Cargil 3",
+    "bgUpload": "Bild hochladen",
+    "bgClear": "Hintergrund entfernen",
+    "bgOverlayOpacity": "Überlagerung",
+    "bgOverlayBlur": "Unschärfe"
   },
   "code": {
     "copy": "Kopieren",

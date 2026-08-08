@@ -27,7 +27,16 @@
     "colorRed": "빨강",
     "colorBlue": "파랑",
     "colorGreen": "초록",
-    "colorCustom": "사용자 지정"
+    "colorCustom": "사용자 지정",
+    "pluginBgImage": "배경 이미지",
+    "pluginBgImageDesc": "페이지에 배경 이미지를 추가하고 오버레이 투명도와 흐림을 조절할 수 있습니다",
+    "bgPreset1": "Cargil 1",
+    "bgPreset2": "Cargil 2",
+    "bgPreset3": "Cargil 3",
+    "bgUpload": "이미지 업로드",
+    "bgClear": "배경 지우기",
+    "bgOverlayOpacity": "오버레이",
+    "bgOverlayBlur": "흐림"
   },
   "code": {
     "copy": "복사",
