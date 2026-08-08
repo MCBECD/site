@@ -17,39 +17,35 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   const { t } = useLocale();
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* 操作栏 */}
-      <div
-        className="flex items-center justify-between px-4 h-11 border-b border-[var(--color-border)]
-        bg-[var(--color-navbar-bg)] backdrop-blur-xl sticky top-[var(--navbar-height)] z-10"
-      >
-        <Link
-          href="/docs"
-          className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
-            hover:text-[var(--color-accent)] transition-colors no-underline min-h-[44px]"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">{t("common.backToList")}</span>
-        </Link>
+    <div className="max-w-3xl mx-auto px-4 pt-4 pb-16">
+      <div className="doc-glass-card overflow-hidden">
+        {/* 顶部操作栏：返回 + 操作按钮 */}
+        <div className="flex items-center justify-between h-11 px-4">
+          <Link
+            href="/docs"
+            className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
+              hover:text-[var(--color-accent)] transition-colors no-underline min-h-[44px]"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">{t("common.backToList")}</span>
+          </Link>
 
-        <div className="flex items-center gap-1">
-          <CopyDropdown rawContent={rawContent} />
-          <DownloadButton
-            filename={doc.meta.id}
-            getContent={() => rawContent}
-          />
+          <div className="flex items-center gap-1">
+            <CopyDropdown rawContent={rawContent} />
+            <DownloadButton
+              filename={doc.meta.id}
+              getContent={() => rawContent}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* 文档内容 */}
-      <div className="px-5 pt-8 pb-16">
-        {/* 标题区 */}
-        <header className="mb-6">
+        {/* 标题 + 元信息 */}
+        <header className="px-5 pb-1">
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {doc.meta.title}
           </h1>
           {(doc.meta.author || doc.meta.updatedAt) && (
-            <div className="flex items-center gap-3 mt-3 text-xs text-[var(--color-text-tertiary)]">
+            <div className="flex items-center gap-3 mt-2 text-xs text-[var(--color-text-tertiary)]">
               {doc.meta.author && (
                 <span className="inline-flex items-center gap-1">
                   <span className="w-4 h-4 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center text-[10px] font-medium text-[var(--color-text-secondary)]">
@@ -64,23 +60,28 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
             </div>
           )}
           {doc.meta.description && (
-            <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 leading-relaxed">
+            <p className="text-[14px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
               {doc.meta.description}
             </p>
           )}
         </header>
 
         {/* 面包屑 */}
-        <nav className="flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)] mb-6 pb-4 border-b border-[var(--color-border)]">
+        <nav className="flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)] px-5 pt-3 pb-4">
           <Link href="/docs" className="hover:text-[var(--color-accent)] transition-colors no-underline">
             {t("doc.home")}
           </Link>
           <ChevronRight className="w-3 h-3" />
-          <span className="text-[var(--color-text-secondary)] truncate max-w-[200px]">{doc.meta.title}</span>
+          <span className="text-[var(--color-text-secondary)] truncate max-w-[280px]">{doc.meta.title}</span>
         </nav>
 
+        {/* 分割线 */}
+        <div className="mx-5 border-t border-[var(--color-border)]" />
+
+        {/* 文档正文 */}
         <div
-          className="prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
+          className="px-5 pt-6 pb-6
+          prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
           prose-headings:text-[var(--color-text-primary)]
           prose-p:text-[var(--color-text-secondary)]
           prose-a:text-[var(--color-accent)] prose-a:no-underline hover:prose-a:underline

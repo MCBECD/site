@@ -505,6 +505,24 @@ pre.shiki {
 .doc-card:nth-child(8) { animation-delay: 0.14s; }
 
 /* ----------------------------------------------------------
+ * Doc detail glass card
+ * ---------------------------------------------------------- */
+.doc-glass-card {
+  border-radius: calc(var(--radius) + 4px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.dark .doc-glass-card {
+  background: rgba(15, 17, 23, 0.75);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ----------------------------------------------------------
  * Navbar 分隔线
  * ---------------------------------------------------------- */
 .nav-divider {
