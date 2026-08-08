@@ -48,9 +48,10 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 key={key}
                 onClick={() => updateTheme(key)}
                 className="w-8 h-8 flex items-center justify-center rounded-md
-                  transition-all duration-150
+                  transition-colors duration-150
                   text-[var(--color-text-tertiary)]
                   hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+                  active:scale-[0.97]
                   data-[active=true]:text-[var(--color-accent)] data-[active=true]:bg-[var(--color-accent-muted)]"
                 data-active={active}
                 title={t(titleKey)}
@@ -71,7 +72,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           rel="noopener noreferrer"
           className="w-8 h-8 flex items-center justify-center rounded-md
             text-[var(--color-text-tertiary)]
-            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-all duration-150"
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-150 active:scale-[0.97]"
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
@@ -85,7 +86,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           onClick={onOpenSettings}
           className="w-8 h-8 flex items-center justify-center rounded-md
             text-[var(--color-text-tertiary)]
-            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-all duration-150"
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-150 active:scale-[0.97]"
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >

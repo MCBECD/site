@@ -52,22 +52,28 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
     let mx = innerWidth / 2, my = innerHeight / 2;
     let sx = mx, sy = my;
-
-    const onM = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
-    const onT = (e: TouchEvent) => { const t = e.touches[0]; if (t) { mx = t.clientX; my = t.clientY; } };
-    addEventListener("mousemove", onM, { passive: true });
-    addEventListener("touchmove", onT, { passive: true });
+    let onM: (e: MouseEvent) => void;
+    let onT: (e: TouchEvent) => void;
 
     let raf = 0;
     const F = 20;
+    const THRESHOLD = 0.3;
     const tick = () => {
       sx += (mx - sx) * 0.08;
       sy += (my - sy) * 0.08;
       const dx = (sx - innerWidth / 2) / F;
       const dy = (sy - innerHeight / 2) / F;
       el.style.transform = `translate(${bg.tx + dx}px,${bg.ty + dy}px) scale(${bg.s})`;
-      raf = requestAnimationFrame(tick);
+      // Pause when converged to save GPU
+      if (Math.abs(mx - sx) > THRESHOLD || Math.abs(my - sy) > THRESHOLD) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        raf = 0;
+      }
     };
+    const start = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    addEventListener("mousemove", (onM = (e) => { mx = e.clientX; my = e.clientY; start(); }), { passive: true });
+    addEventListener("touchmove", (onT = (e: TouchEvent) => { const t = e.touches[0]; if (t) { mx = t.clientX; my = t.clientY; } start(); }), { passive: true });
     raf = requestAnimationFrame(tick);
 
     return () => {

@@ -28,6 +28,11 @@
   --color-kbd-border: #e2e8f0;
   --color-kbd-text: #94a3b8;
   --color-toast-bg: #1e293b;
+  /* Motion tokens */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
 }
 
 .dark {
@@ -446,7 +451,9 @@ pre.shiki {
  * 搜索框
  * ---------------------------------------------------------- */
 .search-input {
-  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  transition: border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              background-color var(--duration-normal) var(--ease-out);
 }
 
 .search-input:focus {
@@ -477,9 +484,16 @@ pre.shiki {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ----------------------------------------------------------
+ * prefers-reduced-motion
+ * ---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ----------------------------------------------------------
@@ -491,7 +505,7 @@ pre.shiki {
 }
 
 .doc-card {
-  animation: listIn 0.2s ease both;
+  animation: listIn 0.2s var(--ease-out) both;
 }
 
 .doc-card:nth-child(2) { animation-delay: 0.02s; }
