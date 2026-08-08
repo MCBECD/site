@@ -18,13 +18,13 @@
   --color-text-secondary: #475569;
   --color-text-tertiary: #94a3b8;
   --color-border: #e2e8f0;
-  --color-accent: #6366f1;
-  --color-accent-hover: #4f46e5;
-  --color-accent-muted: rgba(99, 102, 241, 0.08);
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
+  --color-accent-muted: rgba(59, 130, 246, 0.08);
   --color-code-bg: #f8fafc;
   --color-card-bg: #ffffff;
   --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --color-card-hover-shadow: 0 4px 12px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --color-card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
   --color-navbar-bg: rgba(255, 255, 255, 0.82);
   --color-kbd-bg: #f1f5f9;
   --color-kbd-border: #e2e8f0;
@@ -40,13 +40,13 @@
   --color-text-secondary: #9aa0a6;
   --color-text-tertiary: #5f6368;
   --color-border: #2d3039;
-  --color-accent: #a5b4fc;
-  --color-accent-hover: #818cf8;
-  --color-accent-muted: rgba(165, 180, 252, 0.08);
+  --color-accent: #60a5fa;
+  --color-accent-hover: #93bbfd;
+  --color-accent-muted: rgba(96, 165, 250, 0.08);
   --color-code-bg: #1a1d27;
   --color-card-bg: #1a1d27;
   --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(165, 180, 252, 0.12);
+  --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
   --color-navbar-bg: rgba(15, 17, 23, 0.82);
   --color-kbd-bg: #252833;
   --color-kbd-border: #2d3039;
@@ -162,6 +162,11 @@ pre.shiki {
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 

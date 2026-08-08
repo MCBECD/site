@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Sun, Moon, Monitor, ChevronDown, Check } from "lucide-react";
+import { X, Sun, Moon, Monitor, ChevronDown, Check, ChevronUp } from "lucide-react";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
 import { LOCALES, NATIVE_NAMES, type Locale } from "@/lib/i18n/types";
@@ -101,25 +101,43 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
 function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Locale) => void }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [flipUp, setFlipUp] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const select = useCallback(
     (v: Locale) => { onChange(v); setOpen(false); },
     [onChange],
   );
 
+  /* 空间不够时向上展开 */
+  useEffect(() => {
+    if (!open) return;
+    const el = triggerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const below = window.innerHeight - rect.bottom;
+    setFlipUp(below < 240 && rect.top > below);
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (triggerRef.current?.contains(t)) return;
+      if (listRef.current?.contains(t)) return;
+      setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  const ArrowIcon = open ? ChevronUp : ChevronDown;
+
   return (
-    <div ref={ref} className="relative">
+    <div className="relative">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(!open)}
         className="w-full h-10 flex items-center justify-between px-3 rounded-[var(--radius)] text-[13px]
@@ -129,12 +147,19 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
           transition-colors text-left"
       >
         <span>{NATIVE_NAMES[value]}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[var(--color-text-tertiary)] transition-transform duration-150 ${open ? "rotate-180" : ""}`} />
+        <ArrowIcon className="w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-1.5 py-1 rounded-[var(--radius)] border border-[var(--color-border)]
-          bg-[var(--color-bg-primary)] shadow-lg z-50 max-h-56 overflow-y-auto animate-[slideUp_0.12s_ease]">
+        <div
+          ref={listRef}
+          className={`absolute left-0 right-0 py-1 rounded-[var(--radius)] border border-[var(--color-border)]
+            bg-[var(--color-bg-primary)] shadow-lg z-50 overflow-y-auto
+            ${flipUp
+              ? "bottom-full mb-1.5 max-h-[40vh]"
+              : "top-full mt-1.5 max-h-[40vh]"
+            }`}
+        >
           {LOCALES.map((loc) => (
             <button
               key={loc}
