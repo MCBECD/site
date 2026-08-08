@@ -47,8 +47,11 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     window.addEventListener("touchmove", onTouch, { passive: true });
 
     // Lerp animation loop
+    // Zoom is 125%, so extra room on each side = (1.25 - 1) / 2 = 12.5% of viewport
+    // Multiply by 0.9 safety margin so edges never show
+    const ZOOM = 1.25;
+    const MARGIN = 0.9;
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-    const MAX_SHIFT = 20; // px max displacement each axis
 
     const tick = () => {
       const cur = currentRef.current;
@@ -58,8 +61,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
       const el = bgRef.current;
       if (el) {
-        const dx = (cur.x - 0.5) * MAX_SHIFT * 2;
-        const dy = (cur.y - 0.5) * MAX_SHIFT * 2;
+        const extraX = (ZOOM - 1) / 2 * window.innerWidth * MARGIN;
+        const extraY = (ZOOM - 1) / 2 * window.innerHeight * MARGIN;
+        const dx = (cur.x - 0.5) * 2 * extraX;
+        const dy = (cur.y - 0.5) * 2 * extraY;
         el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
       }
       rafRef.current = requestAnimationFrame(tick);
