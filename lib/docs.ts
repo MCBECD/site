@@ -112,16 +112,17 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
     const id = prefix ? `${prefix}/${entry.name}` : entry.name;
 
     if (entry.isDirectory()) {
-      // 文件夹文档：查找 index.mdx
       const indexPath = path.join(fullPath, "index.mdx");
       if (fs.existsSync(indexPath)) {
+        // 文件夹文档：index.mdx + meta.json
         const mdxMeta = parseMdxMeta(indexPath);
         const jsonMeta = readMetaJson(fullPath);
         const meta = buildMeta(id, entry.name, mdxMeta, jsonMeta);
         if (meta) results.push(meta);
+      } else {
+        // 非 index.mdx 的子目录才递归扫描
+        results.push(...scanDirectory(fullPath, id));
       }
-      // 递归扫描子目录
-      results.push(...scanDirectory(fullPath, id));
     } else if (entry.name.endsWith(".mdx")) {
       const docId = prefix ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}` : entry.name.replace(/\.mdx$/, "");
       const mdxMeta = parseMdxMeta(fullPath);
