@@ -7,6 +7,34 @@ import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 
+const mcfunctionSyntax = {
+  name: "mcfunction",
+  scopeName: "source.mcfunction",
+  fileTypes: ["mcfunction"],
+  patterns: [
+    {
+      name: "keyword.control",
+      match: '^/?[a-zA-Z0-9_]+',
+    },
+    {
+      name: "string.quoted.double",
+      match: '"[^"]*"',
+    },
+    {
+      name: "constant.numeric",
+      match: '\\d[\\^~0-9.][0-9.]*',
+    },
+    {
+      name: "entity.name.function",
+      match: '@[a-z]'
+    },
+    {
+      name: "variable.parameter",
+      match: '[a-zA-Z0-9_]+',
+    }
+  ]
+};
+
 const components = {
   /* h2 is hidden in doc detail pages — the header card already shows the title */
   h2: () => null,
@@ -97,11 +125,10 @@ const components = {
 
 /** Extract <code> element from <pre><code>...</code></pre> structure */
 function extractCodeChild(children: ReactNode): React.ReactElement | null {
-  if (isValidElement(children) && children.type === "code") return children as React.ReactElement;
-  if (Array.isArray(children) && children.length === 1) {
-    const child = children[0];
-    if (isValidElement(child) && child.type === "code") return child as React.ReactElement;
-  }
+  const isCode = (el: ReactNode) => isValidElement(el) && (el.type === "code" || el.type === components.code);
+  if (isCode(children)) return children as React.ReactElement;
+  if (Array.isArray(children) && children.length === 1)
+    if (isCode(children[0])) return children[0] as React.ReactElement;
   return null;
 }
 
@@ -111,11 +138,7 @@ async function getHighlighter(): Promise<Highlighter> {
   if (!highlighter) {
     highlighter = await createHighlighter({
       themes: ["github-light", "github-dark"],
-      langs: [
-        "text", "shell", "bash", "javascript", "typescript", "json",
-        "html", "css", "markdown", "yaml", "toml", "python",
-        "java", "c", "cpp", "lua",
-      ],
+      langs: [mcfunctionSyntax],
     });
   }
   return highlighter;

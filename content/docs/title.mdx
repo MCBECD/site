@@ -38,29 +38,29 @@ description: "在玩家屏幕上显示文字：标题、副标题和操作栏"
 ### 示例
 
 **显示简单标题：**
-```
+```mcfunction
 /title @p title 欢迎！
 ```
 
 **显示带副标题的标题：**
-```
+```mcfunction
 /title @p title Boss被击败了！
 /title @p subtitle 恭喜！
 ```
 
 **在操作栏上显示消息：**
-```
+```mcfunction
 /title @p actionbar §a§l你发现了秘密！
 ```
 
 **自定义淡入淡出时间（1.5秒淡入，5秒停留，1秒淡出）：**
-```
+```mcfunction
 /title @p times 30 100 20
 /title @p title §6第 1 轮
 ```
 
 **提前清除标题：**
-```
+```mcfunction
 /title @p clear
 ```
 
@@ -68,7 +68,7 @@ description: "在玩家屏幕上显示文字：标题、副标题和操作栏"
 
 标题支持带格式化代码和组件的原始 JSON 文本：
 
-```
+```mcfunction
 /title @p title {"rawtext":[{"text":"§c§l警报！"}]}
 ```
 

@@ -28,27 +28,27 @@ description: "添加、移除或列出实体标签"
 ### 示例
 
 **给自己添加"admin"标签：**
-```
+```mcfunction
 /tag @s add admin
 ```
 
 **给所有僵尸添加"undead"标签：**
-```
+```mcfunction
 /tag @e[type=zombie] add undead
 ```
 
 **移除标签：**
-```
+```mcfunction
 /tag @s remove admin
 ```
 
 **列出自己的所有标签：**
-```
+```mcfunction
 /tag @s list
 ```
 
 **清除所有带特定标签的实体：**
-```
+```mcfunction
 /kill @e[tag=cleanup]
 ```
 
@@ -57,17 +57,17 @@ description: "添加、移除或列出实体标签"
 标签通过目标选择器与其他命令结合使用时最为强大：
 
 **给所有带"winner"标签的实体钻石：**
-```
+```mcfunction
 /give @e[tag=winner,type=player] diamond 64
 ```
 
 **传送所有"team_red"玩家：**
-```
+```mcfunction
 /tp @a[tag=team_red] 0 64 0
 ```
 
 **给所有"buffed"玩家添加效果：**
-```
+```mcfunction
 /effect @a[tag=buffed] strength 30 2 true
 ```
 
