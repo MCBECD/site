@@ -515,6 +515,19 @@ pre.shiki {
 }
 
 /* ----------------------------------------------------------
+ * Page transition (pure CSS, compositor-only)
+ * ---------------------------------------------------------- */
+@keyframes pageIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.page-fade-in {
+  animation: pageIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  will-change: opacity;
+}
+
+/* ----------------------------------------------------------
  * Navbar 分隔线
  * ---------------------------------------------------------- */
 .nav-divider {
