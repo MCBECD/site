@@ -22,7 +22,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
   /* ---------- bg image ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
-  const [bg, setBg] = useState<{ s: number; cx: number; cy: number; ex: number; ey: number } | null>(null);
+  const [bg, setBg] = useState<{ s: number; cx: number; cy: number } | null>(null);
 
   useEffect(() => {
     if (!bgEnabled) { setBg(null); return; }
@@ -30,15 +30,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       const img = new Image();
       img.onload = () => {
         const vpW = innerWidth, vpH = innerHeight;
-        const nw = img.naturalWidth, nh = img.naturalHeight;
-        const s = Math.max(vpW / nw, vpH / nh) * 1.8;
-        setBg({
-          s,
-          cx: (vpW - nw) / 2,   // center translate (before scale)
-          cy: (vpH - nh) / 2,
-          ex: (nw * s - vpW) / 2, // extra px each side
-          ey: (nh * s - vpH) / 2,
-        });
+        const s = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight) * 1.8;
+        setBg({ s, cx: (vpW - img.naturalWidth) / 2, cy: (vpH - img.naturalHeight) / 2 });
       };
       img.src = settings.bgImage;
     };
@@ -55,19 +48,21 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const centered = `translate(${bg.cx}px,${bg.cy}px) scale(${bg.s})`;
     if (!settings.bgParallax) { el.style.transform = centered; return; }
 
-    let mx = 0.5, my = 0.5, sx = 0.5, sy = 0.5;
-    const ptr = (x: number, y: number) => { mx = x / innerWidth; my = y / innerHeight; };
-    const onM = (e: MouseEvent) => ptr(e.clientX, e.clientY);
-    const onT = (e: TouchEvent) => { const t = e.touches[0]; if (t) ptr(t.clientX, t.clientY); };
+    let mx = innerWidth / 2, my = innerHeight / 2;
+    let sx = mx, sy = my;
+
+    const onM = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+    const onT = (e: TouchEvent) => { const t = e.touches[0]; if (t) { mx = t.clientX; my = t.clientY; } };
     addEventListener("mousemove", onM, { passive: true });
     addEventListener("touchmove", onT, { passive: true });
 
     let raf = 0;
+    const F = 20;
     const tick = () => {
       sx += (mx - sx) * 0.08;
       sy += (my - sy) * 0.08;
-      const dx = (sx - 0.5) * bg.ex;
-      const dy = (sy - 0.5) * bg.ey;
+      const dx = (sx - innerWidth / 2) / F;
+      const dy = (sy - innerHeight / 2) / F;
       el.style.transform = `translate(${bg.cx + dx}px,${bg.cy + dy}px) scale(${bg.s})`;
       raf = requestAnimationFrame(tick);
     };
