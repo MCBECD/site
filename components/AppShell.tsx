@@ -20,12 +20,11 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
   }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
 
-  /* ---------- Background image: scale to cover + 25% extra ---------- */
+  /* ---------- Background image: cover screen × 1.8 ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
   const [bgLayout, setBgLayout] = useState<{
-    scale: number;             // CSS scale() value
-    baseX: number; baseY: number; // centering offset (px)
-    maxX: number; maxY: number;   // safe parallax shift (px)
+    scale: number;
+    baseX: number; baseY: number;
   } | null>(null);
 
   useEffect(() => {
@@ -36,20 +35,14 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       img.onload = () => {
         const vpW = window.innerWidth;
         const vpH = window.innerHeight;
-        // Natural size if it covers viewport; scale up for 4K / small images
-        const minScale = Math.max(1, vpW / img.naturalWidth, vpH / img.naturalHeight);
-        const scale = minScale * 1.25;
-        // After scale, visual size = natW*scale × natH*scale.
-        // Center it via translate (transform-origin: 0 0).
+        // Cover the screen, then ×1.8 for parallax room
+        const scale = Math.max(vpW / img.naturalWidth, vpH / img.naturalHeight) * 1.8;
         const visW = img.naturalWidth * scale;
         const visH = img.naturalHeight * scale;
-        const baseX = (vpW - visW) / 2;
-        const baseY = (vpH - visH) / 2;
         setBgLayout({
           scale,
-          baseX, baseY,
-          maxX: Math.abs(baseX) * 0.9,
-          maxY: Math.abs(baseY) * 0.9,
+          baseX: (vpW - visW) / 2,
+          baseY: (vpH - visH) / 2,
         });
       };
       img.src = settings.bgImage;
@@ -60,7 +53,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("resize", calc);
   }, [bgEnabled, settings.bgImage]);
 
-  /* ---------- Parallax: pointer-follow + lerp easing ---------- */
+  /* ---------- Parallax: pointer XY / viewport + lerp easing ---------- */
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const smoothRef = useRef({ x: 0.5, y: 0.5 });
   const rafRef = useRef(0);
@@ -69,13 +62,23 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const el = imgRef.current;
     if (!el || !bgLayout) return;
 
+    const applyTransform = (dx: number, dy: number) => {
+      el.style.transform = `translate(${bgLayout.baseX + dx}px, ${bgLayout.baseY + dy}px) scale(${bgLayout.scale})`;
+    };
+
     if (!bgEnabled || !settings.bgParallax) {
-      el.style.transform = `translate(${bgLayout.baseX}px, ${bgLayout.baseY}px) scale(${bgLayout.scale})`;
+      applyTransform(0, 0);
       return;
     }
 
+    // Extra pixels on each side after scaling
+    const vpW = window.innerWidth;
+    const vpH = window.innerHeight;
+    const extraX = (imgRef.current!.naturalWidth * bgLayout.scale - vpW) / 2;
+    const extraY = (imgRef.current!.naturalHeight * bgLayout.scale - vpH) / 2;
+
     const onPointer = (cx: number, cy: number) => {
-      mouseRef.current = { x: cx / window.innerWidth, y: cy / window.innerHeight };
+      mouseRef.current = { x: cx / vpW, y: cy / vpH };
     };
     const onMouse = (e: MouseEvent) => onPointer(e.clientX, e.clientY);
     const onTouch = (e: TouchEvent) => {
@@ -94,10 +97,11 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       s.x = lerp(s.x, m.x, 0.08);
       s.y = lerp(s.y, m.y, 0.08);
 
-      const { baseX, baseY, maxX, maxY, scale } = bgLayout;
-      const dx = (s.x - 0.5) * 2 * maxX;
-      const dy = (s.y - 0.5) * 2 * maxY;
-      el.style.transform = `translate(${baseX + dx}px, ${baseY + dy}px) scale(${scale})`;
+      // Pointer 0→1 mapped to -extra→+extra
+      applyTransform(
+        (s.x - 0.5) * 2 * extraX,
+        (s.y - 0.5) * 2 * extraY,
+      );
 
       rafRef.current = requestAnimationFrame(tick);
     };
