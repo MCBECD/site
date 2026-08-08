@@ -14,12 +14,17 @@ export type Theme = "light" | "dark" | "system";
 export type FontSize = "small" | "medium" | "large";
 export type ColorTheme = "default" | "red" | "blue" | "green" | "custom";
 
+export interface PluginStates {
+  [pluginId: string]: boolean;
+}
+
 export interface Settings {
   theme: Theme;
   fontSize: FontSize;
   locale: Locale;
   colorTheme: ColorTheme;
   customColor: string;
+  plugins: PluginStates;
 }
 
 const FONT_SIZE_MAP: Record<FontSize, number> = {
@@ -145,6 +150,7 @@ function defaultSettings(): Settings {
     locale: "zh-CN",
     colorTheme: "default",
     customColor: "#3b82f6",
+    plugins: {},
   };
 }
 
@@ -155,6 +161,8 @@ interface SettingsContextValue {
   updateLocale: (locale: Locale) => void;
   updateColorTheme: (colorTheme: ColorTheme) => void;
   updateCustomColor: (color: string) => void;
+  isPluginEnabled: (id: string) => boolean;
+  togglePlugin: (id: string, enabled?: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -172,27 +180,34 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     document.documentElement.style.setProperty("--font-size-multiplier", String(mul));
   }, [settings.fontSize]);
 
-  /* data-color-theme attribute (for CSS preset themes) */
+  /* color theme: only apply when color-theme plugin is enabled */
   useEffect(() => {
     const el = document.documentElement;
+    const enabled = settings.plugins["color-theme"];
+    if (!enabled) {
+      CUSTOM_VARS.forEach((v) => el.style.removeProperty(v));
+      el.setAttribute("data-color-theme", "default");
+      return;
+    }
     if (settings.colorTheme === "custom") {
       el.removeAttribute("data-color-theme");
     } else {
       CUSTOM_VARS.forEach((v) => el.style.removeProperty(v));
       el.setAttribute("data-color-theme", settings.colorTheme);
     }
-  }, [settings.colorTheme]);
+  }, [settings.colorTheme, settings.plugins]);
 
   /* custom palette: apply + re-apply on dark class change */
   useEffect(() => {
     if (settings.colorTheme !== "custom") return;
+    if (!settings.plugins["color-theme"]) return;
     const el = document.documentElement;
     const apply = () => applyCustomPalette(settings.customColor, el.classList.contains("dark"));
     apply();
     const obs = new MutationObserver(apply);
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
     return () => obs.disconnect();
-  }, [settings.colorTheme, settings.customColor]);
+  }, [settings.colorTheme, settings.customColor, settings.plugins]);
 
   const updateTheme = useCallback(
     (theme: Theme) => {
@@ -229,8 +244,25 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [persist],
   );
 
+  const isPluginEnabled = useCallback(
+    (id: string) => !!settings.plugins[id],
+    [settings.plugins],
+  );
+
+  const togglePlugin = useCallback(
+    (id: string, enabled?: boolean) => {
+      setSettings((prev) => {
+        const next = { ...prev, plugins: { ...prev.plugins } };
+        next.plugins[id] = enabled ?? !next.plugins[id];
+        persist(next);
+        return next;
+      });
+    },
+    [persist],
+  );
+
   return (
-    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor }}>
+    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, isPluginEnabled, togglePlugin }}>
       {children}
     </SettingsContext>
   );

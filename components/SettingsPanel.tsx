@@ -11,6 +11,8 @@ interface SettingsPanelProps {
   onClose: () => void;
 }
 
+/* ---------- Constants ---------- */
+
 const THEME_OPTIONS: { value: Theme; icon: typeof Sun; labelKey: string }[] = [
   { value: "light", icon: Sun, labelKey: "settings.themeLight" },
   { value: "dark", icon: Moon, labelKey: "settings.themeDark" },
@@ -32,8 +34,13 @@ const COLOR_PRESETS: { value: ColorTheme; labelKey: string; swatch: string }[] =
 
 type Tab = "general" | "plugins";
 
+/* ---------- Main Panel ---------- */
+
 export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
-  const { settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor } = useSettings();
+  const {
+    settings, updateTheme, updateFontSize, updateLocale,
+    isPluginEnabled, togglePlugin,
+  } = useSettings();
   const { t } = useLocale();
   const [tab, setTab] = useState<Tab>("general");
 
@@ -43,12 +50,12 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     <>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50" onClick={onClose} aria-hidden="true" />
       <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2
-        w-[min(380px,calc(100vw-32px))] rounded-xl shadow-xl
+        w-[min(380px,calc(100vw-32px))] max-h-[min(520px,calc(100vh-64px))] rounded-xl shadow-xl flex flex-col
         bg-[var(--color-bg-primary)] border border-[var(--color-border)]
         animate-[fadeIn_0.15s_ease]">
 
         {/* header */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-0">
+        <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
           <button
             onClick={onClose}
@@ -61,7 +68,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         </div>
 
         {/* tabs */}
-        <div className="flex gap-0 mx-5 mt-4 border-b border-[var(--color-border)]">
+        <div className="flex gap-0 mx-5 mt-4 border-b border-[var(--color-border)] flex-shrink-0">
           {(["general", "plugins"] as Tab[]).map((key) => (
             <button
               key={key}
@@ -77,8 +84,8 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
           ))}
         </div>
 
-        {/* content */}
-        <div className="px-5 py-5 space-y-5">
+        {/* scrollable content */}
+        <div className="px-5 py-5 space-y-5 overflow-y-auto flex-1">
           {tab === "general" ? (
             <>
               <Section title={t("settings.theme")}>
@@ -121,51 +128,9 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
               </Section>
             </>
           ) : (
-            <Section title={t("settings.pluginColorTheme")}>
-              <div className="space-y-3">
-                {/* presets grid */}
-                <div className="grid grid-cols-4 gap-2">
-                  {COLOR_PRESETS.map((p) => (
-                    <button
-                      key={p.value}
-                      onClick={() => updateColorTheme(p.value)}
-                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-[var(--radius)] transition-colors
-                        ${settings.colorTheme === p.value
-                          ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
-                          : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)]"}`}
-                    >
-                      <span className="w-6 h-6 rounded-full border border-[var(--color-border)]" style={{ background: p.swatch }} />
-                      <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* custom */}
-                <button
-                  onClick={() => {
-                    if (settings.colorTheme !== "custom") updateColorTheme("custom");
-                  }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius)] transition-colors
-                    ${settings.colorTheme === "custom"
-                      ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
-                      : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)]"}`}
-                >
-                  <label className="relative w-6 h-6 rounded-full overflow-hidden border border-[var(--color-border)] cursor-pointer flex-shrink-0">
-                    <input
-                      type="color"
-                      value={settings.customColor}
-                      onChange={(e) => {
-                        updateCustomColor(e.target.value);
-                        if (settings.colorTheme !== "custom") updateColorTheme("custom");
-                      }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                    <span className="w-full h-full block rounded-full" style={{ background: settings.customColor }} />
-                  </label>
-                  <span className="text-[13px] text-[var(--color-text-secondary)]">{t("settings.colorCustom")}</span>
-                </button>
-              </div>
-            </Section>
+            <div className="space-y-3">
+              <ColorThemePluginCard />
+            </div>
           )}
         </div>
       </div>
@@ -173,7 +138,127 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   );
 }
 
-/* ---------- Locale Dropdown ---------- */
+/* ============================================================
+ * Plugin Card — toggle header + collapsible settings body
+ * ============================================================ */
+
+function PluginCard({
+  name, desc, Icon, enabled, onToggle, children,
+}: {
+  name: string;
+  desc: string;
+  Icon: typeof Palette;
+  enabled: boolean;
+  onToggle: (v: boolean) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`rounded-lg border transition-colors ${
+      enabled
+        ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
+        : "border-[var(--color-border)] bg-[var(--color-bg-secondary)] opacity-60"
+    }`}>
+      {/* header row */}
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+          enabled ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]" : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]"
+        }`}>
+          <Icon className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-medium text-[var(--color-text-primary)] leading-tight">{name}</div>
+          <div className="text-[11px] text-[var(--color-text-tertiary)] mt-0.5 leading-snug">{desc}</div>
+        </div>
+        {/* toggle switch */}
+        <button
+          role="switch"
+          aria-checked={enabled}
+          onClick={() => onToggle(!enabled)}
+          className={`relative w-9 h-5 rounded-full transition-colors flex-shrink-0 ${
+            enabled ? "bg-[var(--color-accent)]" : "bg-[var(--color-bg-tertiary)]"
+          }`}
+        >
+          <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
+            enabled ? "translate-x-4" : "translate-x-0"
+          }`} />
+        </button>
+      </div>
+
+      {/* expanded settings */}
+      {enabled && (
+        <div className="px-4 pb-4 border-t border-[var(--color-border)]">
+          <div className="pt-3">{children}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+ * Color Theme Plugin — full card with settings
+ * ============================================================ */
+
+function ColorThemePluginCard() {
+  const { t } = useLocale();
+  const { settings, updateColorTheme, updateCustomColor, isPluginEnabled, togglePlugin } = useSettings();
+  const id = "color-theme";
+  const enabled = isPluginEnabled(id);
+
+  return (
+    <PluginCard
+      name={t("settings.pluginColorTheme")}
+      desc={t("settings.pluginColorThemeDesc")}
+      Icon={Palette}
+      enabled={enabled}
+      onToggle={(v) => togglePlugin(id, v)}
+    >
+      <div className="space-y-3">
+        {/* presets grid */}
+        <div className="grid grid-cols-4 gap-2">
+          {COLOR_PRESETS.map((p) => (
+            <button
+              key={p.value}
+              onClick={() => updateColorTheme(p.value)}
+              className={`flex flex-col items-center gap-1.5 p-2.5 rounded-[var(--radius)] transition-colors
+                ${settings.colorTheme === p.value
+                  ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
+                  : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)]"}`}
+            >
+              <span className="w-6 h-6 rounded-full border border-[var(--color-border)]" style={{ background: p.swatch }} />
+              <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* custom color */}
+        <div
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius)] transition-colors
+            ${settings.colorTheme === "custom"
+              ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
+              : "bg-[var(--color-bg-tertiary)]"}`}
+        >
+          <label className="relative w-7 h-7 rounded-full overflow-hidden border border-[var(--color-border)] cursor-pointer flex-shrink-0">
+            <input
+              type="color"
+              value={settings.customColor}
+              onChange={(e) => {
+                updateCustomColor(e.target.value);
+                if (settings.colorTheme !== "custom") updateColorTheme("custom");
+              }}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            <span className="w-full h-full block rounded-full" style={{ background: settings.customColor }} />
+          </label>
+          <span className="text-[12px] text-[var(--color-text-secondary)]">{t("settings.colorCustom")}</span>
+        </div>
+      </div>
+    </PluginCard>
+  );
+}
+
+/* ============================================================
+ * Locale Dropdown
+ * ============================================================ */
 
 function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Locale) => void }) {
   const [open, setOpen] = useState(false);
@@ -198,9 +283,9 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      const t = e.target as Node;
-      if (triggerRef.current?.contains(t)) return;
-      if (listRef.current?.contains(t)) return;
+      const target = e.target as Node;
+      if (triggerRef.current?.contains(target)) return;
+      if (listRef.current?.contains(target)) return;
       setOpen(false);
     };
     document.addEventListener("mousedown", handler);

@@ -22,6 +22,7 @@
     "tabGeneral": "Allgemein",
     "tabPlugins": "Plugins",
     "pluginColorTheme": "Farbthema",
+    "pluginColorThemeDesc": "Gesamtes Farbschema ändern: Hintergrund, Text und Rahmen",
     "colorDefault": "Standard",
     "colorRed": "Rot",
     "colorBlue": "Blau",

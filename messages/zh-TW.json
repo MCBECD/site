@@ -22,6 +22,7 @@
     "tabGeneral": "通用",
     "tabPlugins": "外掛",
     "pluginColorTheme": "色彩主題",
+    "pluginColorThemeDesc": "覆蓋整體配色方案，包含背景、文字、邊框等基礎色",
     "colorDefault": "預設",
     "colorRed": "紅",
     "colorBlue": "藍",

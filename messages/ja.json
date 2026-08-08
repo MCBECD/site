@@ -22,6 +22,7 @@
     "tabGeneral": "一般",
     "tabPlugins": "プラグイン",
     "pluginColorTheme": "カラーテーマ",
+    "pluginColorThemeDesc": "背景、テキスト、ボーダーなど全体の配色を上書きします",
     "colorDefault": "デフォルト",
     "colorRed": "赤",
     "colorBlue": "青",
