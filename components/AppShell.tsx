@@ -48,7 +48,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
     // Lerp animation loop
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-    const MAX_SHIFT = 20; // px max displacement each axis
+    const MAX_SHIFT = 40; // px max displacement each axis
 
     const tick = () => {
       const cur = currentRef.current;
@@ -60,7 +60,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       if (el) {
         const dx = (cur.x - 0.5) * MAX_SHIFT * 2;
         const dy = (cur.y - 0.5) * MAX_SHIFT * 2;
-        el.style.transform = `scale(1.08) translate3d(${dx}px, ${dy}px, 0)`;
+        el.style.transform = `scale(1.18) translate3d(${dx}px, ${dy}px, 0)`;
       }
       rafRef.current = requestAnimationFrame(tick);
     };
