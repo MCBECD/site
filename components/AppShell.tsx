@@ -17,8 +17,12 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   const overlayStyle = useMemo(() => ({
     backgroundColor: "var(--color-bg-primary)",
     opacity: settings.bgOverlayOpacity / 100,
-    ...(settings.bgOverlayBlur > 0 ? { backdropFilter: `blur(${settings.bgOverlayBlur}px)` } : {}),
-  }), [settings.bgOverlayOpacity, settings.bgOverlayBlur]);
+  }), [settings.bgOverlayOpacity]);
+
+  const imgFilter = useMemo(() =>
+    settings.bgOverlayBlur > 0 ? `blur(${settings.bgOverlayBlur}px)` : undefined,
+  [settings.bgOverlayBlur]
+  );
 
   /* ---------- bg image ---------- */
   const imgRef = useRef<HTMLImageElement>(null);
@@ -88,6 +92,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             style={{
               transformOrigin: "0 0",
               transform: `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`,
+              filter: imgFilter,
               willChange: settings.bgParallax ? "transform" : undefined,
             }}
           />
