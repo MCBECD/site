@@ -11,7 +11,6 @@ const mcfunctionSyntax = {
   name: "mcfunction",
   scopeName: "source.mcfunction",
   fileTypes: ["mcfunction"],
-  repository: {},
   patterns: [
     {
       name: "keyword.control",
@@ -22,8 +21,8 @@ const mcfunctionSyntax = {
       match: '"[^"]*"',
     },
     {
-      name: "constant.numeric",
-      match: '\\d[\\^~0-9.][0-9.]*',
+      name: "string.quoted.single",
+      match: "'[^']*'",
     },
     {
       name: "entity.name.function",
@@ -31,8 +30,12 @@ const mcfunctionSyntax = {
     },
     {
       name: "variable.parameter",
-      match: '[a-zA-Z0-9_]+',
-    }
+      match: '[a-zA-Z_][a-zA-Z0-9_]+',
+    },
+    {
+      name: "constant.numeric",
+      match: '[\\^~0-9.][0-9.]*',
+    },
   ]
 };
 
