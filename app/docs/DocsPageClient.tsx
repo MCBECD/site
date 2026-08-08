@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, X } from "lucide-react";
+import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 
@@ -79,18 +79,30 @@ export default function DocsPageClient({ docs }: Props) {
     return pages;
   }, [totalPages, safePage]);
 
+  const isSearching = debouncedQuery.trim().length > 0;
+
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-8 pb-12">
+    <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
+      {/* 页面标题 */}
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-[var(--color-text-primary)] tracking-tight">
+          {t("doc.title")}
+        </h1>
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-1">
+          {t("doc.subtitle", { count: docs.length })}
+        </p>
+      </div>
+
       {/* 搜索栏 */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
+      <div className="relative mb-5">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
         <input
           ref={searchRef}
           type="text"
           value={query}
           onChange={(e) => handleInput(e.target.value)}
           placeholder={t("doc.searchPlaceholder")}
-          className="search-input w-full pl-9 pr-10 py-2.5 text-[13px] rounded-[var(--radius)]
+          className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
             bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
             placeholder:text-[var(--color-text-tertiary)]
             border border-[var(--color-border)]
@@ -107,16 +119,16 @@ export default function DocsPageClient({ docs }: Props) {
             <X className="w-3.5 h-3.5" />
           </button>
         ) : (
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono leading-none
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
             text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
-            pointer-events-none hidden sm:block">
-            /
+            pointer-events-none hidden sm:inline-flex">
+            <Command className="w-2.5 h-2.5" />
           </kbd>
         )}
       </div>
 
-      {/* 结果计数 */}
-      {debouncedQuery.trim() && (
+      {/* 搜索结果计数 */}
+      {isSearching && (
         <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
           {t("doc.resultCount", { count: filteredDocs.length })}
         </p>
@@ -124,7 +136,10 @@ export default function DocsPageClient({ docs }: Props) {
 
       {/* 命令列表 */}
       {pageDocs.length === 0 ? (
-        <div className="py-20 text-center">
+        <div className="py-24 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg-tertiary)] mb-4">
+            <Search className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          </div>
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
@@ -133,11 +148,12 @@ export default function DocsPageClient({ docs }: Props) {
             <Link
               key={doc.id}
               href={`/docs/${doc.id}`}
-              className="block group px-3.5 py-3 rounded-[var(--radius)]
+              className="doc-card block group px-4 py-3.5 rounded-lg
                 bg-[var(--color-card-bg)]
-                hover:bg-[var(--color-accent-muted)]
-                transition-all duration-150 no-underline
-                border border-transparent hover:border-[var(--color-accent)]/15"
+                border border-[var(--color-border)]
+                hover:border-[var(--color-accent)]/20
+                hover:shadow-[var(--color-card-hover-shadow)]
+                transition-all duration-150 no-underline"
             >
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors">
@@ -163,7 +179,7 @@ export default function DocsPageClient({ docs }: Props) {
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={safePage === 0}
-            className="min-w-[36px] h-9 flex items-center justify-center rounded-[var(--radius)]
+            className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
               text-[var(--color-text-secondary)]
               hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
           >
@@ -179,9 +195,9 @@ export default function DocsPageClient({ docs }: Props) {
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`min-w-[36px] h-9 flex items-center justify-center rounded-[var(--radius)] text-[13px] transition-colors ${
+                className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-[13px] transition-colors ${
                   p === safePage
-                    ? "bg-[var(--color-accent)] text-white font-medium"
+                    ? "bg-[var(--color-accent)] text-white font-medium shadow-sm"
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
                 }`}
               >
@@ -193,7 +209,7 @@ export default function DocsPageClient({ docs }: Props) {
           <button
             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
             disabled={safePage === totalPages - 1}
-            className="min-w-[36px] h-9 flex items-center justify-center rounded-[var(--radius)]
+            className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
               text-[var(--color-text-secondary)]
               hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
           >

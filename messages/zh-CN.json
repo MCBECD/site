@@ -34,6 +34,9 @@
     "resultCount": "{count} 条结果",
     "noResults": "没有找到匹配的命令",
     "home": "首页",
-    "updatedAt": "更新于 {date}"
+    "updatedAt": "更新于 {date}",
+    "title": "命令库",
+    "subtitle": "共 {count} 条命令，可直接复制使用",
+    "notFound": "页面未找到"
   }
 }

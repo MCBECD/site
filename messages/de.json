@@ -34,6 +34,9 @@
     "resultCount": "{count} Ergebnisse",
     "noResults": "Keine passenden Befehle gefunden",
     "home": "Startseite",
-    "updatedAt": "Aktualisiert {date}"
+    "updatedAt": "Aktualisiert {date}",
+    "title": "Befehlsbibliothek",
+    "subtitle": "{count} Befehle verfügbar, sofort kopierbar",
+    "notFound": "Seite nicht gefunden"
   }
 }

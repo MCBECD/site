@@ -34,6 +34,9 @@
     "resultCount": "{count}개 결과",
     "noResults": "일치하는 명령어가 없습니다",
     "home": "홈",
-    "updatedAt": "{date} 업데이트"
+    "updatedAt": "{date} 업데이트",
+    "title": "명령어 라이브러리",
+    "subtitle": "{count}개의 명령어를 바로 복사하여 사용",
+    "notFound": "페이지를 찾을 수 없습니다"
   }
 }
