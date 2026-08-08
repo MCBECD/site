@@ -4,4 +4,4 @@ node_modules/
 out/
 .wrangler/
 *.tsbuildinfo
-next-env.d.ts
+pnpm-lock.yaml
