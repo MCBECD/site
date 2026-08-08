@@ -130,7 +130,7 @@ function CopyDropdown({ rawContent }: { rawContent: string }) {
 
   const plainText = rawContent
     .replace(/---[\s\S]*?---/, "")
-    .replace(/[#*`~>\[\]()!_|{}.<>&-]/g, "")
+    .replace(/[#*`~>[\]()!_|{}.<>&-]/g, "")
     .replace(/\n{2,}/g, "\n\n")
     .trim();
 
