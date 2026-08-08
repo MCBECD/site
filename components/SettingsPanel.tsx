@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { X, Sun, Moon, Monitor, ChevronDown, Check, ChevronUp, Palette, Image } from "lucide-react";
 import { useSettings, type Theme, type FontSize, type ColorTheme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -407,13 +408,28 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
     [onChange],
   );
 
+  // Track trigger position for portal positioning
+  const [pos, setPos] = useState<{ top: number; left: number; width: number; height: number }>({ top: 0, left: 0, width: 0, height: 0 });
+
   useEffect(() => {
     if (!open) return;
     const el = triggerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
+    setPos({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
     const below = window.innerHeight - rect.bottom;
     setFlipUp(below < 240 && rect.top > below);
+
+    const onScroll = () => {
+      const r = el.getBoundingClientRect();
+      setPos({ top: r.top, left: r.left, width: r.width, height: r.height });
+    };
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [open]);
 
   useEffect(() => {
@@ -446,12 +462,18 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
         <ArrowIcon className="w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />
       </button>
 
-      {open && (
+      {open && createPortal(
         <div
           ref={listRef}
-          className={`absolute left-0 right-0 py-1 rounded-[var(--radius)] border border-[var(--color-border)]
-            bg-[var(--color-bg-primary)] shadow-lg z-50 overflow-y-auto
-            ${flipUp ? "bottom-full mb-1.5" : "top-full mt-1.5"} max-h-[40vh]`}
+          className="fixed py-1 rounded-[var(--radius)] border border-[var(--color-border)]
+            bg-[var(--color-bg-primary)] shadow-lg z-[60] overflow-y-auto"
+          style={{
+            top: flipUp ? undefined : pos.top + pos.height + 6,
+            bottom: flipUp ? window.innerHeight - pos.top + 6 : undefined,
+            left: pos.left,
+            width: pos.width,
+            maxHeight: "40vh",
+          }}
         >
           {LOCALES.map((loc) => (
             <button
@@ -467,7 +489,8 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
               {loc === value && <Check className="w-3.5 h-3.5" />}
             </button>
           ))}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
