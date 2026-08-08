@@ -1,13 +1,39 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { createHighlighter } from "shiki";
+import { createHighlighter, type Highlighter } from "shiki";
 import type { JSX, ReactNode } from "react";
-import { Suspense, isValidElement } from "react";
-import { Loader2 } from "lucide-react";
+import { isValidElement } from "react";
 import remarkGfm from "remark-gfm";
 import { CodeBlockClient } from "./CodeBlockClient";
 
-const components = {
-  pre: async ({ children }: { children: ReactNode }) => {
+let highlighter: Highlighter | null = null;
+let highlighterPromise: Promise<Highlighter> | null = null;
+
+function ensureHighlighter(): Promise<Highlighter> {
+  if (highlighter) return Promise.resolve(highlighter);
+  if (highlighterPromise) return highlighterPromise;
+  highlighterPromise = createHighlighter({
+    themes: ["github-light", "github-dark"],
+    langs: ["shell", "javascript", "typescript", "json", "text"],
+  }).then((hl) => {
+    highlighter = hl;
+    return hl;
+  });
+  return highlighterPromise;
+}
+
+function getHighlighter(): Highlighter | null {
+  return highlighter;
+}
+
+const CodeComp = ({ children, ...props }: JSX.IntrinsicElements["code"]) => (
+  <code className="text-[var(--color-accent)] bg-[var(--color-code-bg)] px-1.5 py-0.5 rounded text-sm" {...props}>
+    {children}
+  </code>
+);
+
+export const components = {
+  pre: ({ children }: { children: ReactNode }) => {
+    const hl = getHighlighter();
     const codeEl = extractCodeChild(children);
     if (!codeEl) {
       return <pre className="overflow-x-auto rounded-lg p-4 bg-[var(--color-code-bg)] text-sm">{children}</pre>;
@@ -17,14 +43,18 @@ const components = {
     const match = /language-(\w+)/.exec(className);
     const lang = match ? match[1]! : "text";
     const code = String(props.children ?? "").trim();
-    return <CodeBlock code={code} lang={lang} />;
+
+    if (!hl) {
+      return (
+        <pre className="overflow-x-auto rounded-lg p-4 bg-[var(--color-code-bg)] text-sm">
+          <CodeComp>{code}</CodeComp>
+        </pre>
+      );
+    }
+
+    return <CodeBlock code={code} lang={lang} highlighter={hl} />;
   },
-  code: ({ children, ...props }: JSX.IntrinsicElements["code"]) => (
-    <code className="text-[var(--color-accent)] bg-[var(--color-code-bg)] px-1.5 py-0.5 rounded text-sm" {...props}>
-      {children}
-    </code>
-  ),
-  /* @constraint 外站链接加安全属性防 tabnabbing */
+  code: CodeComp,
   a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) => {
     const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
     return (
@@ -57,32 +87,20 @@ const components = {
   ),
 };
 
-/** @why 从 <pre><code>...</code></pre> 结构中提取 <code> 元素 */
 function extractCodeChild(children: ReactNode): React.ReactElement | null {
-  if (isValidElement(children) && children.type === "code") return children as React.ReactElement;
-  if (Array.isArray(children) && children.length === 1) {
-    const child = children[0];
-    if (isValidElement(child) && child.type === "code") return child as React.ReactElement;
+  const isCodeEl = (el: React.ReactElement): boolean =>
+    el.type === "code" || el.type === CodeComp;
+
+  if (isValidElement(children) && isCodeEl(children)) return children;
+  if (Array.isArray(children)) {
+    for (const child of children) {
+      if (isValidElement(child) && isCodeEl(child)) return child;
+    }
   }
   return null;
 }
 
-let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
-
-async function getHighlighter() {
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
-      themes: ["github-light", "github-dark"],
-      langs: ["shell", "javascript", "typescript", "json", "text"],
-    });
-  }
-  return highlighterPromise;
-}
-
-async function CodeBlock({ code, lang }: { code: string; lang: string }) {
-  const hl = await getHighlighter();
-
-  /* @constraint shiki 不支持 mcfunction 等语言，高亮回退 text，标签保留原文 */
+function CodeBlock({ code, lang, highlighter: hl }: { code: string; lang: string; highlighter: Highlighter }) {
   const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "text";
 
   const html = hl.codeToHtml(code, {
@@ -97,18 +115,13 @@ interface MDXRendererProps {
   source: string;
 }
 
-export function MDXRenderer({ source }: MDXRendererProps) {
+export async function MDXRenderer({ source }: MDXRendererProps) {
+  await ensureHighlighter();
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
-      </div>
-    }>
-      <MDXRemote
-        source={source}
-        components={components}
-        options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-      />
-    </Suspense>
+    <MDXRemote
+      source={source}
+      components={components}
+      options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+    />
   );
 }

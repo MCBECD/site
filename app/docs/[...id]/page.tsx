@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getDocById, getDocRawContent, getAllDocs } from "@/lib/docs";
 import { DocDetailClient } from "./DocDetailClient";
+import { MDXRenderer } from "@/components/MDXRenderer";
 
 interface Props {
   params: Promise<{ id: string[] }>;
@@ -32,6 +33,7 @@ export default async function DocDetailPage({ params }: Props) {
     <DocDetailClient
       doc={doc}
       rawContent={rawContent}
+      mdxContent={<MDXRenderer source={doc.rawContent} />}
     />
   );
 }
