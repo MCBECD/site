@@ -18,7 +18,15 @@
     "fontSizeSmall": "小",
     "fontSizeMedium": "中",
     "fontSizeLarge": "大",
-    "language": "言語"
+    "language": "言語",
+    "tabGeneral": "一般",
+    "tabPlugins": "プラグイン",
+    "pluginColorTheme": "カラーテーマ",
+    "colorDefault": "デフォルト",
+    "colorRed": "赤",
+    "colorBlue": "青",
+    "colorGreen": "緑",
+    "colorCustom": "カスタム"
   },
   "code": {
     "copy": "コピー",
