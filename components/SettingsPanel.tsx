@@ -56,7 +56,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
         {/* header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
-          <h2 className="text-base font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
+          <h2 className="text-[13px] font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center -mr-1 rounded-[var(--radius)]
@@ -73,7 +73,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`px-3 pb-2.5 text-sm font-medium transition-colors relative -mb-px
+              className={`px-3 pb-2.5 text-[13px] font-medium transition-colors relative -mb-px
                 ${tab === key
                   ? "text-[var(--color-accent)]"
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"}`}
@@ -94,12 +94,12 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                     <button
                       key={opt.value}
                       onClick={() => updateTheme(opt.value)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 h-11 rounded-[var(--radius)] text-sm transition-colors
+                      className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-[var(--radius)] text-[13px] transition-colors
                         ${settings.theme === opt.value
                           ? "bg-[var(--color-accent)] text-white"
                           : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]" }`}
                     >
-                      <opt.icon className="w-4 h-4" />
+                      <opt.icon className="w-3.5 h-3.5" />
                       {t(opt.labelKey)}
                     </button>
                   ))}
@@ -112,7 +112,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                     <button
                       key={opt.value}
                       onClick={() => updateFontSize(opt.value)}
-                      className={`flex-1 h-11 rounded-[var(--radius)] text-sm transition-colors
+                      className={`flex-1 h-10 rounded-[var(--radius)] text-[13px] transition-colors
                         ${settings.fontSize === opt.value
                           ? "bg-[var(--color-accent)] text-white"
                           : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]" }`}
@@ -166,8 +166,8 @@ function PluginCard({
           <Icon className="w-[18px] h-[18px]" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium text-[var(--color-text-primary)] leading-tight">{name}</div>
-          <div className="text-xs text-[var(--color-text-tertiary)] mt-0.5 leading-snug">{desc}</div>
+          <div className="text-[13px] font-medium text-[var(--color-text-primary)] leading-tight">{name}</div>
+          <div className="text-[11px] text-[var(--color-text-tertiary)] mt-0.5 leading-snug">{desc}</div>
         </div>
         {/* toggle switch */}
         <button
@@ -225,7 +225,7 @@ function ColorThemePluginCard() {
                   : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)]"}`}
             >
               <span className="w-7 h-7 rounded-full border border-[var(--color-border)]" style={{ background: p.swatch }} />
-              <span className="text-xs text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
+              <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
             </button>
           ))}
         </div>
@@ -249,7 +249,7 @@ function ColorThemePluginCard() {
             />
             <span className="w-full h-full block rounded-full" style={{ background: settings.customColor }} />
           </label>
-          <span className="text-sm text-[var(--color-text-secondary)]">{t("settings.colorCustom")}</span>
+          <span className="text-[12px] text-[var(--color-text-secondary)]">{t("settings.colorCustom")}</span>
         </div>
       </div>
     </PluginCard>
@@ -300,7 +300,7 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-11 flex items-center justify-between px-3 rounded-[var(--radius)] text-sm
+        className="w-full h-10 flex items-center justify-between px-3 rounded-[var(--radius)] text-[13px]
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
           border border-[var(--color-border)]
           hover:border-[var(--color-accent)]/30
@@ -322,7 +322,7 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
               key={loc}
               type="button"
               onClick={() => select(loc)}
-              className={`w-full text-left px-3 py-2.5 text-sm flex items-center justify-between transition-colors
+              className={`w-full text-left px-3 py-2 text-[13px] flex items-center justify-between transition-colors
                 ${loc === value
                   ? "text-[var(--color-accent)]"
                   : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"}`}
@@ -342,7 +342,7 @@ function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Loca
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-sm font-medium text-[var(--color-text-primary)] mb-3">{title}</div>
+      <div className="text-[13px] font-medium text-[var(--color-text-primary)] mb-2.5">{title}</div>
       {children}
     </div>
   );
