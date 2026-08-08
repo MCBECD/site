@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback, type ReactNode } from "react"
 import Link from "next/link";
 import { Home, Copy, Check, ChevronDown } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
+import { Squircle } from "@/components/Squircle";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 
@@ -18,7 +19,13 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto px-5 pt-6 pb-20">
-      <div className="doc-glass-card squircle overflow-hidden">
+      <Squircle
+        cornerRadius={14}
+        borderColor="var(--color-border)"
+        shadow="var(--color-card-shadow)"
+        className="doc-glass-card overflow-hidden"
+        style={{ background: "var(--color-bg-elevated)" }}
+      >
         {/* 顶部操作栏 */}
         <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
           <Link
@@ -94,7 +101,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         >
           {children}
         </div>
-      </div>
+      </Squircle>
     </div>
   );
 }
