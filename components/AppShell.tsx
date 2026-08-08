@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import { Navbar } from "@/components/Navbar";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { PageTransition } from "@/components/PageTransition";
 
 function ShellInner({ children }: { children: React.ReactNode }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -108,7 +109,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <Navbar onOpenSettings={openSettings} />
       <SettingsPanel open={settingsOpen} onClose={closeSettings} />
       <main className="pt-[var(--navbar-height)] min-h-screen">
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
     </>
   );

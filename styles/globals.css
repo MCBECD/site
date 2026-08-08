@@ -544,3 +544,18 @@ pre.shiki {
   margin: 0 4px;
   flex-shrink: 0;
 }
+
+/* ----------------------------------------------------------
+ * Page transition
+ * ---------------------------------------------------------- */
+.page-transition-wrapper {
+  will-change: transform, opacity;
+}
+
+/* Disable page transitions when user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-wrapper {
+    animation: none !important;
+    transition: none !important;
+  }
+}
