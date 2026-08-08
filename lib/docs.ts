@@ -22,6 +22,7 @@ export interface DocMeta {
   updatedAt?: string;
   type?: string;
   readingTime?: number;
+  order?: number;
 }
 
 export interface DocContent {
@@ -77,6 +78,7 @@ function buildMeta(
     updatedAt: (jsonMeta?.updatedAt as string) ?? (fm.updatedAt as string) ?? undefined,
     type: (jsonMeta?.type as string) ?? (fm.type as string) ?? undefined,
     readingTime: mdxMeta?.readingTime,
+    order: (jsonMeta?.order as number) ?? (fm.order as number) ?? undefined,
   };
 }
 
@@ -139,7 +141,12 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 export function getAllDocs(): DocMeta[] {
   const docsDir = getDocsDir();
   if (!fs.existsSync(docsDir)) return [];
-  return scanDirectory(docsDir, "").sort((a, b) => a.title.localeCompare(b.title, "zh-CN"));
+  return scanDirectory(docsDir, "").sort((a, b) => {
+    const aO = a.order ?? Infinity;
+    const bO = b.order ?? Infinity;
+    if (aO !== bO) return aO - bO;
+    return a.title.localeCompare(b.title, "zh-CN");
+  });
 }
 
 /** 获取所有不重复的标签 */

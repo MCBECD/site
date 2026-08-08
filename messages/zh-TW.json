@@ -5,29 +5,8 @@
     "backToList": "返回列表"
   },
   "nav": {
-    "about": "關於",
     "settings": "設定",
     "github": "GitHub"
-  },
-  "about": {
-    "title": "關於 MCBECD",
-    "whatIs": "MCBECD 是什麼？",
-    "whatIsP1": "MCBECD（Minecraft Bedrock Edition Commands Documentation）是一個由社群驅動的開源專案，致力於為 Minecraft 基岩版提供全面、準確的指令參考文件。無論你是剛接觸指令方塊的新手，還是經驗豐富的地圖作者，MCBECD 都能幫助你快速查找指令用法與語法。",
-    "whatIsP2": "目前 MCBECD 已經收錄了 40+ 條常用指令的詳細文件，涵蓋語法說明、參數解釋、實用範例以及基岩版特有的注意事項。所有文件以 MDX 格式撰寫，支援豐富的排版和程式碼高亮。",
-    "whatIsP3": "MCBECD 網站支援 7 種介面語言（簡體中文、English、繁體中文、日本語、한국어、Deutsch、Français），你可以隨時在設定中切換。",
-    "techTitle": "技術棧",
-    "techP1": "網站前端基於 Next.js 16 建構，使用 App Router 進行頁面路由，支援靜態網站生成（SSG），部署在 Cloudflare Pages 上，全球存取速度極快。",
-    "techP2": "UI 部分使用 TypeScript + Tailwind CSS 4 開發，採用 CSS 自訂屬性實現主題系統，內建淺色/深色模式以及多套配色方案。",
-    "techP3": "文件內容以 MDX 格式儲存在獨立的 Git 子模組倉庫中，透過子模組機制與網站程式碼分離管理，方便社群成員單獨貢獻文件內容。",
-    "techP4": "網站支援 7 種介面語言的國際化（i18n），所有 UI 文字均透過翻譯檔案管理，文件內容也計畫實現多語言版本。",
-    "contribTitle": "參與貢獻",
-    "contribP1": "MCBECD 是一個完全由社群貢獻的專案，我們歡迎所有人參與。你可以幫助我們補充新的指令文件、改進現有內容、修正錯誤，或者新增新的語言翻譯。",
-    "contribP2": "詳細的貢獻指南請查看倉庫中的 CONTRIBUTING.md 檔案，其中包含了文件結構說明、模板和提交規範。",
-    "contribLink": "查看網站倉庫 CONTRIBUTING.md",
-    "contribDocsLink": "查看文件倉庫 CONTRIBUTING.md",
-    "licenseTitle": "開源許可",
-    "licenseP1": "MCBECD 網站和文件內容均基於 MIT 許可證開源，你可以自由使用、修改和分發。",
-    "attribP1": "Minecraft 是 Mojang Studios 的商標。本專案與 Mojang Studios 或 Microsoft Corporation 沒有任何隸屬、認可或關聯關係。"
   },
   "settings": {
     "title": "設定",
