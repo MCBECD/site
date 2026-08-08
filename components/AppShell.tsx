@@ -90,7 +90,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
           <div
             ref={bgRef}
             className="fixed inset-0 -z-20 bg-no-repeat bg-center will-change-transform overflow-hidden"
-            style={{ backgroundImage: `url(${settings.bgImage})`, backgroundSize: settings.bgParallax ? '120% 120%' : 'cover' }}
+            style={{ backgroundImage: `url(${settings.bgImage})`, backgroundSize: '125% 125%' }}
             aria-hidden="true"
           />
           <div
