@@ -60,7 +60,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       if (el) {
         const dx = (cur.x - 0.5) * MAX_SHIFT * 2;
         const dy = (cur.y - 0.5) * MAX_SHIFT * 2;
-        el.style.transform = `scale(1.18) translate3d(${dx}px, ${dy}px, 0)`;
+        el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -89,8 +89,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         <>
           <div
             ref={bgRef}
-            className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat will-change-transform overflow-hidden"
-            style={{ backgroundImage: `url(${settings.bgImage})` }}
+            className="fixed inset-0 -z-20 bg-no-repeat bg-center will-change-transform overflow-hidden"
+            style={{ backgroundImage: `url(${settings.bgImage})`, backgroundSize: settings.bgParallax ? '120% 120%' : 'cover' }}
             aria-hidden="true"
           />
           <div
