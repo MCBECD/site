@@ -1,0 +1,80 @@
+---
+title: "/playsound — 播放音效"
+order: 25
+category: commands
+description: "在指定位置或为指定玩家播放音效"
+---
+
+## `/playsound` — 播放音效
+
+在指定位置或为指定玩家播放音效。
+
+### 语法
+
+`/playsound <音效> [玩家] [位置] [音量] [音高] [最小音量]`
+
+### 参数
+
+- `<音效>` — 音效事件标识符
+- `[玩家]` — 目标玩家（默认：在位置播放，所有玩家可听到）
+- `[位置]` — 音效源坐标 `x y z`
+- `[音量]` — 音量大小（0.0–1.0，默认：1.0）
+- `[音高]` — 音高大小（0.0–2.0，默认：1.0）
+- `[最小音量]` — 远处玩家的最小音量
+
+### 常用音效 ID
+
+| 音效 | 说明 |
+|------|------|
+| `ambient.weather.thunder` | 雷声 |
+| `ambient.weather.rain` | 雨声 |
+| `random.explode` | 爆炸声 |
+| `random.levelup` | 升级音效 |
+| `random.orb` | 经验球拾取 |
+| `random.anvil_land` | 铁砧落地 |
+| `mob.wither.spawn` | 凋灵生成 |
+| `mob.enderdragon.growl` | 末影龙咆哮 |
+| `random.chestclosed` | 箱子关闭 |
+| `random.chestopen` | 箱子打开 |
+| `random.door_close` | 门关闭 |
+| `random.door_open` | 门打开 |
+| `note.pling` | 音符盒叮咚 |
+| `note.harp` | 音符盒竖琴 |
+| `random.fizz` | 嘶嘶声（TNT用） |
+| `fire.ignite` | 点火 |
+| `random.eat` | 进食声 |
+
+### 示例
+
+**为最近玩家播放雷声：**
+```
+/playsound ambient.weather.thunder @p
+```
+
+**在指定位置播放爆炸声：**
+```
+/playsound random.explode ~ ~ ~ 1.0 1.0
+```
+
+**为所有玩家播放升级音效：**
+```
+/playsound random.levelup @a
+```
+
+**播放安静低音的音符声：**
+```
+/playsound note.pling @p ~ ~ ~ 0.5 0.5
+```
+
+**在最近玩家位置播放雷声：**
+```
+/playsound ambient.weather.thunder @p ~ ~ ~ 1.0 1.0
+```
+
+### 基岩版注意
+
+- 音效 ID 必须包含命名空间前缀（例如 `ambient.weather.thunder`）
+- 如果省略 `[位置]`，音效从目标玩家位置发出
+- 音效随距离自然衰减 — 增大 `音量` 有助于远处听众听到
+- 部分音效使用 `music.` 或 `record.` 前缀用于音乐唱片和背景音乐
+- 并非所有 Java 版的音效 ID 在基岩版中都可用

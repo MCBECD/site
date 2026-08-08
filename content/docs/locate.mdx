@@ -1,0 +1,66 @@
+---
+title: "/locate — 定位结构"
+order: 23
+category: commands
+description: "查找最近生成结构的坐标"
+---
+
+## `/locate` — 定位结构
+
+查找最近生成的结构或生物群系的坐标。
+
+### 语法
+
+`/locate <结构>`
+
+### 可用结构
+
+| 结构 | 说明 |
+|------|------|
+| `fortress` | 下界要塞 |
+| `mansion` | 林地府邸 |
+| `mineshaft` | 废弃矿井 |
+| `monument` | 海底遗迹 |
+| `ruins` | 海底废墟 |
+| `shipwreck` | 沉船 |
+| `stronghold` | 要塞 |
+| `temple` | 沙漠神殿、丛林神庙、女巫小屋 |
+| `village` | 村庄 |
+| `pillageroutpost` | 掠夺者前哨站 |
+| `bastionremnant` | 堡垒遗迹 |
+| `buriedtreasure` | 埋藏的宝藏 |
+| `endcity` | 末地城 |
+| `ruinedportal` | 废弃传送门 |
+| `ancientcity` | 远古城市 |
+| `trailruins` | 古迹废墟 |
+| `trialchambers` | 试炼密室 |
+
+### 示例
+
+**定位最近的村庄：**
+```
+/locate village
+```
+
+**查找最近的下界要塞：**
+```
+/locate fortress
+```
+
+**查找最近的末地城：**
+```
+/locate endcity
+```
+
+**定位埋藏的宝藏：**
+```
+/locate buriedtreasure
+```
+
+### 基岩版注意
+
+- 返回当前维度最近结构的坐标
+- 某些结构只能在其对应的维度中定位（例如 `fortress` 只能在下界）
+- 返回的坐标是近似值 — 结构可能有轻微偏移
+- 结构必须在已生成的世界中才能被定位
+- 配合 `/tp` 使用可快速传送：使用返回的坐标 `/tp @p <x> <y> <z>`

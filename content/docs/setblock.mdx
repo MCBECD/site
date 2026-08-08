@@ -1,0 +1,43 @@
+---
+title: "/setblock — 放置方块"
+order: 30
+category: commands
+description: "在指定位置放置单个方块"
+---
+
+## `/setblock` — 放置方块
+
+在指定位置放置单个方块。
+
+### 语法
+
+`/setblock <位置> <方块> [数据值] [模式]`
+
+### 参数
+
+- `<位置>` — 坐标 `x y z`
+- `<方块>` — 方块 ID
+- `[数据值]` — 方块数据值
+- `[模式]` — `destroy` / `keep` / `replace`
+
+### 模式说明
+
+| 模式 | 说明 |
+|------|------|
+| `replace` | 默认，替换原有方块 |
+| `destroy` | 破坏原方块并掉落物品 |
+| `keep` | 仅在空气位置放置 |
+
+### 示例
+
+`/setblock ~ ~ ~ stone`
+
+在脚下方块放置石头。
+
+`/setblock 100 64 100 diamond_block`
+
+在指定坐标放置钻石块。
+
+`/setblock ~ ~1 ~ air destroy`
+
+破坏头顶的方块。

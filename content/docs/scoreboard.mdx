@@ -1,0 +1,107 @@
+---
+title: "/scoreboard — 计分板"
+order: 26
+category: commands
+description: "管理计分板目标、玩家分数和显示设置"
+---
+
+## `/scoreboard` — 计分板
+
+管理计分板目标、玩家分数和显示设置。
+
+### 语法
+
+`/scoreboard objectives add <目标> dummy [显示名称]`
+
+`/scoreboard objectives remove <目标>`
+
+`/scoreboard objectives list`
+
+`/scoreboard objectives setdisplay <栏位> <目标> [ascending/descending]`
+
+`/scoreboard players add <玩家> <目标> <数值>`
+
+`/scoreboard players remove <玩家> <目标> <数值>`
+
+`/scoreboard players set <玩家> <目标> <数值>`
+
+`/scoreboard players reset <玩家> <目标>`
+
+`/scoreboard players list [玩家]`
+
+`/scoreboard players operation <目标玩家> <目标计分项> <运算> <源玩家> <源计分项>`
+
+`/scoreboard players random <玩家> <目标> <最小值> <最大值>`
+
+### 参数
+
+- `<目标>` — 计分板目标名称
+- `dummy` — 目标准则类型（只读，仅由命令更改）
+- `[显示名称]` — 目标的显示名称
+- `<栏位>` — 显示栏位：`sidebar`、`list`、`belowname`
+- `<玩家>` — 目标玩家或实体（用 `*` 表示所有已追踪玩家）
+- `<数值>` — 增加/减少/设置的数值
+
+### 显示栏位
+
+| 栏位 | 说明 |
+|------|------|
+| `sidebar` | 右侧分数列表 |
+| `list` | Tab 列表中玩家名称旁 |
+| `belowname` | 玩家名称标签下方 |
+
+### 运算
+
+| 运算 | 说明 |
+|------|------|
+| `=` | 设为值 |
+| `+=` | 加 |
+| `-=` | 减 |
+| `*=` | 乘 |
+| `/=` | 除（整数） |
+| `%=` | 取余 |
+| `<` | 取最小值 |
+| `>` | 取最大值 |
+| `><` | 交换值 |
+
+### 示例
+
+**创建计分板目标：**
+```
+/scoreboard objectives add money dummy "金币"
+```
+
+**在侧边栏显示计分板：**
+```
+/scoreboard objectives setdisplay sidebar money
+```
+
+**给玩家加 10 分：**
+```
+/scoreboard players add @p money 10
+```
+
+**设置玩家的分数：**
+```
+/scoreboard players set @p money 100
+```
+
+**移除计分板目标：**
+```
+/scoreboard objectives remove money
+```
+
+**重置玩家所有分数：**
+```
+/scoreboard players reset @p
+```
+
+### 基岩版注意
+
+- 计分板是小游戏逻辑和追踪的基础工具
+- 使用 `dummy` 准则进行自定义追踪（最常用）
+- 配合 `scoreboard players operation` 实现计分板数学运算
+- 结合 `/execute if score` 进行条件逻辑判断
+- 计分板值为整数（最大值：2147483647）
+- 显示名称支持格式化代码（§）
+- 通配符 `*` 可以指定所有已追踪玩家

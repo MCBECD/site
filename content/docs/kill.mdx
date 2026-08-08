@@ -1,0 +1,36 @@
+---
+title: "/kill — 清除实体"
+order: 21
+category: commands
+description: "清除（杀死）指定实体"
+---
+
+## `/kill` — 清除实体
+
+清除（杀死）指定实体。对玩家造成致命伤害，对生物直接移除。
+
+### 语法
+
+`/kill [目标]`
+
+### 参数
+
+- `[目标]` — 目标选择器（默认执行者自己）
+
+### 示例
+
+`/kill @e[type=zombie]`
+
+清除所有僵尸。
+
+`/kill @e[type=item]`
+
+清除所有掉落物。
+
+`/kill @e[type=!player]`
+
+清除除玩家外的所有实体。
+
+`/kill`
+
+清除自己。

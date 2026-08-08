@@ -1,0 +1,47 @@
+---
+title: "/effect — 状态效果"
+order: 15
+category: commands
+description: "给予或移除实体的状态效果"
+---
+
+## `/effect` — 状态效果
+
+给予或移除实体的状态效果。
+
+### 语法
+
+`/effect <目标> <效果> [秒] [等级] [隐藏粒子]`
+
+`/effect <目标> clear`
+
+### 常用效果
+
+| 效果 | ID | 说明 |
+|------|-----|------|
+| `speed` | 速度 | 提高移动速度 |
+| `jump_boost` | 跳跃提升 | 提高跳跃高度 |
+| `strength` | 力量 | 增加近战伤害 |
+| `regeneration` | 生命恢复 | 持续恢复生命 |
+| `invisibility` | 隐身 | 使实体不可见 |
+| `night_vision` | 夜视 | 在黑暗中看清 |
+| `resistance` | 抗性提升 | 减少受到的伤害 |
+
+### 示例
+
+`/effect give @p speed 30 1`
+
+给予最近玩家 30 秒速度 II。
+
+`/effect give @p night_vision 999999 0 true`
+
+给予永久夜视（隐藏粒子）。
+
+`/effect clear @p`
+
+清除最近玩家的所有效果。
+
+### 基岩版注意
+
+- 效果 ID 使用英文名称，不是数字
+- `clear` 子命令清除所有效果
