@@ -5,8 +5,29 @@
     "backToList": "Zurück zur Liste"
   },
   "nav": {
+    "about": "Über",
     "settings": "Einstellungen",
     "github": "GitHub"
+  },
+  "about": {
+    "title": "Über MCBECD",
+    "whatIs": "Was ist MCBECD?",
+    "whatIsP1": "MCBECD (Minecraft Bedrock Edition Commands Documentation) ist ein community-getriebenes Open-Source-Projekt, das umfassende und genaue Befehlsreferenzdokumentation für Minecraft Bedrock Edition bietet. Egal, ob Sie neu bei Befehlsblöcken sind oder ein erfahrener Kartenersteller, MCBECD hilft Ihnen, Befehlsverwendung und Syntax schnell zu finden.",
+    "whatIsP2": "MCBECD dokumentiert derzeit 40+ häufig verwendete Befehle mit detaillierten Referenzen, darunter Syntaxerklärungen, Parameterbeschreibungen, praktische Beispiele und bedrock-spezifische Hinweise. Alle Dokumente werden im MDX-Format mit reicher Typografie und Syntaxhervorhebung verfasst.",
+    "whatIsP3": "Die MCBECD-Website unterstützt 7 Oberflächensprachen (简体中文, English, 繁體中文, 日本語, 한국어, Deutsch, Français), die jederzeit in den Einstellungen umgeschaltet werden können.",
+    "techTitle": "Technologie-Stack",
+    "techP1": "Das Website-Frontend ist mit Next.js 16 gebaut, verwendet App Router für Seitenrouting mit statischer Site-Generierung (SSG) und ist auf Cloudflare Pages für schnellen globalen Zugriff deployt.",
+    "techP2": "Die UI wird mit TypeScript + Tailwind CSS 4 entwickelt und nutzt CSS-benutzerdefinierte Eigenschaften für das Theming mit integriertem Hell-/Dunkelmodus und mehreren Farbschemata.",
+    "techP3": "Der Dokumentationsinhalt wird als MDX in einem separaten Git-Submodul-Repository gespeichert, wodurch Inhalt und Website-Code getrennt verwaltet werden und Community-Mitglieder leicht beitragen können.",
+    "techP4": "Die Website unterstützt 7 Oberflächensprachen durch ein i18n-System. Alle UI-Texte werden über Übersetzungsdateien verwaltet, mehrsprachige Dokumentation ist ebenfalls geplant.",
+    "contribTitle": "Mitmachen",
+    "contribP1": "MCBECD ist ein vollständig von der Community beigetragenes Projekt und wir begrüßen alle zur Teilnahme. Sie können helfen, neue Befehlsdokumentation hinzuzufügen, bestehende Inhalte zu verbessern, Fehler zu korrigieren oder neue Sprachübersetzungen hinzuzufügen.",
+    "contribP2": "Detaillierte Beitragsrichtlinien finden Sie in der CONTRIBUTING.md-Datei im Repository, die Dokumentstruktur, Vorlagen und Einreichungsrichtlinien enthält.",
+    "contribLink": "Site-Repository CONTRIBUTING.md anzeigen",
+    "contribDocsLink": "Docs-Repository CONTRIBUTING.md anzeigen",
+    "licenseTitle": "Lizenz",
+    "licenseP1": "Sowohl die MCBECD-Website als auch die Dokumentation sind unter der MIT-Lizenz Open Source. Sie können sie frei verwenden, modifizieren und verteilen.",
+    "attribP1": "Minecraft ist eine Marke von Mojang Studios. Dieses Projekt ist nicht affiliiert, befürwortet oder verbunden mit Mojang Studios oder Microsoft Corporation."
   },
   "settings": {
     "title": "Einstellungen",
