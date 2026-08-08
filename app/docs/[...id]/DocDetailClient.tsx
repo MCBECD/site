@@ -17,10 +17,10 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   const { t } = useLocale();
 
   return (
-    <div className="max-w-3xl mx-auto px-4 pt-4 pb-16">
+    <div className="max-w-3xl mx-auto px-5 pt-6 pb-20">
       <div className="doc-glass-card overflow-hidden">
-        {/* 顶部操作栏：返回 + 操作按钮 */}
-        <div className="flex items-center justify-between h-11 px-4 doc-header-enter">
+        {/* 顶部操作栏 */}
+        <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)] doc-header-enter">
           <Link
             href="/docs"
             className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
@@ -40,7 +40,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         </div>
 
         {/* 标题 + 元信息 */}
-        <header className="px-5 pb-1 doc-header-enter" style={{ animationDelay: '0.08s' }}>
+        <header className="px-6 pt-5 pb-2 doc-header-enter" style={{ animationDelay: '0.08s' }}>
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {doc.meta.title}
           </h1>
@@ -80,7 +80,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
 
         {/* 文档正文 */}
         <div
-          className="px-5 pt-6 pb-6 doc-body-enter
+          className="px-6 pt-5 pb-8 doc-body-enter
           prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
           prose-headings:text-[var(--color-text-primary)]
           prose-p:text-[var(--color-text-secondary)]
