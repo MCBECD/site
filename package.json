@@ -19,7 +19,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "figma-squircle": "^1.1.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.400.0",
     "next": "^16.0.0",

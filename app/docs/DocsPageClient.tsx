@@ -4,7 +4,6 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
-import { Squircle } from "@/components/Squircle";
 import type { DocMeta } from "@/lib/docs";
 
 const PAGE_SIZE = 20;
@@ -146,42 +145,39 @@ export default function DocsPageClient({ docs }: Props) {
       ) : (
         <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
           {pageDocs.map((doc) => (
-            <Squircle
+            <Link
               key={doc.id}
-              cornerRadius={8}
-              borderColor="var(--sq-border, var(--color-border))"
-              borderOpacity="var(--sq-border-opacity, 1)"
-              className="doc-card block group bg-[var(--color-card-bg)] hover:[--sq-border:var(--color-accent)] hover:[--sq-border-opacity:0.2]"
+              href={`/docs/${doc.id}`}
+              className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
+                bg-[var(--color-card-bg)]
+                border border-[var(--color-border)]
+                hover:border-[var(--color-accent)]/20
+                hover:shadow-[var(--color-card-hover-shadow)]
+                no-underline"
             >
-              <Link
-                href={`/docs/${doc.id}`}
-                className="block px-4 py-3.5
-                  active:scale-[0.995] no-underline"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-[14px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-200">
-                    {doc.title}
-                  </h2>
-                  <svg className="w-4 h-4 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-[14px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-200">
+                  {doc.title}
+                </h2>
+                <svg className="w-4 h-4 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+              {(doc.description || doc.author || doc.updatedAt) && (
+                <div className="flex items-center justify-between gap-3 mt-1">
+                  {doc.description && (
+                    <p className="text-xs text-[var(--color-text-tertiary)] truncate leading-relaxed flex-1 min-w-0">
+                      {doc.description}
+                    </p>
+                  )}
+                  {(doc.author || doc.updatedAt) && (
+                    <span className="text-[11px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums">
+                      {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
+                    </span>
+                  )}
                 </div>
-                {(doc.description || doc.author || doc.updatedAt) && (
-                  <div className="flex items-center justify-between gap-3 mt-1">
-                    {doc.description && (
-                      <p className="text-xs text-[var(--color-text-tertiary)] truncate leading-relaxed flex-1 min-w-0">
-                        {doc.description}
-                      </p>
-                    )}
-                    {(doc.author || doc.updatedAt) && (
-                      <span className="text-[11px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums">
-                        {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </Link>
-            </Squircle>
+              )}
+            </Link>
           ))}
         </div>
       )}
