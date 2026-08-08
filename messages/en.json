@@ -22,6 +22,7 @@
     "tabGeneral": "General",
     "tabPlugins": "Plugins",
     "pluginColorTheme": "Color Theme",
+    "pluginColorThemeDesc": "Override the entire color scheme including backgrounds, text, and borders",
     "colorDefault": "Default",
     "colorRed": "Red",
     "colorBlue": "Blue",
