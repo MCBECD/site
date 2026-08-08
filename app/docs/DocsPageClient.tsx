@@ -144,7 +144,7 @@ export default function DocsPageClient({ docs }: Props) {
         </div>
       ) : (
         <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
-          {pageDocs.map((doc, idx) => (
+          {pageDocs.map((doc) => (
             <Link
               key={doc.id}
               href={`/docs/${doc.id}`}
@@ -154,7 +154,6 @@ export default function DocsPageClient({ docs }: Props) {
                 hover:border-[var(--color-accent)]/20
                 hover:shadow-[var(--color-card-hover-shadow)]
                 active:scale-[0.995] no-underline"
-              style={{ "--card-index": idx } as React.CSSProperties}
             >
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-[14px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-200">
