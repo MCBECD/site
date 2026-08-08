@@ -148,7 +148,7 @@ export default function DocsPageClient({ docs }: Props) {
             <Link
               key={doc.id}
               href={`/docs/${doc.id}`}
-              className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
+              className="doc-card squircle block group px-4 py-3.5 rounded-[var(--radius-sm)]
                 bg-[var(--color-card-bg)]
                 border border-[var(--color-border)]
                 hover:border-[var(--color-accent)]/20
