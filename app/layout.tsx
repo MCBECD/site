@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import { ThemeScript } from "@/components/ThemeScript";
 
 export const metadata: Metadata = {
   title: "MCBECD - Minecraft 基岩版命令库",
@@ -14,23 +15,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <link rel="preload" href="https://avatars.githubusercontent.com/u/312049267?s=48" as="image" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function() {
-              try {
-                var settings = JSON.parse(localStorage.getItem('mcbecd-settings') || '{}');
-                var theme = settings.theme;
-                if (theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                  document.documentElement.style.colorScheme = 'dark';
-                }
-                var fm = settings.fontSize;
-                var mul = fm === 'small' ? 0.875 : fm === 'large' ? 1.125 : 1;
-                document.documentElement.style.setProperty('--font-size-multiplier', mul);
-              } catch(e) {}
-            })();`,
-          }}
-        />\n      </head>
+        <ThemeScript />
+      </head>
       <body className="antialiased">
         <AppShell>{children}</AppShell>
       </body>
