@@ -638,9 +638,29 @@ pre.shiki {
   transform: translateY(0);
 }
 
-/* ----------------------------------------------------------
- * Nav button micro-interaction
- * ---------------------------------------------------------- */
+/* ---------------------------------------------------------- * Command block icon + inline command styling * ---------------------------------------------------------- */
+.cmd-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.cmd-icon {
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.cmd-code {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.8125em;
+  color: var(--color-accent);
+  background: var(--color-code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------- * Nav button micro-interaction */
 @keyframes btnPulse {
   0%   { box-shadow: 0 0 0 0 var(--color-accent-muted); }
   100% { box-shadow: 0 0 0 6px transparent; }
