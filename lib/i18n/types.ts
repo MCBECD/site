@@ -19,8 +19,29 @@ export interface Messages {
     backToList: string;
   };
   nav: {
+    about: string;
     settings: string;
     github: string;
+  };
+  about: {
+    title: string;
+    whatIs: string;
+    whatIsP1: string;
+    whatIsP2: string;
+    whatIsP3: string;
+    techTitle: string;
+    techP1: string;
+    techP2: string;
+    techP3: string;
+    techP4: string;
+    contribTitle: string;
+    contribP1: string;
+    contribP2: string;
+    contribLink: string;
+    contribDocsLink: string;
+    licenseTitle: string;
+    licenseP1: string;
+    attribP1: string;
   };
   settings: {
     title: string;

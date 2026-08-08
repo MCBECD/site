@@ -38,6 +38,13 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         </span>
       </Link>
 
+      <Link
+        href="/about"
+        className="ml-4 text-[13px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors no-underline"
+      >
+        {t("nav.about")}
+      </Link>
+
       <div className="flex items-center ml-auto">
         {/* 主题切换组 */}
         <div className="flex items-center gap-0.5">
