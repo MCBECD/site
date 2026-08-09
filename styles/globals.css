@@ -19,10 +19,10 @@
   --color-bg-tertiary: #f1f5f9;
   --color-bg-elevated: #ffffff;
 
-  /* Text */
+  /* Text — tertiary bumped to WCAG AA on white bg */
   --color-text-primary: #111827;
   --color-text-secondary: #4b5563;
-  --color-text-tertiary: #9ca3af;
+  --color-text-tertiary: #6b7280;
 
   /* Border */
   --color-border: #e5e7eb;
@@ -69,7 +69,7 @@
   --color-bg-elevated: #181b25;
   --color-text-primary: #e8eaf0;
   --color-text-secondary: #9da1ae;
-  --color-text-tertiary: #5c6072;
+  --color-text-tertiary: #7a7f90;
   --color-border: #232733;
   --color-border-light: #1c1f2b;
   --color-accent: #60a5fa;
@@ -268,6 +268,7 @@ pre {
   border-radius: 0.5rem;
   background-color: var(--color-code-bg) !important;
   line-height: 1.25rem;
+  border-left: 3px solid var(--color-accent);
 }
 
 .dark .shiki,
@@ -312,6 +313,12 @@ pre {
 .prose h2 { margin-top: 2.25rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.015em; font-size: 1.25em; }
 .prose h3 { margin-top: 1.75rem; margin-bottom: 0.5rem; font-weight: 600; font-size: 1.1em; }
 .prose h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1em; font-weight: 600; }
+.prose table { width: 100%; border-collapse: collapse; }
+.prose thead th { font-weight: 600; background: var(--color-bg-tertiary); }
+.prose tbody tr:nth-child(even) { background: var(--color-bg-secondary); }
+.prose tbody tr:hover { background: var(--color-accent-muted); }
+.prose td code,
+.prose th code { color: inherit; background: transparent; padding: 0; font-size: inherit; }
 .prose p + p { margin-top: 1rem; }
 .prose p + pre,
 .prose p + .group { margin-top: 1.25rem; }
@@ -649,6 +656,7 @@ pre {
 
 .doc-card:hover {
   transform: translateY(-1px);
+  background-color: var(--color-accent-subtle);
 }
 
 .doc-card:active {
