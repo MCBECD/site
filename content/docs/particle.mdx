@@ -1,6 +1,6 @@
 ---
 author: "官方•Dingding OvO"
-updatedAt: "2026-08-08"
+updatedAt: "2026-08-09"
 title: "/particle — 粒子效果"
 order: 24
 category: commands
@@ -13,32 +13,38 @@ description: "在指定位置创建粒子效果"
 
 ### 语法
 
-`/particle <效果> <位置>`
+`/particle <粒子效果> <位置> [计数]`
 
 ### 参数
 
-- `<效果>` — 粒子效果标识符
+- `<粒子效果>` — 粒子效果标识符（必须包含命名空间，如 `minecraft:`）
 - `<位置>` — 坐标 `x y z`
+- `[计数]` — 粒子数量（默认 1）
 
 ### 常用粒子效果
 
-| 效果 | 说明 |
-|------|------|
-| `minecraft:huge_explosion_emitter` | 大型爆炸爆发 |
-| `minecraft:large_explosion` | 爆炸粒子 |
+| 粒子效果 ID | 说明 |
+|-------------|------|
+| `minecraft:basic_flame_particle` | 火焰粒子 |
+| `minecraft:smoke_particle` | 烟雾粒子 |
+| `minecraft:cloud_particle` | 云朵粒子 |
+| `minecraft:enchanting_table_particle` | 附魔符文粒子 |
 | `minecraft:heart_particle` | 飘浮爱心 |
-| `minecraft:portal_directional` | 紫色传送门粒子 |
-| `minecraft:villager_happy` | 绿色火花（交易） |
-| `minecraft:flame_particle` | 火焰粒子 |
-| `minecraft:lava_particle` | 熔岩滴落粒子 |
-| `minecraft:water_splash_particle` | 水花飞溅 |
-| `minecraft:mobflame_emitter` | 生物火焰（烈焰人） |
-| `minecraft:smoke` | 烟雾粒子 |
-| `minecraft:dragon_death_explosion_emitter` | 末影龙死亡效果 |
-| `minecraft:totem_of_undying` | 不死图腾粒子 |
-| `minecraft:enchanting_table_particle` | 附魔符文 |
-| `minecraft:rain_splash_particle` | 雨水飞溅 |
+| `minecraft:angry_villager_particle` | 愤怒的村民粒子 |
+| `minecraft:villager_happy_particle` | 开心的村民粒子 |
+| `minecraft:portal_directional` | 传送门粒子 |
+| `minecraft:end_rod` | 末地烛粒子 |
+| `minecraft:dust_particle` | 灰尘粒子 |
+| `minecraft:splash_particle` | 水花飞溅 |
+| `minecraft:lava_particle` | 熔岩滴落 |
 | `minecraft:campfire_smoke_particle` | 营火烟雾 |
+| `minecraft:totem_particle` | 不死图腾粒子 |
+| `minecraft:dragon_breath_particle` | 末影龙吐息 |
+| `minecraft:falling_dust_particle` | 下落灰尘 |
+| `minecraft:underwater_torch_particle` | 水下火把粒子 |
+| `minecraft:critical_hit_particle` | 暴击粒子 |
+| `minecraft:mobflame_particle` | 烈焰人火焰粒子 |
+| `minecraft:snowflake_particle` | 雪花粒子 |
 
 ### 示例
 
@@ -47,25 +53,31 @@ description: "在指定位置创建粒子效果"
 /particle minecraft:heart_particle ~ ~ ~
 ```
 
-**在指定位置创建爆炸效果：**
+**创建大量火焰粒子效果：**
 ```mcfunction
-/particle minecraft:huge_explosion_emitter 100 64 100
+/particle minecraft:basic_flame_particle ~ ~ ~ 50
 ```
 
-**在最近玩家上方创建火焰粒子：**
+**在最近玩家上方创建烟雾：**
 ```mcfunction
-/particle minecraft:flame_particle ~ ~2 ~
+/particle minecraft:smoke_particle ~ ~2 ~
 ```
 
-**在坐标处创建绿色火花：**
+**创建附魔粒子效果：**
 ```mcfunction
-/particle minecraft:villager_happy 50 70 50
+/particle minecraft:enchanting_table_particle ~ ~ ~ 30
+```
+
+**在坐标处创建传送门粒子：**
+```mcfunction
+/particle minecraft:portal_directional 50 70 50
 ```
 
 ### 基岩版注意
 
-- 粒子效果仅用于视觉，不与实体交互
-- 基岩版中的粒子 ID 使用 `minecraft:` 命名空间前缀
-- 大多数粒子产生后立即消散；发射器可持续更长时间
+- 粒子效果 ID 必须带 `minecraft:` 命名空间前缀
+- 粒子仅用于视觉效果，不与实体交互，不影响游戏逻辑
+- 大量粒子（超过数百个）可能导致性能问题，请适量使用
 - 可与命令方块或 `/execute` 配合使用实现动画效果
-- 粒子效果除非大量生成，否则不会造成卡顿
+- 基岩版的粒子 ID 与 Java 版不完全相同，请使用基岩版专属 ID
+- 需要 OP 等级 1

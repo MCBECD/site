@@ -1,6 +1,6 @@
 ---
 author: "官方•Dingding OvO"
-updatedAt: "2026-08-08"
+updatedAt: "2026-08-09"
 title: "/enchant — 附魔物品"
 order: 22
 category: commands
@@ -9,38 +9,53 @@ description: "为玩家手持物品添加附魔"
 
 ## `/enchant` — 附魔物品
 
-为玩家手持的物品添加附魔。
+为玩家手持或主手栏中的物品添加附魔。
 
 ### 语法
 
-`/enchant <玩家> <附魔ID> [等级]`
+`/enchant <玩家> <附魔ID> <等级>`
 
 ### 参数
 
-- `<玩家>` — 目标玩家
-- `<附魔ID>` — 附魔标识符
-- `[等级]` — 附魔等级（默认：1）
+- `<玩家>` — 目标玩家（必须手持可附魔的物品）
+- `<附魔ID>` — 附魔标识符（英文名称，如 `sharpness`）
+- `<等级>` — 附魔等级（从 1 开始；1 = I 级，2 = II 级，以此类推）
+
+> 注意：基岩版中等级参数是**必填的**，即使附魔 I 级也需要写等级 1。
 
 ### 常用附魔
 
 | 附魔名称 | ID | 最大等级 | 适用物品 |
-|----------|----|---------|---------|
+|----------|-----|---------|----------|
 | 锋利 | `sharpness` | 5 | 剑、斧 |
 | 亡灵杀手 | `smite` | 5 | 剑、斧 |
+| 节肢杀手 | `bane_of_arthropods` | 5 | 剑、斧 |
 | 保护 | `protection` | 4 | 盔甲 |
-| 效率 | `efficiency` | 5 | 工具 |
+| 火焰保护 | `fire_protection` | 4 | 盔甲 |
+| 摔落保护 | `feather_falling` | 4 | 靴子 |
+| 水下速掘 | `aqua_affinity` | 1 | 头盔 |
+| 水下呼吸 | `respiration` | 3 | 头盔 |
+| 效率 | `efficiency` | 5 | 镐、斧、铲 |
 | 耐久 | `unbreaking` | 3 | 所有物品 |
-| 时运 | `fortune` | 3 | 镐、铲 |
-| 精准采集 | `silk_touch` | 1 | 工具 |
+| 时运 | `fortune` | 3 | 镐、铲、斧 |
+| 精准采集 | `silk_touch` | 1 | 镐、斧、铲 |
 | 力量 | `power` | 5 | 弓 |
 | 火矢 | `flame` | 1 | 弓 |
 | 无限 | `infinity` | 1 | 弓 |
+| 冲击 | `punch` | 2 | 弓 |
 | 抢夺 | `looting` | 3 | 剑 |
 | 击退 | `knockback` | 2 | 剑 |
 | 火焰附加 | `fire_aspect` | 2 | 剑 |
 | 经验修补 | `mending` | 1 | 所有物品 |
+| 消失诅咒 | `vanishing_curse` | 1 | 所有物品 |
+| 绑定诅咒 | `binding_curse` | 1 | 所有物品 |
 | 忠诚 | `loyalty` | 3 | 三叉戟 |
 | 激流 | `riptide` | 3 | 三叉戟 |
+| 引雷 | `channeling` | 1 | 三叉戟 |
+| 荆棘 | `thorns` | 3 | 盔甲 |
+| 深海探索者 | `depth_strider` | 3 | 靴子 |
+| 冰霜行者 | `frost_walker` | 2 | 靴子 |
+| 弹射物保护 | `projectile_protection` | 4 | 盔甲 |
 
 ### 示例
 
@@ -49,9 +64,9 @@ description: "为玩家手持物品添加附魔"
 /enchant @p sharpness 5
 ```
 
-**为最近玩家的手持物品附魔效率 IV：**
+**为最近玩家的手持物品附魔效率 V：**
 ```mcfunction
-/enchant @p efficiency 4
+/enchant @p efficiency 5
 ```
 
 **应用精准采集：**
@@ -64,10 +79,16 @@ description: "为玩家手持物品添加附魔"
 /enchant @a unbreaking 3
 ```
 
+**为手持头盔附魔水下呼吸 III：**
+```mcfunction
+/enchant @p respiration 3
+```
+
 ### 基岩版注意
 
-- 玩家必须手持要附魔的物品
-- 不兼容的附魔会覆盖物品上已有的附魔
-- 可以应用超过正常上限的附魔等级（例如锋利 100）
-- 需在世界设置 → 游戏 → 作弊中启用作弊
+- 玩家必须手持要附魔的物品（主手栏）
+- 物品必须支持该附魔，否则命令会失败
+- 不兼容的附魔（如同时有锋利和亡灵杀手）不能共存
+- 可以通过命令应用超过正常上限的附魔等级（例如锋利 100），但实际效果有上限
+- `/enchant` 只能给玩家手中的物品附魔，不能给掉落物或容器中的物品附魔
 - 需要 OP 等级 1

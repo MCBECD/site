@@ -43,10 +43,19 @@ description: "设置或查询世界游戏规则"
 /gamerule doDaylightCycle false
 ```
 
-锁定时间。
+锁定昼夜循环。
 
 ```
-/gamerule doDaylightCycle false
+/gamerule showCoordinates true
 ```
 
 在屏幕显示坐标。
+
+### 基岩版注意
+
+- 布尔值规则：`true` 开启，`false` 关闭
+- `showCoordinates` 是基岩版独有规则，Java 版没有
+- `commandBlocksEnabled` 控制命令方块是否可执行
+- 部分规则需要退出并重新进入世界才能生效
+- 可使用 `/gamerule <规则>`（不带值）查询当前设置
+- 需要 OP 等级 1
