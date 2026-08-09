@@ -56,6 +56,15 @@
     "updatedAt": "Aktualisiert {date}",
     "title": "Befehlsbibliothek",
     "subtitle": "{count} Befehle verfügbar, sofort kopierbar",
-    "notFound": "Seite nicht gefunden"
+    "notFound": "Seite nicht gefunden",
+    "bookmarks": "Lesezeichen",
+    "recent": "Zuletzt besucht"
+  },
+  "plugin": {
+    "quickRefName": "Schnellreferenz",
+    "quickRefDesc": "Schwebendes Fenster zeigt zuletzt kopierte Befehle für ein-Klick Neu-Kopieren",
+    "quickRefTitle": "Schnell",
+    "quickRefEmpty": "Noch keine Befehle kopiert",
+    "quickRefClear": "Verlauf löschen"
   }
 }
