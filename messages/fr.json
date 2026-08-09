@@ -56,15 +56,6 @@
     "updatedAt": "Mis à jour {date}",
     "title": "Bibliothèque de commandes",
     "subtitle": "{count} commandes disponibles, prêtes à copier",
-    "notFound": "Page introuvable",
-    "bookmarks": "Favoris",
-    "recent": "Récemment consultés"
-  },
-  "plugin": {
-    "quickRefName": "Référence rapide",
-    "quickRefDesc": "Fenêtre flottante affichant les commandes récemment copiées pour un recopiage en un clic",
-    "quickRefTitle": "Quick Ref",
-    "quickRefEmpty": "Aucune commande copiée",
-    "quickRefClear": "Effacer l'historique"
+    "notFound": "Page introuvable"
   }
 }
