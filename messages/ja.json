@@ -56,6 +56,15 @@
     "updatedAt": "{date} 更新",
     "title": "コマンドライブラリ",
     "subtitle": "{count} 件のコマンドが利用可能",
-    "notFound": "ページが見つかりません"
+    "notFound": "ページが見つかりません",
+    "bookmarks": "ブックマーク",
+    "recent": "最近閲覧"
+  },
+  "plugin": {
+    "quickRefName": "クイックリファレンス",
+    "quickRefDesc": "右下のフローティングウィンドウに最近コピーしたコマンドを表示し、ワンクリックで再コピー",
+    "quickRefTitle": "クイック",
+    "quickRefEmpty": "まだコピーしていません",
+    "quickRefClear": "履歴をクリア"
   }
 }
