@@ -22,7 +22,7 @@ const mcfunctionSyntax = {
   repository: {},
   patterns: [
     {
-      name: "keyword.control",
+      name: "entity.name.function",
       match: '^/?[a-zA-Z0-9_]+',
     },
     {
@@ -34,8 +34,12 @@ const mcfunctionSyntax = {
       match: "'[^']*'",
     },
     {
-      name: "entity.name.function",
+      name: "entity.name.tag",
       match: '@[a-z]'
+    },
+    {
+      name: "constant",
+      match: "\\b(true|false|null)\\b",
     },
     {
       name: "variable.parameter",
@@ -43,7 +47,7 @@ const mcfunctionSyntax = {
     },
     {
       name: "constant.numeric",
-      match: '[\\^~0-9.][0-9.]*',
+      match: '[\\^~0-9\\.-][0-9\\.-]*',
     },
   ]
 };
