@@ -104,7 +104,7 @@ function createUpdater<K extends keyof Settings>(
 
 interface SettingsContextValue {
   settings: Settings;
-  isHydrated: boolean;
+  // isHydrated: boolean;
   updateTheme: (theme: Theme) => void;
   updateFontSize: (fontSize: FontSize) => void;
   updateLocale: (locale: Locale) => void;
