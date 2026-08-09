@@ -58,6 +58,8 @@
     "subtitle": "共 {count} 条命令，可直接复制使用",
     "notFound": "页面未找到",
     "bookmarks": "收藏",
-    "recent": "最近浏览"
+    "recent": "最近浏览",
+    "noBookmarks": "还没有收藏命令",
+    "noRecent": "还没有浏览记录"
   }
 }

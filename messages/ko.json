@@ -58,6 +58,8 @@
     "subtitle": "{count}개의 명령어를 바로 복사하여 사용",
     "notFound": "페이지를 찾을 수 없습니다",
     "bookmarks": "북마크",
-    "recent": "최근 기록"
+    "recent": "최근 기록",
+    "noBookmarks": "북마크된 명령어가 없습니다",
+    "noRecent": "浏览 기록이 없습니다"
   }
 }

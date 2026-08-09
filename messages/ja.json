@@ -58,6 +58,8 @@
     "subtitle": "{count} 件のコマンドが利用可能",
     "notFound": "ページが見つかりません",
     "bookmarks": "ブックマーク",
-    "recent": "最近閲覧"
+    "recent": "最近閲覧",
+    "noBookmarks": "ブックマークされたコマンドはありません",
+    "noRecent": "閲覧履歴はありません"
   }
 }

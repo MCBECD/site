@@ -2,10 +2,10 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, X, Command, Star, Clock, ChevronRight } from "lucide-react";
+import { Search, X, Command, Star, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getBookmarks, toggleBookmark, getHistory } from "@/lib/storage";
+import { getBookmarks, toggleBookmark } from "@/lib/storage";
 
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
@@ -20,14 +20,12 @@ export default function DocsPageClient({ docs }: Props) {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [history, setHistory] = useState<{ id: string; title: string }[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // 从 localStorage 加载收藏和历史
+  // 从 localStorage 加载收藏
   useEffect(() => {
     setBookmarks(getBookmarks());
-    setHistory(getHistory());
   }, []);
 
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
@@ -97,25 +95,7 @@ export default function DocsPageClient({ docs }: Props) {
 
   const isSearching = debouncedQuery.trim().length > 0;
 
-  // 收藏和最近浏览的文档元数据映射
-  const docMap = useMemo(() => {
-    const map = new Map<string, DocMeta>();
-    for (const d of docs) map.set(d.id, d);
-    return map;
-  }, [docs]);
 
-  const bookmarkedDocs = useMemo(
-    () => bookmarks.map((id) => docMap.get(id)).filter(Boolean) as DocMeta[],
-    [bookmarks, docMap],
-  );
-
-  const historyDocs = useMemo(
-    () => history.map((h) => docMap.get(h.id)).filter(Boolean) as DocMeta[],
-    [history, docMap],
-  );
-
-  // 是否显示收藏/历史区块（搜索时不显示）
-  const showSections = !isSearching && !query;
 
   return (
     <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
@@ -162,32 +142,6 @@ export default function DocsPageClient({ docs }: Props) {
           </kbd>
         )}
       </div>
-
-      {/* 收藏区块 */}
-      {showSections && bookmarkedDocs.length > 0 && (
-        <SectionBlock
-          icon={<Star className="w-3.5 h-3.5" />}
-          title={t("doc.bookmarks")}
-          count={bookmarkedDocs.length}
-        >
-          {bookmarkedDocs.map((doc) => (
-            <DocCard key={`bm-${doc.id}`} doc={doc} bookmarked onBookmark={handleToggleBookmark} />
-          ))}
-        </SectionBlock>
-      )}
-
-      {/* 最近浏览区块 */}
-      {showSections && historyDocs.length > 0 && (
-        <SectionBlock
-          icon={<Clock className="w-3.5 h-3.5" />}
-          title={t("doc.recent")}
-          count={historyDocs.length}
-        >
-          {historyDocs.map((doc) => (
-            <DocCard key={`hist-${doc.id}`} doc={doc} bookmarked={bookmarks.includes(doc.id)} onBookmark={handleToggleBookmark} />
-          ))}
-        </SectionBlock>
-      )}
 
       {/* 搜索结果计数 */}
       {isSearching && (
@@ -269,30 +223,6 @@ export default function DocsPageClient({ docs }: Props) {
 
 /* ---------------------------------------------------------- */
 
-function SectionBlock({
-  icon,
-  title,
-  count,
-  children,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  count: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="mb-6">
-      <div className="flex items-center gap-2 mb-2.5 px-0.5">
-        <span className="text-[var(--color-accent)]">{icon}</span>
-        <span className="text-[13px] font-medium text-[var(--color-text-secondary)]">
-          {title}
-        </span>
-        <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">{count}</span>
-      </div>
-      <div className="space-y-1.5">{children}</div>
-    </div>
-  );
-}
 
 function DocCard({
   doc,
