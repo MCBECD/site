@@ -151,15 +151,13 @@ export default function DocsPageClient({ docs }: Props) {
               className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
                 bg-[var(--color-card-bg)]
                 border border-[var(--color-border)]
-                hover:border-[var(--color-accent)]/20
-                hover:shadow-[var(--color-card-hover-shadow)]
                 no-underline"
             >
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-200">
                   {doc.title}
                 </h2>
-                <svg className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity duration-100 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </div>
