@@ -39,13 +39,6 @@
     "bgOverlayBlur": "模糊度",
     "bgParallax": "视差效果"
   },
-  "plugin": {
-    "quickRefName": "速查浮窗",
-    "quickRefDesc": "右下角浮窗显示最近复制过的命令，一键再复制",
-    "quickRefTitle": "速查",
-    "quickRefEmpty": "还没有复制过命令",
-    "quickRefClear": "清空记录"
-  },
   "code": {
     "copy": "复制",
     "copied": "已复制",
