@@ -646,21 +646,20 @@ pre {
   flex-shrink: 0;
 }
 
-/* Doc card — hover lift */
+/* Doc card — hover */
 .doc-card {
-  transition: transform var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-normal) var(--ease-out),
-              border-color var(--duration-normal) var(--ease-out),
-              background-color var(--duration-normal) var(--ease-out);
+  will-change: transform;
+  transition: box-shadow var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
 }
 
 .doc-card:hover {
-  transform: translateY(-1px);
-  background-color: var(--color-accent-subtle);
+  box-shadow: var(--color-card-hover-shadow);
 }
 
 .doc-card:active {
-  transform: translateY(0);
+  transform: scale(0.995);
+  transition-duration: 60ms;
 }
 
 /* ----------------------------------------------------------
