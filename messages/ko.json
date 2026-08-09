@@ -56,6 +56,15 @@
     "updatedAt": "{date} 업데이트",
     "title": "명령어 라이브러리",
     "subtitle": "{count}개의 명령어를 바로 복사하여 사용",
-    "notFound": "페이지를 찾을 수 없습니다"
+    "notFound": "페이지를 찾을 수 없습니다",
+    "bookmarks": "북마크",
+    "recent": "최근 기록"
+  },
+  "plugin": {
+    "quickRefName": "빠른 참조",
+    "quickRefDesc": "오른쪽 하단 플로팅 창에 최근 복사한 명령어를 표시하고 원클릭으로 다시 복사",
+    "quickRefTitle": "빠른 참조",
+    "quickRefEmpty": "아직 복사한 명령어가 없습니다",
+    "quickRefClear": "기록 삭제"
   }
 }
