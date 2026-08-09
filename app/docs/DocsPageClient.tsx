@@ -6,7 +6,7 @@ import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
 
 interface Props {
