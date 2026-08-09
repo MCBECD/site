@@ -134,7 +134,7 @@ function CopyDropdown({ rawContent }: { rawContent: string }) {
       >
         {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
         <span className="hidden sm:inline">{copied ? t("code.copied") : t("code.copy")}</span>
-        <ChevronDown className={`w-3 h-3 transition-transform duration-150 ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3 h-3 transition-transform duration-100 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (

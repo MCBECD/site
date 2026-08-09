@@ -22,7 +22,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-5
-        bg-[var(--color-navbar-bg)] backdrop-blur-xl border-b border-[var(--color-border-light)]"
+        bg-[var(--color-navbar-bg)] backdrop-blur-sm border-b border-[var(--color-border-light)]"
     >
       <Link
         href="/docs"
@@ -34,7 +34,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           width={30}
           height={30}
           fetchPriority="high"
-          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-all duration-100"
+          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-[ring-color] duration-100"
         />
         <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
           MCBECD
@@ -51,7 +51,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 key={key}
                 onClick={() => updateTheme(key)}
                 className="nav-icon-btn w-[30px] h-[30px] flex items-center justify-center rounded-md
-                  transition-all duration-100
+                  transition-colors duration-100
                   text-[var(--color-text-tertiary)]
                   hover:text-[var(--color-text-secondary)]
                   active:scale-[0.92]
@@ -60,7 +60,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 title={t(titleKey)}
                 aria-pressed={active}
               >
-                <Icon className="w-[15px] h-[15px] transition-transform duration-100" />
+                <Icon className="w-[15px] h-[15px]" />
               </button>
             );
           })}
@@ -76,11 +76,11 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           className="nav-icon-btn w-9 h-9 flex items-center justify-center rounded-lg
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-all duration-150 active:scale-[0.92]"
+            transition-colors duration-100 active:scale-[0.92]"
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
-          <Github className="w-[17px] h-[17px] transition-transform duration-100" />
+          <Github className="w-[17px] h-[17px]" />
         </a>
 
         <div className="nav-divider" aria-hidden="true" />
@@ -91,11 +91,11 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           className="nav-icon-btn w-9 h-9 flex items-center justify-center rounded-lg
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-all duration-150 active:scale-[0.92]"
+            transition-colors duration-100 active:scale-[0.92]"
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >
-          <Settings className="w-[17px] h-[17px] transition-transform duration-100" />
+          <Settings className="w-[17px] h-[17px]" />
         </button>
       </div>
     </nav>

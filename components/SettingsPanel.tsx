@@ -39,7 +39,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
     closeTimer.current = setTimeout(() => {
       setClosing(false);
       onClose();
-    }, 180);
+    }, 100);
   }, [onClose]);
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
