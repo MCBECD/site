@@ -10,22 +10,8 @@
  */
 
 import type { Plugin } from "unified";
-import type { Root, Blockquote, Paragraph, Text, Html, Parent } from "mdast";
-
-function visit(tree: Parent, type: string, callback: (node: Parent, index: number) => void) {
-  function walk(node: Parent) {
-    if (node.children && Array.isArray(node.children)) {
-      for (let i = 0; i < node.children.length; i++) {
-        const child = node.children[i] as Parent;
-        if (child.type === type) {
-          callback(child, i);
-        }
-        walk(child);
-      }
-    }
-  }
-  walk(tree);
-}
+import type { Root, Blockquote, Text, Html } from "mdast";
+import { visit } from "unist-util-visit";
 
 const ALERT_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)/i;
 
@@ -50,22 +36,17 @@ function extractText(node: unknown): string {
   return "";
 }
 
-interface AlertMatch {
-  index: number;
-  type: string;
-  title: string;
-  body: string;
-}
-
 export const remarkGithubAlerts: Plugin<[], Root> = () => {
   return (tree: Root) => {
-    const alerts: AlertMatch[] = [];
+    const alerts: { index: number; html: string }[] = [];
 
-    visit(tree, "blockquote", (node, index) => {
+    visit(tree, "blockquote", (node: Blockquote, index: number | undefined) => {
       if (typeof index !== "number") return;
-      const first = (node as Blockquote).children[0];
+
+      const first = node.children[0];
       if (!first || first.type !== "paragraph") return;
-      const textNode = (first as Paragraph).children[0];
+
+      const textNode = first.children[0];
       if (!textNode || textNode.type !== "text") return;
 
       const match = ALERT_RE.exec((textNode as Text).value);
@@ -77,31 +58,26 @@ export const remarkGithubAlerts: Plugin<[], Root> = () => {
 
       const title = match[2]?.trim() || meta.defaultTitle;
       const bodyParts: string[] = [];
-      const bqChildren = (node as Blockquote).children;
-      for (let i = 1; i < bqChildren.length; i++) {
-        const child = bqChildren[i];
+
+      for (let i = 1; i < node.children.length; i++) {
+        const child = node.children[i];
         if (!child) continue;
         if (child.type === "paragraph") {
-          const text = (child as Paragraph).children.map(extractText).join("");
+          const text = child.children.map(extractText).join("");
           if (text) bodyParts.push(`<p>${text}</p>`);
         }
       }
 
       alerts.push({
         index,
-        type: meta.className,
-        title,
-        body: bodyParts.join(""),
+        html: `<div class="gh-alert ${meta.className}"><p class="gh-alert-title"><span>${title}</span></p>${bodyParts.join("")}</div>`,
       });
     });
 
     // Replace in reverse order to preserve indices
     for (let i = alerts.length - 1; i >= 0; i--) {
       const alert = alerts[i]!;
-      const htmlNode: Html = {
-        type: "html",
-        value: `<div class="gh-alert ${alert.type}"><p class="gh-alert-title"><span>${alert.title}</span></p>${alert.body}</div>`,
-      };
+      const htmlNode: Html = { type: "html", value: alert.html };
       tree.children.splice(alert.index, 1, htmlNode);
     }
   };

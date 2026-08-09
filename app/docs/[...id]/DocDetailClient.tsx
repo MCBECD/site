@@ -17,14 +17,14 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   const { t } = useLocale();
 
   return (
-    <div className="max-w-3xl mx-auto px-4 pt-4 pb-16">
+    <div className="max-w-3xl mx-auto px-5 pt-6 pb-20">
       <div className="doc-glass-card overflow-hidden">
-        {/* 顶部操作栏：返回 + 操作按钮 */}
-        <div className="flex items-center justify-between h-11 px-4">
+        {/* 顶部操作栏 */}
+        <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
           <Link
             href="/docs"
             className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
-              hover:text-[var(--color-accent)] transition-colors no-underline min-h-[44px]"
+              hover:text-[var(--color-accent)] transition-colors duration-200 no-underline min-h-[44px]"
           >
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">{t("common.backToList")}</span>
@@ -40,7 +40,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         </div>
 
         {/* 标题 + 元信息 */}
-        <header className="px-5 pb-1">
+        <header className="px-6 pt-5 pb-2">
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {doc.meta.title}
           </h1>
@@ -66,21 +66,9 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
           )}
         </header>
 
-        {/* 面包屑 */}
-        {/* <nav className="flex items-center gap-1.5 text-xs text-[var(--color-text-tertiary)] px-5 pt-3 pb-4">
-          <Link href="/docs" className="hover:text-[var(--color-accent)] transition-colors no-underline">
-            {t("doc.home")}
-          </Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-[var(--color-text-secondary)] truncate max-w-[280px]">{doc.meta.title}</span>
-        </nav> */}
-
-        {/* 分割线 */}
-        {/* <div className="mx-5 border-t border-[var(--color-border)]" /> */}
-
         {/* 文档正文 */}
         <div
-          className="px-5 pt-6 pb-6
+          className="px-6 pt-5 pb-8
           prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
           prose-headings:text-[var(--color-text-primary)]
           prose-p:text-[var(--color-text-secondary)]
