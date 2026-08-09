@@ -44,8 +44,7 @@ function parseMdxMeta(filePath: string): { frontmatter: Record<string, unknown>;
     const { data, content } = matter(raw);
     const wordCount = content.replace(/\s+/g, "").length;
     return { frontmatter: data, content, readingTime: Math.max(1, Math.ceil(wordCount / 400)) };
-  } catch (err) {
-    console.error(`[docs] 解析 MDX 失败: ${filePath}`, err instanceof Error ? err.message : err);
+  } catch {
     return null;
   }
 }
@@ -54,10 +53,7 @@ function readMetaJson(dirPath: string): Record<string, unknown> | null {
   try {
     const raw = fs.readFileSync(path.join(dirPath, "meta.json"), "utf-8");
     return JSON.parse(raw);
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
-      console.error(`[docs] 解析 meta.json 失败: ${dirPath}`, err instanceof Error ? err.message : err);
-    }
+  } catch {
     return null;
   }
 }
@@ -102,8 +98,7 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch (err) {
-    console.error(`[docs] 扫描目录失败: ${dir}`, err instanceof Error ? err.message : err);
+  } catch {
     return results;
   }
 

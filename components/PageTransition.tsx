@@ -24,7 +24,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 
   /* Scroll to top on navigation (not on first mount) */
   useEffect(() => {
-    if (!isFirst.current) window.scrollTo({ top: 0, behavior: "instant" });
+    if (!isFirst.current) window.scrollTo({ top: 0 });
   }, [pathname]);
 
   /* First mount: bare fragment, no wrapper, no animation */
