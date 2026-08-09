@@ -15,7 +15,7 @@ export function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange
     >
       <span
         className={`block absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform
-          duration-150 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
+          duration-100 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
           checked ? "translate-x-5" : "translate-x-0"
         }`}
       />
