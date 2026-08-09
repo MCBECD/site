@@ -164,6 +164,7 @@ function defaultSettings(): Settings {
 
 interface SettingsContextValue {
   settings: Settings;
+  isHydrated: boolean;
   updateTheme: (theme: Theme) => void;
   updateFontSize: (fontSize: FontSize) => void;
   updateLocale: (locale: Locale) => void;
@@ -180,7 +181,14 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(() => loadSettings());
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    const saved = loadSettings();
+    setSettings(saved);
+    setIsHydrated(true);
+  }, []);
 
   const persist = useCallback((s: Settings) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
@@ -304,7 +312,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <SettingsContext value={{ settings, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, updateBgParallax, isPluginEnabled, togglePlugin }}>
+    <SettingsContext value={{ settings, isHydrated, updateTheme, updateFontSize, updateLocale, updateColorTheme, updateCustomColor, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, updateBgParallax, isPluginEnabled, togglePlugin }}>
       {children}
     </SettingsContext>
   );

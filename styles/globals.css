@@ -212,15 +212,27 @@ body {
 /* ----------------------------------------------------------
  * Shiki code block
  * ---------------------------------------------------------- */
-pre.shiki {
-  border-radius: var(--radius);
-  overflow-x: auto;
-  padding: 1rem;
-  background-color: var(--color-code-bg) !important;
+
+code {
+  color: var(--color-accent);
+  background-color: var(--color-code-bg);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
 }
 
-.dark pre.shiki {
+pre code {
+  padding: 0;
+}
+
+pre {
+  padding: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
   background-color: var(--color-code-bg) !important;
+  line-height: 1.25rem;
 }
 
 .dark .shiki,

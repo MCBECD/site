@@ -1,4 +1,5 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
+import Link from "next/link";
 import { createHighlighter, type Highlighter } from "shiki";
 import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
@@ -44,37 +45,45 @@ const components = {
   /* h2 is hidden in doc detail pages — the header card already shows the title */
   h2: () => null,
   pre: async ({ children }: { children: ReactNode }) => {
-    const codeEl = extractCodeChild(children);
-    if (!codeEl) {
-      return <pre className="overflow-x-auto rounded-lg p-4 bg-[var(--color-code-bg)] text-sm">{children}</pre>;
-    }
-    const props = codeEl.props as Record<string, unknown>;
+    if (!isValidElement(children))
+      return <pre>{children}</pre>;
+
+    const props = children.props as Record<string, unknown>;
     const className = (props.className as string) ?? "";
     const match = /language-(\w+)/.exec(className);
-    const lang = match ? match[1]! : "text";
+    const lang = match ? match[1]! : "mcfunction";
     const code = String(props.children ?? "").trim();
-    return <CodeBlock code={code} lang={lang} />;
+
+    const hl = await getHighlighter();
+    const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
+    const html = hl.codeToHtml(code, {
+      lang: resolvedLang,
+      themes: { light: "github-light", dark: "github-dark" },
+    });
+    return <CodeBlockClient html={html} code={code} />;
   },
-  code: ({ children, ...props }: JSX.IntrinsicElements["code"]) => (
-    <code className="text-[var(--color-accent)] bg-[var(--color-code-bg)] px-1.5 py-0.5 rounded text-sm" {...props}>
-      {children}
-    </code>
-  ),
-  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) => {
-    const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
-    return (
+  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
+    href && (href.startsWith("http://") || href.startsWith("https://")) ? (
       <a
         href={href}
-        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        target="_blank"
+        rel="noopener noreferrer"
         className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
         {...props}
       >
         {children}
       </a>
-    );
-  },
+    ) : (
+      <Link
+        href={href ?? ""}
+        className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
+        {...props}
+      >
+        {children}
+      </Link>
+    ),
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
-    <div className="overflow-x-auto my-4">
+    <div className="overflow-x-auto overflow-hidden my-4 rounded-lg">
       <table className="min-w-full border-collapse border border-[var(--color-border)]" {...props}>
         {children}
       </table>
@@ -91,20 +100,18 @@ const components = {
     </td>
   ),
   /* GitHub-style task list checkbox */
-  input: ({ checked, disabled, type, ...props }: JSX.IntrinsicElements["input"]) => {
-    if (type === "checkbox") {
-      return (
-        <input
-          type="checkbox"
-          checked={checked}
-          disabled={disabled ?? true}
-          className="gh-checkbox"
-          {...props}
-        />
-      );
-    }
-    return <input type={type} checked={checked} disabled={disabled} {...props} />;
-  },
+  input: ({ checked, disabled, type, ...props }: JSX.IntrinsicElements["input"]) =>
+    type === "checkbox" ? (
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled ?? true}
+        className="gh-checkbox"
+        {...props}
+      />
+    ) : (
+      <input type={type} checked={checked} disabled={disabled} {...props} />
+    ),
   /* Details/summary for collapsible sections */
   details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (
     <details className="gh-details my-4 rounded-lg border border-[var(--color-border)]" {...props}>
@@ -128,15 +135,6 @@ const components = {
   ),
 };
 
-/** Extract <code> element from <pre><code>...</code></pre> structure */
-function extractCodeChild(children: ReactNode): React.ReactElement | null {
-  const isCode = (el: ReactNode) => isValidElement(el) && (el.type === "code" || el.type === components.code);
-  if (isCode(children)) return children as React.ReactElement;
-  if (Array.isArray(children) && children.length === 1)
-    if (isCode(children[0])) return children[0] as React.ReactElement;
-  return null;
-}
-
 let highlighter: Highlighter | null = null;
 
 async function getHighlighter(): Promise<Highlighter> {
@@ -147,16 +145,6 @@ async function getHighlighter(): Promise<Highlighter> {
     });
   }
   return highlighter;
-}
-
-async function CodeBlock({ code, lang }: { code: string; lang: string }) {
-  const hl = await getHighlighter();
-  const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
-  const html = hl.codeToHtml(code, {
-    lang: resolvedLang,
-    themes: { light: "github-light", dark: "github-dark" },
-  });
-  return <CodeBlockClient html={html} code={code} displayLang={lang === "text" ? "" : lang} />;
 }
 
 export function MDXRenderer({ source }: { source: string }) {
