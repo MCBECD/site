@@ -21,6 +21,8 @@
     "language": "Language",
     "tabGeneral": "General",
     "tabPlugins": "Plugins",
+    "tabData": "Data",
+    "clearAll": "Clear all",
     "pluginColorTheme": "Color Theme",
     "pluginColorThemeDesc": "Override the entire color scheme including backgrounds, text, and borders",
     "colorDefault": "Default",

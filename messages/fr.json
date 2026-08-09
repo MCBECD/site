@@ -21,6 +21,8 @@
     "language": "Langue",
     "tabGeneral": "Général",
     "tabPlugins": "Plugins",
+    "tabData": "Données",
+    "clearAll": "Tout effacer",
     "pluginColorTheme": "Thème de couleur",
     "pluginColorThemeDesc": "Remplacer l'ensemble du schéma de couleurs y compris arrière-plans, texte et bordures",
     "colorDefault": "Par défaut",

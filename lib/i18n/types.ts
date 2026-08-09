@@ -35,6 +35,8 @@ export interface Messages {
     language: string;
     tabGeneral: string;
     tabPlugins: string;
+    tabData: string;
+    clearAll: string;
     pluginColorTheme: string;
     pluginColorThemeDesc: string;
     colorDefault: string;

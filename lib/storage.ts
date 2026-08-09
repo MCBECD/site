@@ -41,6 +41,17 @@ export function isBookmarked(id: string): boolean {
   return getBookmarks().includes(id);
 }
 
+export function removeBookmark(id: string): void {
+  const list = getBookmarks();
+  const idx = list.indexOf(id);
+  if (idx >= 0) list.splice(idx, 1);
+  write(BOOKMARKS_KEY, list);
+}
+
+export function clearBookmarks(): void {
+  write(BOOKMARKS_KEY, []);
+}
+
 export function toggleBookmark(id: string): boolean {
   const list = getBookmarks();
   const idx = list.indexOf(id);
@@ -78,6 +89,13 @@ export function addHistory(id: string, title: string): void {
   list.unshift({ id, title, ts: Date.now() });
   // 超过上限裁剪
   if (list.length > MAX_HISTORY) list.length = MAX_HISTORY;
+  write(HISTORY_KEY, list);
+}
+
+export function removeHistory(id: string): void {
+  const list = getHistory();
+  const idx = list.findIndex((e) => e.id === id);
+  if (idx >= 0) list.splice(idx, 1);
   write(HISTORY_KEY, list);
 }
 
