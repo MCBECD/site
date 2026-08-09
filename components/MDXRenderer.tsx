@@ -7,6 +7,13 @@ import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
+import { CmdImpulse } from "./mdx/CmdImpulse";
+import { CmdRepeat } from "./mdx/CmdRepeat";
+import { CmdChain } from "./mdx/CmdChain";
+import { CmdConditionalImpulse } from "./mdx/CmdConditionalImpulse";
+import { CmdConditionalRepeat } from "./mdx/CmdConditionalRepeat";
+import { CmdConditionalChain } from "./mdx/CmdConditionalChain";
+import { CmdChat } from "./mdx/CmdChat";
 
 const mcfunctionSyntax = {
   name: "mcfunction",
@@ -133,6 +140,14 @@ const components = {
       {children}
     </kbd>
   ),
+  /* Command block icons */
+  CmdImpulse,
+  CmdRepeat,
+  CmdChain,
+  CmdConditionalImpulse,
+  CmdConditionalRepeat,
+  CmdConditionalChain,
+  CmdChat,
 };
 
 let highlighter: Highlighter | null = null;

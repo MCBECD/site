@@ -14,13 +14,9 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
   const [copied, setCopied] = useState(false);
 
   const doCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      console.error("Failed to copy to clipboard");
-    }
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   }, [code]);
 
   const handleBlockClick = useCallback(
@@ -43,7 +39,7 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
         className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-lg
           px-4 py-2 text-sm font-medium shadow-xl border border-[var(--color-border)]
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
-          transition-all duration-300 pointer-events-none
+          transition-all duration-200 pointer-events-none
           ${copied ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"}`}
       >
         <Check className="w-4 h-4 text-emerald-500" />
