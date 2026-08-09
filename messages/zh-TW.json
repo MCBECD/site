@@ -58,6 +58,8 @@
     "subtitle": "共 {count} 條指令，可直接複製使用",
     "notFound": "頁面未找到",
     "bookmarks": "收藏",
-    "recent": "最近瀏覽"
+    "recent": "最近瀏覽",
+    "noBookmarks": "還沒有收藏指令",
+    "noRecent": "還沒有瀏覽記錄"
   }
 }

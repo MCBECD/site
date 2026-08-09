@@ -73,5 +73,7 @@ export interface Messages {
     notFound: string;
     bookmarks: string;
     recent: string;
+    noBookmarks: string;
+    noRecent: string;
   };
 }

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { getAllDocs } from "@/lib/docs";
 import { AppShell } from "@/components/AppShell";
+import { DocsProvider } from "@/contexts/DocsContext";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const docs = getAllDocs();
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
@@ -22,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="antialiased">
-        <AppShell>{children}</AppShell>
+        <DocsProvider docs={docs}>
+          <AppShell>{children}</AppShell>
+        </DocsProvider>
       </body>
     </html>
   );

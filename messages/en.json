@@ -58,6 +58,8 @@
     "subtitle": "{count} commands available, ready to copy",
     "notFound": "Page Not Found",
     "bookmarks": "Bookmarks",
-    "recent": "Recent"
+    "recent": "Recent",
+    "noBookmarks": "No bookmarked commands",
+    "noRecent": "No browsing history"
   }
 }

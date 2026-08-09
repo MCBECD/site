@@ -58,6 +58,8 @@
     "subtitle": "{count} commandes disponibles, prêtes à copier",
     "notFound": "Page introuvable",
     "bookmarks": "Favoris",
-    "recent": "Récemment consultés"
+    "recent": "Récemment consultés",
+    "noBookmarks": "Aucune commande enregistrée",
+    "noRecent": "Aucun historique de navigation"
   }
 }

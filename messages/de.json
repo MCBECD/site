@@ -58,6 +58,8 @@
     "subtitle": "{count} Befehle verfügbar, sofort kopierbar",
     "notFound": "Seite nicht gefunden",
     "bookmarks": "Lesezeichen",
-    "recent": "Zuletzt besucht"
+    "recent": "Zuletzt besucht",
+    "noBookmarks": "Keine Lesezeichen vorhanden",
+    "noRecent": "Kein Verlauf vorhanden"
   }
 }
