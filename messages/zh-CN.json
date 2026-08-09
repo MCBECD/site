@@ -39,6 +39,13 @@
     "bgOverlayBlur": "模糊度",
     "bgParallax": "视差效果"
   },
+  "plugin": {
+    "quickRefName": "速查浮窗",
+    "quickRefDesc": "右下角浮窗显示最近复制过的命令，一键再复制",
+    "quickRefTitle": "速查",
+    "quickRefEmpty": "还没有复制过命令",
+    "quickRefClear": "清空记录"
+  },
   "code": {
     "copy": "复制",
     "copied": "已复制",
@@ -56,6 +63,8 @@
     "updatedAt": "更新于 {date}",
     "title": "命令库",
     "subtitle": "共 {count} 条命令，可直接复制使用",
-    "notFound": "页面未找到"
+    "notFound": "页面未找到",
+    "bookmarks": "收藏",
+    "recent": "最近浏览"
   }
 }

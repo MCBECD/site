@@ -6,6 +6,7 @@ import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsConte
 import { useLocale } from "@/contexts/LocaleContext";
 import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
+import { QuickRefPluginCard } from "./settings/QuickRefPluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
 import { Section } from "./settings/Section";
 
@@ -138,6 +139,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
               </>
             ) : (
               <div className="space-y-3">
+                <QuickRefPluginCard />
                 <ColorThemePluginCard />
                 <BackgroundImagePluginCard />
               </div>
