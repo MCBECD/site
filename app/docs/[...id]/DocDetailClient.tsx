@@ -24,7 +24,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
           <Link
             href="/docs"
             className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
-              hover:text-[var(--color-accent)] transition-colors duration-200 no-underline min-h-[44px]"
+              hover:text-[var(--color-accent)] transition-colors duration-100 no-underline min-h-[44px]"
           >
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">{t("common.backToList")}</span>
