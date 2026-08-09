@@ -17,7 +17,7 @@ interface PluginCardProps {
 export function PluginCard({ name, desc, Icon, enabled, onToggle, children }: PluginCardProps) {
   return (
     <div
-      className={`rounded-lg border transition-all duration-200 ${
+      className={`rounded-lg border transition-all duration-100 ${
         enabled
           ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
           : "border-[var(--color-border)] bg-[var(--color-bg-secondary)] opacity-60"

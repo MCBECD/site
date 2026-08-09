@@ -34,9 +34,9 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           width={30}
           height={30}
           fetchPriority="high"
-          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-all duration-200"
+          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-all duration-100"
         />
-        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
+        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
           MCBECD
         </span>
       </Link>
@@ -51,7 +51,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 key={key}
                 onClick={() => updateTheme(key)}
                 className="nav-icon-btn w-[30px] h-[30px] flex items-center justify-center rounded-md
-                  transition-all duration-200
+                  transition-all duration-100
                   text-[var(--color-text-tertiary)]
                   hover:text-[var(--color-text-secondary)]
                   active:scale-[0.92]
@@ -60,7 +60,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 title={t(titleKey)}
                 aria-pressed={active}
               >
-                <Icon className="w-[15px] h-[15px] transition-transform duration-200" />
+                <Icon className="w-[15px] h-[15px] transition-transform duration-100" />
               </button>
             );
           })}
@@ -80,7 +80,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
-          <Github className="w-[17px] h-[17px] transition-transform duration-200" />
+          <Github className="w-[17px] h-[17px] transition-transform duration-100" />
         </a>
 
         <div className="nav-divider" aria-hidden="true" />
@@ -95,7 +95,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >
-          <Settings className="w-[17px] h-[17px] transition-transform duration-200" />
+          <Settings className="w-[17px] h-[17px] transition-transform duration-100" />
         </button>
       </div>
     </nav>

@@ -53,13 +53,13 @@
   /* Toast */
   --color-toast-bg: #111827;
 
-  /* Motion */
+  /* Motion — snappy */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast: 120ms;
-  --duration-normal: 200ms;
-  --duration-slow: 350ms;
+  --duration-fast: 80ms;
+  --duration-normal: 120ms;
+  --duration-slow: 180ms;
 }
 
 .dark {
@@ -517,7 +517,7 @@ pre {
 }
 
 .search-input::placeholder {
-  transition: color 0.2s;
+  transition: color 100ms;
 }
 
 .search-input:focus::placeholder {
@@ -571,11 +571,11 @@ pre {
 }
 .overlay-in {
   background-color: rgba(0, 0, 0, 0.4);
-  animation: overlayIn 0.2s ease both;
+  animation: overlayIn 0.12s ease both;
 }
 .overlay-out {
   background-color: rgba(0, 0, 0, 0.4);
-  animation: overlayIn 0.18s ease reverse both;
+  animation: overlayIn 0.1s ease reverse both;
 }
 
 /* Settings panel — uses opacity + scale only;
@@ -586,11 +586,11 @@ pre {
   to   { opacity: 1; scale: 1; }
 }
 .settings-panel-in {
-  animation: panelIn 0.22s var(--ease-out) both;
+  animation: panelIn 0.14s var(--ease-out) both;
   will-change: opacity, scale;
 }
 .settings-panel-out {
-  animation: panelIn 0.18s var(--ease-out) reverse both;
+  animation: panelIn 0.1s var(--ease-out) reverse both;
   will-change: opacity, scale;
 }
 
@@ -600,7 +600,7 @@ pre {
   to   { opacity: 1; transform: translateY(0); }
 }
 .dropdown-in {
-  animation: dropIn 0.18s var(--ease-out) both;
+  animation: dropIn 0.1s var(--ease-out) both;
 }
 
 /* Collapse (plugin card body) */
@@ -609,7 +609,7 @@ pre {
   to   { opacity: 1; transform: translateY(0); }
 }
 .collapse-in {
-  animation: collapseIn 0.22s var(--ease-out) both;
+  animation: collapseIn 0.12s var(--ease-out) both;
   will-change: opacity, transform;
 }
 
@@ -619,7 +619,7 @@ pre {
   to   { transform: scaleX(1); }
 }
 .tab-indicator {
-  animation: tabSlideIn 0.2s var(--ease-out) both;
+  animation: tabSlideIn 0.12s var(--ease-out) both;
   transform-origin: left;
 }
 
@@ -631,7 +631,7 @@ pre {
 }
 
 .page-fade-in {
-  animation: pageIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation: pageIn 0.12s cubic-bezier(0.25, 0.1, 0.25, 1) both;
   will-change: opacity;
 }
 
@@ -648,9 +648,9 @@ pre {
 
 /* Doc card — hover float */
 .doc-card {
-  transition: transform 160ms var(--ease-out),
-              box-shadow 160ms var(--ease-out),
-              border-color 160ms var(--ease-out);
+  transition: transform 100ms var(--ease-out),
+              box-shadow 100ms var(--ease-out),
+              border-color 100ms var(--ease-out);
 }
 
 .doc-card:hover {
@@ -660,7 +660,7 @@ pre {
 
 .doc-card:active {
   transform: translateY(0) scale(0.99);
-  transition-duration: 80ms;
+  transition-duration: 50ms;
 }
 
 /* ----------------------------------------------------------
@@ -694,5 +694,5 @@ pre {
 }
 
 .nav-icon-btn:active {
-  animation: btnPulse 0.4s var(--ease-out);
+  animation: btnPulse 0.25s var(--ease-out);
 }
