@@ -2,9 +2,10 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, X, Command } from "lucide-react";
+import { Search, X, Command, Star, Clock, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
+import { getBookmarks, toggleBookmark, getHistory } from "@/lib/storage";
 
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
@@ -18,8 +19,23 @@ export default function DocsPageClient({ docs }: Props) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);
+  const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [history, setHistory] = useState<{ id: string; title: string }[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // 从 localStorage 加载收藏和历史
+  useEffect(() => {
+    setBookmarks(getBookmarks());
+    setHistory(getHistory());
+  }, []);
+
+  const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const added = toggleBookmark(id);
+    setBookmarks(getBookmarks());
+  }, []);
 
   const handleInput = useCallback((value: string) => {
     setQuery(value);
@@ -81,6 +97,26 @@ export default function DocsPageClient({ docs }: Props) {
 
   const isSearching = debouncedQuery.trim().length > 0;
 
+  // 收藏和最近浏览的文档元数据映射
+  const docMap = useMemo(() => {
+    const map = new Map<string, DocMeta>();
+    for (const d of docs) map.set(d.id, d);
+    return map;
+  }, [docs]);
+
+  const bookmarkedDocs = useMemo(
+    () => bookmarks.map((id) => docMap.get(id)).filter(Boolean) as DocMeta[],
+    [bookmarks, docMap],
+  );
+
+  const historyDocs = useMemo(
+    () => history.map((h) => docMap.get(h.id)).filter(Boolean) as DocMeta[],
+    [history, docMap],
+  );
+
+  // 是否显示收藏/历史区块（搜索时不显示）
+  const showSections = !isSearching && !query;
+
   return (
     <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
       {/* 页面标题 */}
@@ -127,6 +163,32 @@ export default function DocsPageClient({ docs }: Props) {
         )}
       </div>
 
+      {/* 收藏区块 */}
+      {showSections && bookmarkedDocs.length > 0 && (
+        <SectionBlock
+          icon={<Star className="w-3.5 h-3.5" />}
+          title={t("doc.bookmarks")}
+          count={bookmarkedDocs.length}
+        >
+          {bookmarkedDocs.map((doc) => (
+            <DocCard key={`bm-${doc.id}`} doc={doc} bookmarked onBookmark={handleToggleBookmark} />
+          ))}
+        </SectionBlock>
+      )}
+
+      {/* 最近浏览区块 */}
+      {showSections && historyDocs.length > 0 && (
+        <SectionBlock
+          icon={<Clock className="w-3.5 h-3.5" />}
+          title={t("doc.recent")}
+          count={historyDocs.length}
+        >
+          {historyDocs.map((doc) => (
+            <DocCard key={`hist-${doc.id}`} doc={doc} bookmarked={bookmarks.includes(doc.id)} onBookmark={handleToggleBookmark} />
+          ))}
+        </SectionBlock>
+      )}
+
       {/* 搜索结果计数 */}
       {isSearching && (
         <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
@@ -145,37 +207,12 @@ export default function DocsPageClient({ docs }: Props) {
       ) : (
         <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
           {pageDocs.map((doc) => (
-            <Link
+            <DocCard
               key={doc.id}
-              href={`/docs/${doc.id}`}
-              className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
-                bg-[var(--color-card-bg)]
-                border border-[var(--color-border)]
-                no-underline"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
-                  {doc.title}
-                </h2>
-                <svg className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-              {(doc.description || doc.author || doc.updatedAt) && (
-                <div className="flex items-center justify-between gap-3 mt-1">
-                  {doc.description && (
-                    <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 leading-relaxed flex-1 min-w-0">
-                      {doc.description}
-                    </p>
-                  )}
-                  {(doc.author || doc.updatedAt) && (
-                    <span className="text-[11px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums">
-                      {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
-                    </span>
-                  )}
-                </div>
-              )}
-            </Link>
+              doc={doc}
+              bookmarked={bookmarks.includes(doc.id)}
+              onBookmark={handleToggleBookmark}
+            />
           ))}
         </div>
       )}
@@ -227,5 +264,90 @@ export default function DocsPageClient({ docs }: Props) {
         </div>
       )}
     </div>
+  );
+}
+
+/* ---------------------------------------------------------- */
+
+function SectionBlock({
+  icon,
+  title,
+  count,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  count: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-6">
+      <div className="flex items-center gap-2 mb-2.5 px-0.5">
+        <span className="text-[var(--color-accent)]">{icon}</span>
+        <span className="text-[13px] font-medium text-[var(--color-text-secondary)]">
+          {title}
+        </span>
+        <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">{count}</span>
+      </div>
+      <div className="space-y-1.5">{children}</div>
+    </div>
+  );
+}
+
+function DocCard({
+  doc,
+  bookmarked,
+  onBookmark,
+}: {
+  doc: DocMeta;
+  bookmarked: boolean;
+  onBookmark: (e: React.MouseEvent, id: string) => void;
+}) {
+  return (
+    <Link
+      href={`/docs/${doc.id}`}
+      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
+        bg-[var(--color-card-bg)]
+        border border-[var(--color-border)]
+        no-underline"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
+            {doc.title}
+          </h2>
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* 收藏星标 */}
+          <button
+            onClick={(e) => onBookmark(e, doc.id)}
+            className={`w-6 h-6 flex items-center justify-center rounded-md
+              ${bookmarked
+                ? "text-[var(--color-accent)]"
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"
+              }`}
+            aria-label={bookmarked ? "取消收藏" : "收藏"}
+          >
+            <Star className="w-3.5 h-3.5" fill={bookmarked ? "currentColor" : "none"} />
+          </button>
+          {/* 箭头 */}
+          <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0" />
+        </div>
+      </div>
+      {(doc.description || doc.author || doc.updatedAt) && (
+        <div className="flex items-center justify-between gap-3 mt-1">
+          {doc.description && (
+            <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 leading-relaxed flex-1 min-w-0">
+              {doc.description}
+            </p>
+          )}
+          {(doc.author || doc.updatedAt) && (
+            <span className="text-[11px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums">
+              {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
+            </span>
+          )}
+        </div>
+      )}
+    </Link>
   );
 }

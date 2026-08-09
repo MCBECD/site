@@ -71,5 +71,14 @@ export interface Messages {
     title: string;
     subtitle: string;
     notFound: string;
+    bookmarks: string;
+    recent: string;
+  };
+  plugin: {
+    quickRefName: string;
+    quickRefDesc: string;
+    quickRefTitle: string;
+    quickRefEmpty: string;
+    quickRefClear: string;
   };
 }
