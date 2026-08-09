@@ -21,6 +21,8 @@
     "language": "Sprache",
     "tabGeneral": "Allgemein",
     "tabPlugins": "Plugins",
+    "tabData": "Daten",
+    "clearAll": "Alle löschen",
     "pluginColorTheme": "Farbthema",
     "pluginColorThemeDesc": "Gesamtes Farbschema ändern: Hintergrund, Text und Rahmen",
     "colorDefault": "Standard",
