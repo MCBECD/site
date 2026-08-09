@@ -56,15 +56,6 @@
     "updatedAt": "更新於 {date}",
     "title": "指令庫",
     "subtitle": "共 {count} 條指令，可直接複製使用",
-    "notFound": "頁面未找到",
-    "bookmarks": "收藏",
-    "recent": "最近瀏覽"
-  },
-  "plugin": {
-    "quickRefName": "速查浮窗",
-    "quickRefDesc": "右下角浮窗顯示最近複製過的指令，一鍵再複製",
-    "quickRefTitle": "速查",
-    "quickRefEmpty": "還沒有複製過指令",
-    "quickRefClear": "清空記錄"
+    "notFound": "頁面未找到"
   }
 }
