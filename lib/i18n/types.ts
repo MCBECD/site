@@ -74,11 +74,4 @@ export interface Messages {
     bookmarks: string;
     recent: string;
   };
-  plugin: {
-    quickRefName: string;
-    quickRefDesc: string;
-    quickRefTitle: string;
-    quickRefEmpty: string;
-    quickRefClear: string;
-  };
 }
