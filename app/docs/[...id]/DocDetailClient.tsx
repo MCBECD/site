@@ -6,7 +6,7 @@ import { Home, Copy, Check, ChevronDown, Star } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
-import { addHistory, toggleBookmark, isBookmarked, addClipboardEntry } from "@/lib/storage";
+import { addHistory, toggleBookmark, isBookmarked } from "@/lib/storage";
 
 interface Props {
   doc: DocContent;
@@ -141,8 +141,6 @@ function CopyDropdown({ rawContent, docId }: { rawContent: string; docId: string
     setCopied(true);
     setOpen(false);
     showToast(label);
-    // 记录到剪贴板历史
-    addClipboardEntry(text, docId);
     setTimeout(() => setCopied(false), 2000);
   }, [showToast, docId]);
 

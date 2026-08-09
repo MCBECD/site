@@ -1,5 +1,5 @@
 /**
- * localStorage 工具 — 收藏、最近浏览、剪贴板历史
+ * localStorage 工具 — 收藏、最近浏览
  */
 
 const PREFIX = "mcbecd-";
@@ -85,33 +85,4 @@ export function clearHistory(): void {
   write(HISTORY_KEY, []);
 }
 
-/* ----------------------------------------------------------
- * 剪贴板历史 (Clipboard History) — 速查浮窗用
- * ---------------------------------------------------------- */
 
-const CLIPBOARD_KEY = "clipboard";
-const MAX_CLIPBOARD = 10;
-
-export interface ClipboardEntry {
-  text: string;
-  label: string;
-  ts: number;
-}
-
-export function getClipboardHistory(): ClipboardEntry[] {
-  return read<ClipboardEntry[]>(CLIPBOARD_KEY, []);
-}
-
-export function addClipboardEntry(text: string, label: string): void {
-  const list = getClipboardHistory();
-  // 去重：相同文本则移到最前
-  const idx = list.findIndex((e) => e.text === text);
-  if (idx >= 0) list.splice(idx, 1);
-  list.unshift({ text, label, ts: Date.now() });
-  if (list.length > MAX_CLIPBOARD) list.length = MAX_CLIPBOARD;
-  write(CLIPBOARD_KEY, list);
-}
-
-export function clearClipboardHistory(): void {
-  write(CLIPBOARD_KEY, []);
-}

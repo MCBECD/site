@@ -39,13 +39,6 @@
     "bgOverlayBlur": "Blur",
     "bgParallax": "Parallax"
   },
-  "plugin": {
-    "quickRefName": "Quick Reference",
-    "quickRefDesc": "Floating window showing recently copied commands for quick re-copy",
-    "quickRefTitle": "Quick Ref",
-    "quickRefEmpty": "No commands copied yet",
-    "quickRefClear": "Clear history"
-  },
   "code": {
     "copy": "Copy",
     "copied": "Copied",
