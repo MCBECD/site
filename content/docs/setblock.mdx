@@ -1,6 +1,6 @@
 ---
 author: "官方•Dingding OvO"
-updatedAt: "2026-08-08"
+updatedAt: "2026-08-09"
 title: "/setblock — 放置方块"
 order: 30
 category: commands
@@ -18,34 +18,81 @@ description: "在指定位置放置单个方块"
 ### 参数
 
 - `<位置>` — 坐标 `x y z`
-- `<方块>` — 方块 ID
-- `[数据值]` — 方块数据值
-- `[模式]` — `destroy` / `keep` / `replace`
+- `<方块>` — 方块 ID（如 `stone`、`diamond_block`、`torch`）
+- `[数据值]` — 方块数据值（已弃用，新版应使用独立方块 ID）
+- `[模式]` — 放置模式
 
-### 模式说明
+### 放置模式
 
 | 模式 | 说明 |
 |------|------|
-| `replace` | 默认，替换原有方块 |
-| `destroy` | 破坏原方块并掉落物品 |
-| `keep` | 仅在空气位置放置 |
+| `replace` | 默认模式 — 替换目标位置的方块（含空气） |
+| `destroy` | 先破坏目标方块（掉落物品），再放置新方块 |
+| `keep` | 仅在目标位置为空气时放置，否则不做任何操作 |
 
 ### 示例
 
 ```
- /setblock ~ ~ ~ stone
+/setblock ~ ~ ~ stone
 ```
 
-在脚下方块放置石头。
+在脚下方块位置放置石头。
 
 ```
- /setblock 100 64 100 diamond_block
+/setblock 100 64 100 diamond_block
 ```
 
 在指定坐标放置钻石块。
 
 ```
- /setblock ~ ~1 ~ air destroy
+/setblock ~ ~1 ~ air destroy
 ```
 
-破坏头顶的方块。
+破坏头顶的方块并掉落物品。
+
+```
+/setblock ~ ~-1 ~ bedrock
+```
+
+在脚下放置基岩（不可破坏）。
+
+```
+/setblock ~ ~ ~ torch
+```
+
+在当前位置放置火把。
+
+```
+/setblock ~ ~ ~ water
+```
+
+在当前位置放置水源。
+
+### 常用方块 ID
+
+| 方块 | ID |
+|------|-----|
+| 石头 | `stone` |
+| 基岩 | `bedrock` |
+| 钻石块 | `diamond_block` |
+| 金块 | `gold_block` |
+| 铁块 | `iron_block` |
+| 草方块 | `grass` |
+| 玻璃 | `glass` |
+| 火把 | `torch` |
+| 水 | `water` |
+| 岩浆 | `lava` |
+| 命令方块 | `command_block` |
+| 重复命令方块 | `repeating_command_block` |
+| 连锁命令方块 | `chain_command_block` |
+| 红石块 | `redstone_block` |
+| TNT | `tnt` |
+
+### 基岩版注意
+
+- 默认 `replace` 模式会替换任何方块（包括空气），所以总能在指定位置放置方块
+- `destroy` 模式会先"挖掘"原方块，触发掉落物和方块更新
+- `keep` 模式适用于保护已有建筑，避免误操作覆盖
+- 放置水源/岩浆时需要注意流动方向
+- 坐标 Y 值范围为 0 到 319（基岩版 1.18+），旧版为 0 到 255
+- 需要 OP 等级 1

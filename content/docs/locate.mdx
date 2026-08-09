@@ -1,10 +1,10 @@
 ---
 author: "官方•Dingding OvO"
-updatedAt: "2026-08-08"
+updatedAt: "2026-08-09"
 title: "/locate — 定位结构"
 order: 23
 category: commands
-description: "查找最近生成结构的坐标"
+description: "查找最近结构或生物群系的坐标"
 ---
 
 ## `/locate` — 定位结构
@@ -13,29 +13,30 @@ description: "查找最近生成结构的坐标"
 
 ### 语法
 
-`/locate <结构>`
+`/locate <结构类型>`
 
-### 可用结构
+### 结构类型
 
-| 结构 | 说明 |
-|------|------|
-| `fortress` | 下界要塞 |
-| `mansion` | 林地府邸 |
-| `mineshaft` | 废弃矿井 |
-| `monument` | 海底遗迹 |
-| `ruins` | 海底废墟 |
-| `shipwreck` | 沉船 |
-| `stronghold` | 要塞 |
-| `temple` | 沙漠神殿、丛林神庙、女巫小屋 |
+#### 结构
+
+| 结构 ID | 说明 |
+|---------|------|
+| `temple` | 沙漠神殿、丛林神庙、沼泽小屋、雪屋 |
 | `village` | 村庄 |
-| `pillageroutpost` | 掠夺者前哨站 |
-| `bastionremnant` | 堡垒遗迹 |
-| `buriedtreasure` | 埋藏的宝藏 |
-| `endcity` | 末地城 |
-| `ruinedportal` | 废弃传送门 |
-| `ancientcity` | 远古城市 |
-| `trailruins` | 古迹废墟 |
-| `trialchambers` | 试炼密室 |
+| `stronghold` | 要塞（末地传送门） |
+| `mineshaft` | 废弃矿井 |
+| `mansion` | 林地府邸 |
+| `monument` | 海底遗迹 |
+| `shipwreck` | 沉船 |
+| `ocean_ruin` | 海底废墟 |
+| `pillager_outpost` | 掠夺者前哨站 |
+| `ruined_portal` | 废弃传送门 |
+| `buried_treasure` | 埋藏的宝藏 |
+| `bastion_remnant` | 堡垒遗迹（下界） |
+| `fortress` | 下界要塞（下界） |
+| `end_city` | 末地城（末地） |
+| `ancient_city` | 远古城市 |
+| `trial_chambers` | 试炼密室 |
 
 ### 示例
 
@@ -44,25 +45,51 @@ description: "查找最近生成结构的坐标"
 /locate village
 ```
 
-**查找最近的下界要塞：**
+**查找最近的下界要塞（需在下界执行）：**
 ```mcfunction
 /locate fortress
 ```
 
-**查找最近的末地城：**
+**查找最近的末地城（需在末地执行）：**
 ```mcfunction
-/locate endcity
+/locate end_city
 ```
 
 **定位埋藏的宝藏：**
 ```mcfunction
-/locate buriedtreasure
+/locate buried_treasure
 ```
+
+**定位远古城市：**
+```mcfunction
+/locate ancient_city
+```
+
+**定位试炼密室：**
+```mcfunction
+/locate trial_chambers
+```
+
+### 配合传送使用
+
+`/locate` 返回坐标后，可直接配合 `/tp` 传送：
+
+```mcfunction
+/locate village
+```
+
+返回坐标后：
+
+```mcfunction
+/tp @p <返回的坐标>
+```
+
+> 注意：基岩版中 `/locate` 的返回值会自动显示在聊天栏中，可以点击坐标直接复制。
 
 ### 基岩版注意
 
-- 返回当前维度最近结构的坐标
-- 某些结构只能在其对应的维度中定位（例如 `fortress` 只能在下界）
-- 返回的坐标是近似值 — 结构可能有轻微偏移
-- 结构必须在已生成的世界中才能被定位
-- 配合 `/tp` 使用可快速传送：使用返回的坐标 `/tp @p <x> <y> <z>`
+- 结构必须在已生成的区块中才能被定位
+- 某些结构只能在其对应维度中定位：`fortress` 和 `bastion_remnant` 在下界，`end_city` 在末地
+- 返回的坐标是结构入口的近似位置
+- 如果附近没有目标结构，命令会返回最远的搜索结果或报错
+- 需要 OP 等级 1
