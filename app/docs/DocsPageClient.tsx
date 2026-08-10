@@ -81,11 +81,23 @@ export default function DocsPageClient({ docs }: Props) {
     return result;
   }, [docs, debouncedQuery]);
 
+  const isSearching = debouncedQuery.trim().length > 0;
+
+  const pinnedDocs = useMemo(
+    () => filteredDocs.filter((d) => d.pinned),
+    [filteredDocs],
+  );
+
+  const unpinnedDocs = useMemo(
+    () => filteredDocs.filter((d) => !d.pinned),
+    [filteredDocs],
+  );
+
   const totalPages = Math.max(1, Math.ceil(unpinnedDocs.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
   const pageDocs = useMemo(
-    () => filteredDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
-    [filteredDocs, safePage],
+    () => unpinnedDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
+    [unpinnedDocs, safePage],
   );
 
   const pageNumbers = useMemo(() => {
@@ -102,18 +114,6 @@ export default function DocsPageClient({ docs }: Props) {
     }
     return pages;
   }, [totalPages, safePage]);
-
-  const isSearching = debouncedQuery.trim().length > 0;
-
-  const pinnedDocs = useMemo(
-    () => filteredDocs.filter((d) => d.pinned),
-    [filteredDocs],
-  );
-
-  const unpinnedDocs = useMemo(
-    () => filteredDocs.filter((d) => !d.pinned),
-    [filteredDocs],
-  );
 
 
   return (
