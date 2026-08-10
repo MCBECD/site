@@ -16,7 +16,7 @@ const BG_PRESETS = [
 
 export function BackgroundImagePluginCard() {
   const { t } = useLocale();
-  const { settings, updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, updateBgParallax, isPluginEnabled, togglePlugin } = useSettings();
+  const { settings, updateSettings, isPluginEnabled, togglePlugin } = useSettings();
   const id = "background-image";
   const enabled = isPluginEnabled(id);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -31,11 +31,11 @@ export function BackgroundImagePluginCard() {
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
-        updateBgImage(reader.result);
+        updateSettings("bgImage", reader.result);
       }
     };
     reader.readAsDataURL(file);
-  }, [updateBgImage]);
+  }, [updateSettings]);
 
   return (
     <PluginCard
@@ -51,7 +51,7 @@ export function BackgroundImagePluginCard() {
           {BG_PRESETS.map((p) => (
             <button
               key={p.value}
-              onClick={() => updateBgImage(p.value)}
+              onClick={() => updateSettings("bgImage", p.value)}
               className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] transition-colors overflow-hidden
                 ${settings.bgImage === p.value
                   ? "ring-1 ring-[var(--color-accent)]"
@@ -82,7 +82,7 @@ export function BackgroundImagePluginCard() {
         {/* clear button */}
         {settings.bgImage && (
           <button
-            onClick={() => updateBgImage("")}
+            onClick={() => updateSettings("bgImage", "")}
             className="w-full text-center text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors"
           >
             {t("settings.bgClear")}
@@ -90,15 +90,15 @@ export function BackgroundImagePluginCard() {
         )}
 
         {/* overlay opacity */}
-        <SliderRow label={t("settings.bgOverlayOpacity")} value={settings.bgOverlayOpacity} onChange={updateBgOverlayOpacity} />
+        <SliderRow label={t("settings.bgOverlayOpacity")} value={settings.bgOverlayOpacity} onChange={(v) => updateSettings("bgOverlayOpacity", v)} />
 
         {/* overlay blur */}
-        <SliderRow label={t("settings.bgOverlayBlur")} value={settings.bgOverlayBlur} onChange={updateBgOverlayBlur} max={20} />
+        <SliderRow label={t("settings.bgOverlayBlur")} value={settings.bgOverlayBlur} onChange={(v) => updateSettings("bgOverlayBlur", v)} max={20} />
 
         {/* parallax toggle */}
         <div className="flex items-center justify-between">
           <span className="text-[12px] text-[var(--color-text-secondary)]">{t("settings.bgParallax")}</span>
-          <ToggleSwitch checked={settings.bgParallax} onChange={() => updateBgParallax(!settings.bgParallax)} />
+          <ToggleSwitch checked={settings.bgParallax} onChange={() => updateSettings("bgParallax", !settings.bgParallax)} />
         </div>
       </div>
     </PluginCard>

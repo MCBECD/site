@@ -16,7 +16,7 @@ const THEMES: { key: Theme; icon: typeof Sun; titleKey: string }[] = [
 ];
 
 export function Navbar({ onOpenSettings }: NavbarProps) {
-  const { settings, updateTheme } = useSettings();
+  const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
 
   return (
@@ -49,7 +49,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
             return (
               <button
                 key={key}
-                onClick={() => updateTheme(key)}
+                onClick={() => updateSettings("theme", key)}
                 className="nav-icon-btn w-[30px] h-[30px] flex items-center justify-center rounded-md
                   transition-colors duration-100
                   text-[var(--color-text-tertiary)]

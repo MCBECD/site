@@ -14,7 +14,7 @@ const COLOR_PRESETS: { value: ColorTheme; labelKey: string; swatch: string }[] =
 
 export function ColorThemePluginCard() {
   const { t } = useLocale();
-  const { settings, updateColorTheme, updateCustomColor, isPluginEnabled, togglePlugin } = useSettings();
+  const { settings, updateSettings, isPluginEnabled, togglePlugin } = useSettings();
   const id = "color-theme";
   const enabled = isPluginEnabled(id);
 
@@ -32,7 +32,7 @@ export function ColorThemePluginCard() {
           {COLOR_PRESETS.map((p) => (
             <button
               key={p.value}
-              onClick={() => updateColorTheme(p.value)}
+              onClick={() => updateSettings("colorTheme", p.value)}
               className={`flex flex-col items-center gap-2 p-3 rounded-[var(--radius)] transition-colors
                 ${settings.colorTheme === p.value
                   ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
@@ -56,8 +56,8 @@ export function ColorThemePluginCard() {
               type="color"
               value={settings.customColor}
               onChange={(e) => {
-                updateCustomColor(e.target.value);
-                if (settings.colorTheme !== "custom") updateColorTheme("custom");
+                updateSettings("customColor", e.target.value);
+                if (settings.colorTheme !== "custom") updateSettings("colorTheme", "custom");
               }}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />

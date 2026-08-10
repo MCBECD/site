@@ -11,8 +11,7 @@ interface DocsContextValue {
 const DocsContext = createContext<DocsContextValue | null>(null);
 
 export function DocsProvider({ docs, children }: { docs: DocMeta[]; children: ReactNode }) {
-  const docMap = new Map<string, DocMeta>();
-  for (const d of docs) docMap.set(d.id, d);
+  const docMap = new Map(docs.map((d) => [d.id, d]));
   return (
     <DocsContext value={{ docs, docMap }}>
       {children}

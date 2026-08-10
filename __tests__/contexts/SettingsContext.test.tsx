@@ -81,7 +81,7 @@ describe("SettingsContext", () => {
     it("updates theme and persists", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateTheme("dark"));
+      act(() => result.current.updateSettings("theme", "dark"));
       expect(result.current.settings.theme).toBe("dark");
 
       const stored = JSON.parse(localStorageMock.getItem("mcbecd-settings")!);
@@ -93,10 +93,10 @@ describe("SettingsContext", () => {
     it("updates font size", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateFontSize("small"));
+      act(() => result.current.updateSettings("fontSize", "small"));
       expect(result.current.settings.fontSize).toBe("small");
 
-      act(() => result.current.updateFontSize("large"));
+      act(() => result.current.updateSettings("fontSize", "large"));
       expect(result.current.settings.fontSize).toBe("large");
     });
   });
@@ -105,7 +105,7 @@ describe("SettingsContext", () => {
     it("updates locale", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateLocale("ja"));
+      act(() => result.current.updateSettings("locale", "ja"));
       expect(result.current.settings.locale).toBe("ja");
     });
   });
@@ -114,14 +114,14 @@ describe("SettingsContext", () => {
     it("updates color theme", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateColorTheme("red"));
+      act(() => result.current.updateSettings("colorTheme", "red"));
       expect(result.current.settings.colorTheme).toBe("red");
     });
 
     it("updates custom color", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateCustomColor("#ff0000"));
+      act(() => result.current.updateSettings("customColor", "#ff0000"));
       expect(result.current.settings.customColor).toBe("#ff0000");
     });
   });
@@ -172,31 +172,31 @@ describe("SettingsContext", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
       const url = "/bg/test.png";
 
-      act(() => result.current.updateBgImage(url));
+      act(() => result.current.updateSettings("bgImage", url));
       expect(result.current.settings.bgImage).toBe(url);
     });
 
     it("updates overlay opacity", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateBgOverlayOpacity(80));
+      act(() => result.current.updateSettings("bgOverlayOpacity", 80));
       expect(result.current.settings.bgOverlayOpacity).toBe(80);
     });
 
     it("updates overlay blur", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateBgOverlayBlur(10));
+      act(() => result.current.updateSettings("bgOverlayBlur", 10));
       expect(result.current.settings.bgOverlayBlur).toBe(10);
     });
 
     it("toggles parallax", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
 
-      act(() => result.current.updateBgParallax(true));
+      act(() => result.current.updateSettings("bgParallax", true));
       expect(result.current.settings.bgParallax).toBe(true);
 
-      act(() => result.current.updateBgParallax(false));
+      act(() => result.current.updateSettings("bgParallax", false));
       expect(result.current.settings.bgParallax).toBe(false);
     });
   });

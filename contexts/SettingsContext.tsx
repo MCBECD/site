@@ -80,40 +80,11 @@ function defaultSettings(): Settings {
   };
 }
 
-// ---- Updater factory ----
-
-/** 创建通用的单一字段更新器 */
-function createUpdater<K extends keyof Settings>(
-  key: K,
-  setSettings: React.Dispatch<React.SetStateAction<Settings>>,
-  persist: (s: Settings) => void,
-): (value: Settings[K]) => void {
-  return useCallback(
-    (value: Settings[K]) => {
-      setSettings((prev) => {
-        const next = { ...prev, [key]: value };
-        persist(next);
-        return next;
-      });
-    },
-    [setSettings, persist, key],
-  );
-}
-
 // ---- Context ----
 
 interface SettingsContextValue {
   settings: Settings;
-  // isHydrated: boolean;
-  updateTheme: (theme: Theme) => void;
-  updateFontSize: (fontSize: FontSize) => void;
-  updateLocale: (locale: Locale) => void;
-  updateColorTheme: (colorTheme: ColorTheme) => void;
-  updateCustomColor: (color: string) => void;
-  updateBgImage: (url: string) => void;
-  updateBgOverlayOpacity: (v: number) => void;
-  updateBgOverlayBlur: (v: number) => void;
-  updateBgParallax: (v: boolean) => void;
+  updateSettings: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
   isPluginEnabled: (id: string) => boolean;
   togglePlugin: (id: string, enabled?: boolean) => void;
 }
@@ -133,6 +104,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const persist = useCallback((s: Settings) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
   }, []);
+
+  const updateSettings = useCallback(<K extends keyof Settings>(key: K, value: Settings[K]) => {
+    setSettings((prev) => {
+      const next = { ...prev, [key]: value };
+      persist(next);
+      return next;
+    });
+  }, [persist]);
 
   // ---- Effects ----
 
@@ -175,18 +154,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return () => obs.disconnect();
   }, [settings.colorTheme, settings.customColor, settings.plugins]);
 
-  // ---- Updaters (using factory) ----
-
-  const updateTheme = createUpdater("theme", setSettings, persist);
-  const updateFontSize = createUpdater("fontSize", setSettings, persist);
-  const updateLocale = createUpdater("locale", setSettings, persist);
-  const updateColorTheme = createUpdater("colorTheme", setSettings, persist);
-  const updateCustomColor = createUpdater("customColor", setSettings, persist);
-  const updateBgImage = createUpdater("bgImage", setSettings, persist);
-  const updateBgOverlayOpacity = createUpdater("bgOverlayOpacity", setSettings, persist);
-  const updateBgOverlayBlur = createUpdater("bgOverlayBlur", setSettings, persist);
-  const updateBgParallax = createUpdater("bgParallax", setSettings, persist);
-
   const isPluginEnabledFn = useCallback(
     (id: string) => !!settings.plugins[id],
     [settings.plugins],
@@ -198,9 +165,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     <SettingsContext
       value={{
         settings,
-        updateTheme, updateFontSize, updateLocale,
-        updateColorTheme, updateCustomColor,
-        updateBgImage, updateBgOverlayOpacity, updateBgOverlayBlur, updateBgParallax,
+        updateSettings,
         isPluginEnabled: isPluginEnabledFn,
         togglePlugin,
       }}
