@@ -2,7 +2,13 @@
   "common": {
     "loading": "Loading...",
     "notFound": "Page Not Found",
-    "backToList": "Home"
+    "backToList": "Home",
+    "errorTitle": "Something went wrong",
+    "errorDesc": "An unexpected error occurred. Please try refreshing the page.",
+    "errorRetry": "Retry",
+    "bookmark": "Bookmark",
+    "unbookmark": "Remove bookmark",
+    "delete": "Delete"
   },
   "nav": {
     "settings": "Settings",
@@ -39,7 +45,8 @@
     "bgClear": "Clear Background",
     "bgOverlayOpacity": "Overlay",
     "bgOverlayBlur": "Blur",
-    "bgParallax": "Parallax"
+    "bgParallax": "Parallax",
+    "bgImageTooLarge": "Image size cannot exceed 2MB"
   },
   "code": {
     "copy": "Copy",

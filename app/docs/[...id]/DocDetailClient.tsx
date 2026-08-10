@@ -55,7 +55,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
                   ? "text-[var(--color-accent)]"
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
                 } hover:bg-[var(--color-bg-tertiary)] transition-colors`}
-              aria-label={bookmarked ? "取消收藏" : "收藏"}
+              aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
             </button>

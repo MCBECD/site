@@ -2,7 +2,13 @@
   "common": {
     "loading": "載入中...",
     "notFound": "頁面未找到",
-    "backToList": "首頁"
+    "backToList": "首頁",
+    "errorTitle": "錯誤",
+    "errorDesc": "頁面遇到意外錯誤，請嘗試重新整理。",
+    "errorRetry": "重試",
+    "bookmark": "收藏",
+    "unbookmark": "取消收藏",
+    "delete": "刪除"
   },
   "nav": {
     "settings": "設定",
@@ -39,7 +45,8 @@
     "bgClear": "清除背景",
     "bgOverlayOpacity": "遮罩透明度",
     "bgOverlayBlur": "模糊度",
-    "bgParallax": "視差效果"
+    "bgParallax": "視差效果",
+    "bgImageTooLarge": "圖片大小不能超過 2MB"
   },
   "code": {
     "copy": "複製",

@@ -7,6 +7,7 @@ import { LocaleProvider } from "@/contexts/LocaleContext";
 import { Navbar } from "@/components/Navbar";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { PageTransition } from "@/components/PageTransition";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackgroundLayer } from "@/components/BackgroundLayer";
 
@@ -21,7 +22,9 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <Navbar onOpenSettings={openSettings} />
       <SettingsPanel open={settingsOpen} onClose={closeSettings} />
       <main className="pt-[var(--navbar-height)] min-h-screen">
-        <PageTransition>{children}</PageTransition>
+        <ErrorBoundary>
+          <PageTransition>{children}</PageTransition>
+        </ErrorBoundary>
         <ScrollToTop />
       </main>
     </>

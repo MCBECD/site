@@ -2,7 +2,13 @@
   "common": {
     "loading": "Laden...",
     "notFound": "Seite nicht gefunden",
-    "backToList": "Startseite"
+    "backToList": "Startseite",
+    "errorTitle": "Fehler",
+    "errorDesc": "Ein unerwarteter Fehler ist aufgetreten. Bitte laden Sie die Seite neu.",
+    "errorRetry": "Erneut versuchen",
+    "bookmark": "Lesezeichen hinzufügen",
+    "unbookmark": "Lesezeichen entfernen",
+    "delete": "Löschen"
   },
   "nav": {
     "settings": "Einstellungen",
@@ -39,7 +45,8 @@
     "bgClear": "Hintergrund entfernen",
     "bgOverlayOpacity": "Überlagerung",
     "bgOverlayBlur": "Unschärfe",
-    "bgParallax": "Parallax"
+    "bgParallax": "Parallax",
+    "bgImageTooLarge": "Die Bildgröße darf 2 MB nicht überschreiten"
   },
   "code": {
     "copy": "Kopieren",

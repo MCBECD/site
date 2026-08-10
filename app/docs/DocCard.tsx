@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Star, ChevronRight } from "lucide-react";
+import { memo } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 
 interface DocCardProps {
@@ -8,9 +12,9 @@ interface DocCardProps {
   onBookmark: (e: React.MouseEvent, id: string) => void;
 }
 
-import { memo } from "react";
-
 const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
+  const { t } = useLocale();
+
   return (
     <Link
       href={`/docs/${doc.id}`}
@@ -31,9 +35,9 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
             className={`w-6 h-6 flex items-center justify-center rounded-md
               ${bookmarked
                 ? "text-[var(--color-accent)]"
-                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
               }`}
-            aria-label={bookmarked ? "取消收藏" : "收藏"}
+            aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
           >
             <Star className="w-3.5 h-3.5" fill={bookmarked ? "currentColor" : "none"} />
           </button>
@@ -56,7 +60,6 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
       )}
     </Link>
   );
-}
-);
+});
 
 export default DocCard;
