@@ -3,7 +3,9 @@
 import { useMemo, useEffect, useRef, useState } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
 
-export function BackgroundLayer() {
+import { memo } from "react";
+
+const BackgroundLayer = memo(function BackgroundLayer() {
   const { settings } = useSettings();
   const bgEnabled = !!settings.plugins["background-image"] && !!settings.bgImage;
 
@@ -90,3 +92,6 @@ export function BackgroundLayer() {
     </>
   );
 }
+);
+
+export { BackgroundLayer };
