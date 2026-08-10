@@ -93,7 +93,7 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [, setIsHydrated] = useState(false);
 
   useEffect(() => {
     const saved = loadSettings();
