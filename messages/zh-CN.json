@@ -62,6 +62,9 @@
     "bookmarks": "收藏",
     "recent": "最近浏览",
     "noBookmarks": "还没有收藏命令",
-    "noRecent": "还没有浏览记录"
+    "noRecent": "还没有浏览记录",
+    "pinned": "置顶",
+    "basics": "基础文档",
+    "commands": "命令列表"
   }
 }
