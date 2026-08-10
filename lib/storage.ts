@@ -104,30 +104,3 @@ export function clearHistory(): void {
 }
 
 
-
-
-const PINNED_COLLAPSED_KEY = "mcbecd:pinnedCollapsed";
-
-export function getPinnedCollapsed(): boolean {
-  if (typeof window === "undefined") return false;
-  try { return localStorage.getItem(PINNED_COLLAPSED_KEY) === "true"; } catch { /* noop */ return false; }
-}
-
-export function setPinnedCollapsed(collapsed: boolean): void {
-  if (typeof window === "undefined") return;
-  try { localStorage.setItem(PINNED_COLLAPSED_KEY, String(collapsed)); } catch { /* noop */ }
-}
-
-
-
-const BASICS_COLLAPSED_KEY = "mcbecd:basicsCollapsed";
-
-export function getBasicsCollapsed(): boolean {
-  if (typeof window === "undefined") return true;
-  try { return localStorage.getItem(BASICS_COLLAPSED_KEY) !== "false"; } catch { /* noop */ return true; }
-}
-
-export function setBasicsCollapsed(collapsed: boolean): void {
-  if (typeof window === "undefined") return;
-  try { localStorage.setItem(BASICS_COLLAPSED_KEY, String(collapsed)); } catch { /* noop */ }
-}
