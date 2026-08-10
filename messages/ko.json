@@ -62,9 +62,6 @@
     "bookmarks": "북마크",
     "recent": "최근 기록",
     "noBookmarks": "북마크된 명령어가 없습니다",
-    "noRecent": "浏览 기록이 없습니다",
-    "pinned": "고정",
-    "basics": "기본 문서",
-    "commands": "명령어 목록"
+    "noRecent": "浏览 기록이 없습니다"
   }
 }
