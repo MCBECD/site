@@ -5,7 +5,9 @@ interface PaginationProps {
   onPageChange: (p: number) => void;
 }
 
-export default function DocPagination({ page, totalPages, pageNumbers, onPageChange }: PaginationProps) {
+import { memo } from "react";
+
+const DocPagination = memo(function DocPagination({ page, totalPages, pageNumbers, onPageChange }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   return (
@@ -56,3 +58,6 @@ export default function DocPagination({ page, totalPages, pageNumbers, onPageCha
     </div>
   );
 }
+);
+
+export default DocPagination;
