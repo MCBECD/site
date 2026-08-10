@@ -1,4 +1,4 @@
-name: CI / Deploy
+name: CI
 
 on:
   push:
@@ -28,37 +28,10 @@ jobs:
           restore-keys: nextjs-${{ runner.os }}-
 
       - run: npm ci
-
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run validate
       - run: npm test
       - run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-out
-          path: out
-          retention-days: 1
-
-  deploy:
-    name: Deploy to Cloudflare Pages
-    needs: quality
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: site-out
-          path: out
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: pages deploy out --project-name mcbecd --branch main
+# Cloudflare Pages 自动构建部署（build command 已配置 git submodule update + next build）
