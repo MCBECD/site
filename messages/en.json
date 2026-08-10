@@ -62,6 +62,9 @@
     "bookmarks": "Bookmarks",
     "recent": "Recent",
     "noBookmarks": "No bookmarked commands",
-    "noRecent": "No browsing history"
+    "noRecent": "No browsing history",
+    "pinned": "Pinned",
+    "basics": "Basics",
+    "commands": "Commands"
   }
 }
