@@ -7,6 +7,7 @@ import { LocaleProvider } from "@/contexts/LocaleContext";
 import { Navbar } from "@/components/Navbar";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { PageTransition } from "@/components/PageTransition";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 function ShellInner({ children }: { children: React.ReactNode }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -112,6 +113,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <main className="pt-[var(--navbar-height)] min-h-screen">
         <PageTransition>{children}</PageTransition>
       </main>
+      <ScrollToTop />
     </>
   );
 }
