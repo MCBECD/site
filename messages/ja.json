@@ -62,9 +62,6 @@
     "bookmarks": "ブックマーク",
     "recent": "最近閲覧",
     "noBookmarks": "ブックマークされたコマンドはありません",
-    "noRecent": "閲覧履歴はありません",
-    "pinned": "ピン留め",
-    "basics": "基本",
-    "commands": "コマンド一覧"
+    "noRecent": "閲覧履歴はありません"
   }
 }
