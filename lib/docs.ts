@@ -21,6 +21,8 @@ export interface DocMeta {
   createdAt?: string;
   updatedAt?: string;
   type?: string;
+  category?: string;
+  pinned?: boolean;
   readingTime?: number;
 }
 
@@ -80,8 +82,9 @@ function buildMeta(
     createdAt: (jsonMeta?.createdAt as string) ?? (fm.createdAt as string) ?? undefined,
     updatedAt: (jsonMeta?.updatedAt as string) ?? (fm.updatedAt as string) ?? undefined,
     type: (jsonMeta?.type as string) ?? (fm.type as string) ?? undefined,
+    category: (jsonMeta?.category as string) ?? (fm.category as string) ?? undefined,
+    pinned: (jsonMeta?.pinned as boolean) ?? (fm.pinned as boolean) ?? undefined,
     readingTime: mdxMeta?.readingTime,
-    order: (jsonMeta?.order as number) ?? (fm.order as number) ?? undefined,
   };
 }
 
