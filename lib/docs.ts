@@ -22,7 +22,6 @@ export interface DocMeta {
   updatedAt?: string;
   type?: string;
   readingTime?: number;
-  order?: number;
 }
 
 export interface DocContent {
@@ -96,7 +95,7 @@ function normalizeTags(tags: unknown): string[] | undefined {
  * 递归扫描
  * ---------------------------------------------------------- */
 
-function scanDirectory(dir: string, prefix: string): DocMeta[] {
+function scanDirectory(dir: string, prefix: string, mtimes?: Map<string, number>): DocMeta[] {
   const results: DocMeta[] = [];
   let entries: fs.Dirent[];
 
@@ -123,7 +122,7 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
         const mdxMeta = parseMdxMeta(indexPath);
         const jsonMeta = readMetaJson(fullPath);
         const meta = buildMeta(id, entry.name, mdxMeta, jsonMeta);
-        if (meta) results.push(meta);
+        if (meta) { if (mtimes) mtimes.set(meta.id, fs.statSync(indexPath).mtimeMs); results.push(meta); }
       } else {
         // 非 index.mdx 的子目录才递归扫描
         results.push(...scanDirectory(fullPath, id));
@@ -132,7 +131,7 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
       const docId = prefix ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}` : entry.name.replace(/\.mdx$/, "");
       const mdxMeta = parseMdxMeta(fullPath);
       const meta = buildMeta(docId, docId, mdxMeta, null);
-      if (meta) results.push(meta);
+      if (meta) { if (mtimes) mtimes.set(meta.id, fs.statSync(fullPath).mtimeMs); results.push(meta); }
     }
   }
 
@@ -147,12 +146,26 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 export function getAllDocs(): DocMeta[] {
   const docsDir = getDocsDir();
   if (!fs.existsSync(docsDir)) return [];
-  return scanDirectory(docsDir, "").sort((a, b) => {
-    const aO = a.order ?? Infinity;
-    const bO = b.order ?? Infinity;
-    if (aO !== bO) return aO - bO;
+
+  const mtimes = new Map<string, number>();
+  const docs = scanDirectory(docsDir, "", mtimes);
+
+  return docs.sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+
+    const tA = getSortTime(a, mtimes);
+    const tB = getSortTime(b, mtimes);
+    if (tB !== tA) return tB - tA;
+
     return a.title.localeCompare(b.title, "zh-CN");
   });
+}
+
+function getSortTime(meta: DocMeta, mtimes: Map<string, number>): number {
+  if (meta.updatedAt) { const t = Date.parse(meta.updatedAt); if (!isNaN(t)) return t; }
+  if (meta.createdAt) { const t = Date.parse(meta.createdAt); if (!isNaN(t)) return t; }
+  return mtimes.get(meta.id) ?? 0;
 }
 
 /** 获取所有不重复的标签 */
