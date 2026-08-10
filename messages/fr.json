@@ -62,6 +62,9 @@
     "bookmarks": "Favoris",
     "recent": "Récemment consultés",
     "noBookmarks": "Aucune commande enregistrée",
-    "noRecent": "Aucun historique de navigation"
+    "noRecent": "Aucun historique de navigation",
+    "pinned": "Épinglé",
+    "basics": "Bases",
+    "commands": "Commandes"
   }
 }
