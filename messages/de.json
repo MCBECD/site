@@ -62,9 +62,6 @@
     "bookmarks": "Lesezeichen",
     "recent": "Zuletzt besucht",
     "noBookmarks": "Keine Lesezeichen vorhanden",
-    "noRecent": "Kein Verlauf vorhanden",
-    "pinned": "Angepinnt",
-    "basics": "Grundlagen",
-    "commands": "Befehlsliste"
+    "noRecent": "Kein Verlauf vorhanden"
   }
 }
