@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
-import { Search, X, Command, Star, ChevronRight } from "lucide-react";
+import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 import { getBookmarks, toggleBookmark } from "@/lib/storage";
+import DocCard from "./DocCard";
+import DocPagination from "./DocPagination";
 
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
@@ -23,7 +24,6 @@ export default function DocsPageClient({ docs }: Props) {
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // 从 localStorage 加载收藏
   useEffect(() => {
     setBookmarks(getBookmarks());
   }, []);
@@ -31,7 +31,7 @@ export default function DocsPageClient({ docs }: Props) {
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const added = toggleBookmark(id);
+    toggleBookmark(id);
     setBookmarks(getBookmarks());
   }, []);
 
@@ -49,8 +49,7 @@ export default function DocsPageClient({ docs }: Props) {
         searchRef.current?.focus();
       }
       if (e.key === "Escape" && document.activeElement === searchRef.current) {
-        setQuery("");
-        setDebouncedQuery("");
+        setQuery(""); setDebouncedQuery("");
         searchRef.current?.blur();
       }
     };
@@ -62,14 +61,15 @@ export default function DocsPageClient({ docs }: Props) {
     let result = docs;
     const q = debouncedQuery.trim().toLowerCase();
     if (q) {
-      result = result.filter(
-        (d) =>
-          d.title.toLowerCase().includes(q) ||
-          (d.description && d.description.toLowerCase().includes(q)),
+      result = result.filter((d) =>
+        d.title.toLowerCase().includes(q) ||
+        (d.description && d.description.toLowerCase().includes(q)),
       );
     }
     return result;
   }, [docs, debouncedQuery]);
+
+  const isSearching = debouncedQuery.trim().length > 0;
 
   const totalPages = Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
@@ -84,22 +84,14 @@ export default function DocsPageClient({ docs }: Props) {
     const start = Math.max(0, safePage - w);
     const end = Math.min(totalPages - 1, safePage + w);
     for (let i = 0; i < totalPages; i++) {
-      if (i === 0 || i === totalPages - 1 || (i >= start && i <= end)) {
-        pages.push(i);
-      } else if (pages[pages.length - 1] !== -1) {
-        pages.push(-1);
-      }
+      if (i === 0 || i === totalPages - 1 || (i >= start && i <= end)) pages.push(i);
+      else if (pages[pages.length - 1] !== -1) pages.push(-1);
     }
     return pages;
   }, [totalPages, safePage]);
 
-  const isSearching = debouncedQuery.trim().length > 0;
-
-
-
   return (
     <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
-      {/* 页面标题 */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight">
           {t("doc.title")}
@@ -143,14 +135,12 @@ export default function DocsPageClient({ docs }: Props) {
         )}
       </div>
 
-      {/* 搜索结果计数 */}
       {isSearching && (
         <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
           {t("doc.resultCount", { count: filteredDocs.length })}
         </p>
       )}
 
-      {/* 命令列表 */}
       {pageDocs.length === 0 ? (
         <div className="py-24 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg-tertiary)] mb-4">
@@ -171,113 +161,7 @@ export default function DocsPageClient({ docs }: Props) {
         </div>
       )}
 
-      {/* 分页 */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 mt-10">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={safePage === 0}
-            className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
-              text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          {pageNumbers.map((p, i) =>
-            p === -1 ? (
-              <span key={`e-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-[var(--color-text-tertiary)]">…</span>
-            ) : (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-[13px] transition-colors ${
-                  p === safePage
-                    ? "bg-[var(--color-accent)] text-white font-medium shadow-sm"
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
-                }`}
-              >
-                {p + 1}
-              </button>
-            ),
-          )}
-
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={safePage === totalPages - 1}
-            className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
-              text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      )}
+      <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={setPage} />
     </div>
-  );
-}
-
-/* ---------------------------------------------------------- */
-
-
-function DocCard({
-  doc,
-  bookmarked,
-  onBookmark,
-}: {
-  doc: DocMeta;
-  bookmarked: boolean;
-  onBookmark: (e: React.MouseEvent, id: string) => void;
-}) {
-  return (
-    <Link
-      href={`/docs/${doc.id}`}
-      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
-        bg-[var(--color-card-bg)]
-        border border-[var(--color-border)]
-        no-underline"
-    >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-          <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
-            {doc.title}
-          </h2>
-        </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          {/* 收藏星标 */}
-          <button
-            onClick={(e) => onBookmark(e, doc.id)}
-            className={`w-6 h-6 flex items-center justify-center rounded-md
-              ${bookmarked
-                ? "text-[var(--color-accent)]"
-                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"
-              }`}
-            aria-label={bookmarked ? "取消收藏" : "收藏"}
-          >
-            <Star className="w-3.5 h-3.5" fill={bookmarked ? "currentColor" : "none"} />
-          </button>
-          {/* 箭头 */}
-          <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0" />
-        </div>
-      </div>
-      {(doc.description || doc.author || doc.updatedAt) && (
-        <div className="flex items-center justify-between gap-3 mt-1">
-          {doc.description && (
-            <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 leading-relaxed flex-1 min-w-0">
-              {doc.description}
-            </p>
-          )}
-          {(doc.author || doc.updatedAt) && (
-            <span className="text-[11px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums">
-              {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
-            </span>
-          )}
-        </div>
-      )}
-    </Link>
   );
 }
