@@ -641,4 +641,22 @@ pre {
   border-radius: 4px;
 }
 
+
+/* 列表交错入场动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doc-card-enter {
+  animation: fadeInUp 0.35s ease-out both;
+  animation-delay: calc(var(--stagger-index, 0) * 50ms);
+}
+
 /* Nav button — no animation, just instant feedback via Tailwind active:scale */
