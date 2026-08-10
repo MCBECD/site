@@ -8,7 +8,9 @@ interface DocCardProps {
   onBookmark: (e: React.MouseEvent, id: string) => void;
 }
 
-export default function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
+import { memo } from "react";
+
+const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
   return (
     <Link
       href={`/docs/${doc.id}`}
@@ -55,3 +57,6 @@ export default function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
     </Link>
   );
 }
+);
+
+export default DocCard;
