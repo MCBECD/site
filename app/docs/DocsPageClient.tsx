@@ -83,7 +83,7 @@ export default function DocsPageClient({ docs }: Props) {
 
   const totalPages = Math.max(1, Math.ceil(unpinnedDocs.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
-  const pageDocs = unpinnedDocs = useMemo(
+  const pageDocs = useMemo(
     () => filteredDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
     [filteredDocs, safePage],
   );
