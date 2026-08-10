@@ -41,7 +41,7 @@ export default function DocsPageClient({ docs }: Props) {
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const added = toggleBookmark(id);
+    toggleBookmark(id);
     setBookmarks(getBookmarks());
   }, []);
 
