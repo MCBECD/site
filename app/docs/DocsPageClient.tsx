@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Search, X, Command, Star, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getBookmarks, toggleBookmark, getPinnedCollapsed, setPinnedCollapsed } from "@/lib/storage";
+import { getBookmarks, toggleBookmark, getPinnedCollapsed, setPinnedCollapsed, getBasicsCollapsed, setBasicsCollapsed } from "@/lib/storage";
 
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
@@ -21,21 +21,14 @@ export default function DocsPageClient({ docs }: Props) {
   const [page, setPage] = useState(0);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [pinnedCollapsed, setPinnedCollapsedState] = useState(false);
+  const [basicsCollapsed, setBasicsCollapsedState] = useState(true);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // 从 localStorage 加载收藏
   useEffect(() => {
     setBookmarks(getBookmarks());
     setPinnedCollapsedState(getPinnedCollapsed());
-  }, []);
-
-  const togglePinnedCollapsed = useCallback(() => {
-    setPinnedCollapsedState((prev) => {
-      const next = !prev;
-      setPinnedCollapsed(next);
-      return next;
-    });
+    setBasicsCollapsedState(getBasicsCollapsed());
   }, []);
 
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
@@ -43,6 +36,14 @@ export default function DocsPageClient({ docs }: Props) {
     e.stopPropagation();
     toggleBookmark(id);
     setBookmarks(getBookmarks());
+  }, []);
+
+  const togglePinnedCollapsed = useCallback(() => {
+    setPinnedCollapsedState((prev) => { const next = !prev; setPinnedCollapsed(next); return next; });
+  }, []);
+
+  const toggleBasicsCollapsed = useCallback(() => {
+    setBasicsCollapsedState((prev) => { const next = !prev; setBasicsCollapsed(next); return next; });
   }, []);
 
   const handleInput = useCallback((value: string) => {
@@ -59,8 +60,7 @@ export default function DocsPageClient({ docs }: Props) {
         searchRef.current?.focus();
       }
       if (e.key === "Escape" && document.activeElement === searchRef.current) {
-        setQuery("");
-        setDebouncedQuery("");
+        setQuery(""); setDebouncedQuery("");
         searchRef.current?.blur();
       }
     };
@@ -72,10 +72,9 @@ export default function DocsPageClient({ docs }: Props) {
     let result = docs;
     const q = debouncedQuery.trim().toLowerCase();
     if (q) {
-      result = result.filter(
-        (d) =>
-          d.title.toLowerCase().includes(q) ||
-          (d.description && d.description.toLowerCase().includes(q)),
+      result = result.filter((d) =>
+        d.title.toLowerCase().includes(q) ||
+        (d.description && d.description.toLowerCase().includes(q)),
       );
     }
     return result;
@@ -83,21 +82,16 @@ export default function DocsPageClient({ docs }: Props) {
 
   const isSearching = debouncedQuery.trim().length > 0;
 
-  const pinnedDocs = useMemo(
-    () => filteredDocs.filter((d) => d.pinned),
-    [filteredDocs],
-  );
+  // 分组：pinned → intro/basics → commands
+  const pinnedDocs = useMemo(() => filteredDocs.filter((d) => d.pinned), [filteredDocs]);
+  const basicsDocs = useMemo(() => filteredDocs.filter((d) => !d.pinned && d.category !== "commands"), [filteredDocs]);
+  const commandDocs = useMemo(() => filteredDocs.filter((d) => !d.pinned && d.category === "commands"), [filteredDocs]);
 
-  const unpinnedDocs = useMemo(
-    () => filteredDocs.filter((d) => !d.pinned),
-    [filteredDocs],
-  );
-
-  const totalPages = Math.max(1, Math.ceil(unpinnedDocs.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(commandDocs.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
   const pageDocs = useMemo(
-    () => unpinnedDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
-    [unpinnedDocs, safePage],
+    () => commandDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
+    [commandDocs, safePage],
   );
 
   const pageNumbers = useMemo(() => {
@@ -115,10 +109,8 @@ export default function DocsPageClient({ docs }: Props) {
     return pages;
   }, [totalPages, safePage]);
 
-
   return (
     <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
-      {/* 页面标题 */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight">
           {t("doc.title")}
@@ -162,109 +154,65 @@ export default function DocsPageClient({ docs }: Props) {
         )}
       </div>
 
-      {/* 置顶文档 */}
-      {pinnedDocs.length > 0 && !isSearching && (
-        <div className="mb-4">
-          <button
-            onClick={togglePinnedCollapsed}
-            className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-secondary)] mb-2 px-0.5 hover:text-[var(--color-text-primary)] transition-colors"
-          >
-            <svg className={`w-3 h-3 transition-transform ${pinnedCollapsed ? '' : 'rotate-90'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-            {t("doc.pinned") || "置顶"} ({pinnedDocs.length})
-          </button>
-          {!pinnedCollapsed && (
-            <div className="space-y-1">
-              {pinnedDocs.map((doc, idx) => (
-                <DocCard
-                  key={doc.id}
-                  doc={doc}
-                  bookmarked={bookmarks.includes(doc.id)}
-                  onBookmark={handleToggleBookmark}
-                  staggerIndex={idx}
-                />
-              ))}
-            </div>
-          )}
-          {!pinnedCollapsed && <div className="border-t border-[var(--color-border)] my-3" />}
-        </div>
-      )}
-
-      {/* 搜索结果计数 */}
       {isSearching && (
         <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
           {t("doc.resultCount", { count: filteredDocs.length })}
         </p>
       )}
 
+      {/* 置顶区域 */}
+      {pinnedDocs.length > 0 && !isSearching && (
+        <CollapsibleSection
+          title={t("doc.pinned")}
+          count={pinnedDocs.length}
+          collapsed={pinnedCollapsed}
+          onToggle={togglePinnedCollapsed}
+          withBorder
+        >
+          {pinnedDocs.map((doc, idx) => (
+            <DocCard key={doc.id} doc={doc} bookmarked={bookmarks.includes(doc.id)} onBookmark={handleToggleBookmark} staggerIndex={idx} />
+          ))}
+        </CollapsibleSection>
+      )}
+
+      {/* 基础文档 */}
+      {basicsDocs.length > 0 && !isSearching && (
+        <CollapsibleSection
+          title={t("doc.basics")}
+          count={basicsDocs.length}
+          collapsed={basicsCollapsed}
+          onToggle={toggleBasicsCollapsed}
+          withBorder
+        >
+          {basicsDocs.map((doc, idx) => (
+            <DocCard key={doc.id} doc={doc} bookmarked={bookmarks.includes(doc.id)} onBookmark={handleToggleBookmark} staggerIndex={idx} />
+          ))}
+        </CollapsibleSection>
+      )}
+
       {/* 命令列表 */}
-      {pageDocs.length === 0 ? (
-        <div className="py-24 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg-tertiary)] mb-4">
-            <Search className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+      {!isSearching && <SectionLabel title={t("doc.commands")} count={commandDocs.length} />}
+
+      {commandDocs.length === 0 ? (
+        !isSearching ? null : (
+          <div className="py-24 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg-tertiary)] mb-4">
+              <Search className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+            </div>
+            <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
           </div>
-          <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
-        </div>
+        )
       ) : (
         <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
           {pageDocs.map((doc, idx) => (
-            <DocCard
-              key={doc.id}
-              doc={doc}
-              bookmarked={bookmarks.includes(doc.id)}
-              onBookmark={handleToggleBookmark}
-              staggerIndex={idx}
-            />
+            <DocCard key={doc.id} doc={doc} bookmarked={bookmarks.includes(doc.id)} onBookmark={handleToggleBookmark} staggerIndex={idx} />
           ))}
         </div>
       )}
 
       {/* 分页 */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 mt-10">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={safePage === 0}
-            className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
-              text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          {pageNumbers.map((p, i) =>
-            p === -1 ? (
-              <span key={`e-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-[var(--color-text-tertiary)]">…</span>
-            ) : (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-[13px] transition-colors ${
-                  p === safePage
-                    ? "bg-[var(--color-accent)] text-white font-medium shadow-sm"
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
-                }`}
-              >
-                {p + 1}
-              </button>
-            ),
-          )}
-
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={safePage === totalPages - 1}
-            className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
-              text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+        <Pagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={setPage} />
       )}
     </div>
   );
@@ -272,17 +220,90 @@ export default function DocsPageClient({ docs }: Props) {
 
 /* ---------------------------------------------------------- */
 
+function CollapsibleSection({
+  title, count, collapsed, onToggle, withBorder, children,
+}: {
+  title: string; count: number; collapsed: boolean; onToggle: () => void; withBorder?: boolean; children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-4">
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-secondary)] mb-2 px-0.5 hover:text-[var(--color-text-primary)] transition-colors"
+      >
+        <svg className={`w-3 h-3 transition-transform ${collapsed ? '' : 'rotate-90'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+        {title} ({count})
+      </button>
+      {!collapsed && <div className="space-y-1">{children}</div>}
+      {withBorder && !collapsed && <div className="border-t border-[var(--color-border)] mt-3" />}
+    </div>
+  );
+}
+
+function SectionLabel({ title, count }: { title: string; count: number }) {
+  return (
+    <div className="text-xs font-medium text-[var(--color-text-secondary)] mb-2 px-0.5">
+      {title} ({count})
+    </div>
+  );
+}
+
+function Pagination({ page, totalPages, pageNumbers, onPageChange }: {
+  page: number; totalPages: number; pageNumbers: number[]; onPageChange: (p: number) => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-1 mt-10">
+      <button
+        onClick={() => onPageChange(Math.max(0, page - 1))}
+        disabled={page === 0}
+        className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
+          text-[var(--color-text-secondary)]
+          hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      {pageNumbers.map((p, i) =>
+        p === -1 ? (
+          <span key={`e-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-[var(--color-text-tertiary)]">…</span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onPageChange(p)}
+            className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-[13px] transition-colors ${
+              p === page
+                ? "bg-[var(--color-accent)] text-white font-medium shadow-sm"
+                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
+            }`}
+          >
+            {p + 1}
+          </button>
+        ),
+      )}
+      <button
+        onClick={() => onPageChange(Math.min(totalPages - 1, page + 1))}
+        disabled={page === totalPages - 1}
+        className="min-w-[36px] h-9 flex items-center justify-center rounded-lg
+          text-[var(--color-text-secondary)]
+          hover:bg-[var(--color-bg-tertiary)] disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------- */
 
 function DocCard({
-  doc,
-  bookmarked,
-  onBookmark,
-  staggerIndex = 0,
+  doc, bookmarked, onBookmark, staggerIndex = 0,
 }: {
-  doc: DocMeta;
-  bookmarked: boolean;
-  onBookmark: (e: React.MouseEvent, id: string) => void;
-  staggerIndex?: number;
+  doc: DocMeta; bookmarked: boolean; onBookmark: (e: React.MouseEvent, id: string) => void; staggerIndex?: number;
 }) {
   return (
     <Link
@@ -300,7 +321,6 @@ function DocCard({
           </h2>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
-          {/* 收藏星标 */}
           <button
             onClick={(e) => onBookmark(e, doc.id)}
             className={`w-6 h-6 flex items-center justify-center rounded-md
@@ -312,7 +332,6 @@ function DocCard({
           >
             <Star className="w-3.5 h-3.5" fill={bookmarked ? "currentColor" : "none"} />
           </button>
-          {/* 箭头 */}
           <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0" />
         </div>
       </div>
