@@ -112,8 +112,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <SettingsPanel open={settingsOpen} onClose={closeSettings} />
       <main className="pt-[var(--navbar-height)] min-h-screen">
         <PageTransition>{children}</PageTransition>
+        <ScrollToTop />
       </main>
-      <ScrollToTop />
     </>
   );
 }

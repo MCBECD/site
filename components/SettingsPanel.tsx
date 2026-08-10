@@ -50,7 +50,18 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
-  // 打开时切回 general tab
+  useEffect(() => {
+    const shouldLock = open || closing;
+    if (shouldLock) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open, closing]);
+
   useEffect(() => { if (open) setTab("general"); }, [open]);
 
   if (!open && !closing) return null;

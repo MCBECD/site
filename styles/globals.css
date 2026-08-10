@@ -279,8 +279,17 @@ pre {
 /* ----------------------------------------------------------
  * Scrollbar
  * ---------------------------------------------------------- */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+:root {
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(--color-text-tertiary) transparent;
+  overflow-y: overlay;
+  overflow-x: overlay;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
 ::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-track-piece { background: transparent; }
+::-webkit-scrollbar-button { display: none; }
 ::-webkit-scrollbar-thumb { background: var(--color-text-tertiary); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }
 
