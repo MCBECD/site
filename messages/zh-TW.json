@@ -62,6 +62,9 @@
     "bookmarks": "收藏",
     "recent": "最近瀏覽",
     "noBookmarks": "還沒有收藏指令",
-    "noRecent": "還沒有瀏覽記錄"
+    "noRecent": "還沒有瀏覽記錄",
+    "pinned": "置頂",
+    "basics": "基礎文件",
+    "commands": "指令列表"
   }
 }
