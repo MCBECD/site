@@ -110,10 +110,10 @@ const PINNED_COLLAPSED_KEY = "mcbecd:pinnedCollapsed";
 
 export function getPinnedCollapsed(): boolean {
   if (typeof window === "undefined") return false;
-  try { return localStorage.getItem(PINNED_COLLAPSED_KEY) === "true"; } catch { return false; }
+  try { return localStorage.getItem(PINNED_COLLAPSED_KEY) === "true"; } catch { /* noop */ return false; }
 }
 
 export function setPinnedCollapsed(collapsed: boolean): void {
   if (typeof window === "undefined") return;
-  try { localStorage.setItem(PINNED_COLLAPSED_KEY, String(collapsed)); } catch {}
+  try { localStorage.setItem(PINNED_COLLAPSED_KEY, String(collapsed)); } catch { /* noop */ }
 }
