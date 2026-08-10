@@ -176,12 +176,13 @@ export default function DocsPageClient({ docs }: Props) {
           </button>
           {!pinnedCollapsed && (
             <div className="space-y-1">
-              {pinnedDocs.map((doc) => (
+              {pinnedDocs.map((doc, idx) => (
                 <DocCard
                   key={doc.id}
                   doc={doc}
                   bookmarked={bookmarks.includes(doc.id)}
                   onBookmark={handleToggleBookmark}
+                  staggerIndex={idx}
                 />
               ))}
             </div>
@@ -207,12 +208,13 @@ export default function DocsPageClient({ docs }: Props) {
         </div>
       ) : (
         <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
-          {pageDocs.map((doc) => (
+          {pageDocs.map((doc, idx) => (
             <DocCard
               key={doc.id}
               doc={doc}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
+              staggerIndex={idx}
             />
           ))}
         </div>
@@ -275,18 +277,21 @@ function DocCard({
   doc,
   bookmarked,
   onBookmark,
+  staggerIndex = 0,
 }: {
   doc: DocMeta;
   bookmarked: boolean;
   onBookmark: (e: React.MouseEvent, id: string) => void;
+  staggerIndex?: number;
 }) {
   return (
     <Link
       href={`/docs/${doc.id}`}
-      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
+      className="doc-card doc-card-enter block group px-4 py-3.5 rounded-[var(--radius-sm)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
         no-underline"
+      style={{ "--stagger-index": staggerIndex } as React.CSSProperties}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
