@@ -52,6 +52,18 @@ const mcfunctionSyntax = {
   ]
 };
 
+let highlighter: Highlighter | null = null;
+
+async function getHighlighter(): Promise<Highlighter> {
+  if (!highlighter) {
+    highlighter = await createHighlighter({
+      themes: ["github-light", "github-dark"],
+      langs: [mcfunctionSyntax],
+    });
+  }
+  return highlighter;
+}
+
 const components = {
   /* h2 is hidden in doc detail pages — the header card already shows the title */
   h2: () => null,
@@ -153,18 +165,6 @@ const components = {
   CmdConditionalChain,
   CmdChat,
 };
-
-let highlighter: Highlighter | null = null;
-
-async function getHighlighter(): Promise<Highlighter> {
-  if (!highlighter) {
-    highlighter = await createHighlighter({
-      themes: ["github-light", "github-dark"],
-      langs: [mcfunctionSyntax],
-    });
-  }
-  return highlighter;
-}
 
 export function MDXRenderer({ source }: { source: string }) {
   return (

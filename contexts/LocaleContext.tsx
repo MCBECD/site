@@ -20,16 +20,9 @@ const MSG: Record<Locale, Messages> = {
   fr: fr as Messages,
 };
 
-const DOT_RE = /\./g;
-
-/** 将 "code.copiedMd" 解析为 ["code", "copiedMd"] */
-function parsePath(key: string): string[] {
-  return key.split(DOT_RE);
-}
-
 /** 嵌套对象按路径取值 */
 function getNested(obj: unknown, path: string[], fallback: string): string {
-  let cur = obj;
+  let cur: unknown = obj;
   for (const p of path) {
     if (cur == null || typeof cur !== "object") return fallback;
     cur = (cur as Record<string, unknown>)[p];
@@ -51,7 +44,7 @@ export function LocaleProvider({ locale, children }: { locale: Locale; children:
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>): string => {
-      let result = getNested(messages, parsePath(key), key);
+      let result = getNested(messages, key.split("."), key);
       if (vars) {
         for (const [k, v] of Object.entries(vars)) {
           result = result.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));

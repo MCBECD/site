@@ -32,11 +32,12 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!bgEnabled) { setBg(null); return; }
     const calc = () => {
-      const vpW = innerWidth, vpH = innerHeight;
       const s = 1.08;
-      const tx = -vpW * (s - 1) / 2;
-      const ty = -vpH * (s - 1) / 2;
-      setBg({ s, tx, ty });
+      setBg({
+        s,
+        tx: -innerWidth * (s - 1) / 2,
+        ty: -innerHeight * (s - 1) / 2,
+      });
     };
     calc();
     addEventListener("resize", calc);

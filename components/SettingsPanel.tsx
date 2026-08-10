@@ -34,7 +34,7 @@ type Tab = "general" | "plugins" | "data";
 /* ---------- Main Panel ---------- */
 
 export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { settings, updateTheme, updateFontSize, updateLocale } = useSettings();
+  const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
   const [tab, setTab] = useState<Tab>("general");
   const [closing, setClosing] = useState(false);
@@ -116,7 +116,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                     {THEME_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}
-                        onClick={() => updateTheme(opt.value)}
+                        onClick={() => updateSettings("theme", opt.value)}
                         className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-[var(--radius)] text-[13px] transition-colors
                           ${settings.theme === opt.value
                             ? "bg-[var(--color-accent)] text-white"
@@ -134,7 +134,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                     {FONT_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}
-                        onClick={() => updateFontSize(opt.value)}
+                        onClick={() => updateSettings("fontSize", opt.value)}
                         className={`flex-1 h-10 rounded-[var(--radius)] text-[13px] transition-colors
                           ${settings.fontSize === opt.value
                             ? "bg-[var(--color-accent)] text-white"
@@ -147,7 +147,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                 </Section>
 
                 <Section title={t("settings.language")}>
-                  <LocaleDropdown value={settings.locale} onChange={updateLocale} />
+                  <LocaleDropdown value={settings.locale} onChange={(locale) => updateSettings("locale", locale)} />
                 </Section>
               </>
             ) : tab === "plugins" ? (
