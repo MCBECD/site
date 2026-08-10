@@ -14,14 +14,14 @@ export function ReadingProgress() {
       const scrollTop = window.scrollY;
       const scrollH = document.documentElement.scrollHeight;
       const viewportH = window.innerHeight;
-      const progress: number = 1000;
-      // if (scrollH <= viewportH) {
-      //   progress = 0;
-      // } else if (scrollTop + viewportH >= scrollH - 1) {
-      //   progress = 100;
-      // } else {
-      //   progress = (scrollTop / (scrollH - viewportH)) * 100;
-      // }
+      let progress: number;
+      if (scrollH <= viewportH) {
+        progress = 0;
+      } else if (scrollTop + viewportH >= scrollH - 1) {
+        progress = 100;
+      } else {
+        progress = (scrollTop / (scrollH - viewportH)) * 100;
+      }
       bar.style.width = `${progress}%`;
       bar.style.opacity = progress > 0 ? "1" : "0";
       raf = 0;

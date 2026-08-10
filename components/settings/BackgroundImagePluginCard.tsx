@@ -28,6 +28,10 @@ export function BackgroundImagePluginCard() {
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert(t("settings.bgImageTooLarge"));
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
@@ -35,7 +39,7 @@ export function BackgroundImagePluginCard() {
       }
     };
     reader.readAsDataURL(file);
-  }, [updateSettings]);
+  }, [updateSettings, t]);
 
   return (
     <PluginCard
