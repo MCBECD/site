@@ -279,8 +279,17 @@ pre {
 /* ----------------------------------------------------------
  * Scrollbar
  * ---------------------------------------------------------- */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+:root {
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(--color-text-tertiary) transparent;
+  overflow-y: overlay;
+  overflow-x: overlay;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
 ::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-track-piece { background: transparent; }
+::-webkit-scrollbar-button { display: none; }
 ::-webkit-scrollbar-thumb { background: var(--color-text-tertiary); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }
 
@@ -639,24 +648,6 @@ pre {
   background: var(--color-code-bg);
   padding: 2px 6px;
   border-radius: 4px;
-}
-
-
-/* 列表交错入场动画 */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.doc-card-enter {
-  animation: fadeInUp 0.35s ease-out both;
-  animation-delay: calc(var(--stagger-index, 0) * 50ms);
 }
 
 /* Nav button — no animation, just instant feedback via Tailwind active:scale */

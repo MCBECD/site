@@ -8,39 +8,37 @@ on:
 
 jobs:
   quality:
-    name: Lint + TypeCheck + Test + Build
+    name: Lint + TypeCheck + Validate + Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           submodules: true
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - name: Cache Next.js
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: nextjs-${{ runner.os }}-
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm ci
+      - name: Lint
+        run: npm run lint
 
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run validate
-      - run: npm test
-      - run: npm run build
+      - name: Type check
+        run: npm run typecheck
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-out
-          path: out
-          retention-days: 1
+      - name: Validate docs & i18n
+        run: npm run validate
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
 
   deploy:
     name: Deploy to Cloudflare Pages
@@ -51,11 +49,22 @@ jobs:
       contents: read
       deployments: write
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          name: site-out
-          path: out
+          submodules: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

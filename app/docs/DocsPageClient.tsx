@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Search, X, Command, Star, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getBookmarks, toggleBookmark, getPinnedCollapsed, setPinnedCollapsed } from "@/lib/storage";
+import { getBookmarks, toggleBookmark } from "@/lib/storage";
 
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
@@ -20,22 +20,12 @@ export default function DocsPageClient({ docs }: Props) {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [pinnedCollapsed, setPinnedCollapsedState] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // 从 localStorage 加载收藏
   useEffect(() => {
     setBookmarks(getBookmarks());
-    setPinnedCollapsedState(getPinnedCollapsed());
-  }, []);
-
-  const togglePinnedCollapsed = useCallback(() => {
-    setPinnedCollapsedState((prev) => {
-      const next = !prev;
-      setPinnedCollapsed(next);
-      return next;
-    });
   }, []);
 
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
@@ -81,23 +71,11 @@ export default function DocsPageClient({ docs }: Props) {
     return result;
   }, [docs, debouncedQuery]);
 
-  const isSearching = debouncedQuery.trim().length > 0;
-
-  const pinnedDocs = useMemo(
-    () => filteredDocs.filter((d) => d.pinned),
-    [filteredDocs],
-  );
-
-  const unpinnedDocs = useMemo(
-    () => filteredDocs.filter((d) => !d.pinned),
-    [filteredDocs],
-  );
-
-  const totalPages = Math.max(1, Math.ceil(unpinnedDocs.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
   const pageDocs = useMemo(
-    () => unpinnedDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
-    [unpinnedDocs, safePage],
+    () => filteredDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
+    [filteredDocs, safePage],
   );
 
   const pageNumbers = useMemo(() => {
@@ -114,6 +92,9 @@ export default function DocsPageClient({ docs }: Props) {
     }
     return pages;
   }, [totalPages, safePage]);
+
+  const isSearching = debouncedQuery.trim().length > 0;
+
 
 
   return (
@@ -162,35 +143,6 @@ export default function DocsPageClient({ docs }: Props) {
         )}
       </div>
 
-      {/* 置顶文档 */}
-      {pinnedDocs.length > 0 && !isSearching && (
-        <div className="mb-4">
-          <button
-            onClick={togglePinnedCollapsed}
-            className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-secondary)] mb-2 px-0.5 hover:text-[var(--color-text-primary)] transition-colors"
-          >
-            <svg className={`w-3 h-3 transition-transform ${pinnedCollapsed ? '' : 'rotate-90'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-            {t("doc.pinned") || "置顶"} ({pinnedDocs.length})
-          </button>
-          {!pinnedCollapsed && (
-            <div className="space-y-1">
-              {pinnedDocs.map((doc, idx) => (
-                <DocCard
-                  key={doc.id}
-                  doc={doc}
-                  bookmarked={bookmarks.includes(doc.id)}
-                  onBookmark={handleToggleBookmark}
-                  staggerIndex={idx}
-                />
-              ))}
-            </div>
-          )}
-          {!pinnedCollapsed && <div className="border-t border-[var(--color-border)] my-3" />}
-        </div>
-      )}
-
       {/* 搜索结果计数 */}
       {isSearching && (
         <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
@@ -208,13 +160,12 @@ export default function DocsPageClient({ docs }: Props) {
         </div>
       ) : (
         <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
-          {pageDocs.map((doc, idx) => (
+          {pageDocs.map((doc) => (
             <DocCard
               key={doc.id}
               doc={doc}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
-              staggerIndex={idx}
             />
           ))}
         </div>
@@ -277,21 +228,18 @@ function DocCard({
   doc,
   bookmarked,
   onBookmark,
-  staggerIndex = 0,
 }: {
   doc: DocMeta;
   bookmarked: boolean;
   onBookmark: (e: React.MouseEvent, id: string) => void;
-  staggerIndex?: number;
 }) {
   return (
     <Link
       href={`/docs/${doc.id}`}
-      className="doc-card doc-card-enter block group px-4 py-3.5 rounded-[var(--radius-sm)]
+      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
         no-underline"
-      style={{ "--stagger-index": staggerIndex } as React.CSSProperties}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
