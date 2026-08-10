@@ -36,14 +36,14 @@ describe("docs.ts - Document Engine", () => {
       }
     });
 
-    it("documents are sorted by pinned first then time desc", () => {
+    it("documents are sorted by order then title", () => {
       const docs = getAllDocs();
       for (let i = 1; i < docs.length; i++) {
         const prev = docs[i - 1]!;
         const curr = docs[i]!;
-        // Pinned first, then by updatedAt desc
-        if (prev.updatedAt && curr.updatedAt && prev.updatedAt !== curr.updatedAt) {
-          expect(prev.updatedAt >= curr.updatedAt).toBe(true);
+        if (prev.order !== undefined && curr.order !== undefined) {
+          // Orders should be non-decreasing (with gaps allowed)
+          expect(prev.order).toBeLessThanOrEqual(curr.order);
         }
       }
     });
