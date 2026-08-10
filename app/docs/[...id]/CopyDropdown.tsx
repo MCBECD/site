@@ -9,7 +9,9 @@ interface Props {
   docId: string;
 }
 
-export default function CopyDropdown({ rawContent, docId }: Props) {
+import { memo } from "react";
+
+const CopyDropdown = memo(function CopyDropdown({ rawContent, docId }: Props) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -88,3 +90,6 @@ export default function CopyDropdown({ rawContent, docId }: Props) {
     </div>
   );
 }
+);
+
+export default CopyDropdown;
