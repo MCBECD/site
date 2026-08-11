@@ -210,16 +210,16 @@ export default function DocsPageClient() {
     <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
       {/* Hero */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
+        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 hero-sub-enter">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
 
       {/* 分类筛选标签 */}
-      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
+      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none tabs-enter">
         {categoryTabs.map((tab) => {
           const active = category === tab.key;
           return (
@@ -239,7 +239,7 @@ export default function DocsPageClient() {
       </div>
 
       {/* 搜索栏 + 工具栏 */}
-      <div className="flex flex-col sm:flex-row gap-2.5 mb-6">
+      <div className="flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
           <input
@@ -290,7 +290,7 @@ export default function DocsPageClient() {
               </button>
               {sortOpen && (
                 <div className="absolute right-0 top-full mt-1.5 py-1 min-w-[140px] rounded-lg
-                  bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20">
+                  bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20 dropdown-in">
                   {sortOptions.map((opt) => {
                     const active = sortBy === opt.key;
                     return (
@@ -342,14 +342,15 @@ export default function DocsPageClient() {
         </div>
       ) : (
         <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
-          {pageDocs.map((doc) => (
-            <DocCard
-              key={doc.id}
-              doc={doc}
-              bookmarked={bookmarks.includes(doc.id)}
-              onBookmark={handleToggleBookmark}
-              viewMode={viewMode}
-            />
+          {pageDocs.map((doc, i) => (
+            <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+              <DocCard
+                doc={doc}
+                bookmarked={bookmarks.includes(doc.id)}
+                onBookmark={handleToggleBookmark}
+                viewMode={viewMode}
+              />
+            </div>
           ))}
         </div>
       )}
