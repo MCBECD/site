@@ -55,8 +55,8 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
               onClick={handleToggleBookmark}
               className={`w-8 h-8 flex items-center justify-center rounded-lg
                 ${bookmarked
-                  ? "text-[var(--color-accent)]"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
+                  ? "text-yellow-500"
+                  : "text-[var(--color-text-tertiary)] hover:text-yellow-500"
                 } hover:bg-[var(--color-bg-tertiary)] transition-colors`}
               aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
             >
