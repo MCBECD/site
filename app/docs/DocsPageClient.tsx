@@ -3,7 +3,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
-import { useDocs } from "@/contexts/DocsContext";
+import type { DocMeta } from "@/lib/docs";
 import { getBookmarks, toggleBookmark } from "@/lib/storage";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
@@ -11,9 +11,12 @@ import DocPagination from "./DocPagination";
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 150;
 
-export default function DocsPageClient() {
+interface Props {
+  docs: DocMeta[];
+}
+
+export default function DocsPageClient({ docs }: Props) {
   const { t } = useLocale();
-  const { docs } = useDocs();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);

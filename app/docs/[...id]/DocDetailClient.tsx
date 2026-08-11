@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, type ReactNode } from "react";
+import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import Link from "next/link";
 import { Home, Star } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
@@ -8,6 +8,7 @@ import CopyDropdown from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 import { addHistory, toggleBookmark, isBookmarked } from "@/lib/storage";
+import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface Props {
   doc: DocContent;
@@ -55,7 +56,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
                   ? "text-[var(--color-accent)]"
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
                 } hover:bg-[var(--color-bg-tertiary)] transition-colors`}
-              aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
+              aria-label={bookmarked ? "取消收藏" : "收藏"}
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
             </button>
@@ -70,7 +71,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         {/* 标题 + 元信息 */}
         <header className="px-6 pt-5 pb-2">
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
-            {doc.meta.title}
+            {renderTitleWithCode(doc.meta.title)}
           </h1>
           {(doc.meta.author || doc.meta.updatedAt) && (
             <div className="flex items-center gap-3 mt-2 text-xs text-[var(--color-text-tertiary)]">

@@ -4,7 +4,6 @@ import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
-import { ReadingProgress } from "./ReadingProgress";
 
 interface NavbarProps {
   onOpenSettings: () => void;
@@ -22,7 +21,6 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
   return (
     <>
-      <ReadingProgress />
       <nav
         className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-5
           bg-[var(--color-navbar-bg)] backdrop-blur-sm border-b border-[var(--color-border-light)]"

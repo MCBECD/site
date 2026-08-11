@@ -2,13 +2,7 @@
   "common": {
     "loading": "Chargement...",
     "notFound": "Page introuvable",
-    "backToList": "Accueil",
-    "errorTitle": "Erreur",
-    "errorDesc": "Une erreur inattendue s'est produite. Veuillez actualiser la page.",
-    "errorRetry": "Réessayer",
-    "bookmark": "Ajouter aux favoris",
-    "unbookmark": "Retirer des favoris",
-    "delete": "Supprimer"
+    "backToList": "Accueil"
   },
   "nav": {
     "settings": "Paramètres",
@@ -45,8 +39,7 @@
     "bgClear": "Supprimer l'arrière-plan",
     "bgOverlayOpacity": "Superposition",
     "bgOverlayBlur": "Flou",
-    "bgParallax": "Parallax",
-    "bgImageTooLarge": "La taille de l'image ne peut pas dépasser 2 Mo"
+    "bgParallax": "Parallax"
   },
   "code": {
     "copy": "Copier",

@@ -1,10 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import { Star, ChevronRight } from "lucide-react";
-import { memo } from "react";
-import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
+import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
   doc: DocMeta;
@@ -12,9 +9,9 @@ interface DocCardProps {
   onBookmark: (e: React.MouseEvent, id: string) => void;
 }
 
-const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
-  const { t } = useLocale();
+import { memo } from "react";
 
+const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
   return (
     <Link
       href={`/docs/${doc.id}`}
@@ -26,7 +23,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
-            {doc.title}
+            {renderTitleWithCode(doc.title)}
           </h2>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -35,9 +32,9 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
             className={`w-6 h-6 flex items-center justify-center rounded-md
               ${bookmarked
                 ? "text-[var(--color-accent)]"
-                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"
               }`}
-            aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
+            aria-label={bookmarked ? "取消收藏" : "收藏"}
           >
             <Star className="w-3.5 h-3.5" fill={bookmarked ? "currentColor" : "none"} />
           </button>
@@ -60,6 +57,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
       )}
     </Link>
   );
-});
+}
+);
 
 export default DocCard;
