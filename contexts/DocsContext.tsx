@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import type { DocMeta } from "@/lib/docs";
 
 interface DocsContextValue {
@@ -11,7 +11,7 @@ interface DocsContextValue {
 const DocsContext = createContext<DocsContextValue | null>(null);
 
 export function DocsProvider({ docs, children }: { docs: DocMeta[]; children: ReactNode }) {
-  const docMap = new Map(docs.map((d) => [d.id, d]));
+  const docMap = useMemo(() => new Map(docs.map((d) => [d.id, d])), [docs]);
   return (
     <DocsContext value={{ docs, docMap }}>
       {children}

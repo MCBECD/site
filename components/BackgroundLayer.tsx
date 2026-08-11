@@ -1,9 +1,7 @@
 "use client";
 
-import { useMemo, useEffect, useRef, useState } from "react";
+import { useMemo, useEffect, useRef, useState, memo } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
-
-import { memo } from "react";
 
 const BackgroundLayer = memo(function BackgroundLayer() {
   const { settings } = useSettings();

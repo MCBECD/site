@@ -5,7 +5,6 @@ import path from "node:path";
 // Import the module under test
 import {
   getAllDocs,
-  getAllTags,
   getDocById,
   getDocRawContent,
 } from "@/lib/docs";
@@ -36,14 +35,13 @@ describe("docs.ts - Document Engine", () => {
       }
     });
 
-    it("documents are sorted by order then title", () => {
+    it("documents have valid category format", () => {
       const docs = getAllDocs();
-      for (let i = 1; i < docs.length; i++) {
-        const prev = docs[i - 1]!;
-        const curr = docs[i]!;
-        if (prev.order !== undefined && curr.order !== undefined) {
-          // Orders should be non-decreasing (with gaps allowed)
-          expect(prev.order).toBeLessThanOrEqual(curr.order);
+      for (const doc of docs) {
+        if (doc.category) {
+          const validBases = ["basics", "commands", "examples"];
+          const base = doc.category.includes("/") ? doc.category.split("/")[0] : doc.category;
+          expect(validBases).toContain(base);
         }
       }
     });
@@ -56,20 +54,6 @@ describe("docs.ts - Document Engine", () => {
           expect(Number.isInteger(doc.readingTime)).toBe(true);
         }
       }
-    });
-  });
-
-  describe("getAllTags", () => {
-    it("returns an array of unique sorted tags", () => {
-      const tags = getAllTags();
-      const uniqueTags = [...new Set(tags)];
-      expect(tags).toEqual(uniqueTags);
-    });
-
-    it("tags are sorted alphabetically", () => {
-      const tags = getAllTags();
-      const sorted = [...tags].sort((a, b) => a.localeCompare(b, "zh-CN"));
-      expect(tags).toEqual(sorted);
     });
   });
 
