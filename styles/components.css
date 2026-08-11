@@ -1,0 +1,90 @@
+/* ----------------------------------------------------------
+ * Search input
+ * ---------------------------------------------------------- */
+.search-input {
+  transition: border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              background-color var(--duration-normal) var(--ease-out);
+}
+
+.search-input:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
+  background-color: var(--color-bg-elevated) !important;
+}
+
+.search-input::placeholder { transition: color 100ms; }
+.search-input:focus::placeholder {
+  color: var(--color-text-tertiary) !important;
+  opacity: 0.5;
+}
+
+/* ----------------------------------------------------------
+ * Glass cards (doc list + detail)
+ * ---------------------------------------------------------- */
+.doc-glass-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--color-card-shadow);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.doc-card {
+  transition: box-shadow 100ms var(--ease-out),
+              border-color 100ms var(--ease-out);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.doc-card:hover {
+  box-shadow: var(--color-card-hover-shadow);
+}
+
+.doc-card:active {
+  transition-duration: 50ms;
+}
+
+/* ----------------------------------------------------------
+ * Command block icon + inline command
+ * ---------------------------------------------------------- */
+.cmd-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.cmd-icon { flex-shrink: 0; }
+
+.cmd-code {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.8125em;
+  color: var(--color-accent);
+  background: var(--color-code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ----------------------------------------------------------
+ * Navbar divider
+ * ---------------------------------------------------------- */
+.nav-divider {
+  width: 1px; height: 18px;
+  background: var(--color-border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+ * prefers-reduced-motion
+ * ---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

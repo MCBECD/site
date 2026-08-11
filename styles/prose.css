@@ -1,0 +1,60 @@
+/* ---------------------------------------------------------- * Prose typography overrides
+ * ---------------------------------------------------------- */
+.prose {
+  --tw-prose-headings: var(--color-text-primary);
+  --tw-prose-body: var(--color-text-secondary);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-code: var(--color-accent);
+  --tw-prose-bold: var(--color-text-primary);
+  --tw-prose-counters: var(--color-text-secondary);
+  --tw-prose-bullets: var(--color-text-secondary);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-text-secondary);
+  --tw-prose-quote-borders: var(--color-accent);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
+}
+
+.prose h2 { margin-top: 2.25rem; margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.015em; font-size: 1.25em; }
+.prose h3 { margin-top: 1.75rem; margin-bottom: 0.5rem; font-weight: 600; font-size: 1.1em; }
+.prose h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1em; font-weight: 600; }
+.prose table { width: 100%; border-collapse: collapse; }
+.prose thead th { font-weight: 600; background: var(--color-bg-tertiary); }
+.prose tbody tr:nth-child(even) { background: var(--color-bg-secondary); }
+.prose tbody tr:hover { background: var(--color-accent-muted); }
+.prose td code,
+.prose th code { color: inherit; background: transparent; padding: 0; font-size: inherit; }
+.prose p + p { margin-top: 1rem; }
+.prose p + pre,
+.prose p + .group { margin-top: 1.25rem; }
+.prose pre + p { margin-top: 1.25rem; }
+.prose ul, .prose ol { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+.prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
+.prose blockquote { margin-top: 1rem; margin-bottom: 1rem; }
+.prose hr { margin-top: 2rem; margin-bottom: 2rem; }
+
+/* Images (exclude cmd icons) */
+.prose img:not(.cmd-icon) {
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  margin: 1rem 0;
+}
+
+.prose > :first-child { margin-top: 0 !important; }
+.prose > :last-child  { margin-bottom: 0 !important; }
+
+/* External link indicator */
+.prose a[target="_blank"]::after {
+  content: "";
+  display: inline-block;
+  width: 11px; height: 11px;
+  margin-left: 3px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='none' stroke='%2394a3b8' stroke-width='1.5' viewBox='0 0 24 24'%3E%3Cpath d='M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3'/%3E%3C/svg%3E") no-repeat center;
+  background-size: contain;
+  vertical-align: -1px;
+}
+
+.dark .prose a[target="_blank"]::after {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='none' stroke='%235f6368' stroke-width='1.5' viewBox='0 0 24 24'%3E%3Cpath d='M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3'/%3E%3C/svg%3E") no-repeat center;
+  background-size: contain;
+}

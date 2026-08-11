@@ -1,0 +1,39 @@
+/* ---------------------------------------------------------- * Keyframes
+ * ---------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tabSlideIn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ---------------------------------------------------------- * Animation utilities
+ * ---------------------------------------------------------- */
+.overlay-in  { animation: fadeIn 0.1s ease both; }
+.overlay-out { animation: fadeIn 0.08s ease reverse both; }
+
+.settings-panel-in  { animation: fadeIn 0.12s ease both; }
+.settings-panel-out { animation: fadeIn 0.08s ease reverse both; }
+
+.dropdown-in  { animation: fadeIn 0.08s ease both; }
+.collapse-in  { animation: fadeIn 0.1s ease both; }
+
+.tab-indicator {
+  animation: tabSlideIn 0.1s var(--ease-out) both;
+  transform-origin: left;
+}
+
+.page-fade-in { animation: fadeIn 0.1s ease both; }
+
+.doc-card-enter {
+  animation: fadeInUp 0.35s ease-out both;
+  animation-delay: calc(var(--stagger-index, 0) * 50ms);
+}
