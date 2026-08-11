@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState, useCallback } from "react";
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
@@ -15,9 +16,75 @@ const THEMES: { key: Theme; icon: typeof Sun; titleKey: string }[] = [
   { key: "system", icon: Monitor, titleKey: "settings.themeSystem" },
 ];
 
+const S = 30; // button size
+const G = 2;  // gap between buttons
+const P = 2;  // track padding
+const STEP = S + G; // distance between button starts
+
 export function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const [indicatorX, setIndicatorX] = useState(0);
+  const committedIndex = useRef(-1);
+
+  const activeIndex = THEMES.findIndex((th) => th.key === settings.theme);
+
+  // Sync committed index when theme changes externally
+  if (committedIndex.current !== activeIndex) {
+    committedIndex.current = activeIndex;
+  }
+
+  const restX = P + committedIndex.current * STEP;
+
+  const clampX = useCallback((x: number) => {
+    const max = P + (THEMES.length - 1) * STEP;
+    return Math.max(P, Math.min(max, x));
+  }, []);
+
+  const xToIndex = useCallback((x: number) => {
+    const clamped = clampX(x);
+    return Math.round((clamped - P) / STEP);
+  }, [clampX]);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (!trackRef.current) return;
+    e.preventDefault();
+    const rect = trackRef.current.getBoundingClientRect();
+    const x = clampX(e.clientX - rect.left);
+    setIndicatorX(x);
+    setDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  }, [clampX]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragging || !trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    setIndicatorX(clampX(e.clientX - rect.left));
+  }, [dragging, clampX]);
+
+  const handlePointerUp = useCallback(() => {
+    if (!dragging) return;
+    setDragging(false);
+    const idx = xToIndex(indicatorX);
+    committedIndex.current = idx;
+    const theme = THEMES[idx];
+    if (theme) updateSettings("theme", theme.key);
+  }, [dragging, indicatorX, xToIndex, updateSettings]);
+
+  const displayX = dragging ? indicatorX : restX;
+
+  // How much the indicator overlaps each button (0 = none, 1 = fully covered)
+  const overlap = (i: number) => {
+    const btnStart = P + i * STEP;
+    const btnEnd = btnStart + S;
+    const indStart = displayX;
+    const indEnd = displayX + S;
+    const overlapStart = Math.max(btnStart, indStart);
+    const overlapEnd = Math.min(btnEnd, indEnd);
+    return Math.max(0, Math.min(1, (overlapEnd - overlapStart) / S));
+  };
 
   return (
     <nav
@@ -42,23 +109,53 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
       </Link>
 
       <div className="flex items-center ml-auto">
-        {/* Theme switcher */}
-        <div className="flex items-center gap-0.5 bg-[var(--color-bg-tertiary)] rounded-md p-0.5">
-          {THEMES.map(({ key, icon: Icon, titleKey }) => {
-            const active = settings.theme === key;
+        {/* Theme segmented control */}
+        <div
+          ref={trackRef}
+          className="relative flex items-center rounded-[8px] p-[2px] touch-none"
+          style={{
+            background: "var(--color-bg-tertiary)",
+            width: P * 2 + THEMES.length * S + (THEMES.length - 1) * G,
+            height: S + P * 2,
+          }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        >
+          {/* Sliding indicator — follows finger during drag, animates on release */}
+          <span
+            className="absolute top-[2px] rounded-[6px] pointer-events-none"
+            style={{
+              left: displayX,
+              width: S,
+              height: S,
+              background: "var(--color-bg-elevated)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+              transition: dragging
+                ? "none"
+                : `left 280ms var(--ease-spring)`,
+            }}
+          />
+          {THEMES.map(({ key, icon: Icon, titleKey }, i) => {
+            const o = overlap(i);
             return (
               <button
                 key={key}
-                onClick={() => updateSettings("theme", key)}
-                className="w-[30px] h-[30px] flex items-center justify-center rounded-md
-                  transition-colors duration-100
-                  text-[var(--color-text-tertiary)]
-                  hover:text-[var(--color-text-secondary)]
-                  active:scale-[0.92]
-                  data-[active=true]:text-[var(--color-accent)] data-[active=true]:bg-[var(--color-bg-elevated)] data-[active=true]:shadow-sm"
-                data-active={active}
+                className="relative z-[1] flex items-center justify-center select-none"
+                style={{
+                  width: S,
+                  height: S,
+                  marginLeft: i > 0 ? G : 0,
+                  color: o > 0
+                    ? `color-mix(in srgb, var(--color-accent) ${o * 100}%, var(--color-text-tertiary) ${(1 - o) * 100}%)`
+                    : "var(--color-text-tertiary)",
+                  transition: dragging
+                    ? "none"
+                    : `color 280ms var(--ease-spring)`,
+                }}
                 title={t(titleKey)}
-                aria-pressed={active}
+                aria-pressed={activeIndex === i}
               >
                 <Icon className="w-[15px] h-[15px]" />
               </button>
