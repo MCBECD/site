@@ -1,27 +1,21 @@
 import { Fragment, type ReactNode } from "react";
 
-const TITLE_CODE_GAP = 4;
-
 export const renderTitleWithCode = (title: string): ReactNode[] => {
-  const regex = /\/[a-zA-Z0-9]+/g;
+  const regex = /^\/[a-zA-Z0-9]+/;
   const parts: ReactNode[] = [];
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
+  const match = regex.exec(title);
 
-  while ((match = regex.exec(title)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(<Fragment key={`t-${lastIndex}`}>{title.slice(lastIndex, match.index)}</Fragment>);
-    }
+  if (match) {
     parts.push(
-      <code key={`c-${match.index}`} className="cmd-code" style={{ marginRight: TITLE_CODE_GAP }}>
+      <span key="c-0" style={{ display: "inline-block", width: "20ch", textAlign: "left" }}>
+      <code className="h-[1rem]">
         {match[0]}
-      </code>,
+      </code>
+      </span>
     );
-    lastIndex = match.index + match[0].length;
-  }
-
-  if (lastIndex < title.length) {
-    parts.push(<Fragment key={`t-${lastIndex}`}>{title.slice(lastIndex)}</Fragment>);
+    parts.push(<span key="t-1">{title.slice(match.index + match[0].length)}</span>);
+  } else {
+    parts.push(<Fragment key="t-0">{title}</Fragment>);
   }
 
   return parts;

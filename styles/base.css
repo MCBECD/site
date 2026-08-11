@@ -34,7 +34,7 @@ pre {
   margin-bottom: 0.5rem;
   overflow-x: auto;
   border-radius: 0.5rem;
-  background-color: var(--color-code-bg);
+  background-color: var(--color-code-bg) !important;
   line-height: 1.25rem;
   border-left: 3px solid var(--color-accent);
 }
