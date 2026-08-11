@@ -23,7 +23,6 @@ export interface DocMeta {
   type?: string;
   readingTime?: number;
   order?: number;
-  category?: string;
 }
 
 export interface DocContent {
@@ -84,7 +83,6 @@ function buildMeta(
     type: (jsonMeta?.type as string) ?? (fm.type as string) ?? undefined,
     readingTime: mdxMeta?.readingTime,
     order: (jsonMeta?.order as number) ?? (fm.order as number) ?? undefined,
-    category: (jsonMeta?.category as string) ?? (fm.category as string) ?? undefined,
   };
 }
 

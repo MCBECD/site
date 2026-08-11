@@ -30,7 +30,7 @@ const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
   { value: "large", labelKey: "settings.fontSizeLarge" },
 ];
 
-type Tab = "general" | "themes" | "data";
+type Tab = "general" | "plugins" | "data";
 
 /* ---------- Main Panel ---------- */
 
@@ -97,9 +97,9 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
 
           {/* tabs */}
           <div className="flex gap-0 mx-5 mt-4 border-b border-[var(--color-border)] flex-shrink-0">
-            {(["general", "themes", "data"] as Tab[]).map((key) => {
+            {(["general", "plugins", "data"] as Tab[]).map((key) => {
               const labelKey = key === "general" ? "settings.tabGeneral"
-                : key === "themes" ? "settings.tabPlugins"
+                : key === "plugins" ? "settings.tabPlugins"
                 : "settings.tabData";
               return (
                 <button
@@ -162,7 +162,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                   <LocaleDropdown value={settings.locale} onChange={(locale) => updateSettings("locale", locale)} />
                 </Section>
               </>
-            ) : tab === "themes" ? (
+            ) : tab === "plugins" ? (
               <div className="space-y-3">
                 <ColorThemePluginCard />
                 <BackgroundImagePluginCard />
