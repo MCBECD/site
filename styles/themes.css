@@ -27,8 +27,8 @@
   --color-kbd-text: #9ca3af;
   --color-toast-bg: #111827;
   /* Derived from --color-bg-primary via color-mix */
-  --_glass-opacity: 86%;
-  --_nav-opacity: 82%;
+  --_glass-opacity: 80%;
+  --_nav-opacity: 70%;
   --color-bg-elevated: color-mix(in srgb, var(--color-bg-primary) var(--_glass-opacity), transparent);
   --color-card-bg: color-mix(in srgb, var(--color-bg-primary) var(--_glass-opacity), transparent);
   --color-navbar-bg: color-mix(in srgb, var(--color-bg-primary) var(--_nav-opacity), transparent);

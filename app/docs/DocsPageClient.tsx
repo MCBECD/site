@@ -167,7 +167,7 @@ export default function DocsPageClient() {
       const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
       const examplesDocs = sortExamples(result.filter((d) => getCategoryBase(d.category) === "examples"));
       const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), sortBy);
-      result = [...basicsDocs, ...examplesDocs, ...commandsDocs];
+      result = [...basicsDocs, ...commandsDocs, ...examplesDocs];
     }
 
     return result;

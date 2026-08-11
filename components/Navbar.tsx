@@ -21,9 +21,6 @@ const G = 2;  // gap between buttons
 const P = 2;  // track padding
 const STEP = S + G; // distance between button starts
 
-const CLAMP_MIN = P;
-const CLAMP_MAX = P + (THEMES.length - 1) * STEP;
-
 export function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
@@ -31,8 +28,6 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
   const [dragging, setDragging] = useState(false);
   const [indicatorX, setIndicatorX] = useState(0);
   const committedIndex = useRef(-1);
-  const dragStartX = useRef(0);
-  const hasDragged = useRef(false);
 
   const activeIndex = THEMES.findIndex((th) => th.key === settings.theme);
 
@@ -43,9 +38,10 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
   const restX = P + committedIndex.current * STEP;
 
-  const clampX = useCallback((x: number) =>
-    Math.max(CLAMP_MIN, Math.min(CLAMP_MAX, x)),
-  []);
+  const clampX = useCallback((x: number) => {
+    const max = P + (THEMES.length - 1) * STEP;
+    return Math.max(P, Math.min(max, x));
+  }, []);
 
   const xToIndex = useCallback((x: number) => {
     const clamped = clampX(x);
@@ -56,41 +52,25 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
     if (!trackRef.current) return;
     e.preventDefault();
     const rect = trackRef.current.getBoundingClientRect();
-    const rawX = e.clientX - rect.left;
-    // Snap to nearest button immediately
-    const idx = xToIndex(rawX);
-    const snapX = P + idx * STEP;
-    setIndicatorX(snapX);
-    committedIndex.current = idx;
-    const theme = THEMES[idx];
-    if (theme) updateSettings("theme", theme.key);
-    // Prepare for potential drag
-    dragStartX.current = rawX;
-    hasDragged.current = false;
+    const x = clampX(e.clientX - rect.left);
+    setIndicatorX(x);
     setDragging(true);
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  }, [xToIndex, updateSettings]);
+  }, [clampX]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragging || !trackRef.current) return;
     const rect = trackRef.current.getBoundingClientRect();
-    const rawX = e.clientX - rect.left;
-    // Only start continuous tracking after 3px of movement
-    if (!hasDragged.current && Math.abs(rawX - dragStartX.current) < 3) return;
-    hasDragged.current = true;
-    setIndicatorX(clampX(rawX));
+    setIndicatorX(clampX(e.clientX - rect.left));
   }, [dragging, clampX]);
 
   const handlePointerUp = useCallback(() => {
     if (!dragging) return;
     setDragging(false);
-    // If user actually dragged, commit to nearest index
-    if (hasDragged.current) {
-      const idx = xToIndex(indicatorX);
-      committedIndex.current = idx;
-      const theme = THEMES[idx];
-      if (theme) updateSettings("theme", theme.key);
-    }
+    const idx = xToIndex(indicatorX);
+    committedIndex.current = idx;
+    const theme = THEMES[idx];
+    if (theme) updateSettings("theme", theme.key);
   }, [dragging, indicatorX, xToIndex, updateSettings]);
 
   const displayX = dragging ? indicatorX : restX;
@@ -132,7 +112,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         {/* Theme segmented control */}
         <div
           ref={trackRef}
-          className="relative flex items-center rounded-[var(--radius-sm)] p-[2px] touch-none"
+          className="relative flex items-center rounded-full p-[2px] touch-none"
           style={{
             background: "var(--color-bg-tertiary)",
             width: P * 2 + THEMES.length * S + (THEMES.length - 1) * G,
@@ -145,7 +125,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         >
           {/* Sliding indicator — follows finger during drag, animates on release */}
           <span
-            className="absolute top-[2px] rounded-[calc(var(--radius-sm)-2px)] pointer-events-none"
+            className="absolute top-[2px] rounded-[13px] pointer-events-none"
             style={{
               left: displayX,
               width: S,
