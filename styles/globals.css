@@ -638,6 +638,7 @@ pre {
 .cmd-icon {
   flex-shrink: 0;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .cmd-code {
