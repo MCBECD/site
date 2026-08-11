@@ -5,6 +5,7 @@ import { Star, ChevronRight } from "lucide-react";
 import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
+import { getCategoryLabel } from "@/lib/categories";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
@@ -15,6 +16,7 @@ interface DocCardProps {
 
 const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
   const { t } = useLocale();
+  const categoryLabel = getCategoryLabel(doc.category);
 
   return (
     <Link
@@ -26,6 +28,12 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          {categoryLabel && (
+            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium
+              bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/20">
+              {categoryLabel}
+            </span>
+          )}
           <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
             {renderTitleWithCode(doc.title)}
           </h2>
