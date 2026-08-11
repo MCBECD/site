@@ -87,6 +87,7 @@ export interface Messages {
     filterAll: string;
     filterBasics: string;
     filterCommands: string;
+    filterExamples: string;
     sortByName: string;
     sortByType: string;
     group: string;
