@@ -1,8 +1,6 @@
-"use client";
-
 import type { ReactNode } from "react";
 
-/** 设置面板通用的 section 标题 + 内容区域 */
+/** Settings panel generic section: title + content area */
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>

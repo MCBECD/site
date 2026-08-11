@@ -5,7 +5,7 @@ import { Star, ChevronRight } from "lucide-react";
 import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getCategoryLabel } from "@/lib/categories";
+import { getCategoryI18nKey } from "@/lib/categories";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
@@ -17,7 +17,8 @@ interface DocCardProps {
 
 const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = "card" }: DocCardProps) {
   const { t } = useLocale();
-  const categoryLabel = getCategoryLabel(doc.category);
+  const categoryKey = getCategoryI18nKey(doc.category);
+  const categoryLabel = categoryKey ? t(categoryKey) : undefined;
 
   if (viewMode === "list") {
     return (
@@ -74,9 +75,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
         )}
         <div className="flex items-center gap-2 shrink-0">
           {categoryLabel && (
-            <span className="text-[11px] text-[var(--color-text-tertiary)]">
-              {categoryLabel}
-            </span>
+            <span className="text-[11px] text-[var(--color-text-tertiary)]">{categoryLabel}</span>
           )}
           {(doc.author || doc.updatedAt) && (
             <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">

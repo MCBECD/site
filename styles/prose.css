@@ -1,4 +1,5 @@
-/* ---------------------------------------------------------- * Prose typography overrides
+/* ----------------------------------------------------------
+ * Prose typography overrides
  * ---------------------------------------------------------- */
 .prose {
   --tw-prose-headings: var(--color-text-primary);
@@ -40,8 +41,8 @@
   margin: 1rem 0;
 }
 
-.prose > :first-child { margin-top: 0 !important; }
-.prose > :last-child  { margin-bottom: 0 !important; }
+.prose > :first-child { margin-top: 0; }
+.prose > :last-child  { margin-bottom: 0; }
 
 /* External link indicator */
 .prose a[target="_blank"]::after {

@@ -22,26 +22,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!doc) return { title: "404" };
 
   const title = doc.meta.title;
-  const description =
-    doc.meta.description ??
-    `${title} — Minecraft 基岩版命令详解，包含语法、参数和示例`;
+  const description = doc.meta.description ?? `${title} — Minecraft Bedrock command reference with syntax, parameters and examples`;
   const url = `${SITE_URL}/docs/${docId}/`;
-   const keywords = [
-    "Minecraft",
-    "基岩版",
-    "Bedrock",
-    "命令",
-    "command",
-    ...(doc.meta.tags ?? []),
-  ];
+  const keywords = ["Minecraft", "Bedrock", "command", "MCBECD", ...(doc.meta.tags ?? [])];
 
   return {
     title,
     description,
     keywords,
-    alternates: {
-      canonical: url,
-    },
+    alternates: { canonical: url },
     openGraph: {
       type: "article",
       title,
@@ -52,11 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: doc.meta.author ? [doc.meta.author] : undefined,
       tags: doc.meta.tags,
     },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
+    twitter: { card: "summary", title, description },
   };
 }
 
@@ -67,65 +52,36 @@ export default async function DocDetailPage({ params }: Props) {
   const doc = getDocById(docId);
   if (!doc) notFound();
 
-  const rawContent = getDocRawContent(docId) ?? "";
+  const rawFileContent = getDocRawContent(docId) ?? "";
   const url = `${SITE_URL}/docs/${docId}/`;
 
   const webPageJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: doc.meta.title,
-    description:
-      doc.meta.description ??
-      `${doc.meta.title} — Minecraft 基岩版命令详解`,
+    description: doc.meta.description ?? `${doc.meta.title} — Minecraft Bedrock command reference`,
     url,
     inLanguage: "zh-CN",
     dateModified: doc.meta.updatedAt,
-    author: doc.meta.author
-      ? { "@type": "Person", name: doc.meta.author }
-      : undefined,
-    isPartOf: {
-      "@type": "WebSite",
-      name: "MCBECD",
-      url: SITE_URL,
-    },
+    author: doc.meta.author ? { "@type": "Person", name: doc.meta.author } : undefined,
+    isPartOf: { "@type": "WebSite", name: "MCBECD", url: SITE_URL },
   };
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "首页",
-        item: SITE_URL,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "命令文档",
-        item: `${SITE_URL}/docs/`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: doc.meta.title,
-        item: url,
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Commands", item: `${SITE_URL}/docs/` },
+      { "@type": "ListItem", position: 3, name: doc.meta.title, item: url },
     ],
   };
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <DocDetailClient doc={doc} rawContent={rawContent}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <DocDetailClient doc={doc} rawContent={rawFileContent}>
         <MDXRenderer source={doc.rawContent} />
       </DocDetailClient>
     </>

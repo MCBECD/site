@@ -1,7 +1,8 @@
-export const CATEGORY_LABELS: Record<string, string> = {
-  basics: "基础",
-  commands: "命令",
-  examples: "示例",
+/** Category key to i18n key mapping */
+const CATEGORY_I18N_KEYS: Record<string, string> = {
+  basics: "doc.filterBasics",
+  commands: "doc.filterCommands",
+  examples: "doc.filterExamples",
 };
 
 export function getCategoryBase(category?: string): string {
@@ -16,10 +17,18 @@ function getCategorySub(category?: string): string | undefined {
   return slashIndex === -1 ? undefined : category.slice(slashIndex + 1);
 }
 
+/** Returns the i18n key for a category (e.g. "doc.filterCommands"). */
+export function getCategoryI18nKey(category?: string): string | undefined {
+  if (!category) return undefined;
+  const base = getCategoryBase(category);
+  return CATEGORY_I18N_KEYS[base];
+}
+
+/** @deprecated Use getCategoryI18nKey() + t() for i18n support */
 export function getCategoryLabel(category?: string): string | undefined {
   if (!category) return undefined;
   const base = getCategoryBase(category);
-  return CATEGORY_LABELS[base] ?? base;
+  return CATEGORY_I18N_KEYS[base] ?? base;
 }
 
 export function getCommandType(category?: string): string | undefined {
