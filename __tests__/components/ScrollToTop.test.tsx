@@ -11,7 +11,7 @@ vi.stubGlobal("IntersectionObserver", class MockIntersectionObserver {
   disconnect = mockDisconnect;
   constructor(cb: IntersectionObserverCallback, _options?: IntersectionObserverInit) {
     // Immediately invoke callback with isIntersecting=true (sentinel visible → button hidden)
-    queueMicrotask(() => cb([{ isIntersecting: true, target: null! }] as unknown as IntersectionObserverEntry[]));
+    queueMicrotask(() => cb([{ isIntersecting: true, target: null! }] as unknown as IntersectionObserverEntry[], null!));
   }
 });
 
