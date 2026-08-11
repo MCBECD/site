@@ -55,14 +55,14 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
               onClick={handleToggleBookmark}
               className={`w-8 h-8 flex items-center justify-center rounded-lg
                 ${bookmarked
-                  ? "text-yellow-500"
-                  : "text-[var(--color-text-tertiary)] hover:text-yellow-500"
+                  ? "text-[var(--color-accent)]"
+                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
                 } hover:bg-[var(--color-bg-tertiary)] transition-colors`}
               aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
             </button>
-            <CopyDropdown rawContent={rawContent} docId={doc.meta.id} />
+            <CopyDropdown rawContent={rawContent} />
             <DownloadButton
               filename={doc.meta.id}
               getContent={() => rawContent}

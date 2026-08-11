@@ -51,7 +51,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 <button
                   key={key}
                   onClick={() => updateSettings("theme", key)}
-                  className="nav-icon-btn w-[30px] h-[30px] flex items-center justify-center rounded-md
+                  className="w-[30px] h-[30px] flex items-center justify-center rounded-md
                     transition-colors duration-100
                     text-[var(--color-text-tertiary)]
                     hover:text-[var(--color-text-secondary)]
@@ -74,7 +74,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
             href="https://github.com/MCBECD"
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-icon-btn w-9 h-9 flex items-center justify-center rounded-lg
+            className="w-9 h-9 flex items-center justify-center rounded-lg
               text-[var(--color-text-tertiary)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
               transition-colors duration-100 active:scale-[0.92]"
@@ -89,7 +89,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           {/* 设置 */}
           <button
             onClick={onOpenSettings}
-            className="nav-icon-btn w-9 h-9 flex items-center justify-center rounded-lg
+            className="w-9 h-9 flex items-center justify-center rounded-lg
               text-[var(--color-text-tertiary)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
               transition-colors duration-100 active:scale-[0.92]"
