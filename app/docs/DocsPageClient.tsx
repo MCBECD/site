@@ -109,18 +109,18 @@ export default function DocsPageClient() {
   }, [totalPages, safePage]);
 
   return (
-    <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight">
+    <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
+      <div className="mb-6">
+        <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight">
           {t("doc.title")}
         </h1>
-        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-1.5">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-1">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
 
       {/* 搜索栏 */}
-      <div className="relative mb-6">
+      <div className="relative mb-5">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
         <input
           ref={searchRef}
@@ -129,7 +129,7 @@ export default function DocsPageClient() {
           onChange={(e) => handleInput(e.target.value)}
           placeholder={t("doc.searchPlaceholder")}
           className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
-            bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
+            text-[var(--color-text-primary)]
             placeholder:text-[var(--color-text-tertiary)]
             border border-[var(--color-border)]
             focus:outline-none"
@@ -167,7 +167,7 @@ export default function DocsPageClient() {
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
-        <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
+        <div className="space-y-2" key={`${debouncedQuery}-${safePage}`}>
           {pageDocs.map((doc) => (
             <DocCard
               key={doc.id}
