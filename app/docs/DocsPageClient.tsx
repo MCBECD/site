@@ -220,6 +220,7 @@ export default function DocsPageClient() {
         </p>
       </div>
 
+<<<<<<< HEAD
       {/* 分类筛选标签 */}
       <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
         {categoryTabs.map((tab) => {
@@ -342,6 +343,40 @@ export default function DocsPageClient() {
             </button>
           </div>
         </div>
+=======
+      {/* 搜索栏 */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
+        <input
+          ref={searchRef}
+          type="text"
+          value={query}
+          onChange={(e) => handleInput(e.target.value)}
+          placeholder={t("doc.searchPlaceholder")}
+          className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
+            text-[var(--color-text-primary)]
+            placeholder:text-[var(--color-text-tertiary)]
+            border border-[var(--color-border)]
+            focus:outline-none"
+        />
+        {query ? (
+          <button
+            onClick={() => { setQuery(""); setDebouncedQuery(""); }}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-10
+              flex items-center justify-center rounded-md
+              text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
+              hover:bg-[var(--color-bg-tertiary)] transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        ) : (
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-10 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
+            text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
+            pointer-events-none hidden sm:inline-flex">
+            <Command className="w-2.5 h-2.5" />
+          </kbd>
+        )}
+>>>>>>> f717ab4 (fix: search icon hidden by backdrop-filter stacking, remove card index, right-align meta)
       </div>
 
       {isSearching && (
@@ -358,12 +393,16 @@ export default function DocsPageClient() {
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
+<<<<<<< HEAD
         <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
           {pageDocs.map((doc, i) => (
+=======
+        <div className="space-y-2" key={`${debouncedQuery}-${safePage}`}>
+          {pageDocs.map((doc) => (
+>>>>>>> f717ab4 (fix: search icon hidden by backdrop-filter stacking, remove card index, right-align meta)
             <DocCard
               key={doc.id}
               doc={doc}
-              index={i}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
               viewMode={viewMode}
