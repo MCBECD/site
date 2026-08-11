@@ -4,7 +4,6 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
-import type { DocMeta } from "@/lib/docs";
 import { getBookmarks, toggleBookmark } from "@/lib/storage";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";

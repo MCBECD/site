@@ -11,7 +11,7 @@ interface Props {
 
 import { memo } from "react";
 
-const CopyDropdown = memo(function CopyDropdown({ rawContent, docId }: Props) {
+const CopyDropdown = memo(function CopyDropdown({ rawContent, docId: _docId }: Props) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
