@@ -12,7 +12,7 @@ import { getCategoryBase, getCommandType, getCommandTypeI18nKey, getBasicsOrder 
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
-type CategoryFilter = "all" | "basics" | "commands" | "examples";
+type CategoryFilter = "all" | "basics" | "commands";
 type SortBy = "name" | "type";
 type ViewMode = "card" | "list";
 
@@ -229,14 +229,6 @@ export default function DocsPageClient() {
         return cmpTitle(a, b);
       });
 
-    const sortExamples = (arr: typeof result) =>
-      [...arr].sort((a, b) => {
-        const aU = a.updatedAt ?? "";
-        const bU = b.updatedAt ?? "";
-        if (aU !== bU) return bU.localeCompare(aU);
-        return cmpTitle(a, b);
-      });
-
     const sortCommands = (arr: typeof result, currentSortBy: SortBy) =>
       [...arr].sort((a, b) => {
         if (currentSortBy === "type") {
@@ -251,15 +243,23 @@ export default function DocsPageClient() {
 
     if (category === "basics") {
       result = sortBasics(result);
-    } else if (category === "examples") {
-      result = sortExamples(result);
     } else if (category === "commands") {
       result = sortCommands(result, sortBy);
     } else {
       const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
-      const examplesDocs = sortExamples(result.filter((d) => getCategoryBase(d.category) === "examples"));
       const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), sortBy);
-      result = [...basicsDocs, ...commandsDocs, ...examplesDocs];
+      const otherDocs = result
+        .filter((d) => {
+          const base = getCategoryBase(d.category);
+          return base !== "basics" && base !== "commands";
+        })
+        .sort((a, b) => {
+          const aU = a.updatedAt ?? "";
+          const bU = b.updatedAt ?? "";
+          if (aU !== bU) return bU.localeCompare(aU);
+          return a.title.localeCompare(b.title, locale ?? "zh-CN");
+        });
+      result = [...basicsDocs, ...commandsDocs, ...otherDocs];
     }
 
     return result;
@@ -330,7 +330,6 @@ export default function DocsPageClient() {
     { key: "all", labelKey: "doc.filterAll" },
     { key: "basics", labelKey: "doc.filterBasics" },
     { key: "commands", labelKey: "doc.filterCommands" },
-    { key: "examples", labelKey: "doc.filterExamples" },
   ];
 
   return (

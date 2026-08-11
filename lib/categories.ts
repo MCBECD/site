@@ -2,7 +2,6 @@
 const CATEGORY_I18N_KEYS: Record<string, string> = {
   basics: "doc.filterBasics",
   commands: "doc.filterCommands",
-  examples: "doc.filterExamples",
 };
 
 export function getCategoryBase(category?: string): string {
