@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
@@ -37,9 +37,9 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
   const activeIndex = THEMES.findIndex((th) => th.key === settings.theme);
 
   // Sync committed index when theme changes externally
-  if (committedIndex.current !== activeIndex) {
+  useEffect(() => {
     committedIndex.current = activeIndex;
-  }
+  }, [activeIndex]);
 
   const restX = P + committedIndex.current * STEP;
 
