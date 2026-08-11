@@ -26,10 +26,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     doc.meta.description ??
     `${title} — Minecraft 基岩版命令详解，包含语法、参数和示例`;
   const url = `${SITE_URL}/docs/${docId}/`;
+   const keywords = [
+    "Minecraft",
+    "基岩版",
+    "Bedrock",
+    "命令",
+    "command",
+    ...(doc.meta.tags ?? []),
+  ];
 
   return {
     title,
     description,
+    keywords,
     alternates: {
       canonical: url,
     },
@@ -61,7 +70,7 @@ export default async function DocDetailPage({ params }: Props) {
   const rawContent = getDocRawContent(docId) ?? "";
   const url = `${SITE_URL}/docs/${docId}/`;
 
-  const jsonLd = {
+  const webPageJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: doc.meta.title,
@@ -81,11 +90,40 @@ export default async function DocDetailPage({ params }: Props) {
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "首页",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "命令文档",
+        item: `${SITE_URL}/docs/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: doc.meta.title,
+        item: url,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <DocDetailClient doc={doc} rawContent={rawContent}>
         <MDXRenderer source={doc.rawContent} />
