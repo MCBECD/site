@@ -482,7 +482,7 @@ pre {
 /* ----------------------------------------------------------
  * Enhanced prose: images, inline code, etc.
  * ---------------------------------------------------------- */
-.prose img {
+.prose img:not(.cmd-icon) {
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
   margin: 1rem 0;
