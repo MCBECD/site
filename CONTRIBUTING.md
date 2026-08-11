@@ -16,23 +16,23 @@ Open http://localhost:3000 — changes to docs or code will hot-reload.
 ## Project Structure
 
 ```
-app/                    # Next.js App Router 页面
+app/                     # Next.js App Router 页面
   docs/                  # 文档列表页 + 详情页
     DocsPageClient.tsx   # 首页命令卡片列表
     [...id]/             # 动态路由：文档详情
-components/             # React 组件
+components/              # React 组件
   MDXRenderer.tsx        # MDX 渲染 + Shiki 代码高亮
   Navbar.tsx             # 顶部导航栏
-  SettingsPanel.tsx      # 设置面板（主题/语言/插件）
-contexts/               # React Context（设置/主题/语言）
-lib/                    # 工具库
+  SettingsPanel.tsx      # 设置面板
+contexts/                # React Context（设置/主题/语言）
+lib/                     # 工具库
   docs.ts                # 文档扫描引擎（frontmatter 解析）
   mdx/                   # remark 插件
   i18n/                  # i18n 类型定义
-messages/               # 7 种语言的翻译文件（JSON）
-content/docs/           # 文档内容（MDX 文件）
-styles/globals.css      # 全局样式 + 设计令牌
-functions/              # Cloudflare Pages Functions
+messages/                # 7 种语言的翻译文件（JSON）
+content/docs/            # 文档内容（MDX 文件）
+styles/globals.css       # 全局样式 + 设计令牌
+functions/               # Cloudflare Pages Functions
 ```
 
 ## Adding a New Command Document

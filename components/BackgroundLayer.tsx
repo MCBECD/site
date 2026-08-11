@@ -7,7 +7,7 @@ import { memo } from "react";
 
 const BackgroundLayer = memo(function BackgroundLayer() {
   const { settings } = useSettings();
-  const bgEnabled = !!settings.plugins["background-image"] && !!settings.bgImage;
+  const bgEnabled = !!settings.bgImage;
 
   const overlayStyle = useMemo(() => ({
     backgroundColor: "var(--color-bg-primary)",
