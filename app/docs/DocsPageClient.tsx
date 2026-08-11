@@ -219,23 +219,63 @@ export default function DocsPageClient() {
       </div>
 
       {/* 分类筛选标签 */}
-      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none tabs-enter">
-        {categoryTabs.map((tab) => {
-          const active = category === tab.key;
-          return (
+      <div className="relative z-20 flex items-center gap-1.5 mb-4 tabs-enter">
+        <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
+          {categoryTabs.map((tab) => {
+            const active = category === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setCategory(tab.key)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all
+                  ${active
+                    ? "bg-[var(--color-accent)] text-white shadow-sm"
+                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
+                `}
+              >
+                {t(tab.labelKey)}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 排序 */}
+        {showSortDropdown && (
+          <div ref={sortDropdownRef} className="relative shrink-0">
             <button
-              key={tab.key}
-              onClick={() => setCategory(tab.key)}
-              className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all
-                ${active
-                  ? "bg-[var(--color-accent)] text-white shadow-sm"
-                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
-              `}
+              onClick={() => setSortOpen((v) => !v)}
+              className="h-8 px-3.5 inline-flex items-center gap-1.5 rounded-lg
+                bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
+                border border-[var(--color-border)]
+                hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+                transition-colors"
             >
-              {t(tab.labelKey)}
+              <span className="text-[13px] font-medium">{t(sortOptions.find((o) => o.key === sortBy)!.labelKey)}</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${sortOpen ? "rotate-180" : ""}`} />
             </button>
-          );
-        })}
+            {sortOpen && (
+              <div className="absolute right-0 top-full mt-1.5 py-1 min-w-[140px] rounded-lg
+                bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20 dropdown-in">
+                {sortOptions.map((opt) => {
+                  const active = sortBy === opt.key;
+                  return (
+                    <button
+                      key={opt.key}
+                      onClick={() => { setSortBy(opt.key); setSortOpen(false); }}
+                      className={`w-full px-3.5 py-2 text-left text-[13px] transition-colors
+                        ${active
+                          ? "text-[var(--color-accent)] bg-[var(--color-accent)]/10"
+                          : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
+                      `}
+                    >
+                      {t(opt.labelKey)}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 搜索栏 + 工具栏 */}
@@ -273,58 +313,18 @@ export default function DocsPageClient() {
           )}
         </div>
 
-        {/* 排序 */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          {showSortDropdown && (
-            <div ref={sortDropdownRef} className="relative">
-              <button
-                onClick={() => setSortOpen((v) => !v)}
-                className="h-[42px] px-3.5 inline-flex items-center gap-1.5 rounded-lg
-                  bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
-                  border border-[var(--color-border)]
-                  hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-                  transition-colors"
-              >
-                <span className="text-[13px] font-medium">{t(sortOptions.find((o) => o.key === sortBy)!.labelKey)}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${sortOpen ? "rotate-180" : ""}`} />
-              </button>
-              {sortOpen && (
-                <div className="absolute right-0 top-full mt-1.5 py-1 min-w-[140px] rounded-lg
-                  bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20 dropdown-in">
-                  {sortOptions.map((opt) => {
-                    const active = sortBy === opt.key;
-                    return (
-                      <button
-                        key={opt.key}
-                        onClick={() => { setSortBy(opt.key); setSortOpen(false); }}
-                        className={`w-full px-3.5 py-2 text-left text-[13px] transition-colors
-                          ${active
-                            ? "text-[var(--color-accent)] bg-[var(--color-accent)]/10"
-                            : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
-                        `}
-                      >
-                        {t(opt.labelKey)}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 视图切换 */}
-          <button
-            onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
-            title={viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}
-            className="h-[42px] w-[42px] inline-flex items-center justify-center rounded-lg
-              bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
-              border border-[var(--color-border)]
-              hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-              transition-colors"
-          >
-            {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-          </button>
-        </div>
+        {/* 视图切换 */}
+        <button
+          onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+          title={viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}
+          className="h-[42px] w-[42px] inline-flex items-center justify-center rounded-lg
+            bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
+            border border-[var(--color-border)]
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+            transition-colors"
+        >
+          {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+        </button>
       </div>
 
       {isSearching && (

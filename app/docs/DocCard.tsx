@@ -5,7 +5,7 @@ import { Star, ChevronRight } from "lucide-react";
 import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getCategoryI18nKey } from "@/lib/categories";
+import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
@@ -19,6 +19,8 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
   const { t } = useLocale();
   const categoryKey = getCategoryI18nKey(doc.category);
   const categoryLabel = categoryKey ? t(categoryKey) : undefined;
+  const typeKey = getCommandTypeI18nKey(doc.category);
+  const typeLabel = typeKey ? t(typeKey) : undefined;
 
   if (viewMode === "list") {
     return (
@@ -27,6 +29,12 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
         className="block group py-2 no-underline"
       >
         <div className="flex items-center gap-2.5 min-w-0">
+          {typeLabel && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)] shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+              {typeLabel}
+            </span>
+          )}
           <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
             {renderTitleWithCode(doc.title)}
           </h2>
@@ -68,15 +76,21 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
         </div>
       </div>
       <div className="flex items-center justify-between gap-3 mt-1">
+        {typeLabel ? (
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            {typeLabel}
+          </span>
+        ) : categoryLabel ? (
+          <span className="text-[11px] text-[var(--color-text-tertiary)]">{categoryLabel}</span>
+        ) : null}
         {doc.description && (
           <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-1 leading-relaxed flex-1 min-w-0">
             {doc.description}
           </p>
         )}
         <div className="flex items-center gap-2 shrink-0">
-          {categoryLabel && (
-            <span className="text-[11px] text-[var(--color-text-tertiary)]">{categoryLabel}</span>
-          )}
+
           {(doc.author || doc.updatedAt) && (
             <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">
               {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
