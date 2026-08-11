@@ -209,10 +209,9 @@ export default function DocsPageClient() {
 
   return (
     <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
-      {/* Hero 区域 */}
+      {/* Hero */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight
-          bg-gradient-to-r from-[var(--color-text-primary)] via-[var(--color-text-primary)] to-[var(--color-text-tertiary)] bg-clip-text text-transparent">
+        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
           {t("doc.title")}
         </h1>
         <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2">
@@ -243,7 +242,7 @@ export default function DocsPageClient() {
       {/* 搜索栏 + 工具栏 */}
       <div className="flex flex-col sm:flex-row gap-2.5 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
           <input
             ref={searchRef}
             type="text"
@@ -251,7 +250,7 @@ export default function DocsPageClient() {
             onChange={(e) => handleInput(e.target.value)}
             placeholder={t("doc.searchPlaceholder")}
             className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
-              bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
+              text-[var(--color-text-primary)]
               placeholder:text-[var(--color-text-tertiary)]
               border border-[var(--color-border)]
               focus:outline-none"
@@ -259,7 +258,7 @@ export default function DocsPageClient() {
           {query ? (
             <button
               onClick={() => { setQuery(""); setDebouncedQuery(""); }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-10
                 flex items-center justify-center rounded-md
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
                 hover:bg-[var(--color-bg-tertiary)] transition-colors"
@@ -267,7 +266,7 @@ export default function DocsPageClient() {
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-10 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
               text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
               pointer-events-none hidden sm:inline-flex">
               <Command className="w-2.5 h-2.5" />
@@ -277,7 +276,6 @@ export default function DocsPageClient() {
 
         {/* 排序 & 视图切换 */}
         <div className="flex items-center gap-1.5 shrink-0">
-          {/* 排序下拉 - 仅 commands 和 all 时显示 */}
           {showSortDropdown && (
             <div ref={sortDropdownRef} className="relative">
               <button
@@ -359,11 +357,10 @@ export default function DocsPageClient() {
         </div>
       ) : (
         <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
-          {pageDocs.map((doc, i) => (
+          {pageDocs.map((doc) => (
             <DocCard
               key={doc.id}
               doc={doc}
-              index={i}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
               viewMode={viewMode}

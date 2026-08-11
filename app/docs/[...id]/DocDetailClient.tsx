@@ -22,7 +22,6 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   const [bookmarked, setBookmarked] = useState(false);
   const categoryLabel = getCategoryLabel(doc.meta.category);
 
-  // 记录浏览历史
   useEffect(() => {
     addHistory(doc.meta.id, doc.meta.title);
     setBookmarked(isBookmarked(doc.meta.id));
@@ -50,7 +49,6 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
           </div>
 
           <div className="flex items-center gap-1">
-            {/* 收藏按钮 */}
             <button
               onClick={handleToggleBookmark}
               className={`w-8 h-8 flex items-center justify-center rounded-lg
@@ -72,7 +70,15 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
 
         {/* 标题 + 元信息 */}
         <header className="px-6 pt-6 pb-3">
-          <div className="flex items-center gap-2 mb-2.5">
+          <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
+            {renderTitleWithCode(doc.meta.title)}
+          </h1>
+          {doc.meta.description && (
+            <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
+              {doc.meta.description}
+            </p>
+          )}
+          <div className="flex items-center justify-between mt-3">
             {categoryLabel && (
               <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
@@ -85,14 +91,6 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
               </span>
             )}
           </div>
-          <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
-            {renderTitleWithCode(doc.meta.title)}
-          </h1>
-          {doc.meta.description && (
-            <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
-              {doc.meta.description}
-            </p>
-          )}
         </header>
 
         {/* 文档正文 */}
