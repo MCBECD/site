@@ -24,13 +24,6 @@ export function getCategoryI18nKey(category?: string): string | undefined {
   return CATEGORY_I18N_KEYS[base];
 }
 
-/** @deprecated Use getCategoryI18nKey() + t() for i18n support */
-export function getCategoryLabel(category?: string): string | undefined {
-  if (!category) return undefined;
-  const base = getCategoryBase(category);
-  return CATEGORY_I18N_KEYS[base] ?? base;
-}
-
 export function getCommandType(category?: string): string | undefined {
   if (!category) return undefined;
   const base = getCategoryBase(category);

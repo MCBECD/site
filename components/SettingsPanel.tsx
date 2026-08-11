@@ -1,16 +1,9 @@
 "use client";
 
-import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
+import { Sun, Moon, Monitor, X } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
-import { useDocs } from "@/contexts/DocsContext";
-import type { DocMeta } from "@/lib/docs";
-import {
-  getBookmarks, clearBookmarks, removeBookmark,
-  getHistory, clearHistory, removeHistory,
-} from "@/lib/storage";
 import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
@@ -30,7 +23,7 @@ const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
   { value: "large", labelKey: "settings.fontSizeLarge" },
 ];
 
-type Tab = "general" | "themes" | "data";
+type Tab = "general" | "themes";
 
 /* ---------- Main Panel ---------- */
 
@@ -46,7 +39,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
     closeTimer.current = setTimeout(() => {
       setClosing(false);
       onClose();
-    }, 100);
+    }, 180);
   }, [onClose]);
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
@@ -97,10 +90,8 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
 
           {/* tabs */}
           <div className="flex gap-0 mx-5 mt-4 border-b border-[var(--color-border)] flex-shrink-0">
-            {(["general", "themes", "data"] as Tab[]).map((key) => {
-              const labelKey = key === "general" ? "settings.tabGeneral"
-                : key === "themes" ? "settings.tabPlugins"
-                : "settings.tabData";
+            {(["general", "themes"] as Tab[]).map((key) => {
+              const labelKey = key === "general" ? "settings.tabGeneral" : "settings.tabPlugins";
               return (
                 <button
                   key={key}
@@ -162,158 +153,15 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                   <LocaleDropdown value={settings.locale} onChange={(locale) => updateSettings("locale", locale)} />
                 </Section>
               </>
-            ) : tab === "themes" ? (
+            ) : (
               <div className="space-y-3">
                 <ColorThemePluginCard />
                 <BackgroundImagePluginCard />
               </div>
-            ) : (
-              <DataTab onClose={handleClose} />
             )}
           </div>
         </div>
       </div>
     </>
-  );
-}
-
-/* ---------- Data Tab (Bookmarks + Recent) ---------- */
-
-function DataTab({ onClose }: { onClose: () => void }) {
-  const { t } = useLocale();
-  const { docMap } = useDocs();
-  const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [history, setHistory] = useState<{ id: string; title: string }[]>([]);
-
-  const refresh = useCallback(() => {
-    setBookmarks(getBookmarks());
-    setHistory(getHistory());
-  }, []);
-
-  useEffect(() => { refresh(); }, [refresh]);
-
-  const handleRemoveBookmark = useCallback((id: string) => {
-    removeBookmark(id);
-    refresh();
-  }, [refresh]);
-
-  const handleClearBookmarks = useCallback(() => {
-    clearBookmarks();
-    refresh();
-  }, [refresh]);
-
-  const handleRemoveHistory = useCallback((id: string) => {
-    removeHistory(id);
-    refresh();
-  }, [refresh]);
-
-  const handleClearHistory = useCallback(() => {
-    clearHistory();
-    refresh();
-  }, [refresh]);
-
-  const bookmarkedDocs = bookmarks.map((id) => docMap.get(id)).filter((d): d is DocMeta => !!d);
-  const historyDocs = history.map((h) => docMap.get(h.id)).filter((d): d is DocMeta => !!d);
-
-  return (
-    <div className="space-y-4">
-      {/* 收藏 */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Star className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-            <span className="text-[13px] font-medium text-[var(--color-text-primary)]">{t("doc.bookmarks")}</span>
-            <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">{bookmarkedDocs.length}</span>
-          </div>
-          {bookmarkedDocs.length > 0 && (
-            <button
-              onClick={handleClearBookmarks}
-              className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)]
-                hover:text-red-400 transition-colors"
-            >
-              <Trash2 className="w-3 h-3" />
-              {t("settings.clearAll")}
-            </button>
-          )}
-        </div>
-        {bookmarkedDocs.length === 0 ? (
-          <p className="text-[12px] text-[var(--color-text-tertiary)] py-4 text-center">{t("doc.noBookmarks")}</p>
-        ) : (
-          <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden">
-            {bookmarkedDocs.map((doc) => (
-              <DataListItem
-                key={doc.id}
-                doc={doc}
-                onDelete={() => handleRemoveBookmark(doc.id)}
-                onClose={onClose}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* 最近浏览 */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Clock className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-            <span className="text-[13px] font-medium text-[var(--color-text-primary)]">{t("doc.recent")}</span>
-            <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">{historyDocs.length}</span>
-          </div>
-          {historyDocs.length > 0 && (
-            <button
-              onClick={handleClearHistory}
-              className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)]
-                hover:text-red-400 transition-colors"
-            >
-              <Trash2 className="w-3 h-3" />
-              {t("settings.clearAll")}
-            </button>
-          )}
-        </div>
-        {historyDocs.length === 0 ? (
-          <p className="text-[12px] text-[var(--color-text-tertiary)] py-4 text-center">{t("doc.noRecent")}</p>
-        ) : (
-          <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden">
-            {historyDocs.map((doc) => (
-              <DataListItem
-                key={doc.id}
-                doc={doc}
-                onDelete={() => handleRemoveHistory(doc.id)}
-                onClose={onClose}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- List Item ---------- */
-
-function DataListItem({ doc, onDelete, onClose }: { doc: DocMeta; onDelete: () => void; onClose: () => void }) {
-  const { t } = useLocale();
-  return (
-    <div className="flex items-center gap-2 px-3 py-2.5 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
-      <Link
-        href={`/docs/${doc.id}`}
-        onClick={onClose}
-        className="flex-1 min-w-0 no-underline"
-      >
-        <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate block transition-colors">
-          {doc.title}
-        </span>
-      </Link>
-      <button
-        onClick={(e) => { e.stopPropagation(); onDelete(); }}
-        className="w-6 h-6 flex items-center justify-center rounded-md
-          text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100
-          hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
-        aria-label={t("common.delete")}
-      >
-        <Trash2 className="w-3 h-3" />
-      </button>
-    </div>
   );
 }

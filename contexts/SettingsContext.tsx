@@ -92,11 +92,7 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-  useEffect(() => {
-    const saved = loadSettings();
-    setSettings(saved);
-  }, []);
+  const [settings, setSettings] = useState<Settings>(() => loadSettings());
 
   const persist = useCallback((s: Settings) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));

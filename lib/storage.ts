@@ -37,8 +37,8 @@ export function getBookmarks(): string[] {
   return read<string[]>(BOOKMARKS_KEY, []);
 }
 
-export function isBookmarked(id: string): boolean {
-  return getBookmarks().includes(id);
+export function isBookmarked(id: string, list?: string[]): boolean {
+  return (list ?? getBookmarks()).includes(id);
 }
 
 export function removeBookmark(id: string): void {
@@ -101,4 +101,28 @@ export function removeHistory(id: string): void {
 
 export function clearHistory(): void {
   write(HISTORY_KEY, []);
+}
+
+/* ----------------------------------------------------------
+ * 文档页 UI 状态 (分类筛选、排序、视图、页码、滚动位置)
+ * ---------------------------------------------------------- */
+
+const DOCS_UI_STATE_KEY = "docs-ui-state";
+
+export interface DocsUIState {
+  category: string;
+  bookmarksCollapsed: boolean;
+  historyCollapsed: boolean;
+  sortBy: string;
+  viewMode: string;
+  page: number;
+  scrollY: number;
+}
+
+export function saveDocsUIState(state: DocsUIState): void {
+  write(DOCS_UI_STATE_KEY, state);
+}
+
+export function loadDocsUIState(): DocsUIState | null {
+  return read<DocsUIState | null>(DOCS_UI_STATE_KEY, null);
 }

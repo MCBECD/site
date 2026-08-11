@@ -1,42 +1,45 @@
 "use client";
 
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSettings, type Theme } from "./SettingsContext";
 
-function resolveTheme(theme: Theme): "light" | "dark" {
-  if (theme === "system") {
-    if (typeof window === "undefined") return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-  return theme;
-}
-
-/**
- * ThemeProvider — 负责主题的 DOM 操作：dark class 和 color-scheme。
- * 监听系统主题变化，避免切换闪烁。
- */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings();
   const { theme } = settings;
-  const resolvedTheme = useMemo(() => resolveTheme(theme), [theme]);
+
+  // Always match SSR default during first render to avoid hydration mismatch.
+  // SSR: theme defaults to "system" + resolveSystemTheme() returns "light".
+  // Client: user persisted theme may differ — we apply it only after mount.
+  const [mounted, setMounted] = useState(false);
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const compute = (): "light" | "dark" => {
+      if (theme !== "system") return theme;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    };
+
+    if (!mounted) return;
+
+    setResolvedTheme(compute());
+
+    if (theme !== "system") return;
+
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => setResolvedTheme(mq.matches ? "dark" : "light");
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, [theme, mounted]);
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("dark", resolvedTheme === "dark");
     root.style.colorScheme = resolvedTheme;
   }, [resolvedTheme]);
-
-  useEffect(() => {
-    if (theme !== "system") return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => {
-      const sys = mq.matches ? "dark" : "light";
-      document.documentElement.classList.toggle("dark", sys === "dark");
-      document.documentElement.style.colorScheme = sys;
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, [theme]);
 
   return children;
 }

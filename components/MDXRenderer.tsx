@@ -6,6 +6,7 @@ import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
+import mcfunctionGrammar from "@/lib/mdx/mcfunction.json";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 
@@ -17,50 +18,13 @@ const CmdConditionalRepeat = makeCmdBlock("conditional-repeat");
 const CmdConditionalChain = makeCmdBlock("conditional-chain");
 const CmdChat = makeCmdBlock("chat");
 
-const mcfunctionSyntax = {
-  name: "mcfunction",
-  scopeName: "source.mcfunction",
-  fileTypes: ["mcfunction"],
-  repository: {},
-  patterns: [
-    {
-      name: "entity.name.function",
-      match: '^/?[a-zA-Z0-9_]+',
-    },
-    {
-      name: "string.quoted.double",
-      match: '"[^"]*"',
-    },
-    {
-      name: "string.quoted.single",
-      match: "'[^']*'",
-    },
-    {
-      name: "entity.name.tag",
-      match: '@[a-z]'
-    },
-    {
-      name: "constant",
-      match: "\\b(true|false|null)\\b",
-    },
-    {
-      name: "variable.parameter",
-      match: '[a-zA-Z_][a-zA-Z0-9_]+',
-    },
-    {
-      name: "constant.numeric",
-      match: '[\\^~0-9\\.-][0-9\\.-]*',
-    },
-  ]
-};
-
 let highlighter: Highlighter | null = null;
 
 async function getHighlighter(): Promise<Highlighter> {
   if (!highlighter) {
     highlighter = await createHighlighter({
       themes: ["github-light", "github-dark"],
-      langs: [mcfunctionSyntax],
+      langs: [mcfunctionGrammar],
     });
   }
   return highlighter;

@@ -8,7 +8,7 @@ import CopyDropdown from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
-import { addHistory, toggleBookmark, isBookmarked } from "@/lib/storage";
+import { addHistory, toggleBookmark, isBookmarked, getBookmarks } from "@/lib/storage";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface Props {
@@ -24,7 +24,6 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   const categoryLabel = categoryKey ? t(categoryKey) : undefined;
   const commandTypeKey = getCommandTypeI18nKey(doc.meta.category);
   const commandTypeLabel = commandTypeKey ? t(commandTypeKey) : undefined;
-  console.log(commandTypeLabel);
 
   useEffect(() => {
     addHistory(doc.meta.id, doc.meta.title);
@@ -33,7 +32,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
 
   const handleToggleBookmark = useCallback(() => {
     toggleBookmark(doc.meta.id);
-    setBookmarked(isBookmarked(doc.meta.id));
+    setBookmarked(isBookmarked(doc.meta.id, getBookmarks()));
   }, [doc.meta.id]);
 
   return (

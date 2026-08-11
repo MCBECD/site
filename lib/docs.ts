@@ -179,16 +179,12 @@ export function getDocById(id: string): DocContent | null {
 export function getDocRawContent(id: string): string | null {
   const docsDir = getDocsDir();
 
-  try {
-    const folderPath = path.join(docsDir, id);
-    const indexPath = path.join(folderPath, "index.mdx");
-    if (fs.existsSync(indexPath)) return fs.readFileSync(indexPath, "utf-8");
+  const folderPath = path.join(docsDir, id);
+  const indexPath = path.join(folderPath, "index.mdx");
+  if (fs.existsSync(indexPath)) return fs.readFileSync(indexPath, "utf-8");
 
-    const flatPath = path.join(docsDir, `${id}.mdx`);
-    if (fs.existsSync(flatPath)) return fs.readFileSync(flatPath, "utf-8");
-  } catch (err) {
-    console.error(`[docs] Failed to read raw content for: ${id}`, err instanceof Error ? err.message : err);
-  }
+  const flatPath = path.join(docsDir, `${id}.mdx`);
+  if (fs.existsSync(flatPath)) return fs.readFileSync(flatPath, "utf-8");
 
   return null;
 }

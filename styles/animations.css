@@ -11,11 +11,6 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -26,23 +21,38 @@
   to   { transform: scaleX(1); }
 }
 
-@keyframes starPop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.35); }
-  100% { transform: scale(1); }
-}
-
 /* ----------------------------------------------------------
  * Animation utilities
  * ---------------------------------------------------------- */
-.overlay-in  { animation: fadeIn 0.1s ease both; }
-.overlay-out { animation: fadeIn 0.08s ease reverse both; }
+.overlay-in  { animation: fadeIn 0.2s ease both; }
+.overlay-out { animation: fadeIn 0.15s ease reverse both; }
 
-.settings-panel-in  { animation: fadeIn 0.12s ease both; }
-.settings-panel-out { animation: fadeIn 0.08s ease reverse both; }
+.settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
+.settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
+
+@keyframes settingsPanelIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes settingsPanelOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+}
 
 .dropdown-in  { animation: slideDown 0.15s var(--ease-out) both; }
-.collapse-in  { animation: fadeIn 0.1s ease both; }
 
 .tab-indicator {
   animation: tabSlideIn 0.1s var(--ease-out) both;
@@ -60,18 +70,26 @@
   animation: fadeInUp 0.35s var(--ease-out) 0.06s both;
 }
 
-.tabs-enter {
+.bookmarks-enter {
   animation: fadeInUp 0.3s var(--ease-out) 0.1s both;
 }
 
+.history-enter {
+  animation: fadeInUp 0.3s var(--ease-out) 0.13s both;
+}
+
+.tabs-enter {
+  animation: fadeInUp 0.3s var(--ease-out) 0.16s both;
+}
+
 .search-enter {
-  animation: fadeInUp 0.3s var(--ease-out) 0.14s both;
+  animation: fadeInUp 0.3s var(--ease-out) 0.2s both;
 }
 
 /* Doc cards staggered entrance */
 .doc-card-enter {
   animation: fadeInUp 0.3s var(--ease-out) both;
-   animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.18s);
+   animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.24s);
 }
 
 /* Detail page entrance */
@@ -81,14 +99,4 @@
 
 .detail-content-enter {
   animation: fadeIn 0.3s ease 0.12s both;
-}
-
-/* Star button pop */
-.star-pop {
-  animation: starPop 0.3s var(--ease-spring) both;
-}
-
-/* Pagination fade */
-.pagination-enter {
-  animation: fadeIn 0.25s ease 0.35s both;
 }
