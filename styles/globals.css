@@ -17,7 +17,7 @@
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f8fafc;
   --color-bg-tertiary: #f1f5f9;
-  --color-bg-elevated: #ffffff;
+  --color-bg-elevated: rgba(255, 255, 255, 0.72);
 
   /* Text — tertiary bumped to WCAG AA on white bg */
   --color-text-primary: #111827;
@@ -37,7 +37,7 @@
   --color-code-bg: #f3f4f6;
 
   /* Card */
-  --color-card-bg: #ffffff;
+  --color-card-bg: rgba(255, 255, 255, 0.72);
   --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
 
@@ -65,7 +65,7 @@
   --color-bg-primary: #0b0d14;
   --color-bg-secondary: #131620;
   --color-bg-tertiary: #1c1f2b;
-  --color-bg-elevated: #181b25;
+  --color-bg-elevated: rgba(24, 27, 37, 0.72);
   --color-text-primary: #e8eaf0;
   --color-text-secondary: #9da1ae;
   --color-text-tertiary: #7a7f90;
@@ -75,7 +75,7 @@
   --color-accent-hover: #93bbfd;
   --color-accent-muted: rgba(96, 165, 250, 0.1);
   --color-code-bg: #131620;
-  --color-card-bg: #181b25;
+  --color-card-bg: rgba(24, 27, 37, 0.72);
   --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
   --color-card-hover-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
   --color-navbar-bg: rgba(11, 13, 20, 0.78);
@@ -100,7 +100,7 @@
   --color-accent-hover: #dc2626;
   --color-accent-muted: rgba(239, 68, 68, 0.08);
   --color-code-bg: #fef7f7;
-  --color-card-bg: #ffffff;
+  --color-card-bg: rgba(255, 255, 255, 0.72);
   --color-card-shadow: 0 1px 2px rgba(127, 29, 29, 0.04);
   --color-card-hover-shadow: 0 4px 12px rgba(127, 29, 29, 0.08), 0 1px 3px rgba(127, 29, 29, 0.06);
   --color-navbar-bg: rgba(255, 250, 250, 0.82);
@@ -122,7 +122,7 @@
   --color-accent-hover: #fca5a5;
   --color-accent-muted: rgba(248, 113, 113, 0.08);
   --color-code-bg: #1f1616;
-  --color-card-bg: #1f1616;
+  --color-card-bg: rgba(31, 22, 22, 0.72);
   --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(248, 113, 113, 0.06);
   --color-navbar-bg: rgba(20, 16, 16, 0.82);
@@ -147,7 +147,7 @@
   --color-accent-hover: #2563eb;
   --color-accent-muted: rgba(59, 130, 246, 0.08);
   --color-code-bg: #f0f5ff;
-  --color-card-bg: #ffffff;
+  --color-card-bg: rgba(255, 255, 255, 0.72);
   --color-card-shadow: 0 1px 2px rgba(30, 58, 138, 0.04);
   --color-card-hover-shadow: 0 4px 12px rgba(30, 58, 138, 0.08), 0 1px 3px rgba(30, 58, 138, 0.06);
   --color-navbar-bg: rgba(248, 250, 255, 0.82);
@@ -169,7 +169,7 @@
   --color-accent-hover: #93bbfd;
   --color-accent-muted: rgba(96, 165, 250, 0.08);
   --color-code-bg: #141a2a;
-  --color-card-bg: #141a2a;
+  --color-card-bg: rgba(20, 26, 42, 0.72);
   --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(96, 165, 250, 0.06);
   --color-navbar-bg: rgba(12, 16, 25, 0.82);
@@ -194,7 +194,7 @@
   --color-accent-hover: #16a34a;
   --color-accent-muted: rgba(34, 197, 94, 0.08);
   --color-code-bg: #f2faf5;
-  --color-card-bg: #ffffff;
+  --color-card-bg: rgba(255, 255, 255, 0.72);
   --color-card-shadow: 0 1px 2px rgba(21, 94, 44, 0.04);
   --color-card-hover-shadow: 0 4px 12px rgba(21, 94, 44, 0.08), 0 1px 3px rgba(21, 94, 44, 0.06);
   --color-navbar-bg: rgba(248, 253, 248, 0.82);
@@ -216,7 +216,7 @@
   --color-accent-hover: #86efac;
   --color-accent-muted: rgba(74, 222, 128, 0.08);
   --color-code-bg: #141f17;
-  --color-card-bg: #141f17;
+  --color-card-bg: rgba(20, 31, 23, 0.72);
   --color-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   --color-card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(74, 222, 128, 0.06);
   --color-navbar-bg: rgba(12, 20, 14, 0.82);
@@ -561,6 +561,8 @@ pre {
   border: 1px solid var(--color-border);
   background: var(--color-bg-elevated);
   box-shadow: var(--color-card-shadow);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
 }
 
 /* ---------------------------------------------------------- * UI animations — all opacity-only (compositor, no layout/paint)
@@ -615,6 +617,8 @@ pre {
 .doc-card {
   transition: box-shadow 100ms var(--ease-out),
               border-color 100ms var(--ease-out);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
 }
 
 .doc-card:hover {
