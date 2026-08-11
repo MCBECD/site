@@ -2,15 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { LocaleProvider } from "@/contexts/LocaleContext";
 
 function ThrowingChild({ shouldThrow }: { shouldThrow: boolean }) {
   if (shouldThrow) throw new Error("test crash");
   return <div>OK</div>;
-}
-
-function wrapper({ children }: { children: React.ReactNode }) {
-  return <LocaleProvider locale="en">{children}</LocaleProvider>;
 }
 
 describe("ErrorBoundary", () => {
@@ -29,7 +24,6 @@ describe("ErrorBoundary", () => {
       <ErrorBoundary>
         <ThrowingChild shouldThrow={false} />
       </ErrorBoundary>,
-      { wrapper },
     );
     expect(screen.getByText("OK")).toBeInTheDocument();
   });
@@ -39,7 +33,6 @@ describe("ErrorBoundary", () => {
       <ErrorBoundary>
         <ThrowingChild shouldThrow={true} />
       </ErrorBoundary>,
-      { wrapper },
     );
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
     expect(screen.getByText("An unexpected error occurred. Please try refreshing the page.")).toBeInTheDocument();
@@ -51,7 +44,6 @@ describe("ErrorBoundary", () => {
       <ErrorBoundary fallback={<div>Custom fallback</div>}>
         <ThrowingChild shouldThrow={true} />
       </ErrorBoundary>,
-      { wrapper },
     );
     expect(screen.getByText("Custom fallback")).toBeInTheDocument();
   });
@@ -69,7 +61,6 @@ describe("ErrorBoundary", () => {
       <ErrorBoundary>
         <ToggleChild />
       </ErrorBoundary>,
-      { wrapper },
     );
 
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
@@ -83,7 +74,6 @@ describe("ErrorBoundary", () => {
       <ErrorBoundary>
         <ThrowingChild shouldThrow={true} />
       </ErrorBoundary>,
-      { wrapper },
     );
     expect(console.error).toHaveBeenCalled();
   });

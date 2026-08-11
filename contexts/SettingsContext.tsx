@@ -2,7 +2,7 @@
  * SettingsContext — 全局设置状态管理
  *
  * 职责：
- *   - 设置状态 + localStorage 持久化（通过 lib/storage.ts）
+ *   - 设置状态 + localStorage 持久化
  *   - 字体缩放 CSS 变量同步
  *   - 颜色主题 CSS 变量同步
  *   - 委托 palette.ts / plugin-system.ts 处理具体计算
@@ -19,7 +19,6 @@ import {
   type ReactNode,
 } from "react";
 import type { Locale } from "@/lib/i18n/types";
-import { storageRead, storageWrite } from "@/lib/storage";
 import { generatePalette, applyPalette, clearCustomPalette } from "./settings/palette";
 import { createTogglePlugin } from "./settings/plugin-system";
 
@@ -50,9 +49,21 @@ const FONT_SIZE_MAP: Record<FontSize, number> = {
   large: 1.125,
 };
 
-const SETTINGS_KEY = "settings";
+const STORAGE_KEY = "mcbecd-settings";
 
 // ---- State helpers (pure) ----
+
+function loadSettings(): Settings {
+  if (typeof window === "undefined") return defaultSettings();
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultSettings();
+    const parsed = JSON.parse(raw);
+    return { ...defaultSettings(), ...parsed };
+  } catch {
+    return defaultSettings();
+  }
+}
 
 function defaultSettings(): Settings {
   return {
@@ -67,15 +78,6 @@ function defaultSettings(): Settings {
     bgOverlayBlur: 0,
     bgParallax: false,
   };
-}
-
-/**
- * 从 localStorage 读取设置，与默认值合并。
- * 使用 lib/storage.ts 的统一存储层。
- */
-function loadSettings(): Settings {
-  const saved = storageRead<Partial<Settings>>(SETTINGS_KEY, {});
-  return { ...defaultSettings(), ...saved };
 }
 
 // ---- Context ----
@@ -93,7 +95,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings>(() => loadSettings());
 
   const persist = useCallback((s: Settings) => {
-    storageWrite(SETTINGS_KEY, s);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
   }, []);
 
   const updateSettings = useCallback(<K extends keyof Settings>(key: K, value: Settings[K]) => {
