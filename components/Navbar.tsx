@@ -73,17 +73,18 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
     if (theme) updateSettings("theme", theme.key);
   }, [dragging, indicatorX, xToIndex, updateSettings]);
 
-  // Which buttons are "covered" by the indicator center
-  const indicatorCenter = dragging ? indicatorX + S / 2 : restX + S / 2;
-  const coveredLeft = Math.floor((indicatorCenter - P - S / 2 + G / 2) / STEP);
-  const coveredRight = Math.ceil((indicatorCenter - P - S / 2) / STEP);
-
-  const isHighlighted = (i: number) => {
-    if (dragging) return i >= coveredLeft && i <= coveredRight;
-    return i === activeIndex;
-  };
-
   const displayX = dragging ? indicatorX : restX;
+
+  // How much the indicator overlaps each button (0 = none, 1 = fully covered)
+  const overlap = (i: number) => {
+    const btnStart = P + i * STEP;
+    const btnEnd = btnStart + S;
+    const indStart = displayX;
+    const indEnd = displayX + S;
+    const overlapStart = Math.max(btnStart, indStart);
+    const overlapEnd = Math.min(btnEnd, indEnd);
+    return Math.max(0, Math.min(1, (overlapEnd - overlapStart) / S));
+  };
 
   return (
     <nav
@@ -131,11 +132,13 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
               height: S,
               background: "var(--color-bg-elevated)",
               boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-              transition: dragging ? "none" : `left var(--duration-slow) var(--ease-out)`,
+              transition: dragging
+                ? "none"
+                : `left 280ms var(--ease-spring)`,
             }}
           />
           {THEMES.map(({ key, icon: Icon, titleKey }, i) => {
-            const hl = isHighlighted(i);
+            const o = overlap(i);
             return (
               <button
                 key={key}
@@ -144,8 +147,12 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                   width: S,
                   height: S,
                   marginLeft: i > 0 ? G : 0,
-                  color: hl ? "var(--color-accent)" : "var(--color-text-tertiary)",
-                  transition: dragging ? "none" : `color var(--duration-normal) var(--ease-out)`,
+                  color: o > 0
+                    ? `color-mix(in srgb, var(--color-accent) ${o * 100}%, var(--color-text-tertiary) ${(1 - o) * 100}%)`
+                    : "var(--color-text-tertiary)",
+                  transition: dragging
+                    ? "none"
+                    : `color 280ms var(--ease-spring)`,
                 }}
                 title={t(titleKey)}
                 aria-pressed={activeIndex === i}
