@@ -8,7 +8,15 @@
 import { useCallback } from "react";
 import type { PluginStates } from "@/contexts/SettingsContext";
 
-function togglePluginState(
+export function isPluginEnabled(plugins: PluginStates, id: string): boolean {
+  return !!plugins[id];
+}
+
+/**
+ * 切换插件状态（纯函数，不依赖 React）
+ * 传入当前 plugins map + 目标状态，返回新的 plugins map
+ */
+export function togglePluginState(
   plugins: PluginStates,
   id: string,
   enabled?: boolean,

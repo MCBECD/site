@@ -1,0 +1,63 @@
+/* ----------------------------------------------------------
+ * Base element styles
+ * ---------------------------------------------------------- */
+html {
+  font-size: calc(16px * var(--font-size-multiplier));
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+}
+
+code, pre, kbd {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+}
+
+/* --- Code blocks (Shiki) --- */
+code {
+  color: var(--color-accent);
+  background-color: var(--color-code-bg);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+pre code { padding: 0; }
+
+pre {
+  padding: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background-color: var(--color-code-bg) !important;
+  line-height: 1.25rem;
+  border-left: 3px solid var(--color-accent);
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark, inherit) !important;
+}
+
+/* --- Scrollbar --- */
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-tertiary) transparent;
+  overflow-y: overlay;
+  overflow-x: overlay;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-text-tertiary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }
+
+/* --- Focus --- */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

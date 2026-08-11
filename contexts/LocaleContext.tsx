@@ -32,6 +32,7 @@ function getNested(obj: unknown, path: string[], fallback: string): string {
 
 interface LocaleContextValue {
   locale: Locale;
+  messages: Messages;
   /** 按 "section.key" 路径取字符串，支持 {var} 插值 */
   t: (key: string, vars?: Record<string, string | number>) => string;
 }
@@ -54,7 +55,7 @@ export function LocaleProvider({ locale, children }: { locale: Locale; children:
     [messages],
   );
 
-  const value = useMemo(() => ({ locale, t }), [locale, t]);
+  const value = useMemo(() => ({ locale, messages, t }), [locale, messages, t]);
 
   return (
     <LocaleContext value={value}>

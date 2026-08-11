@@ -52,3 +52,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     </ThemeContext>
   );
 }
+
+export function useTheme(): ThemeContextValue {
+  return useContext(ThemeContext);
+}
