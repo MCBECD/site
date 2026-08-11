@@ -7,8 +7,8 @@ describe("CmdBlock", () => {
     const { container } = render(<CmdBlock icon="impulse">/give @p diamond</CmdBlock>);
     const img = container.querySelector("img")!;
     expect(img).toHaveAttribute("src", "/icons/cmd/impulse.png");
-    expect(img).toHaveAttribute("width", "16");
-    expect(img).toHaveAttribute("height", "16");
+    expect(img).toHaveAttribute("width", "20");
+    expect(img).toHaveAttribute("height", "20");
   });
 
   it("renders children as code content", () => {
