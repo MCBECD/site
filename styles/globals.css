@@ -10,21 +10,3 @@
 @import "./alerts.css";
 @import "./components.css";
 @import "./animations.css";
-
-/* ----------------------------------------------------------
- * Scrollbar
- * ---------------------------------------------------------- */
-:root,
-html {
-  overflow: overlay;
-  scrollbar-gutter: stable;
-}
-
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: var(--color-text-tertiary);
-  border-radius: 3px;
-  border: 0;
-}
-::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }

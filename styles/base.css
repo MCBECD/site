@@ -43,18 +43,21 @@ pre {
   color: var(--shiki-dark, inherit) !important;
 }
 
-/* --- Scrollbar --- */
-:root {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-text-tertiary) transparent;
-  overflow-y: overlay;
-  overflow-x: overlay;
+:root,
+html {
+  overflow: overlay;
+  scrollbar-gutter: stable;
 }
 
-::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-text-tertiary); border-radius: 3px; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-tertiary);
+  border-radius: 3px;
+  border: 0;
+}
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }
+
 
 /* --- Focus --- */
 *:focus-visible {
