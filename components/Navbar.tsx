@@ -112,7 +112,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         {/* Theme segmented control */}
         <div
           ref={trackRef}
-          className="relative flex items-center rounded-full p-[2px] touch-none"
+          className="relative flex items-center rounded-[var(--radius-sm)] p-[2px] touch-none"
           style={{
             background: "var(--color-bg-tertiary)",
             width: P * 2 + THEMES.length * S + (THEMES.length - 1) * G,
@@ -125,7 +125,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         >
           {/* Sliding indicator — follows finger during drag, animates on release */}
           <span
-            className="absolute top-[2px] rounded-[13px] pointer-events-none"
+            className="absolute top-[2px] rounded-[calc(var(--radius-sm)-2px)] pointer-events-none"
             style={{
               left: displayX,
               width: S,
