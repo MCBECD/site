@@ -12,10 +12,11 @@ interface DocCardProps {
   doc: DocMeta;
   bookmarked: boolean;
   onBookmark: (e: React.MouseEvent, id: string) => void;
-  viewMode?: "card" | "list";
+  viewMode: "card" | "list";
+  sortBy: "name" | "type";
 }
 
-const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = "card" }: DocCardProps) {
+const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, sortBy }: DocCardProps) {
   const { t } = useLocale();
   const categoryKey = getCategoryI18nKey(doc.category);
   const categoryLabel = categoryKey ? t(categoryKey) : undefined;
@@ -29,7 +30,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
         className="block group py-2 no-underline"
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          {typeLabel && (
+          {typeLabel && sortBy === "name" && (
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)] shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
               {typeLabel}
@@ -76,7 +77,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
         </div>
       </div>
       <div className="flex items-center justify-between gap-3 mt-1">
-        {typeLabel ? (
+        {typeLabel && sortBy === "name" ? (
           <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)]">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
             {typeLabel}
