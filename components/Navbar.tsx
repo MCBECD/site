@@ -43,7 +43,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
       <div className="flex items-center ml-auto">
         {/* Theme switcher */}
-        <div className="flex items-center gap-0.5 bg-[var(--color-bg-tertiary)] rounded-lg p-0.5">
+        <div className="flex items-center gap-0.5 bg-[var(--color-bg-tertiary)] rounded-md p-0.5">
           {THEMES.map(({ key, icon: Icon, titleKey }) => {
             const active = settings.theme === key;
             return (
