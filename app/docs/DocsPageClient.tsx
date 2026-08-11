@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X, Command, LayoutGrid, List, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -30,9 +31,14 @@ const TYPE_ORDER: Record<string, number> = {
 export default function DocsPageClient() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(() => {
+    const p = Number(searchParams.get("page"));
+    return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
+  });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [sortBy, setSortBy] = useState<SortBy>("name");
@@ -46,6 +52,14 @@ export default function DocsPageClient() {
     setBookmarks(getBookmarks());
   }, []);
 
+  const navigatePage = useCallback((p: number) => {
+    setPage(p);
+    const params = new URLSearchParams(searchParams.toString());
+    if (p <= 0) params.delete("page");
+    else params.set("page", String(p + 1));
+    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [searchParams, router]);
+
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -53,12 +67,19 @@ export default function DocsPageClient() {
     setBookmarks(getBookmarks());
   }, []);
 
+  const resetPage = useCallback(() => {
+    setPage(0);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
+    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [searchParams, router]);
+
   const handleInput = useCallback((value: string) => {
     setQuery(value);
-    setPage(0);
+    resetPage();
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => setDebouncedQuery(value), DEBOUNCE_MS);
-  }, []);
+  }, [resetPage]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -187,12 +208,12 @@ export default function DocsPageClient() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight">
+    <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
+      <div className="mb-6">
+        <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight">
           {t("doc.title")}
         </h1>
-        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-1.5">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-1">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
@@ -348,7 +369,7 @@ export default function DocsPageClient() {
         </div>
       )}
 
-      <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={setPage} />
+      <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={navigatePage} />
     </div>
   );
 }

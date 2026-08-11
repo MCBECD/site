@@ -71,7 +71,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
   return (
     <Link
       href={`/docs/${doc.id}`}
-      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
+      className="doc-card block group px-4 py-4 rounded-xl
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
         no-underline"
@@ -98,8 +98,8 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
             onClick={(e) => onBookmark(e, doc.id)}
             className={`w-6 h-6 flex items-center justify-center rounded-md
               ${bookmarked
-                ? "text-[var(--color-accent)]"
-                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
+                ? "text-yellow-500"
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-yellow-500"}
               }`}
             aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
           >
@@ -111,7 +111,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = 
       {(doc.description || doc.author || doc.updatedAt) && (
         <div className="flex items-center justify-between gap-3 mt-1">
           {doc.description && (
-            <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 leading-relaxed flex-1 min-w-0">
+            <p className="text-[13px] text-[var(--color-text-tertiary)] line-clamp-1 flex-1 min-w-0">
               {doc.description}
             </p>
           )}
