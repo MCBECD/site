@@ -13,7 +13,6 @@ import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
 type CategoryFilter = "all" | "basics" | "commands" | "examples";
-type SortBy = "name" | "type";
 type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
@@ -53,7 +52,7 @@ export default function DocsPageClient() {
   const [bookmarksCollapsed, setBookmarksCollapsed] = useState(() => savedState?.bookmarksCollapsed ?? false);
   const [historyCollapsed, setHistoryCollapsed] = useState(() => savedState?.historyCollapsed ?? false);
   const [category, setCategory] = useState<CategoryFilter>(() => (savedState?.category as CategoryFilter) ?? "all");
-  const [sortBy, setSortBy] = useState<SortBy>(() => (savedState?.sortBy as SortBy) ?? "name");
+  const [grouped, setGrouped] = useState<boolean>(() => (savedState?.grouped as boolean) ?? false);
   const [viewMode, setViewMode] = useState<ViewMode>(() => (savedState?.viewMode as ViewMode) ?? "card");
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -133,7 +132,7 @@ export default function DocsPageClient() {
 
   useEffect(() => {
     setPage(0);
-  }, [category, sortBy, viewMode]);
+  }, [category, grouped, viewMode]);
 
   const scrollSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -142,12 +141,12 @@ export default function DocsPageClient() {
       category,
       bookmarksCollapsed,
       historyCollapsed,
-      sortBy,
+      grouped,
       viewMode,
       page,
       scrollY: scrollYRef.current,
     });
-  }, [category, bookmarksCollapsed, historyCollapsed, sortBy, viewMode, page]);
+  }, [category, bookmarksCollapsed, historyCollapsed, grouped, viewMode, page]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -158,7 +157,7 @@ export default function DocsPageClient() {
           category,
           bookmarksCollapsed,
           historyCollapsed,
-          sortBy,
+          grouped,
           viewMode,
           page,
           scrollY: scrollYRef.current,
@@ -173,13 +172,13 @@ export default function DocsPageClient() {
         category,
         bookmarksCollapsed,
         historyCollapsed,
-        sortBy,
+        grouped,
         viewMode,
         page,
         scrollY: scrollYRef.current,
       });
     };
-  }, [category, bookmarksCollapsed, historyCollapsed, sortBy, viewMode, page]);
+  }, [category, bookmarksCollapsed, historyCollapsed, grouped, viewMode, page]);
 
   useLayoutEffect(() => {
     const targetScroll = savedState?.scrollY ?? 0;
@@ -233,9 +232,9 @@ export default function DocsPageClient() {
         return cmpTitle(a, b);
       });
 
-    const sortCommands = (arr: typeof result, currentSortBy: SortBy) =>
+    const sortCommands = (arr: typeof result, grouped: boolean) =>
       [...arr].sort((a, b) => {
-        if (currentSortBy === "type") {
+        if (grouped) {
           const aT = getCommandType(a.category) ?? "other";
           const bT = getCommandType(b.category) ?? "other";
           const aTO = TYPE_ORDER[aT] ?? 99;
@@ -248,7 +247,7 @@ export default function DocsPageClient() {
     if (category === "basics") {
       result = sortBasics(result);
     } else if (category === "commands") {
-      result = sortCommands(result, sortBy);
+      result = sortCommands(result, grouped);
     } else if (category === "examples") {
       result = result.sort((a, b) => {
         const aU = a.updatedAt ?? "";
@@ -258,7 +257,7 @@ export default function DocsPageClient() {
       });
     } else {
       const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
-      const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), sortBy);
+      const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), grouped);
       const otherDocs = result
         .filter((d) => {
           const base = getCategoryBase(d.category);
@@ -274,7 +273,7 @@ export default function DocsPageClient() {
     }
 
     return result;
-  }, [docs, debouncedQuery, category, sortBy, locale]);
+  }, [docs, debouncedQuery, category, grouped, locale]);
 
   const isSearching = debouncedQuery.trim().length > 0;
   const totalPages = viewMode === "list" ? 1 : Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE_CARD));
@@ -298,7 +297,7 @@ export default function DocsPageClient() {
   }, [totalPages, safePage]);
 
   const groupedPageDocs = useMemo<DocGroup[] | null>(() => {
-    if (sortBy !== "type") return null;
+    if (!grouped) return null;
 
     const groups: DocGroup[] = [];
     let currentGroup: DocGroup | null = null;
@@ -325,7 +324,7 @@ export default function DocsPageClient() {
     }
 
     return groups;
-  }, [pageDocs, sortBy, t]);
+  }, [pageDocs, grouped, t]);
 
   const bookmarkedDocs = useMemo(
     () => bookmarks.map((id) => docMap.get(id)).filter((d): d is DocMeta => !!d),
@@ -437,9 +436,9 @@ export default function DocsPageClient() {
         <div className="flex items-center gap-2">
           {showSortToggle && (
             <button
-              onClick={() => setSortBy((prev) => (prev === "type" ? "name" : "type"))}
+              onClick={() => setGrouped((prev) => !prev)}
               className={`h-9 px-3.5 inline-flex items-center gap-1.5 rounded-lg border transition-colors
-                ${sortBy === "type"
+                ${grouped
                   ? "bg-[var(--color-accent)] text-white border-transparent"
                   : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
               `}
@@ -532,7 +531,7 @@ export default function DocsPageClient() {
                       bookmarked={bookmarks.includes(doc.id)}
                       onBookmark={handleToggleBookmark}
                       viewMode={viewMode}
-                      sortBy={sortBy}
+                      grouped={grouped}
                     />
                   </div>
                 ))}
@@ -552,7 +551,7 @@ export default function DocsPageClient() {
                 bookmarked={bookmarks.includes(doc.id)}
                 onBookmark={handleToggleBookmark}
                 viewMode={viewMode}
-                sortBy={sortBy}
+                grouped={grouped}
               />
             </div>
           ))}
