@@ -38,6 +38,13 @@ export function getCommandType(category?: string): string | undefined {
   return getCategorySub(category);
 }
 
+/** Returns the i18n key for a command type (e.g. "doc.typePlayer"). */
+export function getCommandTypeI18nKey(category?: string): string | undefined {
+  const type = getCommandType(category);
+  if (!type) return undefined;
+  return `doc.type${type}`;
+}
+
 export function getBasicsOrder(category?: string): number {
   if (!category) return Infinity;
   const base = getCategoryBase(category);
