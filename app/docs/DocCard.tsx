@@ -19,7 +19,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
   return (
     <Link
       href={`/docs/${doc.id}`}
-      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-sm)]
+      className="doc-card block group px-4 py-4 rounded-xl
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
         no-underline"
@@ -46,7 +46,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
       {(doc.description || doc.author || doc.updatedAt) && (
         <div className="flex items-center justify-between gap-3 mt-1">
           {doc.description && (
-            <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 leading-relaxed flex-1 min-w-0">
+            <p className="text-[13px] text-[var(--color-text-tertiary)] line-clamp-1 flex-1 min-w-0">
               {doc.description}
             </p>
           )}
