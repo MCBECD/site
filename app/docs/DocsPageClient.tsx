@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X, Command } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -14,9 +15,14 @@ const DEBOUNCE_MS = 150;
 export default function DocsPageClient() {
   const { t } = useLocale();
   const { docs } = useDocs();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(() => {
+    const p = Number(searchParams.get("page"));
+    return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
+  });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -25,6 +31,14 @@ export default function DocsPageClient() {
     setBookmarks(getBookmarks());
   }, []);
 
+  const navigatePage = useCallback((p: number) => {
+    setPage(p);
+    const params = new URLSearchParams(searchParams.toString());
+    if (p <= 0) params.delete("page");
+    else params.set("page", String(p + 1));
+    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [searchParams, router]);
+
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -32,12 +46,19 @@ export default function DocsPageClient() {
     setBookmarks(getBookmarks());
   }, []);
 
+  const resetPage = useCallback(() => {
+    setPage(0);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
+    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [searchParams, router]);
+
   const handleInput = useCallback((value: string) => {
     setQuery(value);
-    setPage(0);
+    resetPage();
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => setDebouncedQuery(value), DEBOUNCE_MS);
-  }, []);
+  }, [resetPage]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -158,7 +179,7 @@ export default function DocsPageClient() {
         </div>
       )}
 
-      <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={setPage} />
+      <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={navigatePage} />
     </div>
   );
 }
