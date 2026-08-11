@@ -5,7 +5,7 @@
 export function CmdBlock({ icon, children }: { icon: string; children?: React.ReactNode }) {
   return (
     <span className="cmd-icon-wrapper">
-      <img src={`/icons/cmd/${icon}.png`} alt="" width={16} height={16} className="cmd-icon" />
+      <img src={`/icons/cmd/${icon}.png`} alt="" width={20} height={20} className="cmd-icon" />
       <code className="cmd-code">{children}</code>
     </span>
   );
