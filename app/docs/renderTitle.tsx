@@ -8,7 +8,7 @@ export const renderTitleWithCode = (title: string): ReactNode[] => {
   if (match) {
     parts.push(
       <span key="c-0" style={{ display: "inline-block", width: "20ch", textAlign: "left" }}>
-      <code className="h-[1rem]">
+      <code>
         {match[0]}
       </code>
       </span>
