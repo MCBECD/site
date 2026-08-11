@@ -1,0 +1,92 @@
+import fs from "node:fs";
+import path from "node:path";
+import matter from "gray-matter";
+
+const SITE_URL = "https://mcbecd.pages.dev";
+const DOCS_DIR = path.join(process.cwd(), "content", "docs");
+const OUT_DIR = path.join(process.cwd(), "public");
+
+interface DocInfo {
+  id: string;
+  updatedAt: string;
+}
+
+function scanDocs(dir: string, prefix: string): DocInfo[] {
+  const results: DocInfo[] = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (
+      entry.name.startsWith(".") ||
+      entry.name === "README.md" ||
+      entry.name === "CONTRIBUTING.md" ||
+      entry.name === "LICENSE"
+    ) {
+      continue;
+    }
+
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      const indexPath = path.join(fullPath, "index.mdx");
+      if (fs.existsSync(indexPath)) {
+        const raw = fs.readFileSync(indexPath, "utf-8");
+        const { data } = matter(raw);
+        const id = prefix ? `${prefix}/${entry.name}` : entry.name;
+        results.push({ id, updatedAt: (data.updatedAt as string) ?? "" });
+      } else {
+        results.push(
+          ...scanDocs(fullPath, prefix ? `${prefix}/${entry.name}` : entry.name)
+        );
+      }
+    } else if (entry.name.endsWith(".mdx")) {
+      const raw = fs.readFileSync(fullPath, "utf-8");
+      const { data } = matter(raw);
+      const docId = prefix
+        ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}`
+        : entry.name.replace(/\.mdx$/, "");
+      results.push({ id: docId, updatedAt: (data.updatedAt as string) ?? "" });
+    }
+  }
+
+  return results;
+}
+
+function main() {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  const docs = scanDocs(DOCS_DIR, "");
+
+  const today = new Date().toISOString().split("T")[0]!;
+
+  // sitemap.xml
+  const urls: string[] = [];
+  urls.push(`  <url><loc>${SITE_URL}/</loc><lastmod>${today}</lastmod><priority>1.0</priority></url>`);
+  urls.push(`  <url><loc>${SITE_URL}/docs/</loc><lastmod>${today}</lastmod><priority>0.9</priority></url>`);
+
+  for (const doc of docs) {
+    const lastmod = doc.updatedAt ? doc.updatedAt.split("T")[0]! : today;
+    urls.push(
+      `  <url><loc>${SITE_URL}/docs/${doc.id}/</loc><lastmod>${lastmod}</lastmod><priority>0.8</priority></url>`
+    );
+  }
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("\n")}
+</urlset>`;
+
+  fs.writeFileSync(path.join(OUT_DIR, "sitemap.xml"), sitemap, "utf-8");
+  console.log(`sitemap.xml: ${urls.length} URLs generated`);
+
+  // robots.txt
+  const robots = `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+
+  fs.writeFileSync(path.join(OUT_DIR, "robots.txt"), robots, "utf-8");
+  console.log("robots.txt generated");
+}
+
+main();
