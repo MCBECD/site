@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  other: {
+    "msvalidate.01": "BF57A28CBBC9D31E13C6587516DD0F93",
+  },
 };
 
 const websiteJsonLd = {
@@ -55,7 +58,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preload" href="https://avatars.githubusercontent.com/u/312049267?s=48" as="image" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-        <meta name="msvalidate.01" content="BF57A28CBBC9D31E13C6587516DD0F93" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
