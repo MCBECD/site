@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
@@ -16,101 +15,10 @@ const THEMES: { key: Theme; icon: typeof Sun; titleKey: string }[] = [
   { key: "system", icon: Monitor, titleKey: "settings.themeSystem" },
 ];
 
-const S = 30; // button size
-const G = 2;  // gap between buttons
-const P = 2;  // track padding
-const STEP = S + G; // distance between button starts
-
-const CLAMP_MIN = P;
-const CLAMP_MAX = P + (THEMES.length - 1) * STEP;
-
 export function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState(false);
-  const [indicatorX, setIndicatorX] = useState(0);
-  const [mounted, setMounted] = useState(false);
-  const committedIndex = useRef(-1);
-  const dragStartX = useRef(0);
-  const hasDragged = useRef(false);
-
-  useEffect(() => { setMounted(true); }, []);
-
-  // Default theme index on SSR (matches SettingsContext default: "system" → index 2)
-  // This avoids hydration mismatch when client has a different theme persisted
-  const effectiveTheme = mounted ? settings.theme : "system";
-  const activeIndex = THEMES.findIndex((th) => th.key === effectiveTheme);
-
-  // Sync committed index when theme changes externally
-  useEffect(() => {
-    committedIndex.current = activeIndex;
-  }, [activeIndex]);
-
-  const restX = P + activeIndex * STEP;
-
-  const clampX = useCallback((x: number) =>
-    Math.max(CLAMP_MIN, Math.min(CLAMP_MAX, x)),
-  []);
-
-  const xToIndex = useCallback((x: number) => {
-    const clamped = clampX(x);
-    return Math.round((clamped - P) / STEP);
-  }, [clampX]);
-
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (!trackRef.current) return;
-    e.preventDefault();
-    const rect = trackRef.current.getBoundingClientRect();
-    const rawX = e.clientX - rect.left;
-    // Snap to nearest button immediately
-    const idx = xToIndex(rawX);
-    const snapX = P + idx * STEP;
-    setIndicatorX(snapX);
-    committedIndex.current = idx;
-    const theme = THEMES[idx];
-    if (theme) updateSettings("theme", theme.key);
-    // Prepare for potential drag
-    dragStartX.current = rawX;
-    hasDragged.current = false;
-    setDragging(true);
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  }, [xToIndex, updateSettings]);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragging || !trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    const rawX = e.clientX - rect.left;
-    // Only start continuous tracking after 3px of movement
-    if (!hasDragged.current && Math.abs(rawX - dragStartX.current) < 3) return;
-    hasDragged.current = true;
-    setIndicatorX(clampX(rawX));
-  }, [dragging, clampX]);
-
-  const handlePointerUp = useCallback(() => {
-    if (!dragging) return;
-    setDragging(false);
-    // If user actually dragged, commit to nearest index
-    if (hasDragged.current) {
-      const idx = xToIndex(indicatorX);
-      committedIndex.current = idx;
-      const theme = THEMES[idx];
-      if (theme) updateSettings("theme", theme.key);
-    }
-  }, [dragging, indicatorX, xToIndex, updateSettings]);
-
-  const displayX = dragging ? indicatorX : restX;
-
-  // How much the indicator overlaps each button (0 = none, 1 = fully covered)
-  const overlap = (i: number) => {
-    const btnStart = P + i * STEP;
-    const btnEnd = btnStart + S;
-    const indStart = displayX;
-    const indEnd = displayX + S;
-    const overlapStart = Math.max(btnStart, indStart);
-    const overlapEnd = Math.min(btnEnd, indEnd);
-    return Math.max(0, Math.min(1, (overlapEnd - overlapStart) / S));
-  };
+  const activeIndex = THEMES.findIndex((th) => th.key === settings.theme);
 
   return (
     <nav
@@ -135,56 +43,38 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
       </Link>
 
       <div className="flex items-center ml-auto">
-        {/* Theme segmented control */}
+        {/* Theme segmented control — simple button group with radiogroup semantics */}
         <div
-          ref={trackRef}
-          className="relative flex items-center rounded-[var(--radius-sm)] p-[2px] touch-none"
+          className="relative flex items-center rounded-[var(--radius-sm)] p-[2px]"
           style={{
             background: "var(--color-bg-tertiary)",
-            width: P * 2 + THEMES.length * S + (THEMES.length - 1) * G,
-            height: S + P * 2,
           }}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
+          role="radiogroup"
+          aria-label={t("settings.theme")}
         >
-          {/* Sliding indicator — follows finger during drag, animates on release */}
-          <span
-            className="absolute top-[2px] rounded-[calc(var(--radius-sm)-2px)] pointer-events-none"
-            suppressHydrationWarning
-            style={{
-              left: displayX,
-              width: S,
-              height: S,
-              background: "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-              transition: dragging || !mounted
-                ? "none"
-                : `left 280ms var(--ease-spring)`,
-            }}
-          />
           {THEMES.map(({ key, icon: Icon, titleKey }, i) => {
-            const o = overlap(i);
-            const active = dragging ? o > 0 : i === activeIndex;
+            const isActive = i === activeIndex;
             return (
               <button
                 key={key}
-                className="relative z-[1] flex items-center justify-center select-none"
-                suppressHydrationWarning
+                role="radio"
+                aria-checked={isActive}
+                className="relative z-[1] flex items-center justify-center select-none rounded-[calc(var(--radius-sm)-2px)]
+                  transition-colors duration-200"
                 style={{
-                  width: S,
-                  height: S,
-                  marginLeft: i > 0 ? G : 0,
-                  color: active
+                  width: 30,
+                  height: 30,
+                  marginLeft: i > 0 ? 2 : 0,
+                  color: isActive
                     ? "var(--color-accent)"
                     : "var(--color-text-tertiary)",
-                  transition: dragging || !mounted
-                    ? "none"
-                    : `color 280ms var(--ease-spring)`,
+                  background: isActive
+                    ? "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))"
+                    : "transparent",
+                  boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
                 }}
                 title={t(titleKey)}
-                aria-pressed={activeIndex === i}
+                onClick={() => updateSettings("theme", key)}
               >
                 <Icon className="w-[15px] h-[15px]" />
               </button>

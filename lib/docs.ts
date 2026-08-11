@@ -62,6 +62,18 @@ function readMetaJson(dirPath: string): Record<string, unknown> | null {
   }
 }
 
+/** 从 unknown 中安全提取 string，非 string 返回 undefined */
+function asString(v: unknown): string | undefined {
+  return typeof v === "string" && v.length > 0 ? v : undefined;
+}
+
+/** 从 unknown 中安全提取 string[]，非数组或元素非 string 返回 undefined */
+function asStringArray(v: unknown): string[] | undefined {
+  if (!Array.isArray(v)) return undefined;
+  const valid = v.filter((t): t is string => typeof t === "string" && t.length > 0);
+  return valid.length > 0 ? valid : undefined;
+}
+
 function buildMeta(
   id: string,
   fallbackName: string,
@@ -74,22 +86,16 @@ function buildMeta(
   const fm = mdxMeta?.frontmatter ?? {};
   return {
     id,
-    title: (jsonMeta?.title as string) ?? (fm.title as string) ?? fallbackName,
-    description: (jsonMeta?.description as string) ?? (fm.description as string) ?? undefined,
-    tags: normalizeTags((jsonMeta?.tags as string[]) ?? (fm.tags as string[])),
-    author: (jsonMeta?.author as string) ?? (fm.author as string) ?? undefined,
-    createdAt: (jsonMeta?.createdAt as string) ?? (fm.createdAt as string) ?? undefined,
-    updatedAt: (jsonMeta?.updatedAt as string) ?? (fm.updatedAt as string) ?? undefined,
-    type: (jsonMeta?.type as string) ?? (fm.type as string) ?? undefined,
+    title: asString(jsonMeta?.title) ?? asString(fm.title) ?? fallbackName,
+    description: asString(jsonMeta?.description) ?? asString(fm.description),
+    tags: asStringArray(jsonMeta?.tags) ?? asStringArray(fm.tags),
+    author: asString(jsonMeta?.author) ?? asString(fm.author),
+    createdAt: asString(jsonMeta?.createdAt) ?? asString(fm.createdAt),
+    updatedAt: asString(jsonMeta?.updatedAt) ?? asString(fm.updatedAt),
+    type: asString(jsonMeta?.type) ?? asString(fm.type),
     readingTime: mdxMeta?.readingTime,
-    category: (jsonMeta?.category as string) ?? (fm.category as string) ?? undefined,
+    category: asString(jsonMeta?.category) ?? asString(fm.category),
   };
-}
-
-function normalizeTags(tags: unknown): string[] | undefined {
-  if (!Array.isArray(tags)) return undefined;
-  const valid = tags.filter((t): t is string => typeof t === "string" && t.length > 0);
-  return valid.length > 0 ? valid : undefined;
 }
 
 /* ----------------------------------------------------------
