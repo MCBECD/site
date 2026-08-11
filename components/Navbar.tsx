@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
@@ -30,18 +30,24 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const [indicatorX, setIndicatorX] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const committedIndex = useRef(-1);
   const dragStartX = useRef(0);
   const hasDragged = useRef(false);
 
-  const activeIndex = THEMES.findIndex((th) => th.key === settings.theme);
+  useEffect(() => { setMounted(true); }, []);
+
+  // Default theme index on SSR (matches SettingsContext default: "system" → index 2)
+  // This avoids hydration mismatch when client has a different theme persisted
+  const effectiveTheme = mounted ? settings.theme : "system";
+  const activeIndex = THEMES.findIndex((th) => th.key === effectiveTheme);
 
   // Sync committed index when theme changes externally
-  if (committedIndex.current !== activeIndex) {
+  useEffect(() => {
     committedIndex.current = activeIndex;
-  }
+  }, [activeIndex]);
 
-  const restX = P + committedIndex.current * STEP;
+  const restX = P + activeIndex * STEP;
 
   const clampX = useCallback((x: number) =>
     Math.max(CLAMP_MIN, Math.min(CLAMP_MAX, x)),
@@ -146,13 +152,14 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           {/* Sliding indicator — follows finger during drag, animates on release */}
           <span
             className="absolute top-[2px] rounded-[calc(var(--radius-sm)-2px)] pointer-events-none"
+            suppressHydrationWarning
             style={{
               left: displayX,
               width: S,
               height: S,
               background: "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))",
               boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-              transition: dragging
+              transition: dragging || !mounted
                 ? "none"
                 : `left 280ms var(--ease-spring)`,
             }}
@@ -164,6 +171,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
               <button
                 key={key}
                 className="relative z-[1] flex items-center justify-center select-none"
+                suppressHydrationWarning
                 style={{
                   width: S,
                   height: S,
@@ -171,7 +179,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                   color: active
                     ? "var(--color-accent)"
                     : "var(--color-text-tertiary)",
-                  transition: dragging
+                  transition: dragging || !mounted
                     ? "none"
                     : `color 280ms var(--ease-spring)`,
                 }}

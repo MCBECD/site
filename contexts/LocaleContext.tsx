@@ -20,7 +20,6 @@ const MSG: Record<Locale, Messages> = {
   fr: fr as Messages,
 };
 
-/** 嵌套对象按路径取值 */
 function getNested(obj: unknown, path: string[], fallback: string): string {
   let cur: unknown = obj;
   for (const p of path) {
@@ -30,9 +29,19 @@ function getNested(obj: unknown, path: string[], fallback: string): string {
   return typeof cur === "string" ? cur : fallback;
 }
 
+const VAR_RE_CACHE = new Map<string, RegExp>();
+
+function getVarRe(key: string): RegExp {
+  let re = VAR_RE_CACHE.get(key);
+  if (!re) {
+    re = new RegExp(`\\{${key}\\}`, "g");
+    VAR_RE_CACHE.set(key, re);
+  }
+  return re;
+}
+
 interface LocaleContextValue {
   locale: Locale;
-  /** 按 "section.key" 路径取字符串，支持 {var} 插值 */
   t: (key: string, vars?: Record<string, string | number>) => string;
 }
 
@@ -46,7 +55,7 @@ export function LocaleProvider({ locale, children }: { locale: Locale; children:
       let result = getNested(messages, key.split("."), key);
       if (vars) {
         for (const [k, v] of Object.entries(vars)) {
-          result = result.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+          result = result.replace(getVarRe(k), String(v));
         }
       }
       return result;

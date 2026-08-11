@@ -90,6 +90,7 @@ export interface Messages {
     filterExamples: string;
     sortByName: string;
     sortByType: string;
+    group: string;
     sortByUpdated: string;
     viewMode: string;
     viewCards: string;
