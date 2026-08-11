@@ -31,8 +31,8 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, s
       >
         <div className="flex items-center gap-2.5 min-w-0">
           {typeLabel && sortBy === "name" && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)] shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            <span className="type-chip shrink-0">
+              <span className="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
               {typeLabel}
             </span>
           )}
@@ -83,8 +83,8 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, s
       </div>
       <div className="flex items-center justify-between gap-3 mt-1">
         {typeLabel && sortBy === "name" ? (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+          <span className="type-chip">
+            <span className="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
             {typeLabel}
           </span>
         ) : categoryLabel ? (
