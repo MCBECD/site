@@ -15,6 +15,18 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 let currentObserver: { cb: IntersectionObserverCallback } | null = null;
 
+function createMockEntry(isIntersecting: boolean): IntersectionObserverEntry {
+  return {
+    isIntersecting,
+    target: null!,
+    boundingClientRect: {} as DOMRectReadOnly,
+    intersectionRatio: 0,
+    intersectionRect: {} as DOMRectReadOnly,
+    rootBounds: null,
+    time: 0,
+  };
+}
+
 class MockIntersectionObserver {
   private cb: IntersectionObserverCallback;
   root: Element | null = null;
@@ -28,7 +40,7 @@ class MockIntersectionObserver {
 
   observe() {
     // Simulate initial state: sentinel is intersecting (user at top) → button hidden
-    this.cb([{ isIntersecting: true, target: null! } as IntersectionObserverEntry], null!);
+    this.cb([createMockEntry(true)], null!);
   }
 
   unobserve() {}
@@ -58,7 +70,7 @@ describe("ScrollToTop", () => {
   it("becomes visible when scrolled past threshold", () => {
     render(<ScrollToTop />, { wrapper: Wrapper });
     act(() => {
-      currentObserver?.cb([{ isIntersecting: false, target: null! } as IntersectionObserverEntry], null!);
+      currentObserver?.cb([createMockEntry(false)], null!);
     });
     const btn = screen.getByRole("button");
     expect(btn.className).toContain("pointer-events-auto");
@@ -69,7 +81,7 @@ describe("ScrollToTop", () => {
     const user = userEvent.setup();
     render(<ScrollToTop />, { wrapper: Wrapper });
     act(() => {
-      currentObserver?.cb([{ isIntersecting: false, target: null! } as IntersectionObserverEntry], null!);
+      currentObserver?.cb([createMockEntry(false)], null!);
     });
     await user.click(screen.getByRole("button"));
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
