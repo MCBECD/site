@@ -34,7 +34,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   }, [doc.meta.id]);
 
   return (
-    <div className="max-w-3xl mx-auto px-5 pt-6 pb-20">
+    <div className="max-w-3xl mx-auto px-5 pt-8 pb-24">
       <div className="doc-glass-card overflow-hidden">
         {/* 顶部操作栏 */}
         <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
@@ -71,35 +71,25 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         </div>
 
         {/* 标题 + 元信息 */}
-        <header className="px-6 pt-5 pb-2">
-          <div className="flex items-center gap-3 mb-2">
+        <header className="px-6 pt-6 pb-3">
+          <div className="flex items-center gap-2 mb-2.5">
             {categoryLabel && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded text-[12px] font-medium
-                bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/20">
+              <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
                 {categoryLabel}
               </span>
             )}
+            {(doc.meta.author || doc.meta.updatedAt) && (
+              <span className="text-[12px] text-[var(--color-text-tertiary)]">
+                {doc.meta.author}{doc.meta.author && doc.meta.updatedAt ? " · " : ""}{doc.meta.updatedAt ?? ""}
+              </span>
+            )}
           </div>
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
+          <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {renderTitleWithCode(doc.meta.title)}
           </h1>
-          {(doc.meta.author || doc.meta.updatedAt) && (
-            <div className="flex items-center gap-3 mt-2 text-xs text-[var(--color-text-tertiary)]">
-              {doc.meta.author && (
-                <span className="inline-flex items-center gap-1">
-                  <span className="w-4 h-4 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center text-[10px] font-medium text-[var(--color-text-secondary)]">
-                    {doc.meta.author.charAt(0).toUpperCase()}
-                  </span>
-                  {doc.meta.author}
-                </span>
-              )}
-              {doc.meta.updatedAt && (
-                <span>{t("doc.updatedAt", { date: doc.meta.updatedAt })}</span>
-              )}
-            </div>
-          )}
           {doc.meta.description && (
-            <p className="text-[14px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
+            <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
               {doc.meta.description}
             </p>
           )}
