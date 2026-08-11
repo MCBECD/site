@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "설정",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "문서"
   },
   "settings": {
     "title": "설정",
@@ -85,5 +86,34 @@
     "typeUI": "UI",
     "typeAdvanced": "고급",
     "typeOther": "기타"
+  },
+  "landing": {
+    "tagline": "커뮤니티 주도의 Minecraft 베드락 명령어 참고 자료. 모든 명령어는 검증되었으며 바로 복사해서 사용할 수 있습니다.",
+    "ctaPrimary": "명령어 둘러보기",
+    "ctaSecondary": "GitHub에서 보기",
+    "feature1Title": "복사해서 바로 사용",
+    "feature1Desc": "각 명령어에 구문, 매개변수 설명, 채팅창에 바로 붙여넣을 수 있는 예제가 포함되어 있습니다.",
+    "feature2Title": "다국어 지원",
+    "feature2Desc": "인터페이스는 7개 언어를 지원하며, 명령어 자체는 원래 영어 형태를 유지합니다.",
+    "feature3Title": "맞춤형 테마",
+    "feature3Desc": "4가지 프리셋 색상, 라이트/다크 모드, 사용자 지정 배경 및 글꼴 크기.",
+    "statCommands": "개 명령어",
+    "statLocales": "개 언어",
+    "statLicense": "오픈소스",
+    "cmdGive": "아이템 지급",
+    "cmdExecute": "조건부 실행",
+    "cmdTellraw": "원시 텍스트",
+    "cmdScoreboard": "스코어보드",
+    "ctaSectionTitle": "준비되셨나요?",
+    "ctaSectionDesc": "기본부터 고급 기법까지, {count}개 명령어가 여러분을 기다립니다.",
+    "ctaSectionButton": "명령어 라이브러리로",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft는 Mojang Studios의 상표입니다. 이 프로젝트는 Mojang Studios 또는 Microsoft Corporation과 관련이 없습니다."
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "찾으시는 페이지가 존재하지 않거나 이동되었습니다. 명령어 오타이거나 포탈 좌표가 잘못되었을 수 있습니다.",
+    "backHome": "홈으로",
+    "browseDocs": "명령어 둘러보기"
   }
 }

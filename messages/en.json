@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "Settings",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "Docs"
   },
   "settings": {
     "title": "Settings",
@@ -74,9 +75,6 @@
     "filterBasics": "Basics",
     "filterCommands": "Commands",
     "filterExamples": "Examples",
-    "sortByName": "Name",
-    "sortByType": "Type",
-    "sortByUpdated": "Updated",
     "group": "Group",
     "typePlayer": "Player",
     "typeWorld": "World",
@@ -84,6 +82,38 @@
     "typeEntity": "Entity",
     "typeUI": "UI",
     "typeAdvanced": "Advanced",
-    "typeOther": "Other"
+    "typeOther": "Other",
+    "viewMode": "View",
+    "viewCards": "Cards",
+    "viewList": "List"
+  },
+  "landing": {
+    "tagline": "Community-driven Minecraft Bedrock command reference. Every command is verified and ready to copy.",
+    "ctaPrimary": "Browse Commands",
+    "ctaSecondary": "View on GitHub",
+    "feature1Title": "Copy & Paste",
+    "feature1Desc": "Every command comes with syntax, parameter details, and examples ready to paste into chat.",
+    "feature2Title": "Multilingual",
+    "feature2Desc": "Interface supports 7 languages, while commands stay in their original English form.",
+    "feature3Title": "Customizable Themes",
+    "feature3Desc": "4 preset color schemes, light/dark modes, custom backgrounds and font sizes.",
+    "statCommands": "commands",
+    "statLocales": "languages",
+    "statLicense": "open source",
+    "cmdGive": "Give items",
+    "cmdExecute": "Conditional execution",
+    "cmdTellraw": "Raw text",
+    "cmdScoreboard": "Scoreboard",
+    "ctaSectionTitle": "Ready to dive in?",
+    "ctaSectionDesc": "From basics to advanced techniques, {count} commands await.",
+    "ctaSectionButton": "Enter Command Library",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft is a trademark of Mojang Studios. This project is not affiliated with, endorsed by, or connected with Mojang Studios or Microsoft Corporation."
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "The page you're looking for doesn't exist or has been moved. Might be a typo, or a portal with bad coordinates.",
+    "backHome": "Back Home",
+    "browseDocs": "Browse Commands"
   }
 }
