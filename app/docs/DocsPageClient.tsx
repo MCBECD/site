@@ -239,7 +239,7 @@ export default function DocsPageClient() {
       </div>
 
       {/* 搜索栏 + 工具栏 */}
-      <div className="flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
+      <div className="relative z-10 flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
           <input
