@@ -12,7 +12,7 @@ import { getCategoryBase, getCommandType, getCommandTypeI18nKey, getBasicsOrder 
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
-type CategoryFilter = "all" | "basics" | "commands";
+type CategoryFilter = "all" | "basics" | "commands" | "examples";
 type SortBy = "name" | "type";
 type ViewMode = "card" | "list";
 
@@ -207,7 +207,11 @@ export default function DocsPageClient() {
     let result = docs;
 
     if (category !== "all") {
-      result = result.filter((d) => getCategoryBase(d.category) === category);
+      if (category === "examples") {
+        result = result.filter((d) => d.category === "examples");
+      } else {
+        result = result.filter((d) => getCategoryBase(d.category) === category);
+      }
     }
 
     const q = debouncedQuery.trim().toLowerCase();
@@ -245,6 +249,13 @@ export default function DocsPageClient() {
       result = sortBasics(result);
     } else if (category === "commands") {
       result = sortCommands(result, sortBy);
+    } else if (category === "examples") {
+      result = result.sort((a, b) => {
+        const aU = a.updatedAt ?? "";
+        const bU = b.updatedAt ?? "";
+        if (aU !== bU) return bU.localeCompare(aU);
+        return cmpTitle(a, b);
+      });
     } else {
       const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
       const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), sortBy);
@@ -330,6 +341,7 @@ export default function DocsPageClient() {
     { key: "all", labelKey: "doc.filterAll" },
     { key: "basics", labelKey: "doc.filterBasics" },
     { key: "commands", labelKey: "doc.filterCommands" },
+    { key: "examples", labelKey: "doc.filterExamples" },
   ];
 
   return (

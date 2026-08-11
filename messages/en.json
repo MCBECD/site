@@ -73,6 +73,7 @@
     "filterAll": "All",
     "filterBasics": "Basics",
     "filterCommands": "Commands",
+    "filterExamples": "Examples",
     "sortByName": "Name",
     "sortByType": "Type",
     "sortByUpdated": "Updated",
