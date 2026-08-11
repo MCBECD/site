@@ -1,4 +1,5 @@
-/* ---------------------------------------------------------- * Keyframes
+/* ----------------------------------------------------------
+ * Keyframes
  * ---------------------------------------------------------- */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -10,12 +11,29 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @keyframes tabSlideIn {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
 
-/* ---------------------------------------------------------- * Animation utilities
+@keyframes starPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* ----------------------------------------------------------
+ * Animation utilities
  * ---------------------------------------------------------- */
 .overlay-in  { animation: fadeIn 0.1s ease both; }
 .overlay-out { animation: fadeIn 0.08s ease reverse both; }
@@ -23,7 +41,7 @@
 .settings-panel-in  { animation: fadeIn 0.12s ease both; }
 .settings-panel-out { animation: fadeIn 0.08s ease reverse both; }
 
-.dropdown-in  { animation: fadeIn 0.08s ease both; }
+.dropdown-in  { animation: slideDown 0.15s var(--ease-out) both; }
 .collapse-in  { animation: fadeIn 0.1s ease both; }
 
 .tab-indicator {
@@ -33,7 +51,44 @@
 
 .page-fade-in { animation: fadeIn 0.1s ease both; }
 
+/* Hero & section entrance */
+.hero-enter {
+  animation: fadeInUp 0.4s var(--ease-out) both;
+}
+
+.hero-sub-enter {
+  animation: fadeInUp 0.35s var(--ease-out) 0.06s both;
+}
+
+.tabs-enter {
+  animation: fadeInUp 0.3s var(--ease-out) 0.1s both;
+}
+
+.search-enter {
+  animation: fadeInUp 0.3s var(--ease-out) 0.14s both;
+}
+
+/* Doc cards staggered entrance */
 .doc-card-enter {
-  animation: fadeInUp 0.35s ease-out both;
-  animation-delay: calc(var(--stagger-index, 0) * 50ms);
+  animation: fadeInUp 0.3s var(--ease-out) both;
+   animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.18s);
+}
+
+/* Detail page entrance */
+.detail-enter {
+  animation: fadeInUp 0.35s var(--ease-out) both;
+}
+
+.detail-content-enter {
+  animation: fadeIn 0.3s ease 0.12s both;
+}
+
+/* Star button pop */
+.star-pop {
+  animation: starPop 0.3s var(--ease-spring) both;
+}
+
+/* Pagination fade */
+.pagination-enter {
+  animation: fadeIn 0.25s ease 0.35s both;
 }
