@@ -69,6 +69,23 @@
     "bookmarks": "Bookmarks",
     "recent": "Recent",
     "noBookmarks": "No bookmarked commands",
-    "noRecent": "No browsing history"
+    "noRecent": "No browsing history",
+    "filterAll": "All",
+    "filterBasics": "Basics",
+    "filterCommands": "Commands",
+    "filterExamples": "Examples",
+    "sortByName": "Name",
+    "sortByType": "Type",
+    "sortByUpdated": "Updated",
+    "viewMode": "View",
+    "viewCards": "Cards",
+    "viewList": "List",
+    "typePlayer": "Player",
+    "typeWorld": "World",
+    "typeBuilding": "Building",
+    "typeEntity": "Entity",
+    "typeUI": "UI",
+    "typeAdvanced": "Advanced",
+    "typeOther": "Other"
   }
 }

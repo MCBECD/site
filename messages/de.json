@@ -69,6 +69,23 @@
     "bookmarks": "Lesezeichen",
     "recent": "Zuletzt besucht",
     "noBookmarks": "Keine Lesezeichen vorhanden",
-    "noRecent": "Kein Verlauf vorhanden"
+    "noRecent": "Kein Verlauf vorhanden",
+    "filterAll": "Alle",
+    "filterBasics": "Grundlagen",
+    "filterCommands": "Befehle",
+    "filterExamples": "Beispiele",
+    "sortByName": "Name",
+    "sortByType": "Typ",
+    "sortByUpdated": "Aktualisiert",
+    "viewMode": "Ansicht",
+    "viewCards": "Karten",
+    "viewList": "Liste",
+    "typePlayer": "Spieler",
+    "typeWorld": "Welt",
+    "typeBuilding": "Bau",
+    "typeEntity": "Entität",
+    "typeUI": "UI",
+    "typeAdvanced": "Fortgeschritten",
+    "typeOther": "Sonstige"
   }
 }

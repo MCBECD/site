@@ -1,25 +1,46 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { Search, X, Command } from "lucide-react";
+import { Search, X, Command, LayoutGrid, List, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark } from "@/lib/storage";
+import { getCategoryBase, getCommandType, getBasicsOrder } from "@/lib/categories";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
-const PAGE_SIZE = 10;
+type CategoryFilter = "all" | "basics" | "commands" | "examples";
+type SortBy = "name" | "type";
+type ViewMode = "card" | "list";
+
+const PAGE_SIZE_CARD = 10;
+const PAGE_SIZE_LIST = 20;
 const DEBOUNCE_MS = 150;
 
+const TYPE_ORDER: Record<string, number> = {
+  Player: 0,
+  World: 1,
+  Building: 2,
+  Entity: 3,
+  UI: 4,
+  Advanced: 5,
+  other: 99,
+};
+
 export default function DocsPageClient() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { docs } = useDocs();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [category, setCategory] = useState<CategoryFilter>("all");
+  const [sortBy, setSortBy] = useState<SortBy>("name");
+  const [viewMode, setViewMode] = useState<ViewMode>("card");
+  const [sortOpen, setSortOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setBookmarks(getBookmarks());
@@ -54,8 +75,29 @@ export default function DocsPageClient() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [category, sortBy, viewMode]);
+
+  const showSortDropdown = category === "commands" || category === "all";
+
   const filteredDocs = useMemo(() => {
     let result = docs;
+
+    if (category !== "all") {
+      result = result.filter((d) => getCategoryBase(d.category) === category);
+    }
+
     const q = debouncedQuery.trim().toLowerCase();
     if (q) {
       result = result.filter((d) =>
@@ -63,16 +105,61 @@ export default function DocsPageClient() {
         (d.description && d.description.toLowerCase().includes(q)),
       );
     }
+
+    const cmpTitle = (a: typeof result[0], b: typeof result[0]) =>
+      a.title.localeCompare(b.title, locale ?? "zh-CN");
+
+    const sortBasics = (arr: typeof result) =>
+      [...arr].sort((a, b) => {
+        const aO = getBasicsOrder(a.category);
+        const bO = getBasicsOrder(b.category);
+        if (aO !== bO) return aO - bO;
+        return cmpTitle(a, b);
+      });
+
+    const sortExamples = (arr: typeof result) =>
+      [...arr].sort((a, b) => {
+        const aU = a.updatedAt ?? "";
+        const bU = b.updatedAt ?? "";
+        if (aU !== bU) return bU.localeCompare(aU);
+        return cmpTitle(a, b);
+      });
+
+    const sortCommands = (arr: typeof result, currentSortBy: SortBy) =>
+      [...arr].sort((a, b) => {
+        if (currentSortBy === "type") {
+          const aT = getCommandType(a.category) ?? "other";
+          const bT = getCommandType(b.category) ?? "other";
+          const aTO = TYPE_ORDER[aT] ?? 99;
+          const bTO = TYPE_ORDER[bT] ?? 99;
+          if (aTO !== bTO) return aTO - bTO;
+        }
+        return cmpTitle(a, b);
+      });
+
+    if (category === "basics") {
+      result = sortBasics(result);
+    } else if (category === "examples") {
+      result = sortExamples(result);
+    } else if (category === "commands") {
+      result = sortCommands(result, sortBy);
+    } else {
+      const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
+      const examplesDocs = sortExamples(result.filter((d) => getCategoryBase(d.category) === "examples"));
+      const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), sortBy);
+      result = [...basicsDocs, ...examplesDocs, ...commandsDocs];
+    }
+
     return result;
-  }, [docs, debouncedQuery]);
+  }, [docs, debouncedQuery, category, sortBy, locale]);
 
   const isSearching = debouncedQuery.trim().length > 0;
-
-  const totalPages = Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE));
+  const pageSize = viewMode === "card" ? PAGE_SIZE_CARD : PAGE_SIZE_LIST;
+  const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
   const safePage = Math.min(page, totalPages - 1);
   const pageDocs = useMemo(
-    () => filteredDocs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
-    [filteredDocs, safePage],
+    () => filteredDocs.slice(safePage * pageSize, (safePage + 1) * pageSize),
+    [filteredDocs, safePage, pageSize],
   );
 
   const pageNumbers = useMemo(() => {
@@ -87,6 +174,18 @@ export default function DocsPageClient() {
     return pages;
   }, [totalPages, safePage]);
 
+  const categoryTabs: { key: CategoryFilter; labelKey: string }[] = [
+    { key: "all", labelKey: "doc.filterAll" },
+    { key: "basics", labelKey: "doc.filterBasics" },
+    { key: "commands", labelKey: "doc.filterCommands" },
+    { key: "examples", labelKey: "doc.filterExamples" },
+  ];
+
+  const sortOptions: { key: SortBy; labelKey: string }[] = [
+    { key: "name", labelKey: "doc.sortByName" },
+    { key: "type", labelKey: "doc.sortByType" },
+  ];
+
   return (
     <div className="max-w-2xl mx-auto px-5 pt-12 pb-20">
       <div className="mb-8">
@@ -98,38 +197,128 @@ export default function DocsPageClient() {
         </p>
       </div>
 
-      {/* 搜索栏 */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
-        <input
-          ref={searchRef}
-          type="text"
-          value={query}
-          onChange={(e) => handleInput(e.target.value)}
-          placeholder={t("doc.searchPlaceholder")}
-          className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
-            bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
-            placeholder:text-[var(--color-text-tertiary)]
-            border border-[var(--color-border)]
-            focus:outline-none"
-        />
-        {query ? (
-          <button
-            onClick={() => { setQuery(""); setDebouncedQuery(""); }}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7
-              flex items-center justify-center rounded-md
-              text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
-              hover:bg-[var(--color-bg-tertiary)] transition-colors"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        ) : (
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
-            text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
-            pointer-events-none hidden sm:inline-flex">
-            <Command className="w-2.5 h-2.5" />
-          </kbd>
-        )}
+      {/* 分类筛选标签 */}
+      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
+        {categoryTabs.map((tab) => {
+          const active = category === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setCategory(tab.key)}
+              className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all
+                ${active
+                  ? "bg-[var(--color-accent)] text-white shadow-sm"
+                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
+              `}
+            >
+              {t(tab.labelKey)}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 搜索栏 + 工具栏 */}
+      <div className="flex flex-col sm:flex-row gap-2.5 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
+          <input
+            ref={searchRef}
+            type="text"
+            value={query}
+            onChange={(e) => handleInput(e.target.value)}
+            placeholder={t("doc.searchPlaceholder")}
+            className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
+              bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]
+              placeholder:text-[var(--color-text-tertiary)]
+              border border-[var(--color-border)]
+              focus:outline-none"
+          />
+          {query ? (
+            <button
+              onClick={() => { setQuery(""); setDebouncedQuery(""); }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7
+                flex items-center justify-center rounded-md
+                text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
+                hover:bg-[var(--color-bg-tertiary)] transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
+              text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
+              pointer-events-none hidden sm:inline-flex">
+              <Command className="w-2.5 h-2.5" />
+            </kbd>
+          )}
+        </div>
+
+        {/* 排序 & 视图切换 */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* 排序下拉 - 仅 commands 和 all 时显示 */}
+          {showSortDropdown && (
+            <div ref={sortDropdownRef} className="relative">
+              <button
+                onClick={() => setSortOpen((v) => !v)}
+                className="h-[42px] px-3.5 inline-flex items-center gap-1.5 rounded-lg
+                  bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
+                  border border-[var(--color-border)]
+                  hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+                  transition-colors"
+              >
+                <span className="text-[13px] font-medium">{t(sortOptions.find((o) => o.key === sortBy)!.labelKey)}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${sortOpen ? "rotate-180" : ""}`} />
+              </button>
+              {sortOpen && (
+                <div className="absolute right-0 top-full mt-1.5 py-1 min-w-[140px] rounded-lg
+                  bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20">
+                  {sortOptions.map((opt) => {
+                    const active = sortBy === opt.key;
+                    return (
+                      <button
+                        key={opt.key}
+                        onClick={() => { setSortBy(opt.key); setSortOpen(false); }}
+                        className={`w-full px-3.5 py-2 text-left text-[13px] transition-colors
+                          ${active
+                            ? "text-[var(--color-accent)] bg-[var(--color-accent)]/10"
+                            : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
+                        `}
+                      >
+                        {t(opt.labelKey)}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 视图切换 */}
+          <div className="h-[42px] p-0.5 inline-flex items-center rounded-lg
+            bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <button
+              onClick={() => setViewMode("card")}
+              title={t("doc.viewCards")}
+              className={`w-9 h-full inline-flex items-center justify-center rounded-md transition-all
+                ${viewMode === "card"
+                  ? "bg-[var(--color-bg-primary)] text-[var(--color-accent)] shadow-sm"
+                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"}
+              `}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              title={t("doc.viewList")}
+              className={`w-9 h-full inline-flex items-center justify-center rounded-md transition-all
+                ${viewMode === "list"
+                  ? "bg-[var(--color-bg-primary)] text-[var(--color-accent)] shadow-sm"
+                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"}
+              `}
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
       </div>
 
       {isSearching && (
@@ -146,13 +335,14 @@ export default function DocsPageClient() {
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
-        <div className="space-y-1.5" key={`${debouncedQuery}-${safePage}`}>
+        <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
           {pageDocs.map((doc) => (
             <DocCard
               key={doc.id}
               doc={doc}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
+              viewMode={viewMode}
             />
           ))}
         </div>

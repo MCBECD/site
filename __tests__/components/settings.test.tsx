@@ -4,8 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { ToggleSwitch } from "@/components/settings/ToggleSwitch";
 import { Section } from "@/components/settings/Section";
 import { SliderRow } from "@/components/settings/SliderRow";
-import { PluginCard } from "@/components/settings/PluginCard";
-import { Settings as SettingsIcon } from "lucide-react";
 
 describe("ToggleSwitch", () => {
   it("has role=switch and reflects checked state", () => {
@@ -69,46 +67,5 @@ describe("SliderRow", () => {
     render(<SliderRow label="Test" value={3} onChange={vi.fn()} max={20} />);
     const slider = screen.getByRole("slider");
     expect(slider).toHaveAttribute("max", "20");
-  });
-});
-
-describe("PluginCard", () => {
-  it("shows name, description, and toggle", () => {
-    render(
-      <PluginCard name="Color Theme" desc="Change colors" Icon={SettingsIcon} enabled={false} onToggle={vi.fn()}>
-        <div>Plugin settings</div>
-      </PluginCard>,
-    );
-    expect(screen.getByText("Color Theme")).toBeInTheDocument();
-    expect(screen.getByText("Change colors")).toBeInTheDocument();
-    expect(screen.getByRole("switch")).toBeInTheDocument();
-  });
-
-  it("hides children when disabled, shows when enabled", () => {
-    const { rerender } = render(
-      <PluginCard name="BG" desc="Background" Icon={SettingsIcon} enabled={false} onToggle={vi.fn()}>
-        <div>Hidden content</div>
-      </PluginCard>,
-    );
-    expect(screen.queryByText("Hidden content")).not.toBeInTheDocument();
-
-    rerender(
-      <PluginCard name="BG" desc="Background" Icon={SettingsIcon} enabled={true} onToggle={vi.fn()}>
-        <div>Hidden content</div>
-      </PluginCard>,
-    );
-    expect(screen.getByText("Hidden content")).toBeInTheDocument();
-  });
-
-  it("calls onToggle when switch is clicked", async () => {
-    const user = userEvent.setup();
-    const onToggle = vi.fn();
-    render(
-      <PluginCard name="Test" desc="desc" Icon={SettingsIcon} enabled={false} onToggle={onToggle}>
-        <div>content</div>
-      </PluginCard>,
-    );
-    await user.click(screen.getByRole("switch"));
-    expect(onToggle).toHaveBeenCalledWith(true);
   });
 });

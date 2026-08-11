@@ -24,11 +24,11 @@ export function hexToHSL(hex: string): [number, number, number] {
   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 }
 
-export function hsl(h: number, s: number, l: number): string {
+function hsl(h: number, s: number, l: number): string {
   return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-export function hsla(h: number, s: number, l: number, a: number): string {
+function hsla(h: number, s: number, l: number, a: number): string {
   return `hsla(${h}, ${s}%, ${l}%, ${a})`;
 }
 
@@ -42,11 +42,6 @@ const CUSTOM_VARS = [
   "--color-kbd-bg", "--color-kbd-border", "--color-kbd-text",
   "--color-toast-bg",
 ] as const;
-
-/** 获取所有会被自定义色盘覆盖的 CSS 变量名 */
-export function getCustomCssVars(): readonly string[] {
-  return CUSTOM_VARS;
-}
 
 /** 清除所有自定义色盘 CSS 变量 */
 export function clearCustomPalette(el: HTMLElement): void {

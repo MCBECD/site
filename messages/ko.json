@@ -69,6 +69,23 @@
     "bookmarks": "북마크",
     "recent": "최근 기록",
     "noBookmarks": "북마크된 명령어가 없습니다",
-    "noRecent": "浏览 기록이 없습니다"
+    "noRecent": "浏览 기록이 없습니다",
+    "filterAll": "전체",
+    "filterBasics": "기초",
+    "filterCommands": "명령어",
+    "filterExamples": "예시",
+    "sortByName": "이름",
+    "sortByType": "유형",
+    "sortByUpdated": "업데이트일",
+    "viewMode": "보기",
+    "viewCards": "카드",
+    "viewList": "목록",
+    "typePlayer": "플레이어",
+    "typeWorld": "월드",
+    "typeBuilding": "건축",
+    "typeEntity": "엔티티",
+    "typeUI": "UI",
+    "typeAdvanced": "고급",
+    "typeOther": "기타"
   }
 }

@@ -22,7 +22,6 @@ export interface DocMeta {
   updatedAt?: string;
   type?: string;
   readingTime?: number;
-  order?: number;
   category?: string;
 }
 
@@ -83,7 +82,6 @@ function buildMeta(
     updatedAt: (jsonMeta?.updatedAt as string) ?? (fm.updatedAt as string) ?? undefined,
     type: (jsonMeta?.type as string) ?? (fm.type as string) ?? undefined,
     readingTime: mdxMeta?.readingTime,
-    order: (jsonMeta?.order as number) ?? (fm.order as number) ?? undefined,
     category: (jsonMeta?.category as string) ?? (fm.category as string) ?? undefined,
   };
 }
@@ -145,21 +143,15 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
  * 公共 API
  * ---------------------------------------------------------- */
 
-/** 获取所有文档元数据，按标题排序 */
-export function getAllDocs(locale?: string): DocMeta[] {
+/** 获取所有文档元数据 */
+export function getAllDocs(): DocMeta[] {
   const docsDir = getDocsDir();
   if (!fs.existsSync(docsDir)) return [];
-  return scanDirectory(docsDir, "").sort((a, b) => {
-    const aO = a.order ?? Infinity;
-    const bO = b.order ?? Infinity;
-    if (aO !== bO) return aO - bO;
-    return a.title.localeCompare(b.title, locale ?? "zh-CN");
-  });
+  return scanDirectory(docsDir, "");
 }
 
-/** 获取所有不重复的标签 */
-export function getAllTags(locale?: string): string[] {
-  const docs = getAllDocs(locale);
+function getAllTags(locale?: string): string[] {
+  const docs = getAllDocs();
   const tagSet = new Set<string>();
   for (const doc of docs) {
     if (doc.tags) {

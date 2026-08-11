@@ -62,7 +62,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
             </button>
-            <CopyDropdown rawContent={rawContent} docId={doc.meta.id} />
+            <CopyDropdown rawContent={rawContent} />
             <DownloadButton
               filename={doc.meta.id}
               getContent={() => rawContent}

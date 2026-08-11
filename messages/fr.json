@@ -69,6 +69,23 @@
     "bookmarks": "Favoris",
     "recent": "Récemment consultés",
     "noBookmarks": "Aucune commande enregistrée",
-    "noRecent": "Aucun historique de navigation"
+    "noRecent": "Aucun historique de navigation",
+    "filterAll": "Tout",
+    "filterBasics": "Bases",
+    "filterCommands": "Commandes",
+    "filterExamples": "Exemples",
+    "sortByName": "Nom",
+    "sortByType": "Type",
+    "sortByUpdated": "Mis à jour",
+    "viewMode": "Vue",
+    "viewCards": "Cartes",
+    "viewList": "Liste",
+    "typePlayer": "Joueur",
+    "typeWorld": "Monde",
+    "typeBuilding": "Construction",
+    "typeEntity": "Entité",
+    "typeUI": "UI",
+    "typeAdvanced": "Avancé",
+    "typeOther": "Autre"
   }
 }

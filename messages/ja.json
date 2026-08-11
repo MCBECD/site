@@ -69,6 +69,23 @@
     "bookmarks": "ブックマーク",
     "recent": "最近閲覧",
     "noBookmarks": "ブックマークされたコマンドはありません",
-    "noRecent": "閲覧履歴はありません"
+    "noRecent": "閲覧履歴はありません",
+    "filterAll": "すべて",
+    "filterBasics": "基礎",
+    "filterCommands": "コマンド",
+    "filterExamples": "例",
+    "sortByName": "名前",
+    "sortByType": "種類",
+    "sortByUpdated": "更新日",
+    "viewMode": "表示",
+    "viewCards": "カード",
+    "viewList": "リスト",
+    "typePlayer": "プレイヤー",
+    "typeWorld": "ワールド",
+    "typeBuilding": "建築",
+    "typeEntity": "エンティティ",
+    "typeUI": "UI",
+    "typeAdvanced": "上級",
+    "typeOther": "その他"
   }
 }

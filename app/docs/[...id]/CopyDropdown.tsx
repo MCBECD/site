@@ -1,17 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
 interface Props {
   rawContent: string;
-  docId: string;
 }
 
-import { memo } from "react";
-
-const CopyDropdown = memo(function CopyDropdown({ rawContent, docId: _docId }: Props) {
+const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);

@@ -5,18 +5,68 @@ import { Star, ChevronRight } from "lucide-react";
 import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getCategoryLabel } from "@/lib/categories";
+import { getCategoryLabel, getCommandType, getCategoryBase } from "@/lib/categories";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
   doc: DocMeta;
   bookmarked: boolean;
   onBookmark: (e: React.MouseEvent, id: string) => void;
+  viewMode?: "card" | "list";
 }
 
-const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardProps) {
+const TYPE_COLORS: Record<string, string> = {
+  Player: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+  World: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+  Building: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+  Entity: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+  UI: "bg-pink-500/10 text-pink-500 border-pink-500/20",
+  Advanced: "bg-rose-500/10 text-rose-500 border-rose-500/20",
+  Other: "bg-gray-500/10 text-gray-500 border-gray-500/20",
+};
+
+const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode = "card" }: DocCardProps) {
   const { t } = useLocale();
   const categoryLabel = getCategoryLabel(doc.category);
+  const cmdType = getCategoryBase(doc.category) === "commands" ? getCommandType(doc.category) : null;
+  const cmdTypeLabel = cmdType ? t(`doc.type${cmdType}`) : null;
+  const cmdTypeColor = cmdType ? (TYPE_COLORS[cmdType] ?? TYPE_COLORS.Other) : "";
+
+  if (viewMode === "list") {
+    return (
+      <Link
+        href={`/docs/${doc.id}`}
+        className="block group py-2 no-underline"
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+
+          {categoryLabel && (
+            <span className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium
+              bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/20">
+              {categoryLabel}
+            </span>
+          )}
+
+          {cmdTypeLabel && (
+            <span className={`shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${cmdTypeColor}`}>
+              {cmdTypeLabel}
+            </span>
+          )}
+
+          <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
+            {renderTitleWithCode(doc.title)}
+          </h2>
+
+          {(doc.author || doc.updatedAt) && (
+            <span className="text-[10px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums hidden sm:inline">
+              {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
+            </span>
+          )}
+
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <Link
@@ -27,14 +77,19 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
         no-underline"
     >
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1 flex-wrap">
           {categoryLabel && (
             <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium
               bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/20">
               {categoryLabel}
             </span>
           )}
-          <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
+          {cmdTypeLabel && (
+            <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${cmdTypeColor}`}>
+              {cmdTypeLabel}
+            </span>
+          )}
+          <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate min-w-[120px] flex-1">
             {renderTitleWithCode(doc.title)}
           </h2>
         </div>
