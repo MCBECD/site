@@ -33,8 +33,8 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
             onClick={(e) => onBookmark(e, doc.id)}
             className={`w-6 h-6 flex items-center justify-center rounded-md
               ${bookmarked
-                ? "text-[var(--color-accent)]"
-                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
+                ? "text-yellow-500"
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-yellow-500"}
               }`}
             aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
           >
