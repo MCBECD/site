@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ThemeSync } from "@/contexts/ThemeSync";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import { Navbar } from "@/components/Navbar";
 import { SettingsPanel } from "@/components/SettingsPanel";
@@ -43,11 +43,11 @@ function SettingsAndLocale({ children }: { children: React.ReactNode }) {
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <SettingsProvider>
-      <ThemeProvider>
+      <ThemeSync>
         <SettingsAndLocale>
           <ShellInner>{children}</ShellInner>
         </SettingsAndLocale>
-      </ThemeProvider>
+      </ThemeSync>
     </SettingsProvider>
   );
 }
