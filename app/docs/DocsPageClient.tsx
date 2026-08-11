@@ -6,7 +6,7 @@ import { Search, X, Command, LayoutList, List, ChevronDown } from "lucide-react"
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark } from "@/lib/storage";
-import { getCategoryBase, getCommandType, getBasicsOrder } from "@/lib/categories";
+import { getCategoryBase, getCommandType, getCommandTypeI18nKey, getBasicsOrder } from "@/lib/categories";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
@@ -194,6 +194,41 @@ export default function DocsPageClient() {
     return pages;
   }, [totalPages, safePage]);
 
+  interface DocGroup {
+  typeLabel?: string;
+  items: typeof pageDocs;
+}
+
+  const groupedPageDocs = useMemo<DocGroup[] | null>(() => {
+    if (sortBy !== "type") return null;
+
+    const groups: DocGroup[] = [];
+    let currentGroup: DocGroup | null = null;
+
+    for (const doc of pageDocs) {
+      const typeKey = getCommandTypeI18nKey(doc.category);
+      const typeLabel = typeKey ? t(typeKey) : undefined;
+
+      if (typeLabel) {
+        if (currentGroup && currentGroup.typeLabel === typeLabel) {
+          currentGroup.items.push(doc);
+        } else {
+          currentGroup = { typeLabel, items: [doc] };
+          groups.push(currentGroup);
+        }
+      } else {
+        if (currentGroup && !currentGroup.typeLabel) {
+          currentGroup.items.push(doc);
+        } else {
+          currentGroup = { items: [doc] };
+          groups.push(currentGroup);
+        }
+      }
+    }
+
+    return groups;
+  }, [pageDocs, sortBy, t]);
+
   const categoryTabs: { key: CategoryFilter; labelKey: string }[] = [
     { key: "all", labelKey: "doc.filterAll" },
     { key: "basics", labelKey: "doc.filterBasics" },
@@ -340,6 +375,33 @@ export default function DocsPageClient() {
           </div>
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
+      ) : groupedPageDocs ? (
+        <div key={`${debouncedQuery}-${safePage}-${viewMode}-grouped`}>
+          {groupedPageDocs.map((group, gi) => (
+            <div key={gi} className={gi > 0 ? "mt-6" : ""}>
+              {group.typeLabel && (
+                <p className="ml-3 text-[20px] text-[var(--color-accent)]">
+                    {group.typeLabel}
+                </p>
+              )}
+              <div
+                className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
+              >
+                {group.items.map((doc, i) => (
+                  <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+                    <DocCard
+                      doc={doc}
+                      bookmarked={bookmarks.includes(doc.id)}
+                      onBookmark={handleToggleBookmark}
+                      viewMode={viewMode}
+                      sortBy={sortBy}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div
           className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
@@ -352,6 +414,7 @@ export default function DocsPageClient() {
                 bookmarked={bookmarks.includes(doc.id)}
                 onBookmark={handleToggleBookmark}
                 viewMode={viewMode}
+                sortBy={sortBy}
               />
             </div>
           ))}
