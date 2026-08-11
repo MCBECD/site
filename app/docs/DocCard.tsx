@@ -39,6 +39,11 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, s
           <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
             {renderTitleWithCode(doc.title)}
           </h2>
+          {doc.description && (
+            <span className="text-[12px] text-[var(--color-text-tertiary)] truncate max-w-[40%]">
+              {doc.description}
+            </span>
+          )}
           {(doc.author || doc.updatedAt) && (
             <span className="text-[10px] text-[var(--color-text-tertiary)] shrink-0 tabular-nums hidden sm:inline">
               {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}

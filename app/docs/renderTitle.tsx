@@ -6,7 +6,7 @@ export const renderTitleWithCode = (title: string): ReactNode[] => {
 
   if (match) {
     return [
-      <span key="c-0" style={{ display: "inline-block", width: "20ch", textAlign: "left" }}>
+      <span key="c-0" style={{ display: "inline-block", width: "16ch", textAlign: "left" }}>
         <code>{match[0]}</code>
       </span>,
       <span key="t-1">{title.slice(match[0].length)}</span>,
