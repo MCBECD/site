@@ -144,20 +144,20 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
  * ---------------------------------------------------------- */
 
 /** 获取所有文档元数据，按标题排序 */
-export function getAllDocs(): DocMeta[] {
+export function getAllDocs(locale?: string): DocMeta[] {
   const docsDir = getDocsDir();
   if (!fs.existsSync(docsDir)) return [];
   return scanDirectory(docsDir, "").sort((a, b) => {
     const aO = a.order ?? Infinity;
     const bO = b.order ?? Infinity;
     if (aO !== bO) return aO - bO;
-    return a.title.localeCompare(b.title, "zh-CN");
+    return a.title.localeCompare(b.title, locale ?? "zh-CN");
   });
 }
 
 /** 获取所有不重复的标签 */
-export function getAllTags(): string[] {
-  const docs = getAllDocs();
+export function getAllTags(locale?: string): string[] {
+  const docs = getAllDocs(locale);
   const tagSet = new Set<string>();
   for (const doc of docs) {
     if (doc.tags) {
@@ -166,7 +166,7 @@ export function getAllTags(): string[] {
       }
     }
   }
-  return [...tagSet].sort((a, b) => a.localeCompare(b, "zh-CN"));
+  return [...tagSet].sort((a, b) => a.localeCompare(b, locale ?? "zh-CN"));
 }
 
 /** 根据 ID 获取文档内容，null 表示不存在 */

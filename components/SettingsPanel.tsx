@@ -2,6 +2,7 @@
 
 import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -292,9 +293,10 @@ function DataTab({ onClose }: { onClose: () => void }) {
 /* ---------- List Item ---------- */
 
 function DataListItem({ doc, onDelete, onClose }: { doc: DocMeta; onDelete: () => void; onClose: () => void }) {
+  const { t } = useLocale();
   return (
     <div className="flex items-center gap-2 px-3 py-2.5 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
-      <a
+      <Link
         href={`/docs/${doc.id}`}
         onClick={onClose}
         className="flex-1 min-w-0 no-underline"
@@ -302,13 +304,13 @@ function DataListItem({ doc, onDelete, onClose }: { doc: DocMeta; onDelete: () =
         <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate block transition-colors">
           {doc.title}
         </span>
-      </a>
+      </Link>
       <button
         onClick={(e) => { e.stopPropagation(); onDelete(); }}
         className="w-6 h-6 flex items-center justify-center rounded-md
           text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100
           hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
-        aria-label="Delete"
+        aria-label={t("common.delete")}
       >
         <Trash2 className="w-3 h-3" />
       </button>

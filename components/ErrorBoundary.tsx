@@ -42,15 +42,15 @@ export class ErrorBoundary extends Component<Props, State> {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h2 className="text-sm font-medium text-[var(--color-text-primary)] mb-1">出错了</h2>
+          <h2 className="text-sm font-medium text-[var(--color-text-primary)] mb-1">Something went wrong</h2>
           <p className="text-xs text-[var(--color-text-tertiary)] max-w-sm">
-            页面遇到了一个意外错误，请尝试刷新页面。
+            An unexpected error occurred. Please try refreshing the page.
           </p>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
             className="mt-4 px-4 py-2 text-xs rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
           >
-            重试
+            Retry
           </button>
         </div>
       );

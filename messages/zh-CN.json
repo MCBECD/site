@@ -2,7 +2,13 @@
   "common": {
     "loading": "加载中...",
     "notFound": "页面未找到",
-    "backToList": "首页"
+    "backToList": "首页",
+    "errorTitle": "出错了",
+    "errorDesc": "页面遇到了一个意外错误，请尝试刷新页面。",
+    "errorRetry": "重试",
+    "bookmark": "收藏",
+    "unbookmark": "取消收藏",
+    "delete": "删除"
   },
   "nav": {
     "settings": "设置",
@@ -39,7 +45,8 @@
     "bgClear": "清除背景",
     "bgOverlayOpacity": "遮罩透明度",
     "bgOverlayBlur": "模糊度",
-    "bgParallax": "视差效果"
+    "bgParallax": "视差效果",
+    "bgImageTooLarge": "图片大小不能超过 2MB"
   },
   "code": {
     "copy": "复制",
