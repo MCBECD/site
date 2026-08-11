@@ -9,7 +9,7 @@ import {
 
 describe("getCategoryBase", () => {
   it("returns the base category before slash", () => {
-    expect(getCategoryBase("commands/player")).toBe("commands");
+    expect(getCategoryBase("commands/Player")).toBe("commands");
     expect(getCategoryBase("basics/1")).toBe("basics");
   });
 
@@ -29,13 +29,13 @@ describe("getCategoryBase", () => {
 
 describe("getCategoryI18nKey", () => {
   it("returns correct i18n key for known categories", () => {
-    expect(getCategoryI18nKey("commands/player")).toBe("doc.filterCommands");
+    expect(getCategoryI18nKey("commands/Player")).toBe("doc.filterCommands");
     expect(getCategoryI18nKey("basics/1")).toBe("doc.filterBasics");
-    expect(getCategoryI18nKey("examples")).toBe("doc.filterExamples");
   });
 
   it("returns undefined for unknown categories", () => {
     expect(getCategoryI18nKey("unknown/stuff")).toBeUndefined();
+    expect(getCategoryI18nKey("examples")).toBeUndefined();
   });
 
   it("returns undefined for undefined input", () => {
@@ -45,8 +45,8 @@ describe("getCategoryI18nKey", () => {
 
 describe("getCommandType", () => {
   it("returns sub-category for commands", () => {
-    expect(getCommandType("commands/player")).toBe("player");
-    expect(getCommandType("commands/entity")).toBe("entity");
+    expect(getCommandType("commands/Player")).toBe("Player");
+    expect(getCommandType("commands/Entity")).toBe("Entity");
   });
 
   it("returns undefined for non-commands category", () => {
@@ -60,8 +60,9 @@ describe("getCommandType", () => {
 });
 
 describe("getCommandTypeI18nKey", () => {
-  it("returns constructed i18n key", () => {
-    expect(getCommandTypeI18nKey("commands/player")).toBe("doc.typeplayer");
+  it("returns constructed i18n key with PascalCase preserved", () => {
+    expect(getCommandTypeI18nKey("commands/Player")).toBe("doc.typePlayer");
+    expect(getCommandTypeI18nKey("commands/World")).toBe("doc.typeWorld");
   });
 
   it("returns undefined for non-commands", () => {
@@ -77,7 +78,7 @@ describe("getBasicsOrder", () => {
   });
 
   it("returns Infinity for non-basics", () => {
-    expect(getBasicsOrder("commands/player")).toBe(Infinity);
+    expect(getBasicsOrder("commands/Player")).toBe(Infinity);
   });
 
   it("returns Infinity for basics without sub-category", () => {
