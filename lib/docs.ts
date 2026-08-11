@@ -45,7 +45,7 @@ function parseMdxMeta(filePath: string): { frontmatter: Record<string, unknown>;
     const wordCount = content.replace(/\s+/g, "").length;
     return { frontmatter: data, content, readingTime: Math.max(1, Math.ceil(wordCount / 400)) };
   } catch (err) {
-    console.error(`[docs] 解析 MDX 失败: ${filePath}`, err instanceof Error ? err.message : err);
+    console.error(`[docs] Failed to parse MDX: ${filePath}`, err instanceof Error ? err.message : err);
     return null;
   }
 }
@@ -56,7 +56,7 @@ function readMetaJson(dirPath: string): Record<string, unknown> | null {
     return JSON.parse(raw);
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
-      console.error(`[docs] 解析 meta.json 失败: ${dirPath}`, err instanceof Error ? err.message : err);
+      console.error(`[docs] Failed to parse meta.json: ${dirPath}`, err instanceof Error ? err.message : err);
     }
     return null;
   }
@@ -103,13 +103,13 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (err) {
-    console.error(`[docs] 扫描目录失败: ${dir}`, err instanceof Error ? err.message : err);
+    console.error(`[docs] Failed to scan directory: ${dir}`, err instanceof Error ? err.message : err);
     return results;
   }
 
   for (const entry of entries) {
     // 跳过非内容文件
-    if (entry.name.startsWith(".") || entry.name === "README.md" || entry.name === "CONTRIBUTING.md" || entry.name === "LICENSE") {
+    if (entry.name.startsWith(".") || ["README.md", "CONTRIBUTING.md", "LICENSE"].includes(entry.name)) {
       continue;
     }
 
@@ -119,13 +119,11 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
     if (entry.isDirectory()) {
       const indexPath = path.join(fullPath, "index.mdx");
       if (fs.existsSync(indexPath)) {
-        // 文件夹文档：index.mdx + meta.json
         const mdxMeta = parseMdxMeta(indexPath);
         const jsonMeta = readMetaJson(fullPath);
         const meta = buildMeta(id, entry.name, mdxMeta, jsonMeta);
         if (meta) results.push(meta);
       } else {
-        // 非 index.mdx 的子目录才递归扫描
         results.push(...scanDirectory(fullPath, id));
       }
     } else if (entry.name.endsWith(".mdx")) {
@@ -150,24 +148,11 @@ export function getAllDocs(): DocMeta[] {
   return scanDirectory(docsDir, "");
 }
 
-function getAllTags(locale?: string): string[] {
-  const docs = getAllDocs();
-  const tagSet = new Set<string>();
-  for (const doc of docs) {
-    if (doc.tags) {
-      for (const tag of doc.tags) {
-        tagSet.add(tag);
-      }
-    }
-  }
-  return [...tagSet].sort((a, b) => a.localeCompare(b, locale ?? "zh-CN"));
-}
-
 /** 根据 ID 获取文档内容，null 表示不存在 */
 export function getDocById(id: string): DocContent | null {
   const docsDir = getDocsDir();
 
-  // 尝试文件夹格式：content/docs/{id}/index.mdx
+  // Folder format: content/docs/{id}/index.mdx
   const folderPath = path.join(docsDir, id);
   const indexPath = path.join(folderPath, "index.mdx");
   if (fs.existsSync(indexPath)) {
@@ -178,7 +163,7 @@ export function getDocById(id: string): DocContent | null {
     return { meta, rawContent: mdxMeta?.content ?? "" };
   }
 
-  // 尝试扁平格式：content/docs/{id}.mdx
+  // Flat format: content/docs/{id}.mdx
   const flatPath = path.join(docsDir, `${id}.mdx`);
   if (fs.existsSync(flatPath)) {
     const mdxMeta = parseMdxMeta(flatPath);

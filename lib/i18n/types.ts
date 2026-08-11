@@ -17,6 +17,12 @@ export interface Messages {
     loading: string;
     notFound: string;
     backToList: string;
+    errorTitle: string;
+    errorDesc: string;
+    errorRetry: string;
+    bookmark: string;
+    unbookmark: string;
+    delete: string;
   };
   nav: {
     settings: string;
@@ -54,6 +60,7 @@ export interface Messages {
     bgOverlayOpacity: string;
     bgOverlayBlur: string;
     bgParallax: string;
+    bgImageTooLarge: string;
   };
   code: {
     copy: string;
@@ -77,5 +84,22 @@ export interface Messages {
     recent: string;
     noBookmarks: string;
     noRecent: string;
+    filterAll: string;
+    filterBasics: string;
+    filterCommands: string;
+    filterExamples: string;
+    sortByName: string;
+    sortByType: string;
+    sortByUpdated: string;
+    viewMode: string;
+    viewCards: string;
+    viewList: string;
+    typePlayer: string;
+    typeWorld: string;
+    typeBuilding: string;
+    typeEntity: string;
+    typeUI: string;
+    typeAdvanced: string;
+    typeOther: string;
   };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import { Image } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -19,6 +19,7 @@ export function BackgroundImagePluginCard() {
   const id = "background-image";
   const enabled = isPluginEnabled(id);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState(false);
 
   const handleToggle = useCallback((v: boolean) => {
     togglePlugin(id, v);
@@ -28,6 +29,7 @@ export function BackgroundImagePluginCard() {
   }, [settings.bgImage, togglePlugin, updateSettings]);
 
   const handleUpload = useCallback(() => {
+    setUploadError(false);
     fileRef.current?.click();
   }, []);
 
@@ -35,9 +37,10 @@ export function BackgroundImagePluginCard() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      alert(t("settings.bgImageTooLarge"));
+      setUploadError(true);
       return;
     }
+    setUploadError(false);
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
@@ -45,7 +48,7 @@ export function BackgroundImagePluginCard() {
       }
     };
     reader.readAsDataURL(file);
-  }, [updateSettings, t]);
+  }, [updateSettings]);
 
   return (
     <div
@@ -94,6 +97,10 @@ export function BackgroundImagePluginCard() {
               ))}
             </div>
 
+            {uploadError && (
+              <p className="text-[11px] text-red-500">{t("settings.bgImageTooLarge")}</p>
+            )}
+
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
             <button
               onClick={handleUpload}
@@ -107,7 +114,6 @@ export function BackgroundImagePluginCard() {
             </button>
 
             <SliderRow label={t("settings.bgOverlayOpacity")} value={settings.bgOverlayOpacity} onChange={(v) => updateSettings("bgOverlayOpacity", v)} />
-
             <SliderRow label={t("settings.bgOverlayBlur")} value={settings.bgOverlayBlur} onChange={(v) => updateSettings("bgOverlayBlur", v)} max={20} />
 
             <div className="flex items-center justify-between">

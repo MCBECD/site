@@ -71,7 +71,7 @@ export function toggleBookmark(id: string): boolean {
 const HISTORY_KEY = "history";
 const MAX_HISTORY = 20;
 
-export interface HistoryEntry {
+interface HistoryEntry {
   id: string;
   title: string;
   ts: number;
@@ -102,5 +102,3 @@ export function removeHistory(id: string): void {
 export function clearHistory(): void {
   write(HISTORY_KEY, []);
 }
-
-

@@ -7,7 +7,7 @@ import { DownloadButton } from "@/components/DownloadButton";
 import CopyDropdown from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
-import { getCategoryLabel } from "@/lib/categories";
+import { getCategoryI18nKey } from "@/lib/categories";
 import { addHistory, toggleBookmark, isBookmarked } from "@/lib/storage";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
@@ -20,7 +20,8 @@ interface Props {
 export function DocDetailClient({ doc, rawContent, children }: Props) {
   const { t } = useLocale();
   const [bookmarked, setBookmarked] = useState(false);
-  const categoryLabel = getCategoryLabel(doc.meta.category);
+  const categoryKey = getCategoryI18nKey(doc.meta.category);
+  const categoryLabel = categoryKey ? t(categoryKey) : undefined;
 
   useEffect(() => {
     addHistory(doc.meta.id, doc.meta.title);

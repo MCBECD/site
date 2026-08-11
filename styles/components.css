@@ -10,13 +10,13 @@
 }
 
 .search-input:focus {
-  border-color: var(--color-accent) !important;
+  border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-muted);
 }
 
 .search-input::placeholder { transition: color 100ms; }
 .search-input:focus::placeholder {
-  color: var(--color-text-tertiary) !important;
+  color: var(--color-text-tertiary);
   opacity: 0.5;
 }
 
