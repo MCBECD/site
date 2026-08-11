@@ -110,17 +110,19 @@ export default function DocsPageClient() {
 
   return (
     <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
-      <div className="mb-6">
-        <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight">
+      {/* Hero 区域 */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight
+          bg-gradient-to-r from-[var(--color-text-primary)] via-[var(--color-text-primary)] to-[var(--color-text-tertiary)] bg-clip-text text-transparent">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-1">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
 
       {/* 搜索栏 */}
-      <div className="relative mb-5">
+      <div className="relative mb-6">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
         <input
           ref={searchRef}
@@ -168,10 +170,11 @@ export default function DocsPageClient() {
         </div>
       ) : (
         <div className="space-y-2" key={`${debouncedQuery}-${safePage}`}>
-          {pageDocs.map((doc) => (
+          {pageDocs.map((doc, i) => (
             <DocCard
               key={doc.id}
               doc={doc}
+              index={i}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
             />
