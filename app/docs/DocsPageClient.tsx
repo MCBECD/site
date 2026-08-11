@@ -15,7 +15,6 @@ type SortBy = "name" | "type";
 type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
-const PAGE_SIZE_LIST = 20;
 const DEBOUNCE_MS = 150;
 
 const TYPE_ORDER: Record<string, number> = {
@@ -175,13 +174,13 @@ export default function DocsPageClient() {
   }, [docs, debouncedQuery, category, sortBy, locale]);
 
   const isSearching = debouncedQuery.trim().length > 0;
-  const pageSize = viewMode === "card" ? PAGE_SIZE_CARD : PAGE_SIZE_LIST;
-  const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
-  const safePage = Math.min(page, totalPages - 1);
-  const pageDocs = useMemo(
-    () => filteredDocs.slice(safePage * pageSize, (safePage + 1) * pageSize),
-    [filteredDocs, safePage, pageSize],
-  );
+  const totalPages = viewMode === "list" ? 1 : Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE_CARD));
+  const safePage = viewMode === "list" ? 0 : Math.min(page, totalPages - 1);
+  const pageDocs = useMemo(() => {
+    if (viewMode === "list") return filteredDocs;
+    const pageSize = PAGE_SIZE_CARD;
+    return filteredDocs.slice(safePage * pageSize, (safePage + 1) * pageSize);
+  }, [filteredDocs, safePage, viewMode]);
 
   const pageNumbers = useMemo(() => {
     const pages: number[] = [];
@@ -211,16 +210,16 @@ export default function DocsPageClient() {
     <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
       {/* Hero */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 hero-sub-enter">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
 
       {/* 分类筛选标签 */}
-      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none tabs-enter">
+      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
         {categoryTabs.map((tab) => {
           const active = category === tab.key;
           return (
@@ -240,7 +239,7 @@ export default function DocsPageClient() {
       </div>
 
       {/* 搜索栏 + 工具栏 */}
-      <div className="flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
+      <div className="flex flex-col sm:flex-row gap-2.5 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
           <input
@@ -291,7 +290,7 @@ export default function DocsPageClient() {
               </button>
               {sortOpen && (
                 <div className="absolute right-0 top-full mt-1.5 py-1 min-w-[140px] rounded-lg
-                  bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20 dropdown-in">
+                  bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-lg z-20">
                   {sortOptions.map((opt) => {
                     const active = sortBy === opt.key;
                     return (
@@ -314,31 +313,17 @@ export default function DocsPageClient() {
           )}
 
           {/* 视图切换 */}
-          <div className="h-[42px] p-0.5 inline-flex items-center rounded-lg
-            bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
-            <button
-              onClick={() => setViewMode("card")}
-              title={t("doc.viewCards")}
-              className={`w-9 h-full inline-flex items-center justify-center rounded-md transition-all
-                ${viewMode === "card"
-                  ? "bg-[var(--color-bg-primary)] text-[var(--color-accent)] shadow-sm"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"}
-              `}
-            >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              title={t("doc.viewList")}
-              className={`w-9 h-full inline-flex items-center justify-center rounded-md transition-all
-                ${viewMode === "list"
-                  ? "bg-[var(--color-bg-primary)] text-[var(--color-accent)] shadow-sm"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"}
-              `}
-            >
-              <List className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+            title={viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}
+            className="h-[42px] w-[42px] inline-flex items-center justify-center rounded-lg
+              bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
+              border border-[var(--color-border)]
+              hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+              transition-colors"
+          >
+            {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
+          </button>
         </div>
       </div>
 
@@ -357,22 +342,21 @@ export default function DocsPageClient() {
         </div>
       ) : (
         <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
-          {pageDocs.map((doc, i) => (
-            <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
-              <DocCard
-                doc={doc}
-                bookmarked={bookmarks.includes(doc.id)}
-                onBookmark={handleToggleBookmark}
-                viewMode={viewMode}
-              />
-            </div>
+          {pageDocs.map((doc) => (
+            <DocCard
+              key={doc.id}
+              doc={doc}
+              bookmarked={bookmarks.includes(doc.id)}
+              onBookmark={handleToggleBookmark}
+              viewMode={viewMode}
+            />
           ))}
         </div>
       )}
 
-      <div className="pagination-enter">
+      {viewMode === "card" && (
         <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={navigatePage} />
-      </div>
+      )}
     </div>
   );
 }
