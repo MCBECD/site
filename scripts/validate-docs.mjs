@@ -43,12 +43,7 @@ function scanDir(dir, prefix = "") {
     const full = path.join(dir, entry.name);
     const id = prefix ? `${prefix}/${entry.name}` : entry.name;
     if (entry.isDirectory()) {
-      const indexPath = path.join(full, "index.mdx");
-      if (fs.existsSync(indexPath)) {
-        checkFile(indexPath, id);
-      } else {
-        scanDir(full, id);
-      }
+      scanDir(full, id);
     } else if (entry.name.endsWith(".mdx")) {
       const docId = entry.name.replace(/\.mdx$/, "");
       checkFile(full, prefix ? `${prefix}/${docId}` : docId);
@@ -59,50 +54,28 @@ function scanDir(dir, prefix = "") {
 function checkFile(filePath, id) {
   const fm = parseFrontmatter(filePath);
   if (!fm) {
-    console.error(`\x1b[31m✗ ${id}\x1b[0m: 无法解析 frontmatter`);
+    console.error(`\x1b[31m[ERROR] ${id}\x1b[0m: 无法解析 frontmatter`);
     errors++;
     return;
-  }
-
-  // 子目录文档: index.mdx + meta.json 合并
-  if (path.basename(filePath) === "index.mdx") {
-    const metaPath = path.join(path.dirname(filePath), "meta.json");
-    if (fs.existsSync(metaPath)) {
-      try {
-        const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
-        for (const [k, v] of Object.entries(meta)) {
-          if (!fm[k]) fm[k] = v;
-        }
-      } catch {
-        console.error(`\x1b[31m✗ ${id}\x1b[0m: meta.json 解析失败`);
-        errors++;
-      }
-    }
   }
 
   // 必填字段
   for (const field of REQUIRED_FIELDS) {
     if (!fm[field]) {
-      console.error(`\x1b[31m✗ ${id}\x1b[0m: 缺少 \`${field}\``);
+      console.error(`\x1b[31m[ERROR] ${id}\x1b[0m: 缺少 \`${field}\``);
       errors++;
     }
   }
 
-  // order 必须是数字
-  if (fm.order !== undefined && isNaN(Number(fm.order))) {
-    console.error(`\x1b[31m✗ ${id}\x1b[0m: order 不是数字 (\`${fm.order}\`)`);
-    errors++;
-  }
-
   // category 校验
   if (fm.category && !VALID_CATEGORIES.includes(fm.category)) {
-    console.error(`\x1b[31m✗ ${id}\x1b[0m: 无效 category \`${fm.category}\` (应为 ${VALID_CATEGORIES.join("/")})`);
+    console.error(`\x1b[31m[ERROR] ${id}\x1b[0m: 无效 category \`${fm.category}\` (应为 ${VALID_CATEGORIES.join("/")})`);
     errors++;
   }
 
   // updatedAt 格式
   if (fm.updatedAt && !DATE_RE.test(fm.updatedAt)) {
-    console.error(`\x1b[31m✗ ${id}\x1b[0m: updatedAt 格式错误 \`${fm.updatedAt}\` (应为 YYYY-MM-DD)`);
+    console.error(`\x1b[31m[ERROR] ${id}\x1b[0m: updatedAt 格式错误 \`${fm.updatedAt}\` (应为 YYYY-MM-DD)`);
     errors++;
   }
 
