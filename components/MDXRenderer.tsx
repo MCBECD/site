@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
-import { CmdBlock, makeCmdBlock } from "./mdx/CmdBlock";
+import { makeCmdBlock } from "./mdx/CmdBlock";
 
 const CmdImpulse = makeCmdBlock("impulse");
 const CmdRepeat = makeCmdBlock("repeat");

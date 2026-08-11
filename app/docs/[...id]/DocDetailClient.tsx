@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
+import { useEffect, useState, useCallback, type ReactNode } from "react";
 import Link from "next/link";
-import { Home, Copy, Check, ChevronDown, Star } from "lucide-react";
+import { Home, Star } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
 import CopyDropdown from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
