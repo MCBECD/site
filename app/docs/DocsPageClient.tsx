@@ -209,11 +209,13 @@ export default function DocsPageClient() {
 
   return (
     <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
-      <div className="mb-6">
-        <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight">
+      {/* Hero 区域 */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight
+          bg-gradient-to-r from-[var(--color-text-primary)] via-[var(--color-text-primary)] to-[var(--color-text-tertiary)] bg-clip-text text-transparent">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-1">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
@@ -357,10 +359,11 @@ export default function DocsPageClient() {
         </div>
       ) : (
         <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
-          {pageDocs.map((doc) => (
+          {pageDocs.map((doc, i) => (
             <DocCard
               key={doc.id}
               doc={doc}
+              index={i}
               bookmarked={bookmarks.includes(doc.id)}
               onBookmark={handleToggleBookmark}
               viewMode={viewMode}
