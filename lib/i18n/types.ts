@@ -27,7 +27,6 @@ export interface Messages {
   nav: {
     settings: string;
     github: string;
-    docs: string;
   };
   settings: {
     title: string;
@@ -88,7 +87,6 @@ export interface Messages {
     filterAll: string;
     filterBasics: string;
     filterCommands: string;
-    filterExamples: string;
     sortByName: string;
     sortByType: string;
     group: string;
@@ -103,35 +101,6 @@ export interface Messages {
     typeUI: string;
     typeAdvanced: string;
     typeOther: string;
-  };
-  landing: {
-    tagline: string;
-    ctaPrimary: string;
-    ctaSecondary: string;
-    feature1Title: string;
-    feature1Desc: string;
-    feature2Title: string;
-    feature2Desc: string;
-    feature3Title: string;
-    feature3Desc: string;
-    statCommands: string;
-    statLocales: string;
-    statLicense: string;
-    cmdGive: string;
-    cmdExecute: string;
-    cmdTellraw: string;
-    cmdScoreboard: string;
-    ctaSectionTitle: string;
-    ctaSectionDesc: string;
-    ctaSectionButton: string;
-    footerCopyright: string;
-    footerDisclaimer: string;
-  };
-  notFound: {
-    errorCode: string;
-    description: string;
-    backHome: string;
-    browseDocs: string;
   };
 }
 

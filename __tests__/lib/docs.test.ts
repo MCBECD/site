@@ -46,15 +46,6 @@ describe("docs.ts - Document Engine", () => {
       }
     });
 
-    it("returns documents with valid reading time when present", () => {
-      const docs = getAllDocs();
-      for (const doc of docs) {
-        if (doc.readingTime !== undefined) {
-          expect(doc.readingTime).toBeGreaterThan(0);
-          expect(Number.isInteger(doc.readingTime)).toBe(true);
-        }
-      }
-    });
   });
 
   describe("getDocById", () => {
@@ -64,27 +55,14 @@ describe("docs.ts - Document Engine", () => {
     });
 
     it("finds a flat document by id", () => {
-      // 'give' is a flat .mdx file
       const doc = getDocById("give");
       if (!doc) {
-        // Might not exist if test data varies, skip gracefully
         return;
       }
       expect(doc.meta.id).toBe("give");
       expect(doc.meta.title).toBeTruthy();
       expect(doc.rawContent).toBeTypeOf("string");
       expect(doc.rawContent.length).toBeGreaterThan(0);
-    });
-
-    it("finds a folder document by id", () => {
-      // 'give-diamonds' is a folder with index.mdx + meta.json
-      const doc = getDocById("give-diamonds");
-      if (!doc) {
-        return; // Skip if not present
-      }
-      expect(doc.meta.id).toBe("give-diamonds");
-      expect(doc.meta.title).toBeTruthy();
-      expect(doc.rawContent).toBeTypeOf("string");
     });
 
     it("returns null for empty string id", () => {

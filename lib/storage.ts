@@ -120,7 +120,7 @@ export interface DocsUIState {
   category: string;
   bookmarksCollapsed: boolean;
   historyCollapsed: boolean;
-  sortBy: string;
+  grouped: boolean;
   viewMode: string;
   page: number;
   scrollY: number;
