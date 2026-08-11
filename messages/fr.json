@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "Paramètres",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "Documents"
   },
   "settings": {
     "title": "Paramètres",
@@ -85,5 +86,34 @@
     "typeUI": "UI",
     "typeAdvanced": "Avancé",
     "typeOther": "Autre"
+  },
+  "landing": {
+    "tagline": "Référence de commandes Minecraft Bedrock animée par la communauté. Chaque commande est vérifiée et prête à copier.",
+    "ctaPrimary": "Parcourir les commandes",
+    "ctaSecondary": "Voir sur GitHub",
+    "feature1Title": "Copier-coller",
+    "feature1Desc": "Chaque commande inclut la syntaxe, les paramètres et des exemples prêts à coller dans le chat.",
+    "feature2Title": "Multilingue",
+    "feature2Desc": "L'interface prend en charge 7 langues, les commandes restent dans leur forme anglaise originale.",
+    "feature3Title": "Thèmes personnalisables",
+    "feature3Desc": "4 palettes prédéfinies, modes clair/sombre, arrière-plans et tailles de police personnalisés.",
+    "statCommands": "commandes",
+    "statLocales": "langues",
+    "statLicense": "open source",
+    "cmdGive": "Donner des objets",
+    "cmdExecute": "Exécution conditionnelle",
+    "cmdTellraw": "Texte brut",
+    "cmdScoreboard": "Tableau de score",
+    "ctaSectionTitle": "Prêt ?",
+    "ctaSectionDesc": "Des bases aux techniques avancées, {count} commandes vous attendent.",
+    "ctaSectionButton": "Entrer dans la bibliothèque",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft est une marque de Mojang Studios. Ce projet n'est pas affilié à Mojang Studios ou Microsoft Corporation."
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "La page que vous cherchez n'existe pas ou a été déplacée. Peut-être une faute de frappe ou des coordonnées de portail incorrectes.",
+    "backHome": "Retour à l'accueil",
+    "browseDocs": "Parcourir les commandes"
   }
 }

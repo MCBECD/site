@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "设置",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "文档"
   },
   "settings": {
     "title": "设置",
@@ -85,5 +86,34 @@
     "typeUI": "界面",
     "typeAdvanced": "高级",
     "typeOther": "其他"
+  },
+  "landing": {
+    "tagline": "社区驱动的 Minecraft 基岩版命令参考，每条命令都经过验证，可直接复制使用。",
+    "ctaPrimary": "浏览命令库",
+    "ctaSecondary": "在 GitHub 查看",
+    "feature1Title": "即用即复制",
+    "feature1Desc": "每条命令都附带语法、参数说明和可直接粘贴到聊天栏的示例。",
+    "feature2Title": "多语种文档",
+    "feature2Desc": "界面支持 7 种语言，命令本身保持原始英文形式。",
+    "feature3Title": "可定制主题",
+    "feature3Desc": "4 套预设色板、亮暗双模式、自定义背景与字体大小。",
+    "statCommands": "条命令",
+    "statLocales": "种语言",
+    "statLicense": "开源协议",
+    "cmdGive": "给予物品",
+    "cmdExecute": "条件执行",
+    "cmdTellraw": "原始文本",
+    "cmdScoreboard": "记分板",
+    "ctaSectionTitle": "准备好了吗？",
+    "ctaSectionDesc": "从基础命令到高级技巧，{count} 条命令等你探索。",
+    "ctaSectionButton": "进入命令库",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft 是 Mojang Studios 的商标。本项目与 Mojang Studios 或 Microsoft Corporation 无关。"
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "你访问的页面不存在，或已被移动。可能是命令拼写错误，也可能是传送门坐标失效。",
+    "backHome": "返回首页",
+    "browseDocs": "浏览命令库"
   }
 }
