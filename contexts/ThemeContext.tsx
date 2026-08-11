@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { useSettings, type Theme } from "./SettingsContext";
+import { useSettings } from "./SettingsContext";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings();

@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   getCategoryBase,
   getCategoryI18nKey,
-  getCategoryLabel,
   getCommandType,
   getCommandTypeI18nKey,
   getBasicsOrder,
@@ -41,20 +40,6 @@ describe("getCategoryI18nKey", () => {
 
   it("returns undefined for undefined input", () => {
     expect(getCategoryI18nKey(undefined)).toBeUndefined();
-  });
-});
-
-describe("getCategoryLabel (deprecated)", () => {
-  it("returns i18n key as fallback label", () => {
-    expect(getCategoryLabel("commands/player")).toBe("doc.filterCommands");
-  });
-
-  it("returns base name for unknown category", () => {
-    expect(getCategoryLabel("unknown")).toBe("unknown");
-  });
-
-  it("returns undefined for undefined input", () => {
-    expect(getCategoryLabel(undefined)).toBeUndefined();
   });
 });
 
