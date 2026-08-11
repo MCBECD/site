@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
 import { useSettings, type Theme } from "./SettingsContext";
 
 interface ThemeContextValue {
@@ -25,14 +25,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const { settings } = useSettings();
   const { theme } = settings;
   const resolvedTheme = useMemo(() => resolveTheme(theme), [theme]);
-  const prevResolved = useRef(resolvedTheme);
-
   /* 同步 dark class + color-scheme */
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("dark", resolvedTheme === "dark");
     root.style.colorScheme = resolvedTheme;
-    prevResolved.current = resolvedTheme;
   }, [resolvedTheme]);
 
   /* 监听系统主题变化 */

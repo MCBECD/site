@@ -2,7 +2,13 @@
   "common": {
     "loading": "読み込み中...",
     "notFound": "ページが見つかりません",
-    "backToList": "ホーム"
+    "backToList": "ホーム",
+    "errorTitle": "エラー",
+    "errorDesc": "予期しないエラーが発生しました。ページを再読み込みしてください。",
+    "errorRetry": "再試行",
+    "bookmark": "ブックマーク",
+    "unbookmark": "ブックマーク解除",
+    "delete": "削除"
   },
   "nav": {
     "settings": "設定",
@@ -39,7 +45,8 @@
     "bgClear": "背景をクリア",
     "bgOverlayOpacity": "オーバーレイ",
     "bgOverlayBlur": "ぼかし",
-    "bgParallax": "パララックス"
+    "bgParallax": "パララックス",
+    "bgImageTooLarge": "画像サイズは2MBを超えられません"
   },
   "code": {
     "copy": "コピー",

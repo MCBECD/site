@@ -7,13 +7,15 @@ import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
-import { CmdImpulse } from "./mdx/CmdImpulse";
-import { CmdRepeat } from "./mdx/CmdRepeat";
-import { CmdChain } from "./mdx/CmdChain";
-import { CmdConditionalImpulse } from "./mdx/CmdConditionalImpulse";
-import { CmdConditionalRepeat } from "./mdx/CmdConditionalRepeat";
-import { CmdConditionalChain } from "./mdx/CmdConditionalChain";
-import { CmdChat } from "./mdx/CmdChat";
+import { makeCmdBlock } from "./mdx/CmdBlock";
+
+const CmdImpulse = makeCmdBlock("impulse");
+const CmdRepeat = makeCmdBlock("repeat");
+const CmdChain = makeCmdBlock("chain");
+const CmdConditionalImpulse = makeCmdBlock("conditional-impulse");
+const CmdConditionalRepeat = makeCmdBlock("conditional-repeat");
+const CmdConditionalChain = makeCmdBlock("conditional-chain");
+const CmdChat = makeCmdBlock("chat");
 
 const mcfunctionSyntax = {
   name: "mcfunction",

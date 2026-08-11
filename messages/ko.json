@@ -2,7 +2,13 @@
   "common": {
     "loading": "로딩 중...",
     "notFound": "페이지를 찾을 수 없습니다",
-    "backToList": "홈으로"
+    "backToList": "홈으로",
+    "errorTitle": "오류",
+    "errorDesc": "예기치 않은 오류가 발생했습니다. 페이지를 새로고침해 주세요.",
+    "errorRetry": "재시도",
+    "bookmark": "북마크",
+    "unbookmark": "북마크 해제",
+    "delete": "삭제"
   },
   "nav": {
     "settings": "설정",
@@ -39,7 +45,8 @@
     "bgClear": "배경 지우기",
     "bgOverlayOpacity": "오버레이",
     "bgOverlayBlur": "흐림",
-    "bgParallax": "시차 효과"
+    "bgParallax": "시차 효과",
+    "bgImageTooLarge": "이미지 크기는 2MB를 초과할 수 없습니다"
   },
   "code": {
     "copy": "복사",
