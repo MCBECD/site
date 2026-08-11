@@ -130,7 +130,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
               left: displayX,
               width: S,
               height: S,
-              background: "var(--color-bg-elevated)",
+              background: "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))",
               boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
               transition: dragging
                 ? "none"
@@ -139,6 +139,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           />
           {THEMES.map(({ key, icon: Icon, titleKey }, i) => {
             const o = overlap(i);
+            const active = dragging ? o > 0 : i === activeIndex;
             return (
               <button
                 key={key}
@@ -147,8 +148,8 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                   width: S,
                   height: S,
                   marginLeft: i > 0 ? G : 0,
-                  color: o > 0
-                    ? `color-mix(in srgb, var(--color-accent) ${o * 100}%, var(--color-text-tertiary) ${(1 - o) * 100}%)`
+                  color: active
+                    ? "var(--color-accent)"
                     : "var(--color-text-tertiary)",
                   transition: dragging
                     ? "none"
