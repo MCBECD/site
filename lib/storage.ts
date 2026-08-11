@@ -1,24 +1,31 @@
 /**
- * localStorage 工具 — 收藏、最近浏览
+ * localStorage 工具 — 统一的客户端存储抽象
+ *
+ * 所有客户端持久化都应通过此模块，确保：
+ *   - 统一的 key 前缀（mcbecd-）
+ *   - SSR 安全（typeof window 检查）
+ *   - 容错（JSON 解析失败返回 fallback）
  */
 
 const PREFIX = "mcbecd-";
 
-function getKey(key: string) {
+function getKey(key: string): string {
   return `${PREFIX}${key}`;
 }
 
-function read<T>(key: string, fallback: T): T {
+/** 读取并反序列化，失败返回 fallback */
+export function storageRead<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try {
     const raw = localStorage.getItem(getKey(key));
-    return raw ? JSON.parse(raw) : fallback;
+    return raw ? (JSON.parse(raw) as T) : fallback;
   } catch {
     return fallback;
   }
 }
 
-function write(key: string, value: unknown): void {
+/** 序列化并写入 */
+export function storageWrite(key: string, value: unknown): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(getKey(key), JSON.stringify(value));
@@ -34,7 +41,7 @@ function write(key: string, value: unknown): void {
 const BOOKMARKS_KEY = "bookmarks";
 
 export function getBookmarks(): string[] {
-  return read<string[]>(BOOKMARKS_KEY, []);
+  return storageRead<string[]>(BOOKMARKS_KEY, []);
 }
 
 export function isBookmarked(id: string, list?: string[]): boolean {
@@ -45,11 +52,11 @@ export function removeBookmark(id: string): void {
   const list = getBookmarks();
   const idx = list.indexOf(id);
   if (idx >= 0) list.splice(idx, 1);
-  write(BOOKMARKS_KEY, list);
+  storageWrite(BOOKMARKS_KEY, list);
 }
 
 export function clearBookmarks(): void {
-  write(BOOKMARKS_KEY, []);
+  storageWrite(BOOKMARKS_KEY, []);
 }
 
 export function toggleBookmark(id: string): boolean {
@@ -60,7 +67,7 @@ export function toggleBookmark(id: string): boolean {
   } else {
     list.push(id);
   }
-  write(BOOKMARKS_KEY, list);
+  storageWrite(BOOKMARKS_KEY, list);
   return idx < 0; // true = added
 }
 
@@ -78,7 +85,7 @@ interface HistoryEntry {
 }
 
 export function getHistory(): HistoryEntry[] {
-  return read<HistoryEntry[]>(HISTORY_KEY, []);
+  return storageRead<HistoryEntry[]>(HISTORY_KEY, []);
 }
 
 export function addHistory(id: string, title: string): void {
@@ -89,18 +96,18 @@ export function addHistory(id: string, title: string): void {
   list.unshift({ id, title, ts: Date.now() });
   // 超过上限裁剪
   if (list.length > MAX_HISTORY) list.length = MAX_HISTORY;
-  write(HISTORY_KEY, list);
+  storageWrite(HISTORY_KEY, list);
 }
 
 export function removeHistory(id: string): void {
   const list = getHistory();
   const idx = list.findIndex((e) => e.id === id);
   if (idx >= 0) list.splice(idx, 1);
-  write(HISTORY_KEY, list);
+  storageWrite(HISTORY_KEY, list);
 }
 
 export function clearHistory(): void {
-  write(HISTORY_KEY, []);
+  storageWrite(HISTORY_KEY, []);
 }
 
 /* ----------------------------------------------------------
@@ -120,9 +127,9 @@ export interface DocsUIState {
 }
 
 export function saveDocsUIState(state: DocsUIState): void {
-  write(DOCS_UI_STATE_KEY, state);
+  storageWrite(DOCS_UI_STATE_KEY, state);
 }
 
 export function loadDocsUIState(): DocsUIState | null {
-  return read<DocsUIState | null>(DOCS_UI_STATE_KEY, null);
+  return storageRead<DocsUIState | null>(DOCS_UI_STATE_KEY, null);
 }
