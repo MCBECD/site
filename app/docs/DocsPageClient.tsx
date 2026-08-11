@@ -15,7 +15,6 @@ type SortBy = "name" | "type";
 type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
-const PAGE_SIZE_LIST = 20;
 const DEBOUNCE_MS = 150;
 
 const TYPE_ORDER: Record<string, number> = {
@@ -175,13 +174,13 @@ export default function DocsPageClient() {
   }, [docs, debouncedQuery, category, sortBy, locale]);
 
   const isSearching = debouncedQuery.trim().length > 0;
-  const pageSize = viewMode === "card" ? PAGE_SIZE_CARD : PAGE_SIZE_LIST;
-  const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
-  const safePage = Math.min(page, totalPages - 1);
-  const pageDocs = useMemo(
-    () => filteredDocs.slice(safePage * pageSize, (safePage + 1) * pageSize),
-    [filteredDocs, safePage, pageSize],
-  );
+  const totalPages = viewMode === "list" ? 1 : Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE_CARD));
+  const safePage = viewMode === "list" ? 0 : Math.min(page, totalPages - 1);
+  const pageDocs = useMemo(() => {
+    if (viewMode === "list") return filteredDocs;
+    const pageSize = PAGE_SIZE_CARD;
+    return filteredDocs.slice(safePage * pageSize, (safePage + 1) * pageSize);
+  }, [filteredDocs, safePage, viewMode]);
 
   const pageNumbers = useMemo(() => {
     const pages: number[] = [];
@@ -314,31 +313,17 @@ export default function DocsPageClient() {
           )}
 
           {/* 视图切换 */}
-          <div className="h-[42px] p-0.5 inline-flex items-center rounded-lg
-            bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
-            <button
-              onClick={() => setViewMode("card")}
-              title={t("doc.viewCards")}
-              className={`w-9 h-full inline-flex items-center justify-center rounded-md transition-all
-                ${viewMode === "card"
-                  ? "bg-[var(--color-bg-primary)] text-[var(--color-accent)] shadow-sm"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"}
-              `}
-            >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              title={t("doc.viewList")}
-              className={`w-9 h-full inline-flex items-center justify-center rounded-md transition-all
-                ${viewMode === "list"
-                  ? "bg-[var(--color-bg-primary)] text-[var(--color-accent)] shadow-sm"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"}
-              `}
-            >
-              <List className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+            title={viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}
+            className="h-[42px] w-[42px] inline-flex items-center justify-center rounded-lg
+              bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
+              border border-[var(--color-border)]
+              hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+              transition-colors"
+          >
+            {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
+          </button>
         </div>
       </div>
 
@@ -369,7 +354,9 @@ export default function DocsPageClient() {
         </div>
       )}
 
-      <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={navigatePage} />
+      {viewMode === "card" && (
+        <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={navigatePage} />
+      )}
     </div>
   );
 }
