@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X, Command, LayoutGrid, List, ChevronDown } from "lucide-react";
+import { Search, X, Command, LayoutList, List, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark } from "@/lib/storage";
@@ -273,7 +273,7 @@ export default function DocsPageClient() {
           )}
         </div>
 
-        {/* 排序 & 视图切换 */}
+        {/* 排序 */}
         <div className="flex items-center gap-1.5 shrink-0">
           {showSortDropdown && (
             <div ref={sortDropdownRef} className="relative">
@@ -322,7 +322,7 @@ export default function DocsPageClient() {
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
               transition-colors"
           >
-            {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
+            {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
           </button>
         </div>
       </div>
