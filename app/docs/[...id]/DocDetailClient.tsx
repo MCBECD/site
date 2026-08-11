@@ -7,7 +7,7 @@ import { DownloadButton } from "@/components/DownloadButton";
 import CopyDropdown from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
-import { getCategoryI18nKey } from "@/lib/categories";
+import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
 import { addHistory, toggleBookmark, isBookmarked } from "@/lib/storage";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
@@ -22,6 +22,9 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   const [bookmarked, setBookmarked] = useState(false);
   const categoryKey = getCategoryI18nKey(doc.meta.category);
   const categoryLabel = categoryKey ? t(categoryKey) : undefined;
+  const commandTypeKey = getCommandTypeI18nKey(doc.meta.category);
+  const commandTypeLabel = commandTypeKey ? t(commandTypeKey) : undefined;
+  console.log(commandTypeLabel);
 
   useEffect(() => {
     addHistory(doc.meta.id, doc.meta.title);
@@ -80,12 +83,20 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
             </p>
           )}
           <div className="flex items-center justify-between mt-3">
-            {categoryLabel && (
-              <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
-                {categoryLabel}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {categoryLabel && (
+                <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
+                  {categoryLabel}
+                </span>
+              )}
+              {commandTypeLabel && (
+                <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
+                  {commandTypeLabel}
+                </span>
+              )}
+            </div>
             {(doc.meta.author || doc.meta.updatedAt) && (
               <span className="text-[12px] text-[var(--color-text-tertiary)]">
                 {doc.meta.author}{doc.meta.author && doc.meta.updatedAt ? " · " : ""}{doc.meta.updatedAt ?? ""}
