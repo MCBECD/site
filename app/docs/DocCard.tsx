@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Star, ChevronRight } from "lucide-react";
 import type { DocMeta } from "@/lib/docs";
+import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
   doc: DocMeta;
@@ -22,7 +23,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark }: DocCardPr
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate">
-            {doc.title}
+            {renderTitleWithCode(doc.title)}
           </h2>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">

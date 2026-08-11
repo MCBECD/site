@@ -253,7 +253,7 @@ code {
   background-color: var(--color-code-bg);
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
-  font-size: 0.875rem;
+  /* font-size: 0.875rem; */
 }
 
 pre code {
@@ -280,7 +280,8 @@ pre {
  * Scrollbar
  * ---------------------------------------------------------- */
 :root {
-  /* scrollbar-width: thin; */
+  scrollbar-width: thin;
+  /* -ms-overflow-style: none; */
   scrollbar-color: var(--color-text-tertiary) transparent;
   overflow-y: overlay;
   overflow-x: overlay;
@@ -288,8 +289,8 @@ pre {
 
 ::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-track-piece { background: transparent; }
-::-webkit-scrollbar-button { display: none; }
+/* ::-webkit-scrollbar-track-piece { background: transparent; } */
+/* ::-webkit-scrollbar-button { display: none; } */
 ::-webkit-scrollbar-thumb { background: var(--color-text-tertiary); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }
 

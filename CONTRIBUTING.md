@@ -54,7 +54,7 @@ This creates `content/docs/clear.mdx` with the correct frontmatter template.
 ---
 author: "Your Name"
 updatedAt: "YYYY-MM-DD"
-title: "/command — Description"
+title: "/command  Description"
 order: <number>
 category: commands
 description: "Brief one-line description"
