@@ -16,6 +16,5 @@ export const renderTitleWithCode = (title: string) => {
   if (lastIndex < title.length) {
     parts.push(<Fragment key={lastIndex}>{title.slice(lastIndex)}</Fragment>);
   }
-  console.log(parts);
   return parts;
 };

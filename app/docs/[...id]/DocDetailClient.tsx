@@ -7,6 +7,7 @@ import { DownloadButton } from "@/components/DownloadButton";
 import CopyDropdown from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
+import { getCategoryLabel } from "@/lib/categories";
 import { addHistory, toggleBookmark, isBookmarked } from "@/lib/storage";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
@@ -19,6 +20,7 @@ interface Props {
 export function DocDetailClient({ doc, rawContent, children }: Props) {
   const { t } = useLocale();
   const [bookmarked, setBookmarked] = useState(false);
+  const categoryLabel = getCategoryLabel(doc.meta.category);
 
   // 记录浏览历史
   useEffect(() => {
@@ -70,6 +72,14 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
 
         {/* 标题 + 元信息 */}
         <header className="px-6 pt-5 pb-2">
+          <div className="flex items-center gap-3 mb-2">
+            {categoryLabel && (
+              <span className="inline-flex items-center px-2.5 py-1 rounded text-[12px] font-medium
+                bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/20">
+                {categoryLabel}
+              </span>
+            )}
+          </div>
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {renderTitleWithCode(doc.meta.title)}
           </h1>

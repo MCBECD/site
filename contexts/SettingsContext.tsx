@@ -118,25 +118,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     document.documentElement.style.setProperty("--font-size-multiplier", String(mul));
   }, [settings.fontSize]);
 
-  /* color theme plugin toggle → clear custom vars when off */
+  /* color theme → apply to document */
   useEffect(() => {
     const el = document.documentElement;
-    const enabled = settings.plugins["color-theme"];
-    if (!enabled) {
-      clearCustomPalette(el);
-      el.setAttribute("data-color-theme", "default");
-      return;
-    }
     if (settings.colorTheme !== "custom") {
       clearCustomPalette(el);
       el.setAttribute("data-color-theme", settings.colorTheme);
     }
-  }, [settings.colorTheme, settings.plugins]);
+  }, [settings.colorTheme]);
 
   /* custom palette → apply + re-apply on dark class change */
   useEffect(() => {
     if (settings.colorTheme !== "custom") return;
-    if (!settings.plugins["color-theme"]) return;
 
     const el = document.documentElement;
     const apply = () => {
@@ -149,7 +142,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const obs = new MutationObserver(apply);
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
     return () => obs.disconnect();
-  }, [settings.colorTheme, settings.customColor, settings.plugins]);
+  }, [settings.colorTheme, settings.customColor]);
 
   const isPluginEnabledFn = useCallback(
     (id: string) => !!settings.plugins[id],
