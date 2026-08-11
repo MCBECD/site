@@ -207,7 +207,7 @@ export default function DocsPageClient() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto px-5 pt-14 pb-24">
+    <div className="max-w-3xl mx-auto px-5 pt-14 pb-24">
       {/* Hero */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
@@ -341,7 +341,10 @@ export default function DocsPageClient() {
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
-        <div className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5"} key={`${debouncedQuery}-${safePage}-${viewMode}`}>
+        <div
+          className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
+          key={`${debouncedQuery}-${safePage}-${viewMode}`}
+        >
           {pageDocs.map((doc, i) => (
             <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
               <DocCard
