@@ -345,13 +345,19 @@ export default function DocsPageClient() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-5 pt-14 pb-24">
+    <div className="relative max-w-3xl mx-auto px-5 pt-14 pb-24">
+      {/* Top grid pattern — fades out */}
+      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none -z-10" aria-hidden="true" />
+
       {/* Hero */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+      <div className="mb-10">
+        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
+          {t("nav.docs")}
+        </p>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 hero-sub-enter">
+        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
