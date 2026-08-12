@@ -200,7 +200,7 @@ export default function DocsPageClient() {
     requestAnimationFrame(tryScroll);
   }, []);
 
-  const showSortToggle = category === "commands" || category === "all";
+  const showGroupToggle = category === "commands" || category === "all";
 
   const filteredDocs = useMemo(() => {
     let result = docs;
@@ -434,10 +434,10 @@ export default function DocsPageClient() {
         </div>
         {/* 工具栏：分组 + 视图切换 */}
         <div className="flex items-center gap-2">
-          {showSortToggle && (
+          {showGroupToggle && (
             <button
               onClick={() => setGrouped((prev) => !prev)}
-              className={`h-9 px-3.5 inline-flex items-center gap-1.5 rounded-lg border transition-colors
+              className={`h-8 px-3 inline-flex items-center gap-1.5 rounded-lg border
                 ${grouped
                   ? "bg-[var(--color-accent)] text-white border-transparent"
                   : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
@@ -450,7 +450,7 @@ export default function DocsPageClient() {
 
           <button
             onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
-            className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-lg
+            className="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg
               bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
               border border-[var(--color-border)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
