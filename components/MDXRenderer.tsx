@@ -1,19 +1,13 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
-import type { CSSProperties, JSX, ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
-import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
+import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
-
-interface CodeElementProps {
-  className?: string;
-  children?: ReactNode;
-  style?: CSSProperties;
-}
 
 const CmdImpulse = makeCmdBlock("impulse");
 const CmdRepeat = makeCmdBlock("repeat");
@@ -30,8 +24,8 @@ const components = {
     if (!isValidElement(children))
       return <pre>{children}</pre>;
 
-    const props = children.props as CodeElementProps;
-    const className = props.className ?? "";
+    const props = children.props as Record<string, unknown>;
+    const className = (props.className as string) ?? "";
     const match = /language-(\w+)/.exec(className);
     const lang = match ? match[1]! : "mcfunction";
     const code = String(props.children ?? "").trim();
@@ -140,7 +134,8 @@ export function MDXRenderer({ source }: { source: string }) {
         components={components}
         options={{
           mdxOptions: {
-            remarkPlugins: [remarkGfm, remarkGithubAlerts],
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [rehypeGithubAlerts],
           },
         }}
       />

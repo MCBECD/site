@@ -3,9 +3,9 @@
  * ---------------------------------------------------------- */
 .gh-alert {
   margin: 1rem 0;
-  padding: 1rem 1rem 1rem 0.875rem;
+  padding: 0.25rem 1rem;
+  border-radius: 0.5rem;
   border-left: 4px solid;
-  border-radius: 0 var(--radius) var(--radius) 0;
   font-size: 0.875rem;
   line-height: 1.6;
 }
