@@ -84,6 +84,7 @@ export function DocsPageClient() {
       }
       if (e.key === "Escape" && document.activeElement === searchRef.current) {
         setQuery(""); setDebouncedQuery("");
+        resetPage();
         searchRef.current?.blur();
       }
     };
