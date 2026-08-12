@@ -50,7 +50,7 @@ const components = {
     href && (href.startsWith("http://") || href.startsWith("https://")) ? (
       <ExternalLink
         href={href}
-        className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
+        className="text-[var(--color-accent)]"
         {...props}
       >
         {children}
@@ -58,21 +58,21 @@ const components = {
     ) : (
       <Link
         href={href ?? ""}
-        className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
+        className="text-[var(--color-accent)]"
         {...props}
       >
         {children}
       </Link>
     ),
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
-    <div className="overflow-x-auto overflow-hidden my-4 rounded-lg">
+    <div className="overflow-x-auto overflow-hidden my-4 rounded-[var(--radius)]">
       <table className="min-w-full border-collapse border border-[var(--color-border)]" {...props}>
         {children}
       </table>
     </div>
   ),
   th: ({ children, ...props }: JSX.IntrinsicElements["th"]) => (
-    <th className="border border-[var(--color-border)] px-4 py-2 text-left font-semibold bg-[var(--color-bg-tertiary)]" {...props}>
+    <th className="border border-[var(--color-border)] px-4 py-2 text-left font-semibold" {...props}>
       {children}
     </th>
   ),
@@ -96,12 +96,12 @@ const components = {
     ),
   /* Details/summary for collapsible sections */
   details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (
-    <details className="gh-details my-4 rounded-lg border border-[var(--color-border)]" {...props}>
+    <details className="gh-details my-4 rounded-[var(--radius)] border border-[var(--color-border)]" {...props}>
       {children}
     </details>
   ),
   summary: ({ children, ...props }: JSX.IntrinsicElements["summary"]) => (
-    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-lg select-none hover:bg-[var(--color-bg-secondary)] transition-colors" {...props}>
+    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-[var(--radius)] select-none hover:bg-[var(--color-bg-secondary)] transition-colors" {...props}>
       {children}
     </summary>
   ),

@@ -107,7 +107,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
         <div
-          className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-xl shadow-xl flex flex-col
+          className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-[var(--radius-lg)] shadow-xl flex flex-col
             bg-[var(--color-bg-primary)] border border-[var(--color-border)] pointer-events-auto ${panelAnim}`}
         >
           {/* header */}
