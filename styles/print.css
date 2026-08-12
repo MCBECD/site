@@ -1,0 +1,255 @@
+@media print {
+  /* ----------------------------------------------------------
+   * Page setup — A4 with comfortable margins
+   * ---------------------------------------------------------- */
+  @page {
+    size: A4;
+    margin: 2cm 2.5cm;
+  }
+
+  html {
+    font-size: 11pt !important;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Hide non-content UI elements
+   * ---------------------------------------------------------- */
+
+  /* Navbar */
+  nav {
+    display: none !important;
+  }
+
+  /* Settings panel overlay and container */
+  .fixed[class*="z-"] {
+    display: none !important;
+  }
+
+  /* Footer */
+  footer {
+    display: none !important;
+  }
+
+  /* Scroll-to-top button */
+  button[aria-label] {
+    display: none !important;
+  }
+
+  /* Background layers (base fill, image, overlay, grid) */
+  .bg-grid,
+  .fixed {
+    display: none !important;
+  }
+
+  /* Page transition wrapper — remove padding/gutter effects */
+  main {
+    padding-top: 0 !important;
+    min-height: auto !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Ensure main content is visible black-on-white
+   * ---------------------------------------------------------- */
+
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Restore white background on content containers */
+  .doc-glass-card,
+  .doc-card,
+  .terminal-block,
+  main > div,
+  .prose > div,
+  .prose {
+    background: #fff !important;
+    border-color: #ccc !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Links — show URLs inline in parentheses
+   * ---------------------------------------------------------- */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555 !important;
+    word-break: break-all;
+  }
+
+  /* Skip URL display for same-page anchors and javascript: links */
+  a[href^="#"]::after,
+  a[href^="javascript"]::after {
+    content: "";
+  }
+
+  /* Remove external-link icon (data URI background), show URL instead */
+  .prose a[target="_blank"]::after {
+    content: " (" attr(href) ")" !important;
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    display: inline !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Code blocks — visible borders, no page-break inside
+   * ---------------------------------------------------------- */
+  pre,
+  .code-block-scroll {
+    border: 1px solid #bbb !important;
+    border-left: 3px solid #333 !important;
+    background: #f5f5f5 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    max-width: 100% !important;
+  }
+
+  code,
+  kbd {
+    border: 1px solid #ddd;
+    background: #f5f5f5 !important;
+    font-size: 0.9em !important;
+  }
+
+  /* Inline code should not break across pages */
+  :not(pre) > code {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Tables — avoid breaking rows across pages
+   * ---------------------------------------------------------- */
+  table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Headings, blockquotes, and images — avoid orphan breaks
+   * ---------------------------------------------------------- */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  blockquote,
+  .gh-alert {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    border: 1px solid #bbb !important;
+  }
+
+  img {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    max-width: 100% !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Remove all animations and transitions
+   * ---------------------------------------------------------- */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* ----------------------------------------------------------
+   * Print-specific fixes
+   * ---------------------------------------------------------- */
+
+  /* Remove backdrop blur (unsupported in print) */
+  * {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Ensure content width uses full page width */
+  .max-w-3xl,
+  .max-w-\[var\(--landing-max-width\)\] {
+    max-width: 100% !important;
+  }
+
+  /* Show details/summary content expanded */
+  .gh-details {
+    overflow: visible !important;
+  }
+
+  /* Ensure prose text is readable */
+  .prose {
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+  }
+
+  .prose h2 { font-size: 14pt !important; }
+  .prose h3 { font-size: 12pt !important; }
+  .prose h4 { font-size: 11pt !important; }
+
+  /* Hide interactive-only elements */
+  .search-input,
+  button,
+  [role="radiogroup"] {
+    display: none !important;
+  }
+
+  /* Allow the doc detail header to print */
+  .doc-glass-card > header {
+    display: block !important;
+    border-bottom: 1px solid #ccc !important;
+  }
+
+  /* GitHub alert checkboxes — show as simple markers */
+  .gh-checkbox {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    width: auto !important;
+    height: auto !important;
+    border: none !important;
+    background: none !important;
+  }
+
+  /* Hide scrollbar gutters (no scrollbars in print) */
+  :root,
+  html {
+    scrollbar-gutter: auto !important;
+  }
+
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+}
