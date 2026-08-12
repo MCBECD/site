@@ -50,6 +50,8 @@ const FONT_SIZE_MAP: Record<FontSize, number> = {
   large: 1.125,
 };
 
+export const DEFAULT_LOCALE: Locale = "zh-CN";
+
 const SETTINGS_KEY = "settings";
 
 // ---- State helpers (pure) ----
@@ -58,7 +60,7 @@ function defaultSettings(): Settings {
   return {
     theme: "system",
     fontSize: "medium",
-    locale: "zh-CN",
+    locale: DEFAULT_LOCALE,
     colorTheme: "default",
     customColor: "#3b82f6",
     plugins: {},

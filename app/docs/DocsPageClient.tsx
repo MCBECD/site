@@ -95,32 +95,13 @@ export default function DocsPageClient() {
     setPage(0);
   }, [viewMode]);
 
-  const scrollSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => {
-    saveDocsUIState({
-      viewMode,
-      page,
-      scrollY: scrollYRef.current,
-    });
-  }, [viewMode, page]);
-
   useEffect(() => {
     const onScroll = () => {
       scrollYRef.current = window.scrollY;
-      if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
-      scrollSaveTimerRef.current = setTimeout(() => {
-        saveDocsUIState({
-          viewMode,
-          page,
-          scrollY: scrollYRef.current,
-        });
-      }, 200);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
       saveDocsUIState({
         viewMode,
         page,
