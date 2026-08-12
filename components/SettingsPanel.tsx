@@ -193,7 +193,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
               </>
             ) : tab === "data" ? (
               <div className="space-y-3">
-                {/* 收藏 */}
+                {/* Bookmarks */}
                 <Section
                   title={t("doc.bookmarks")}
                   action={
@@ -240,7 +240,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                   )}
                 </Section>
 
-                {/* 历史 */}
+                {/* History */}
                 <Section
                   title={t("doc.recent")}
                   action={

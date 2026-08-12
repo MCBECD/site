@@ -20,10 +20,10 @@ const MSG: Record<Locale, Messages> = {
   fr,
 };
 
-// 开发模式下缓存已校验的 locale，避免重复校验
+// Cache validated locales in development mode to avoid repeated validation
 const validatedLocales = new Set<Locale>();
 
-/** 嵌套对象按路径取值 */
+/** Get a value from a nested object by dot-separated path */
 function getNested(obj: unknown, path: string[], fallback: string): string {
   let cur: unknown = obj;
   for (const p of path) {
@@ -45,9 +45,9 @@ function getVarRe(key: string): RegExp {
 }
 
 /**
- * 开发模式下校验 JSON 消息文件的 key 是否完整。
- * 以 en.json 为基准，检查其他语言是否缺少 key。
- * 只在首次使用时校验一次。
+ * Validate JSON message file keys for completeness in development mode.
+ * Uses en.json as the baseline to check if other locales are missing keys.
+ * Only validates once on first use.
  */
 function validateMessages(locale: Locale, messages: unknown): void {
   if (process.env.NODE_ENV !== "development") return;
@@ -88,11 +88,11 @@ function validateMessages(locale: Locale, messages: unknown): void {
 interface LocaleContextValue {
   locale: Locale;
   /**
-   * 按 "section.key" 路径取字符串，支持 {var} 插值。
+   * Get a string by "section.key" path, supporting {var} interpolation.
    *
-   * 优先使用 MessageKey 类型获得自动补全和拼写检查。
-   * 对于动态构造的 key（如从数据派生的 i18n key），
-   * 可使用 as MessageKey 断言或回退到 string 重载。
+   * Prefer using the MessageKey type for autocomplete and type checking.
+   * For dynamically constructed keys (e.g., i18n keys derived from data),
+   * use `as MessageKey` assertion or fall back to the string overload.
    */
   t(key: MessageKey, vars?: Record<string, string | number>): string;
   t(key: string, vars?: Record<string, string | number>): string;

@@ -1,11 +1,11 @@
 /**
- * SettingsContext — 全局设置状态管理
+ * SettingsContext — Global settings state management
  *
- * 职责：
- *   - 设置状态 + localStorage 持久化（通过 lib/storage.ts）
- *   - 字体缩放 CSS 变量同步
- *   - 颜色主题 CSS 变量同步
- *   - 委托 palette.ts / plugin-system.ts 处理具体计算
+ * Responsibilities:
+ *   - Settings state + localStorage persistence (via lib/storage.ts)
+ *   - Font size CSS variable synchronization
+ *   - Color theme CSS variable synchronization
+ *   - Delegates to palette.ts / plugin-system.ts for specific computations
  */
 
 "use client";
@@ -72,8 +72,8 @@ function defaultSettings(): Settings {
 }
 
 /**
- * 从 localStorage 读取设置，与默认值合并。
- * 使用 lib/storage.ts 的统一存储层。
+ * Read settings from localStorage and merge with defaults.
+ * Uses the unified storage layer from lib/storage.ts.
  */
 function loadSettings(): Settings {
   const saved = storageRead<Partial<Settings>>(SETTINGS_KEY, {});
