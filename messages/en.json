@@ -33,6 +33,7 @@
     "tabPlugins": "Theme",
     "tabData": "Data",
     "clearAll": "Clear all",
+    "close": "Close",
     "pluginColorTheme": "Color Theme",
     "pluginColorThemeDesc": "Override the entire color scheme including backgrounds, text, and borders",
     "colorDefault": "Default",

@@ -33,6 +33,7 @@
     "tabPlugins": "主題",
     "tabData": "資料",
     "clearAll": "清空",
+    "close": "關閉",
     "pluginColorTheme": "色彩主題",
     "pluginColorThemeDesc": "覆蓋整體配色方案，包含背景、文字、邊框等基礎色",
     "colorDefault": "預設",

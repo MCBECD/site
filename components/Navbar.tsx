@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useRef } from "react";
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
@@ -27,6 +27,32 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
 
   const handleThemeClick = useCallback(
     (key: Theme) => updateSettings("theme", key),
+    [updateSettings],
+  );
+
+  const radioRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const handleRadioKeyDown = useCallback(
+    (e: React.KeyboardEvent, index: number) => {
+      let nextIndex: number;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        nextIndex = (index + 1) % THEMES.length;
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        nextIndex = (index - 1 + THEMES.length) % THEMES.length;
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        nextIndex = 0;
+      } else if (e.key === "End") {
+        e.preventDefault();
+        nextIndex = THEMES.length - 1;
+      } else {
+        return;
+      }
+      radioRefs.current[nextIndex]?.focus();
+      updateSettings("theme", THEMES[nextIndex]!.key);
+    },
     [updateSettings],
   );
 
@@ -65,9 +91,11 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
             const isActive = i === activeIndex;
             return (
               <button
+                ref={(el) => { radioRefs.current[i] = el; }}
                 key={key}
                 role="radio"
                 aria-checked={isActive}
+                tabIndex={isActive ? 0 : -1}
                 className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
                   transition-colors duration-200 min-h-[44px]"
                 style={{
@@ -82,6 +110,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 }}
                 title={t(titleKey)}
                 onClick={() => handleThemeClick(key)}
+                onKeyDown={(e) => handleRadioKeyDown(e, i)}
               >
                 <Icon className="w-[14px] h-[14px]" />
               </button>

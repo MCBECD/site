@@ -13,6 +13,21 @@ import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard"
 import { LocaleDropdown } from "./settings/LocaleDropdown";
 import { Section } from "./settings/Section";
 
+/* ---------- Focus-trap utility ---------- */
+
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ');
+
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+}
+
 /* ---------- Constants ---------- */
 
 const THEME_OPTIONS: { value: Theme; icon: typeof Sun; labelKey: string }[] = [
@@ -32,6 +47,8 @@ type Tab = "general" | "data" | "themes";
 /* ---------- Main Panel ---------- */
 
 export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
   const { docMap } = useDocs();
@@ -96,6 +113,56 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
     return () => document.removeEventListener("keydown", handler);
   }, [isOpen, handleClose]);
 
+  // Focus trap: keep Tab/Shift+Tab within the panel
+  useEffect(() => {
+    if (!isOpen || closing) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const focusable = getFocusableElements(panel);
+      if (focusable.length === 0) return;
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    panel.addEventListener("keydown", handler);
+    return () => panel.removeEventListener("keydown", handler);
+  }, [isOpen, closing]);
+
+  // Save & restore focus
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+      // Defer focus so the panel has mounted
+      requestAnimationFrame(() => {
+        const panel = panelRef.current;
+        if (!panel) return;
+        const focusable = getFocusableElements(panel);
+        const closeBtn = panel.querySelector<HTMLButtonElement>("[data-close-btn]");
+        (closeBtn ?? focusable[0] ?? panel)?.focus();
+      });
+    } else if (!closing) {
+      // Panel fully closed — return focus
+      const el = previousFocusRef.current;
+      if (el && typeof el.focus === "function") {
+        el.focus();
+      }
+      previousFocusRef.current = null;
+    }
+  }, [isOpen, closing]);
+
   if (!isOpen && !closing) return null;
 
   const panelAnim = closing ? "settings-panel-out" : "settings-panel-in";
@@ -109,6 +176,10 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
       />
       <div className="fixed inset-0 z-[var(--z-dropdown)] flex items-end sm:items-center justify-center pointer-events-none">
         <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("settings.title")}
           className={`w-full sm:w-[min(440px,calc(100vw-32px))] max-h-[min(85vh,calc(100vh-48px))] sm:max-h-[min(600px,calc(100vh-48px))] rounded-t-[var(--radius-lg)] sm:rounded-[var(--radius-lg)] shadow-xl flex flex-col
             bg-[var(--color-bg-primary)] border border-[var(--color-border)] border-b-0 sm:border-b pointer-events-auto ${panelAnim}`}
         >
@@ -116,11 +187,12 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
           <div className="flex items-center justify-between px-5 pt-5 pb-0 flex-shrink-0">
             <h2 className="text-[13px] font-semibold text-[var(--color-text-primary)]">{t("settings.title")}</h2>
             <button
+              data-close-btn
               onClick={handleClose}
               className="w-11 h-11 flex items-center justify-center -mr-1 rounded-[var(--radius)]
                 text-[var(--color-text-tertiary)]
                 hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-              aria-label={t("settings.title")}
+              aria-label={t("settings.close")}
             >
               <X className="w-3.5 h-3.5" />
             </button>

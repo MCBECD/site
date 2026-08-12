@@ -33,6 +33,7 @@
     "tabPlugins": "Thema",
     "tabData": "Daten",
     "clearAll": "Alle löschen",
+    "close": "Schließen",
     "pluginColorTheme": "Farbthema",
     "pluginColorThemeDesc": "Gesamtes Farbschema ändern: Hintergrund, Text und Rahmen",
     "colorDefault": "Standard",
