@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 
 const COMMANDS = [
@@ -12,7 +12,7 @@ const COMMANDS = [
 
 const ROTATION_INTERVAL = 3500;
 
-export function CommandPreview() {
+export const CommandPreview = memo(function CommandPreview() {
   const { t } = useLocale();
   const [active, setActive] = useState(0);
 
@@ -62,4 +62,4 @@ export function CommandPreview() {
       </div>
     </div>
   );
-}
+});

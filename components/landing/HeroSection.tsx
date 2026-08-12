@@ -1,11 +1,12 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import { ArrowRight, Github } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { CommandPreview } from "./CommandPreview";
 
-export function HeroSection() {
+export const HeroSection = memo(function HeroSection() {
   const { t } = useLocale();
 
   return (
@@ -42,4 +43,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+});

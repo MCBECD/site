@@ -1,8 +1,9 @@
 "use client";
 
+import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 
-export function FooterMini() {
+export const FooterMini = memo(function FooterMini() {
   const { t } = useLocale();
 
   return (
@@ -15,4 +16,4 @@ export function FooterMini() {
       </p>
     </footer>
   );
-}
+});

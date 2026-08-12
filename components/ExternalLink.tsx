@@ -1,9 +1,9 @@
 "use client";
 
-import type { ReactNode, AnchorHTMLAttributes } from "react";
+import { memo, type ReactNode, type AnchorHTMLAttributes } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 
-export function ExternalLink({
+export const ExternalLink = memo(function ExternalLink({
   href,
   children,
   className,
@@ -26,4 +26,4 @@ export function ExternalLink({
       <span className="sr-only"> {t("common.opensInNewTab")}</span>
     </a>
   );
-}
+});

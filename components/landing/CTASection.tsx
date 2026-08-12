@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
+import { memo } from "react";
 
 interface CTASectionProps {
   docsCount: number;
 }
 
-export function CTASection({ docsCount }: CTASectionProps) {
+export const CTASection = memo(function CTASection({ docsCount }: CTASectionProps) {
   const { t } = useLocale();
 
   return (
@@ -25,4 +26,4 @@ export function CTASection({ docsCount }: CTASectionProps) {
       </Link>
     </section>
   );
-}
+});

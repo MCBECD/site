@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { memo, useState, useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -10,7 +10,7 @@ interface CodeBlockClientProps {
   code: string;
 }
 
-export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
+export const CodeBlockClient = memo(function CodeBlockClient({ html, code }: CodeBlockClientProps) {
   const { t } = useLocale();
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -80,4 +80,4 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
       {mounted && createPortal(toast, document.body)}
     </div>
   );
-}
+});

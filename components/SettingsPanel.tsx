@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
@@ -51,13 +51,15 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
     refreshHistory();
   }, [refreshBookmarks, refreshHistory]);
 
-  const bookmarkedDocs: DocMeta[] = bookmarks
-    .map((id) => docMap.get(id))
-    .filter((d): d is DocMeta => !!d);
+  const bookmarkedDocs: DocMeta[] = useMemo(
+    () => bookmarks.map((id) => docMap.get(id)).filter((d): d is DocMeta => !!d),
+    [bookmarks, docMap],
+  );
 
-  const historyDocs: DocMeta[] = history
-    .map((h) => docMap.get(h.id))
-    .filter((d): d is DocMeta => !!d);
+  const historyDocs: DocMeta[] = useMemo(
+    () => history.map((h) => docMap.get(h.id)).filter((d): d is DocMeta => !!d),
+    [history, docMap],
+  );
 
 
   const handleClose = useCallback(() => {

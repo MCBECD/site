@@ -1,9 +1,10 @@
 "use client";
 
+import { memo } from "react";
 import { Copy, Languages, Palette } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
-export function FeatureGrid() {
+export const FeatureGrid = memo(function FeatureGrid() {
   const { t } = useLocale();
 
   const features = [
@@ -35,4 +36,4 @@ export function FeatureGrid() {
       </div>
     </section>
   );
-}
+});

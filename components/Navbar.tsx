@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo, useCallback } from "react";
 import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
@@ -15,10 +16,19 @@ const THEMES: { key: Theme; icon: typeof Sun; titleKey: string }[] = [
   { key: "system", icon: Monitor, titleKey: "settings.themeSystem" },
 ];
 
-export function Navbar({ onOpenSettings }: NavbarProps) {
+export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
-  const activeIndex = THEMES.findIndex((th) => th.key === settings.theme);
+
+  const activeIndex = useMemo(
+    () => THEMES.findIndex((th) => th.key === settings.theme),
+    [settings.theme],
+  );
+
+  const handleThemeClick = useCallback(
+    (key: Theme) => updateSettings("theme", key),
+    [updateSettings],
+  );
 
   return (
     <nav
@@ -71,7 +81,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                   boxShadow: isActive ? "var(--shadow-sm)" : "none",
                 }}
                 title={t(titleKey)}
-                onClick={() => updateSettings("theme", key)}
+                onClick={() => handleThemeClick(key)}
               >
                 <Icon className="w-[14px] h-[14px]" />
               </button>
@@ -109,4 +119,4 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
       </div>
     </nav>
   );
-}
+});
