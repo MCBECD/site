@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, memo } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, memo } from "react";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -44,11 +44,17 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
     copiedTimer.current = setTimeout(() => setCopied(false), 2000);
   }, [showToast]);
 
-  const plainText = rawContent
-    .replace(/---[\s\S]*?---/, "")
-    .replace(/[#*`~>[\]()!_|{}.<>&-]/g, "")
-    .replace(/\n{2,}/g, "\n\n")
-    .trim();
+  const plainText = useMemo(() =>
+    rawContent
+      .replace(/^---[\s\S]*?---/, '')  // strip frontmatter
+      .replace(/^#{1,6}\s/gm, '')     // strip headings
+      .replace(/\*\*(.+?)\*\*/g, '$1') // strip bold
+      .replace(/\*(.+?)\*/g, '$1')     // strip italic
+      .replace(/`(.+?)`/g, '$1')       // strip inline code
+      .replace(/\[(.+?)\]\(.+?\)/g, '$1') // strip links
+      .trim(),
+    [rawContent]
+  );
 
   return (
     <div ref={ref} className="relative">
