@@ -33,6 +33,7 @@
     "tabPlugins": "테마",
     "tabData": "데이터",
     "clearAll": "모두 지우기",
+    "close": "닫기",
     "pluginColorTheme": "색상 테마",
     "pluginColorThemeDesc": "배경, 텍스트, 테두리 등 전체 색상 구성을 덮어씁니다",
     "colorDefault": "기본",

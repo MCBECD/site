@@ -33,6 +33,7 @@
     "tabPlugins": "テーマ",
     "tabData": "データ",
     "clearAll": "すべて削除",
+    "close": "閉じる",
     "pluginColorTheme": "カラーテーマ",
     "pluginColorThemeDesc": "背景、テキスト、ボーダーなど全体の配色を上書きします",
     "colorDefault": "デフォルト",
