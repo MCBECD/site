@@ -26,7 +26,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
     >
       {/* Left: logo */}
       <Link
-        href="/docs"
+        href="/docs/"
         className="flex items-center gap-2.5 no-underline group min-h-[44px] -ml-1"
       >
         <img
@@ -58,7 +58,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 key={key}
                 role="radio"
                 aria-checked={isActive}
-                className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm)-2px)]
+                className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
                   transition-colors duration-200"
                 style={{
                   width: 30,

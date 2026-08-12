@@ -118,6 +118,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (settings.colorTheme !== "custom") {
       clearCustomPalette(el);
       el.setAttribute("data-color-theme", settings.colorTheme);
+    } else {
+      el.removeAttribute("data-color-theme");
     }
   }, [settings.colorTheme]);
 
