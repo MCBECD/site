@@ -38,6 +38,16 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
     [doCopy],
   );
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        doCopy();
+      }
+    },
+    [doCopy],
+  );
+
   const toast = (
     <div
       role="status"
@@ -50,8 +60,13 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
 
   return (
     <div>
-      <div className="flex"
+      <div
+        className="flex"
+        role="button"
+        tabIndex={0}
+        aria-label={t("code.copy")}
         onClick={handleBlockClick}
+        onKeyDown={handleKeyDown}
         dangerouslySetInnerHTML={{ __html: html }}
       />
       {mounted && createPortal(toast, document.body)}
