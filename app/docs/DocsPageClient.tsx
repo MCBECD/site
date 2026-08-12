@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X, Command, LayoutList, List, Group } from "lucide-react";
+import { Search, X, Command, LayoutList, List, Star, Clock, Trash2, ChevronRight, Group } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
-import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
+import type { DocMeta } from "@/lib/docs";
+import { getBookmarks, toggleBookmark, getHistory, removeBookmark, removeHistory, clearBookmarks, clearHistory, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
 import { getCategoryBase, getCommandType, getCommandTypeI18nKey, getBasicsOrder } from "@/lib/categories";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
@@ -18,7 +20,7 @@ const DEBOUNCE_MS = 150;
 
 interface DocGroup {
   typeLabel?: string;
-  items: import("@/lib/docs").DocMeta[];
+  items: DocMeta[];
 }
 
 const TYPE_ORDER: Record<string, number> = {
@@ -33,7 +35,7 @@ const TYPE_ORDER: Record<string, number> = {
 
 export default function DocsPageClient() {
   const { t, locale } = useLocale();
-  const { docs } = useDocs();
+  const { docs, docMap } = useDocs();
   const searchParams = useSearchParams();
   const router = useRouter();
   const savedState = loadDocsUIState();
@@ -46,6 +48,9 @@ export default function DocsPageClient() {
     return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
   });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [history, setHistory] = useState<{ id: string; title: string }[]>([]);
+  const [bookmarksCollapsed, setBookmarksCollapsed] = useState(() => savedState?.bookmarksCollapsed ?? false);
+  const [historyCollapsed, setHistoryCollapsed] = useState(() => savedState?.historyCollapsed ?? false);
   const [category, setCategory] = useState<CategoryFilter>(() => (savedState?.category as CategoryFilter) ?? "all");
   const [grouped, setGrouped] = useState<boolean>(() => (savedState?.grouped as boolean) ?? false);
   const [viewMode, setViewMode] = useState<ViewMode>(() => (savedState?.viewMode as ViewMode) ?? "card");
@@ -54,10 +59,12 @@ export default function DocsPageClient() {
   const scrollYRef = useRef<number>(savedState?.scrollY ?? 0);
 
   const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
+  const refreshHistory = useCallback(() => setHistory(getHistory()), []);
 
   useEffect(() => {
     refreshBookmarks();
-  }, [refreshBookmarks]);
+    refreshHistory();
+  }, [refreshBookmarks, refreshHistory]);
 
   const navigatePage = useCallback((p: number) => {
     setPage(p);
@@ -73,6 +80,26 @@ export default function DocsPageClient() {
     toggleBookmark(id);
     refreshBookmarks();
   }, [refreshBookmarks]);
+
+  const handleRemoveBookmark = useCallback((id: string) => {
+    removeBookmark(id);
+    refreshBookmarks();
+  }, [refreshBookmarks]);
+
+  const handleClearBookmarks = useCallback(() => {
+    clearBookmarks();
+    refreshBookmarks();
+  }, [refreshBookmarks]);
+
+  const handleRemoveHistory = useCallback((id: string) => {
+    removeHistory(id);
+    refreshHistory();
+  }, [refreshHistory]);
+
+  const handleClearHistory = useCallback(() => {
+    clearHistory();
+    refreshHistory();
+  }, [refreshHistory]);
 
   const resetPage = useCallback(() => {
     setPage(0);
@@ -112,12 +139,14 @@ export default function DocsPageClient() {
   useEffect(() => {
     saveDocsUIState({
       category,
+      bookmarksCollapsed,
+      historyCollapsed,
       grouped,
       viewMode,
       page,
       scrollY: scrollYRef.current,
-    } as Parameters<typeof saveDocsUIState>[0]);
-  }, [category, grouped, viewMode, page]);
+    });
+  }, [category, bookmarksCollapsed, historyCollapsed, grouped, viewMode, page]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -126,11 +155,13 @@ export default function DocsPageClient() {
       scrollSaveTimerRef.current = setTimeout(() => {
         saveDocsUIState({
           category,
+          bookmarksCollapsed,
+          historyCollapsed,
           grouped,
           viewMode,
           page,
           scrollY: scrollYRef.current,
-        } as Parameters<typeof saveDocsUIState>[0]);
+        });
       }, 200);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -139,13 +170,15 @@ export default function DocsPageClient() {
       if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
       saveDocsUIState({
         category,
+        bookmarksCollapsed,
+        historyCollapsed,
         grouped,
         viewMode,
         page,
         scrollY: scrollYRef.current,
-      } as Parameters<typeof saveDocsUIState>[0]);
+      });
     };
-  }, [category, grouped, viewMode, page]);
+  }, [category, bookmarksCollapsed, historyCollapsed, grouped, viewMode, page]);
 
   useLayoutEffect(() => {
     const targetScroll = savedState?.scrollY ?? 0;
@@ -293,6 +326,16 @@ export default function DocsPageClient() {
     return groups;
   }, [pageDocs, grouped, t]);
 
+  const bookmarkedDocs = useMemo(
+    () => bookmarks.map((id) => docMap.get(id)).filter((d): d is DocMeta => !!d),
+    [bookmarks, docMap],
+  );
+
+  const historyDocs = useMemo(
+    () => history.map((h) => docMap.get(h.id)).filter((d): d is DocMeta => !!d),
+    [history, docMap],
+  );
+
   const categoryTabs: { key: CategoryFilter; labelKey: string }[] = [
     { key: "all", labelKey: "doc.filterAll" },
     { key: "basics", labelKey: "doc.filterBasics" },
@@ -301,19 +344,82 @@ export default function DocsPageClient() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-5 pt-14 pb-24">
+    <div className="relative max-w-3xl mx-auto px-5 pt-14 pb-24">
+      {/* Top grid pattern — fades out */}
+      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none -z-10" aria-hidden="true" />
+
       {/* Hero */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+      <div className="mb-10">
+        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
+          {t("nav.docs")}
+        </p>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 hero-sub-enter">
+        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
 
+      {/* 收藏 & 历史 */}
+      {(bookmarkedDocs.length > 0 || historyDocs.length > 0) && (
+        <div className="mb-6 space-y-3">
+          {/* 收藏 */}
+          {bookmarkedDocs.length > 0 && (
+            <div className="bookmarks-enter">
+              <CollapsibleSection
+                icon={<Star className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
+                title={t("doc.bookmarks")}
+                count={bookmarkedDocs.length}
+                collapsed={bookmarksCollapsed}
+                onToggle={() => setBookmarksCollapsed((v) => !v)}
+                onClear={handleClearBookmarks}
+                clearLabel={t("settings.clearAll")}
+              >
+                <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-card-bg)]">
+                  {bookmarkedDocs.map((doc) => (
+                    <QuickItem
+                      key={doc.id}
+                      doc={doc}
+                      onDelete={() => handleRemoveBookmark(doc.id)}
+                      deleteLabel={t("common.delete")}
+                    />
+                  ))}
+                </div>
+              </CollapsibleSection>
+            </div>
+          )}
+
+          {/* 历史 */}
+          {historyDocs.length > 0 && (
+            <div className="history-enter">
+              <CollapsibleSection
+                icon={<Clock className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
+                title={t("doc.recent")}
+                count={historyDocs.length}
+                collapsed={historyCollapsed}
+                onToggle={() => setHistoryCollapsed((v) => !v)}
+                onClear={handleClearHistory}
+                clearLabel={t("settings.clearAll")}
+              >
+                <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden bg-[var(--color-card-bg)]">
+                  {historyDocs.slice(0, 8).map((doc) => (
+                    <QuickItem
+                      key={doc.id}
+                      doc={doc}
+                      onDelete={() => handleRemoveHistory(doc.id)}
+                      deleteLabel={t("common.delete")}
+                    />
+                  ))}
+                </div>
+              </CollapsibleSection>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 分类筛选标签 */}
-      <div className="relative z-20 flex items-center gap-1.5 mb-4 tabs-enter">
+      <div className="relative z-20 flex items-center mb-2 tabs-enter">
         <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
           {categoryTabs.map((tab) => {
             const active = category === tab.key;
@@ -321,7 +427,7 @@ export default function DocsPageClient() {
               <button
                 key={tab.key}
                 onClick={() => setCategory(tab.key)}
-                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all
+                className={`shrink-0 px-3 h-8 rounded-full text-[13px] font-medium transition-colors
                   ${active
                     ? "bg-[var(--color-accent)] text-white shadow-sm"
                     : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
@@ -337,32 +443,32 @@ export default function DocsPageClient() {
           {showGroupToggle && (
             <button
               onClick={() => setGrouped((prev) => !prev)}
-              className={`h-8 px-3 inline-flex items-center gap-1.5 rounded-lg border
+              className={`px-2 h-8 inline-flex items-center rounded-lg
                 ${grouped
                   ? "bg-[var(--color-accent)] text-white border-transparent"
                   : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
               `}
             >
               <Group className="w-4 h-4" />
-              <span className="text-[13px] font-medium">{t("doc.group")}</span>
+              <span className="ml-1 text-[13px] font-medium hidden s420:block">{t("doc.group")}</span>
             </button>
           )}
 
           <button
             onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
-            className="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg
+            className="px-2 h-8 inline-flex items-center rounded-lg
               bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
               border border-[var(--color-border)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
               transition-colors"
           >
             {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-            <span className="text-[13px] font-medium">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
+            <span className="ml-1 text-[13px] font-medium hidden s420:block">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
           </button>
         </div>
       </div>
 
-      {/* 搜索栏 */}
+      {/* 搜索栏 + 工具栏 */}
       <div className="relative z-10 flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
@@ -396,6 +502,7 @@ export default function DocsPageClient() {
             </kbd>
           )}
         </div>
+
       </div>
 
       {isSearching && (
@@ -457,6 +564,87 @@ export default function DocsPageClient() {
       {viewMode === "card" && (
         <DocPagination page={safePage} totalPages={totalPages} pageNumbers={pageNumbers} onPageChange={navigatePage} />
       )}
+    </div>
+  );
+}
+
+/* ---------- Sub components ---------- */
+
+interface CollapsibleSectionProps {
+  icon: React.ReactNode;
+  title: string;
+  count: number;
+  collapsed: boolean;
+  onToggle: () => void;
+  onClear: () => void;
+  clearLabel: string;
+  children: React.ReactNode;
+}
+
+function CollapsibleSection({
+  icon,
+  title,
+  count,
+  collapsed,
+  onToggle,
+  onClear,
+  clearLabel,
+  children,
+}: CollapsibleSectionProps) {
+  return (
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]/50 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5">
+        <button
+          onClick={onToggle}
+          className="flex items-center gap-2 min-w-0 transition-colors hover:text-[var(--color-text-primary)] text-[var(--color-text-secondary)]"
+        >
+          <ChevronRight
+            className={`w-3.5 h-3.5 shrink-0 text-[var(--color-text-tertiary)] transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`}
+          />
+          <div className="shrink-0">{icon}</div>
+          <span className="text-[13px] font-medium">{title}</span>
+          <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">{count}</span>
+        </button>
+        <button
+          onClick={onClear}
+          className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)]
+            hover:text-red-400 transition-colors"
+        >
+          <Trash2 className="w-3 h-3" />
+          {clearLabel}
+        </button>
+      </div>
+      {!collapsed && <div className="px-4 pb-4">{children}</div>}
+    </div>
+  );
+}
+
+interface QuickItemProps {
+  doc: DocMeta;
+  onDelete: () => void;
+  deleteLabel: string;
+}
+
+function QuickItem({ doc, onDelete, deleteLabel }: QuickItemProps) {
+  return (
+    <div className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
+      <Link
+        href={`/docs/${doc.id}`}
+        className="flex-1 min-w-0 no-underline"
+      >
+        <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate block transition-colors">
+          {doc.title}
+        </span>
+      </Link>
+      <button
+        onClick={(e) => { e.stopPropagation(); onDelete(); }}
+        className="w-6 h-6 flex items-center justify-center rounded-md
+          text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100
+          hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
+        aria-label={deleteLabel}
+      >
+        <Trash2 className="w-3 h-3" />
+      </button>
     </div>
   );
 }

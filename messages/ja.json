@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "設定",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "ドキュメント"
   },
   "settings": {
     "title": "設定",
@@ -75,7 +76,7 @@
     "filterCommands": "コマンド",
     "filterExamples": "例",
     "group": "グループ化",
-    "viewCards": "カード",
+        "viewCards": "カード",
     "viewList": "リスト",
     "typePlayer": "プレイヤー",
     "typeWorld": "ワールド",
@@ -83,9 +84,7 @@
     "typeEntity": "エンティティ",
     "typeUI": "UI",
     "typeAdvanced": "上級",
-    "typeOther": "その他",
-    "bookmarksEmpty": "ブックマークなし",
-    "historyEmpty": "履歴なし"
+    "typeOther": "その他"
   },
   "landing": {
     "tagline": "コミュニティ主導の Minecraft 統合版コマンドリファレンス。各コマンドは検証済みで、すぐにコピーして使えます。",
