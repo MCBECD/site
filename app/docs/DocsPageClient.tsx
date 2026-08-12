@@ -88,7 +88,10 @@ export default function DocsPageClient() {
       }
     };
     document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
+    return () => {
+      document.removeEventListener("keydown", handler);
+      clearTimeout(debounceRef.current);
+    };
   }, []);
 
   useEffect(() => {

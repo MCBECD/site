@@ -25,6 +25,13 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  useEffect(() => {
+    return () => {
+      clearTimeout(toastTimer.current);
+      clearTimeout(copiedTimer.current);
+    };
+  }, []);
+
   const showToast = useCallback((msg: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToastMsg(msg);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -14,16 +14,19 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
   const { t } = useLocale();
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     setMounted(true);
+    return () => clearTimeout(copiedTimer.current);
   }, []);
 
   const doCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(code);
+      if (copiedTimer.current) clearTimeout(copiedTimer.current);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      copiedTimer.current = setTimeout(() => setCopied(false), 1500);
     } catch {
       // clipboard API unavailable — silent fail
     }
