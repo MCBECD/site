@@ -1,0 +1,186 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Install ────────────────────────────────────────────
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Cache node_modules
+        uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+  # ─── Lint ───────────────────────────────────────────────
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci --prefer-offline
+      - run: npm run lint
+
+  # ─── TypeCheck ───────────────────────────────────────────
+  typecheck:
+    name: TypeCheck
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci --prefer-offline
+      - run: npm run typecheck
+
+  # ─── Validate Docs & i18n ────────────────────────────────
+  validate:
+    name: Validate
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci --prefer-offline
+      - run: npm run validate:docs
+      - run: npm run validate:i18n
+
+  # ─── Test ───────────────────────────────────────────────
+  test:
+    name: Test
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci --prefer-offline
+      - run: npm test
+
+  # ─── Build ──────────────────────────────────────────────
+  build:
+    name: Build
+    needs: [lint, typecheck, validate, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cache Next.js
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: nextjs-${{ runner.os }}-
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm ci --prefer-offline
+      - run: npm run build
+
+  # ─── Summary ───────────────────────────────────────────
+  ci-result:
+    name: CI Result
+    if: always()
+    needs: [lint, typecheck, validate, test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs
+        run: |
+          echo "## CI Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| TypeCheck | ${{ needs.typecheck.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Validate | ${{ needs.validate.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
+          # Fail this job if any upstream job failed
+          if [ "${{ needs.lint.result }}" == "failure" ] || \
+             [ "${{ needs.typecheck.result }}" == "failure" ] || \
+             [ "${{ needs.validate.result }}" == "failure" ] || \
+             [ "${{ needs.test.result }}" == "failure" ] || \
+             [ "${{ needs.build.result }}" == "failure" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo ":x: **One or more checks failed**" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
