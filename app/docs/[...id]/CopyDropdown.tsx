@@ -86,15 +86,15 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
   const handleCopy = useCallback(async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setOpen(false);
+      setActiveIndex(-1);
+      showToast(label);
+      if (copiedTimer.current) clearTimeout(copiedTimer.current);
+      copiedTimer.current = setTimeout(() => setCopied(false), 2000);
     } catch {
-      // clipboard API unavailable
+      // clipboard API unavailable — silently skip
     }
-    if (copiedTimer.current) clearTimeout(copiedTimer.current);
-    setCopied(true);
-    setOpen(false);
-    setActiveIndex(-1);
-    showToast(label);
-    copiedTimer.current = setTimeout(() => setCopied(false), 2000);
   }, [showToast]);
 
   const plainText = useMemo(() =>
