@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "設定",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "ドキュメント"
   },
   "settings": {
     "title": "設定",

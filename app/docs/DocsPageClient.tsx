@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X, Command, LayoutList, List, Group } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -34,6 +34,7 @@ const TYPE_ORDER: Record<string, number> = {
 export default function DocsPageClient() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const savedState = loadDocsUIState();
 
@@ -41,8 +42,7 @@ export default function DocsPageClient() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(() => {
     if (savedState) return savedState.page;
-    if (typeof window === "undefined") return 0;
-    const p = Number(new URLSearchParams(window.location.search).get("page"));
+    const p = Number(searchParams.get("page"));
     return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
   });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
@@ -61,14 +61,11 @@ export default function DocsPageClient() {
 
   const navigatePage = useCallback((p: number) => {
     setPage(p);
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(searchParams.toString());
     if (p <= 0) params.delete("page");
     else params.set("page", String(p + 1));
-    const qs = params.toString();
-    const url = `/docs/${qs ? `?${qs}` : ""}`;
-    window.history.replaceState(null, "", url);
-    router.replace(url, { scroll: false });
-  }, [router]);
+    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [searchParams, router]);
 
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
@@ -79,13 +76,10 @@ export default function DocsPageClient() {
 
   const resetPage = useCallback(() => {
     setPage(0);
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(searchParams.toString());
     params.delete("page");
-    const qs = params.toString();
-    const url = `/docs/${qs ? `?${qs}` : ""}`;
-    window.history.replaceState(null, "", url);
-    router.replace(url, { scroll: false });
-  }, [router]);
+    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [searchParams, router]);
 
   const handleInput = useCallback((value: string) => {
     setQuery(value);
@@ -307,19 +301,25 @@ export default function DocsPageClient() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-5 pt-14 pb-24">
+    <div className="relative max-w-3xl mx-auto px-5 pt-14 pb-24">
+      {/* Top grid pattern — fades out */}
+      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none -z-10" aria-hidden="true" />
+
       {/* Hero */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+      <div className="mb-10">
+        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
+          {t("nav.docs")}
+        </p>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
-        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 hero-sub-enter">
+        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
 
       {/* 分类筛选标签 */}
-      <div className="relative z-20 flex items-center gap-1.5 mb-4 tabs-enter">
+      <div className="relative z-20 flex items-center mb-2 tabs-enter">
         <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
           {categoryTabs.map((tab) => {
             const active = category === tab.key;
@@ -327,7 +327,7 @@ export default function DocsPageClient() {
               <button
                 key={tab.key}
                 onClick={() => setCategory(tab.key)}
-                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all
+                className={`shrink-0 px-3 h-8 rounded-full text-[13px] font-medium transition-colors
                   ${active
                     ? "bg-[var(--color-accent)] text-white shadow-sm"
                     : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
@@ -343,27 +343,27 @@ export default function DocsPageClient() {
           {showGroupToggle && (
             <button
               onClick={() => setGrouped((prev) => !prev)}
-              className={`h-8 px-3 inline-flex items-center gap-1.5 rounded-lg border
+              className={`px-2 h-8 inline-flex items-center rounded-lg
                 ${grouped
                   ? "bg-[var(--color-accent)] text-white border-transparent"
                   : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
               `}
             >
               <Group className="w-4 h-4" />
-              <span className="text-[13px] font-medium">{t("doc.group")}</span>
+              <span className="ml-1 text-[13px] font-medium hidden s420:block">{t("doc.group")}</span>
             </button>
           )}
 
           <button
             onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
-            className="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg
+            className="px-2 h-8 inline-flex items-center rounded-lg
               bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
               border border-[var(--color-border)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
               transition-colors"
           >
             {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-            <span className="text-[13px] font-medium">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
+            <span className="ml-1 text-[13px] font-medium hidden s420:block">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
           </button>
         </div>
       </div>

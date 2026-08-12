@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "Paramètres",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "Documents"
   },
   "settings": {
     "title": "Paramètres",
