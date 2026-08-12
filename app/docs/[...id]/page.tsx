@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getDocById, getDocRawContent, getAllDocs } from "@/lib/docs";
 import { DocDetailClient } from "./DocDetailClient";
 import { MDXRenderer } from "@/components/MDXRenderer";
-import type { Metadata } from "next";
 
 const SITE_URL = "https://mcbecd.pages.dev";
 

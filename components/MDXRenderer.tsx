@@ -1,7 +1,7 @@
-import { MDXRemote } from "next-mdx-remote/rsc";
-import Link from "next/link";
-import type { CSSProperties, JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
+import type { CSSProperties, JSX, ReactNode } from "react";
+import Link from "next/link";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";

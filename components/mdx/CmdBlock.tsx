@@ -2,9 +2,9 @@
  * Unified command block icon component.
  * Replaces 7 duplicate Cmd*.tsx files.
  */
-import {getHighlighter} from "@/lib/shiki";
-import { CodeBlockClient } from "../CodeBlockClient";
-import { CmdBlockIcon } from "./CmdBlockIcon";
+import { getHighlighter } from "@/lib/shiki";
+import { CodeBlockClient } from "@/components/CodeBlockClient";
+import { CmdBlockIcon } from "@/components/mdx/CmdBlockIcon";
 
 /** Factory for backward-compatible MDX component aliases */
 export function makeCmdBlock(icon: string) {

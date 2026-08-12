@@ -1,8 +1,8 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import { Star, ChevronRight } from "lucide-react";
-import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 import { getCommandTypeI18nKey } from "@/lib/categories";

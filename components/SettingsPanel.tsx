@@ -1,17 +1,17 @@
 "use client";
 
-import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useDocs } from "@/contexts/DocsContext";
+import { getBookmarks, getHistory, removeBookmark, removeHistory, clearBookmarks, clearHistory } from "@/lib/storage";
+import type { DocMeta } from "@/lib/docs";
 import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
 import { Section } from "./settings/Section";
-import { useDocs } from "@/contexts/DocsContext";
-import { getBookmarks, getHistory, removeBookmark, removeHistory, clearBookmarks, clearHistory } from "@/lib/storage";
-import type { DocMeta } from "@/lib/docs";
-import Link from "next/link";
 
 /* ---------- Constants ---------- */
 
