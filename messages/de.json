@@ -12,8 +12,7 @@
   },
   "nav": {
     "settings": "Einstellungen",
-    "github": "GitHub",
-    "docs": "Dokumente"
+    "github": "GitHub"
   },
   "settings": {
     "title": "Einstellungen",
@@ -76,7 +75,7 @@
     "filterCommands": "Befehle",
     "filterExamples": "Beispiele",
     "group": "Gruppe",
-        "viewCards": "Karten",
+    "viewCards": "Karten",
     "viewList": "Liste",
     "typePlayer": "Spieler",
     "typeWorld": "Welt",
@@ -84,7 +83,9 @@
     "typeEntity": "Entität",
     "typeUI": "UI",
     "typeAdvanced": "Fortgeschritten",
-    "typeOther": "Sonstige"
+    "typeOther": "Sonstige",
+    "bookmarksEmpty": "Keine Lesezeichen",
+    "historyEmpty": "Kein Verlauf"
   },
   "landing": {
     "tagline": "Community-gesteuerte Minecraft Bedrock-Befehlsreferenz. Jeder Befehl ist verifiziert und direkt kopierbar.",

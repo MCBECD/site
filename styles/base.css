@@ -13,39 +13,35 @@ body {
   background: var(--color-bg-primary);
 }
 
-code, kbd {
+code, pre, kbd {
   font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
-  font-variant-ligatures: none;
 }
 
 /* --- Inline code --- */
-:not(pre) > code {
+code {
   color: var(--color-accent);
   background-color: var(--color-code-bg);
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
 }
 
+pre code { padding: 0; }
+
 /* --- Code blocks (Shiki) --- */
 pre {
-  background-color: var(--color-code-bg);
-  padding: 0.125rem 0.25rem;
+  padding: 0.5rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  border-radius: 0.25rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background-color: var(--color-code-bg) !important;
+  line-height: 1.25rem;
   border-left: 3px solid var(--color-accent);
-  word-wrap: break-all;
-  overflow-wrap: break-all;
-  white-space: pre-wrap;
-  min-width: 0;
 }
 
-[style*="--shiki-light"] {
-  color: var(--shiki-light);
-}
-
-html.dark [style*="--shiki-dark"] {
-  color: var(--shiki-dark);
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark, inherit);
 }
 
 /* --- Scrollbar --- */
@@ -71,6 +67,4 @@ html {
 
 @theme {
   --breakpoint-s480: 480px;
-  --breakpoint-s420: 420px;
-  --breakpoint-s300: 300px;
 }
