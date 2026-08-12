@@ -6,6 +6,10 @@ node_modules/
 .open-next/
 out/
 *.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
 
 # Cloudflare
 .wrangler/
