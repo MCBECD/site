@@ -10,6 +10,21 @@ import { ExternalLink } from "./ExternalLink";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
 
+/**
+ * Sanitize an href value to prevent javascript: and other dangerous protocol URLs.
+ * Only allows relative paths (starting with / or #) and http(s) URLs.
+ */
+function sanitizeHref(href: string | undefined): string {
+  if (!href) return "";
+  const trimmed = href.trim();
+  // Allow relative paths and fragment-only links
+  if (trimmed.startsWith("/") || trimmed.startsWith("#")) return trimmed;
+  // Allow only http/https protocols
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  // Block everything else (javascript:, data:, vbscript:, etc.)
+  return "";
+}
+
 interface CodeElementProps {
   className?: string;
   children?: ReactNode;
@@ -55,24 +70,27 @@ const components = {
       );
     }
   },
-  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
-    href && (href.startsWith("http://") || href.startsWith("https://")) ? (
-      <ExternalLink
-        href={href}
-        className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
-        {...props}
-      >
-        {children}
-      </ExternalLink>
-    ) : (
-      <Link
-        href={href ?? ""}
-        className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
-        {...props}
-      >
+  a: ({ children, href, className, id, title }: JSX.IntrinsicElements["a"]) => {
+    const safeHref = sanitizeHref(href);
+    const isExternal = /^https?:\/\//i.test(safeHref);
+    const combinedClassName = [
+      "text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]",
+      className,
+    ].filter(Boolean).join(" ");
+
+    if (isExternal) {
+      return (
+        <ExternalLink href={safeHref} className={combinedClassName} id={id} title={title}>
+          {children}
+        </ExternalLink>
+      );
+    }
+    return (
+      <Link href={safeHref} className={combinedClassName} id={id} title={title}>
         {children}
       </Link>
-    ),
+    );
+  },
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
     <div className="overflow-x-auto overflow-hidden my-4 rounded-lg">
       <table className="min-w-full border-collapse border border-[var(--color-border)]" {...props}>
@@ -90,18 +108,18 @@ const components = {
       {children}
     </td>
   ),
-  /* GitHub-style task list checkbox */
-  input: ({ checked, disabled, type, ...props }: JSX.IntrinsicElements["input"]) =>
+  /* GitHub-style task list checkbox — only whitelist known-safe attributes */
+  input: ({ checked, disabled, type }: JSX.IntrinsicElements["input"]) =>
     type === "checkbox" ? (
       <input
         type="checkbox"
         checked={checked}
         disabled={disabled ?? true}
         className="gh-checkbox"
-        {...props}
+        aria-checked={checked}
       />
     ) : (
-      <input type={type} checked={checked} disabled={disabled} {...props} />
+      <input type={type} checked={checked} disabled={disabled} />
     ),
   /* Details/summary for collapsible sections */
   details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (

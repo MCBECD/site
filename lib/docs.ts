@@ -121,8 +121,14 @@ export function getAllDocs(): DocMeta[] {
   return scanDirectory(docsDir, "");
 }
 
-/** Get document content by ID; returns null if not found */
+/** Reject IDs containing path traversal sequences */
+function isSafeDocId(id: string): boolean {
+  return !id.includes("..") && !id.includes("\\") && !id.startsWith("/");
+}
+
+/** Get document content by ID; returns null if not found or ID is unsafe */
 export function getDocById(id: string): DocContent | null {
+  if (!isSafeDocId(id)) return null;
   const docsDir = getDocsDir();
 
   const flatPath = path.join(docsDir, `${id}.mdx`);
@@ -138,6 +144,7 @@ export function getDocById(id: string): DocContent | null {
 
 /** Get raw document file content (including frontmatter) for download */
 export function getDocRawContent(id: string): string | null {
+  if (!isSafeDocId(id)) return null;
   const docsDir = getDocsDir();
 
   try {

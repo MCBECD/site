@@ -63,6 +63,11 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
 
   return (
     <div>
+      {/*
+        Security note: dangerouslySetInnerHTML is safe here because `html` is produced
+        exclusively by Shiki's codeToHtml(), which escapes all HTML entities in the code
+        content. No user-controlled text is ever interpolated into this HTML string.
+      */}
       <div
         className="flex"
         role="button"

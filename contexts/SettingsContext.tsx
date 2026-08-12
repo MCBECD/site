@@ -19,6 +19,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Locale } from "@/lib/i18n/types";
+import { LOCALES } from "@/lib/i18n/types";
 import { storageRead, storageWrite } from "@/lib/storage";
 import { generatePalette, applyPalette, clearCustomPalette } from "./settings/palette";
 import { createTogglePlugin } from "./settings/plugin-system";
@@ -71,13 +72,39 @@ function defaultSettings(): Settings {
   };
 }
 
+const VALID_THEMES: Set<string> = new Set(["light", "dark", "system"]);
+const VALID_FONT_SIZES: Set<string> = new Set(["small", "medium", "large"]);
+const VALID_COLOR_THEMES: Set<string> = new Set(["default", "red", "blue", "green", "custom"]);
+const VALID_LOCALES: Set<string> = new Set(LOCALES);
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
 /**
- * Read settings from localStorage and merge with defaults.
- * Uses the unified storage layer from lib/storage.ts.
+ * Read settings from localStorage, validate each field, and merge with defaults.
+ * Prevents corrupted or malicious localStorage values from reaching application state.
  */
 function loadSettings(): Settings {
-  const saved = storageRead<Partial<Settings>>(SETTINGS_KEY, {});
-  return { ...defaultSettings(), ...saved };
+  const saved = storageRead<Record<string, unknown>>(SETTINGS_KEY, {});
+  if (typeof saved !== "object" || saved === null) return defaultSettings();
+
+  const d = defaultSettings();
+  if (VALID_THEMES.has(String(saved.theme))) d.theme = String(saved.theme) as Theme;
+  if (VALID_FONT_SIZES.has(String(saved.fontSize))) d.fontSize = String(saved.fontSize) as FontSize;
+  if (VALID_LOCALES.has(String(saved.locale))) d.locale = String(saved.locale) as Locale;
+  if (VALID_COLOR_THEMES.has(String(saved.colorTheme))) d.colorTheme = String(saved.colorTheme) as ColorTheme;
+  if (typeof saved.customColor === "string" && HEX_COLOR_RE.test(saved.customColor)) d.customColor = saved.customColor;
+  if (typeof saved.plugins === "object" && saved.plugins !== null && !Array.isArray(saved.plugins)) {
+    d.plugins = saved.plugins as PluginStates;
+  }
+  if (typeof saved.bgImage === "string") d.bgImage = saved.bgImage;
+  if (typeof saved.bgOverlayOpacity === "number" && saved.bgOverlayOpacity >= 0 && saved.bgOverlayOpacity <= 100) {
+    d.bgOverlayOpacity = saved.bgOverlayOpacity;
+  }
+  if (typeof saved.bgOverlayBlur === "number" && saved.bgOverlayBlur >= 0 && saved.bgOverlayBlur <= 20) {
+    d.bgOverlayBlur = saved.bgOverlayBlur;
+  }
+  if (typeof saved.bgParallax === "boolean") d.bgParallax = saved.bgParallax;
+
+  return d;
 }
 
 // ---- Context ----
