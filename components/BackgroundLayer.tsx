@@ -92,7 +92,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
 
   return (
     <>
-      <div className="fixed inset-0 bg-[var(--color-bg-primary)] -z-30" aria-hidden="true" />
+      <div className="fixed inset-0 bg-[var(--color-bg-primary)] z-[var(--z-bg-base)]" aria-hidden="true" />
       {bgEnabled && bg && (
         <>
           <img
@@ -101,7 +101,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
             alt=""
             aria-hidden="true"
             draggable={false}
-            className="fixed inset-0 w-full h-full -z-20 pointer-events-none select-none object-cover"
+            className="fixed inset-0 w-full h-full z-[var(--z-bg-image)] pointer-events-none select-none object-cover"
             style={{
               transformOrigin: "0 0",
               transform: `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`,
@@ -109,7 +109,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
               willChange: parallaxEnabled ? "transform" : undefined,
             }}
           />
-          <div className="fixed inset-0 -z-10" style={overlayStyle} aria-hidden="true" />
+          <div className="fixed inset-0 z-[var(--z-bg-overlay)]" style={overlayStyle} aria-hidden="true" />
         </>
       )}
     </>

@@ -22,7 +22,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-5 bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border-light)]"
+      className="fixed top-0 left-0 right-0 z-[var(--z-navbar)] flex items-center h-[var(--navbar-height)] px-5 bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border-light)]"
     >
       {/* Left: logo */}
       <Link

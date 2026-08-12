@@ -82,7 +82,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
             ref={listRef}
             role="listbox"
             className="fixed py-1 rounded-[var(--radius)] border border-[var(--color-border)]
-              bg-[var(--color-bg-primary)] shadow-lg z-[60] overflow-y-auto dropdown-in"
+              bg-[var(--color-bg-primary)] shadow-lg z-[var(--z-portal)] overflow-y-auto dropdown-in"
             style={{
               top: flipUp ? undefined : pos.top + pos.height + 6,
               bottom: flipUp ? window.innerHeight - pos.top + 6 : undefined,

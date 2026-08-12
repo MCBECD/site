@@ -14,7 +14,7 @@ export function LandingPage({ docsCount }: LandingPageProps) {
   return (
     <div className="relative">
       {/* Grid background pattern — top section only, fades out */}
-      <div className="absolute inset-x-0 top-0 h-[600px] bg-grid pointer-events-none -z-10" aria-hidden="true" />
+      <div className="absolute inset-x-0 top-0 h-[600px] bg-grid pointer-events-none z-[var(--z-bg-overlay)]" aria-hidden="true" />
 
       <HeroSection />
       <FeatureGrid />

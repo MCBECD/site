@@ -101,11 +101,11 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
   return (
     <>
       <div
-        className={`fixed inset-0 z-50 backdrop-blur-[2px] ${closing ? "overlay-out" : "overlay-in"}`}
+        className={`fixed inset-0 z-[var(--z-dropdown)] backdrop-blur-[2px] ${closing ? "overlay-out" : "overlay-in"}`}
         onClick={handleClose}
         aria-hidden="true"
       />
-      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div className="fixed inset-0 z-[var(--z-dropdown)] flex items-center justify-center pointer-events-none">
         <div
           className={`w-[min(440px,calc(100vw-32px))] max-h-[min(600px,calc(100vh-48px))] rounded-[var(--radius-lg)] shadow-xl flex flex-col
             bg-[var(--color-bg-primary)] border border-[var(--color-border)] pointer-events-auto ${panelAnim}`}

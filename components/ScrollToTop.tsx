@@ -43,7 +43,7 @@ export function ScrollToTop() {
         onClick={scrollToTop}
         aria-label={t("common.backToTop")}
         className={[
-          "fixed bottom-6 right-6 z-[45]",
+          "fixed bottom-6 right-6 z-[var(--z-sticky)]",
           "w-11 h-11 rounded-full",
           "flex items-center justify-center",
           "bg-[var(--color-accent)] text-white",
