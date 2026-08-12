@@ -3,6 +3,19 @@
 import { useMemo, useEffect, useRef, useState, memo } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
 
+/**
+ * Validate that a background image URL is safe to use as an <img src>.
+ * Only allows:
+ *   - Relative paths starting with "/"
+ *   - data:image/* URLs (safe because browsers don't execute scripts from img src)
+ * Rejects javascript:, vbscript:, and arbitrary external URLs that could be used for tracking.
+ */
+function isSafeBgImage(url: string): boolean {
+  if (url.startsWith("/") && !url.startsWith("//")) return true;
+  if (url.startsWith("data:image/")) return true;
+  return false;
+}
+
 /** Background image scale factor (slightly larger than viewport to avoid edges during parallax) */
 const BG_SCALE = 1.08;
 
@@ -17,7 +30,7 @@ const PARALLAX_LERP = 0.08;
 
 const BackgroundLayer = memo(function BackgroundLayer() {
   const { settings } = useSettings();
-  const bgEnabled = !!settings.plugins["background-image"] && !!settings.bgImage;
+  const bgEnabled = !!settings.plugins["background-image"] && !!settings.bgImage && isSafeBgImage(settings.bgImage);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {

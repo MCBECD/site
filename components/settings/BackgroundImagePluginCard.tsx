@@ -13,6 +13,18 @@ const BG_PRESETS = [
   { value: "/bg/cargil-3.png", labelKey: "settings.bgPreset3" },
 ];
 
+/** Allowed MIME types for background image uploads */
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/avif",
+]);
+
+/** Maximum file size in bytes (2 MB) */
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
 export function BackgroundImagePluginCard() {
   const { t } = useLocale();
   const { settings, updateSettings, isPluginEnabled, togglePlugin } = useSettings();
@@ -36,14 +48,28 @@ export function BackgroundImagePluginCard() {
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
       setUploadError(true);
       return;
     }
+
+    // Validate MIME type (the accept attribute is only a UI hint, not enforced)
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      setUploadError(true);
+      return;
+    }
+
     setUploadError(false);
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
+        // Double-check the data URL prefix is a safe image type
+        if (!reader.result.startsWith("data:image/")) {
+          setUploadError(true);
+          return;
+        }
         updateSettings("bgImage", reader.result);
       }
     };
@@ -52,6 +78,8 @@ export function BackgroundImagePluginCard() {
       setUploadError(true);
     };
     reader.readAsDataURL(file);
+    // Reset input so the same file can be re-selected
+    e.target.value = "";
   }, [updateSettings]);
 
   return (
