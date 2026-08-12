@@ -33,12 +33,16 @@ describe("DocsContext", () => {
   });
 
   it("docMap allows O(1) lookup by id", () => {
+    function LookupConsumer() {
+      const { docMap } = useDocs();
+      return <span data-testid="result">{docMap.get("cmd/give")?.title ?? "not found"}</span>;
+    }
     render(
       <DocsProvider docs={MOCK_DOCS}>
-        <Consumer />
+        <LookupConsumer />
       </DocsProvider>,
     );
-    expect(screen.getByTestId("get-by-id").textContent).toBe("give 命令");
+    expect(screen.getByTestId("result").textContent).toBe("give 命令");
   });
 
   it("returns not found for missing doc id", () => {
@@ -54,8 +58,36 @@ describe("DocsContext", () => {
     expect(screen.getByText("not found")).toBeInTheDocument();
   });
 
+  it("filters out hidden documents from docs array", () => {
+    const docs: DocMeta[] = [
+      { id: "a", title: "Visible A" },
+      { id: "b", title: "Hidden B", hidden: true },
+      { id: "c", title: "Visible C" },
+    ];
+
+    function FilterConsumer() {
+      const { docs: visibleDocs, docMap } = useDocs();
+      return (
+        <div>
+          <span data-testid="visible-count">{visibleDocs.length}</span>
+          <span data-testid="map-size">{docMap.size}</span>
+          <span data-testid="map-has-hidden">{docMap.has("b") ? "yes" : "no"}</span>
+        </div>
+      );
+    }
+
+    render(
+      <DocsProvider docs={docs}>
+        <FilterConsumer />
+      </DocsProvider>,
+    );
+
+    expect(screen.getByTestId("visible-count").textContent).toBe("2");
+    expect(screen.getByTestId("map-size").textContent).toBe("3");
+    expect(screen.getByTestId("map-has-hidden").textContent).toBe("yes");
+  });
+
   it("throws when useDocs is called outside provider", () => {
-    // Suppress console.error for the React error boundary
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => render(<Consumer />)).toThrow("useDocs must be used within DocsProvider");
     spy.mockRestore();

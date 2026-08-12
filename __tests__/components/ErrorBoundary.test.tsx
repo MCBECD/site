@@ -54,6 +54,7 @@ describe("ErrorBoundary", () => {
       { wrapper: Wrapper },
     );
     expect(screen.getByText("Custom fallback")).toBeInTheDocument();
+    expect(screen.queryByText("出错了")).not.toBeInTheDocument();
   });
 
   it("resets error state on retry click", async () => {
@@ -86,5 +87,11 @@ describe("ErrorBoundary", () => {
       { wrapper: Wrapper },
     );
     expect(console.error).toHaveBeenCalled();
+    // Verify our ErrorBoundary logged something (may not be first call due to React internals)
+    const calls = (console.error as ReturnType<typeof vi.fn>).mock.calls;
+    const ourCall = calls.find((c) => c[0] === "[ErrorBoundary]");
+    expect(ourCall).toBeTruthy();
+    expect(ourCall![1]).toBeInstanceOf(Error);
+    expect((ourCall![1] as Error).message).toBe("test crash");
   });
 });
