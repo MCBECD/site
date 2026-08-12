@@ -89,22 +89,33 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
     return results;
   }
 
+  // Separate directories and files for consistent ordering: dirs first, then files alphabetically
+  const dirs: fs.Dirent[] = [];
+  const files: fs.Dirent[] = [];
   for (const entry of entries) {
     if (entry.name.startsWith(".") || ["README.md", "CONTRIBUTING.md", "LICENSE"].includes(entry.name)) {
       continue;
     }
+    if (entry.isDirectory()) dirs.push(entry);
+    else if (entry.name.endsWith(".mdx")) files.push(entry);
+  }
 
+  // Sort for deterministic ordering
+  dirs.sort((a, b) => a.name.localeCompare(b.name));
+  files.sort((a, b) => a.name.localeCompare(b.name));
+
+  for (const entry of dirs) {
     const fullPath = path.join(dir, entry.name);
     const id = prefix ? `${prefix}/${entry.name}` : entry.name;
+    results.push(...scanDirectory(fullPath, id));
+  }
 
-    if (entry.isDirectory()) {
-      results.push(...scanDirectory(fullPath, id));
-    } else if (entry.name.endsWith(".mdx")) {
-      const docId = prefix ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}` : entry.name.replace(/\.mdx$/, "");
-      const mdxMeta = parseMdxMeta(fullPath);
-      const meta = buildMeta(docId, docId, mdxMeta);
-      if (meta) results.push(meta);
-    }
+  for (const entry of files) {
+    const fullPath = path.join(dir, entry.name);
+    const docId = prefix ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}` : entry.name.replace(/\.mdx$/, "");
+    const mdxMeta = parseMdxMeta(fullPath);
+    const meta = buildMeta(docId, docId, mdxMeta);
+    if (meta) results.push(meta);
   }
 
   return results;
@@ -131,15 +142,14 @@ export function getDocById(id: string): DocContent | null {
   if (!isSafeDocId(id)) return null;
   const docsDir = getDocsDir();
 
-  const flatPath = path.join(docsDir, `${id}.mdx`);
-  if (fs.existsSync(flatPath)) {
-    const mdxMeta = parseMdxMeta(flatPath);
-    const meta = buildMeta(id, id, mdxMeta);
-    if (!meta) return null;
-    return { meta, rawContent: mdxMeta?.content ?? "" };
-  }
+  // path.join correctly handles ids with slashes (e.g. "commands/give" → content/docs/commands/give.mdx)
+  const filePath = path.join(docsDir, `${id}.mdx`);
+  if (!fs.existsSync(filePath)) return null;
 
-  return null;
+  const mdxMeta = parseMdxMeta(filePath);
+  const meta = buildMeta(id, id, mdxMeta);
+  if (!meta) return null;
+  return { meta, rawContent: mdxMeta?.content ?? "" };
 }
 
 /** Get raw document file content (including frontmatter) for download */
@@ -148,8 +158,8 @@ export function getDocRawContent(id: string): string | null {
   const docsDir = getDocsDir();
 
   try {
-    const flatPath = path.join(docsDir, `${id}.mdx`);
-    if (fs.existsSync(flatPath)) return fs.readFileSync(flatPath, "utf-8");
+    const filePath = path.join(docsDir, `${id}.mdx`);
+    if (fs.existsSync(filePath)) return fs.readFileSync(filePath, "utf-8");
   } catch {
     // Silently fail — caller handles null return
   }

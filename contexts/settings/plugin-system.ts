@@ -6,7 +6,7 @@
  */
 
 import { useCallback } from "react";
-import type { PluginStates } from "@/contexts/SettingsContext";
+import type { PluginStates, Settings } from "@/contexts/SettingsContext";
 
 function togglePluginState(
   plugins: PluginStates,
@@ -23,8 +23,8 @@ function togglePluginState(
  * Encapsulates the setState + persist pattern.
  */
 export function createTogglePlugin(
-  setSettings: React.Dispatch<React.SetStateAction<import("@/contexts/SettingsContext").Settings>>,
-  persist: (s: import("@/contexts/SettingsContext").Settings) => void,
+  setSettings: React.Dispatch<React.SetStateAction<Settings>>,
+  persist: (s: Settings) => void,
 ) {
   return useCallback(
     (id: string, enabled?: boolean) => {

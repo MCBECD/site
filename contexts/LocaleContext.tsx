@@ -27,7 +27,7 @@ const validatedLocales = new Set<Locale>();
 function getNested(obj: unknown, path: string[], fallback: string): string {
   let cur: unknown = obj;
   for (const p of path) {
-    if (cur == null || typeof cur !== "object") return fallback;
+    if (cur === null || cur === undefined || typeof cur !== "object") return fallback;
     cur = (cur as Record<string, unknown>)[p];
   }
   return typeof cur === "string" ? cur : fallback;
