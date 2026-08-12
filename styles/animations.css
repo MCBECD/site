@@ -3,19 +3,9 @@
   to   { opacity: 1; }
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes tabSlideIn {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
 }
 
 @keyframes settingsPanelIn {
@@ -28,49 +18,19 @@
   to   { opacity: 0; transform: scale(0.96) translateY(4px); }
 }
 
-@keyframes blink {
-  0%, 49%   { opacity: 1; }
-  50%, 100% { opacity: 0; }
+@keyframes tabSlideIn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 .overlay-in  { animation: fadeIn 0.2s ease both; }
 .overlay-out { animation: fadeIn 0.15s ease reverse both; }
-
 .settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
 .settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
-
 .dropdown-in  { animation: slideDown 0.15s var(--ease-out) both; }
-
 .tab-indicator {
   animation: tabSlideIn 0.1s var(--ease-out) both;
   transform-origin: left;
-}
-
-.page-fade-in { animation: fadeIn 0.1s ease both; }
-
-.hero-enter { animation: fadeInUp 0.4s var(--ease-out) both; }
-.hero-sub-enter { animation: fadeInUp 0.35s var(--ease-out) 0.06s both; }
-.bookmarks-enter { animation: fadeInUp 0.3s var(--ease-out) 0.1s both; }
-.history-enter { animation: fadeInUp 0.3s var(--ease-out) 0.13s both; }
-.tabs-enter { animation: fadeInUp 0.3s var(--ease-out) 0.16s both; }
-.search-enter { animation: fadeInUp 0.3s var(--ease-out) 0.2s both; }
-
-.doc-card-enter {
-  animation: fadeInUp 0.3s var(--ease-out) both;
-   animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.24s);
-}
-
-detail-enter { animation: fadeInUp 0.35s var(--ease-out) both; }
-detail-content-enter { animation: fadeIn 0.3s ease 0.12s both; }
-
-.terminal-cursor {
-  display: inline-block;
-  width: 8px;
-  height: 1em;
-  background: var(--color-accent);
-  margin-left: 2px;
-  vertical-align: text-bottom;
-  animation: blink 1.1s step-end infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

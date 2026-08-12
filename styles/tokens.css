@@ -6,7 +6,7 @@
   --radius-lg: 14px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-fast: 80ms;
   --duration-normal: 120ms;
 
@@ -15,7 +15,6 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
 
-  --landing-max-width: 1080px;
   --docs-max-width: 768px;
   --content-gutter: 24px;
 

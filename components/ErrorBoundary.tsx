@@ -13,11 +13,6 @@ interface State {
   error: Error | null;
 }
 
-/**
- * React Error Boundary — catches rendering errors to prevent full-page crash.
- *
- * Usage: <ErrorBoundary><YourComponent /></ErrorBoundary>
- */
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false, error: null };
 

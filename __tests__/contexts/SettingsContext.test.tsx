@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 
-// Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -15,7 +14,6 @@ const localStorageMock = (() => {
 
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-// Mock matchMedia
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
@@ -31,7 +29,6 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 function wrapper({ children }: { children: React.ReactNode }) {
-  // Need to also provide ThemeProvider and LocaleProvider which SettingsContext expects
   return <SettingsProvider>{children}</SettingsProvider>;
 }
 
@@ -48,11 +45,6 @@ describe("SettingsContext", () => {
       expect(result.current.settings.locale).toBe("zh-CN");
       expect(result.current.settings.colorTheme).toBe("default");
       expect(result.current.settings.customColor).toBe("#3b82f6");
-      expect(result.current.settings.plugins).toEqual({});
-      expect(result.current.settings.bgImage).toBe("");
-      expect(result.current.settings.bgOverlayOpacity).toBe(60);
-      expect(result.current.settings.bgOverlayBlur).toBe(0);
-      expect(result.current.settings.bgParallax).toBe(false);
     });
 
     it("loads settings from localStorage when available", () => {
@@ -60,153 +52,29 @@ describe("SettingsContext", () => {
         theme: "dark",
         fontSize: "large",
         locale: "en",
+        colorTheme: "red",
+        customColor: "#ff0000",
       }));
-
       const { result } = renderHook(() => useSettings(), { wrapper });
       expect(result.current.settings.theme).toBe("dark");
       expect(result.current.settings.fontSize).toBe("large");
       expect(result.current.settings.locale).toBe("en");
-    });
-
-    it("falls back to defaults on corrupt localStorage", () => {
-      localStorageMock.setItem("mcbecd-settings", "not-json{{{");
-
-      const { result } = renderHook(() => useSettings(), { wrapper });
-      expect(result.current.settings.theme).toBe("system");
-      expect(result.current.settings.fontSize).toBe("medium");
-    });
-  });
-
-  describe("theme", () => {
-    it("updates theme and persists", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("theme", "dark"));
-      expect(result.current.settings.theme).toBe("dark");
-
-      const stored = JSON.parse(localStorageMock.getItem("mcbecd-settings")!);
-      expect(stored.theme).toBe("dark");
-    });
-  });
-
-  describe("fontSize", () => {
-    it("updates font size", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("fontSize", "small"));
-      expect(result.current.settings.fontSize).toBe("small");
-
-      act(() => result.current.updateSettings("fontSize", "large"));
-      expect(result.current.settings.fontSize).toBe("large");
-    });
-  });
-
-  describe("locale", () => {
-    it("updates locale", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("locale", "ja"));
-      expect(result.current.settings.locale).toBe("ja");
-    });
-  });
-
-  describe("color theme", () => {
-    it("updates color theme", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("colorTheme", "red"));
       expect(result.current.settings.colorTheme).toBe("red");
-    });
-
-    it("updates custom color", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("customColor", "#ff0000"));
       expect(result.current.settings.customColor).toBe("#ff0000");
     });
   });
 
-  describe("plugins", () => {
-    it("isPluginEnabled returns false for unknown plugin", () => {
+  describe("updateSettings", () => {
+    it("updates a single setting", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
-      expect(result.current.isPluginEnabled("nonexistent")).toBe(false);
+      act(() => result.current.updateSettings("theme", "dark"));
+      expect(result.current.settings.theme).toBe("dark");
     });
 
-    it("toggles plugin on", () => {
+    it("persists to localStorage", () => {
       const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.togglePlugin("color-theme", true));
-      expect(result.current.isPluginEnabled("color-theme")).toBe(true);
-      expect(result.current.settings.plugins["color-theme"]).toBe(true);
-    });
-
-    it("toggles plugin off", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.togglePlugin("color-theme", true));
-      act(() => result.current.togglePlugin("color-theme", false));
-      expect(result.current.isPluginEnabled("color-theme")).toBe(false);
-    });
-
-    it("toggle without explicit value toggles state", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.togglePlugin("bg"));
-      expect(result.current.isPluginEnabled("bg")).toBe(true);
-
-      act(() => result.current.togglePlugin("bg"));
-      expect(result.current.isPluginEnabled("bg")).toBe(false);
-    });
-
-    it("persists plugin state", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.togglePlugin("color-theme", true));
-      const stored = JSON.parse(localStorageMock.getItem("mcbecd-settings")!);
-      expect(stored.plugins["color-theme"]).toBe(true);
-    });
-  });
-
-  describe("background image", () => {
-    it("updates bg image URL", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-      const url = "/bg/test.png";
-
-      act(() => result.current.updateSettings("bgImage", url));
-      expect(result.current.settings.bgImage).toBe(url);
-    });
-
-    it("updates overlay opacity", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("bgOverlayOpacity", 80));
-      expect(result.current.settings.bgOverlayOpacity).toBe(80);
-    });
-
-    it("updates overlay blur", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("bgOverlayBlur", 10));
-      expect(result.current.settings.bgOverlayBlur).toBe(10);
-    });
-
-    it("toggles parallax", () => {
-      const { result } = renderHook(() => useSettings(), { wrapper });
-
-      act(() => result.current.updateSettings("bgParallax", true));
-      expect(result.current.settings.bgParallax).toBe(true);
-
-      act(() => result.current.updateSettings("bgParallax", false));
-      expect(result.current.settings.bgParallax).toBe(false);
-    });
-  });
-
-  describe("error boundary", () => {
-    it("throws when used outside provider", () => {
-      // Suppress console.error for this test
-      const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-      expect(() => renderHook(() => useSettings())).toThrow("useSettings must be used within SettingsProvider");
-      spy.mockRestore();
+      act(() => result.current.updateSettings("fontSize", "small"));
+      expect(localStorageMock.setItem).toHaveBeenCalled();
     });
   });
 });

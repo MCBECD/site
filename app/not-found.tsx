@@ -7,7 +7,7 @@ export default function NotFound() {
   const { t } = useLocale();
 
   return (
-    <div className="max-w-[var(--landing-max-width)] mx-auto px-[var(--content-gutter)] py-32">
+    <div className="max-w-[var(--docs-max-width)] mx-auto px-[var(--content-gutter)] py-32">
       <p className="text-[12px] font-mono text-[var(--color-accent)]">{t("notFound.errorCode")}</p>
       <h1 className="mt-3 text-6xl font-bold font-mono text-[var(--color-text-primary)]">404</h1>
       <p className="mt-4 text-[14px] text-[var(--color-text-secondary)] max-w-sm leading-relaxed">

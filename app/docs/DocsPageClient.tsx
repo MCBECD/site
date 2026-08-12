@@ -350,13 +350,13 @@ export default function DocsPageClient() {
 
       {/* Hero */}
       <div className="mb-10">
-        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
+        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt">
           {t("nav.docs")}
         </p>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
           {t("doc.title")}
         </h1>
-        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
+        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 max-w-lg leading-relaxed">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
@@ -366,7 +366,7 @@ export default function DocsPageClient() {
         <div className="mb-6 space-y-3">
           {/* bookmarks */}
           {bookmarkedDocs.length > 0 && (
-            <div className="bookmarks-enter">
+            <div>
               <CollapsibleSection
                 icon={<Star className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
                 title={t("doc.bookmarks")}
@@ -392,7 +392,7 @@ export default function DocsPageClient() {
 
           {/* history */}
           {historyDocs.length > 0 && (
-            <div className="history-enter">
+            <div>
               <CollapsibleSection
                 icon={<Clock className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
                 title={t("doc.recent")}
@@ -419,7 +419,7 @@ export default function DocsPageClient() {
       )}
 
       {/* category tabs */}
-      <div className="relative z-20 flex items-center gap-1.5 mb-4 tabs-enter">
+      <div className="relative z-20 flex items-center gap-1.5 mb-4">
         <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
           {categoryTabs.map((tab) => {
             const active = category === tab.key;
@@ -469,7 +469,7 @@ export default function DocsPageClient() {
       </div>
 
       {/* search */}
-      <div className="relative z-10 flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
+      <div className="relative z-10 flex flex-col sm:flex-row gap-2.5 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
           <input
@@ -528,16 +528,15 @@ export default function DocsPageClient() {
                   {group.typeLabel}
                 </span>
               )}
-              {group.items.map((doc, i) => (
-                <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
-                  <DocCard
-                    doc={doc}
-                    bookmarked={bookmarks.includes(doc.id)}
-                    onBookmark={handleToggleBookmark}
-                    viewMode={viewMode}
-                    grouped={grouped}
-                  />
-                </div>
+              {group.items.map((doc) => (
+                <DocCard
+                  key={doc.id}
+                  doc={doc}
+                  bookmarked={bookmarks.includes(doc.id)}
+                  onBookmark={handleToggleBookmark}
+                  viewMode={viewMode}
+                  grouped={grouped}
+                />
               ))}
             </div>
           ))}
@@ -547,16 +546,15 @@ export default function DocsPageClient() {
           className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
-          {pageDocs.map((doc, i) => (
-            <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
-              <DocCard
-                doc={doc}
-                bookmarked={bookmarks.includes(doc.id)}
-                onBookmark={handleToggleBookmark}
-                viewMode={viewMode}
-                grouped={grouped}
-              />
-            </div>
+          {pageDocs.map((doc) => (
+            <DocCard
+              key={doc.id}
+              doc={doc}
+              bookmarked={bookmarks.includes(doc.id)}
+              onBookmark={handleToggleBookmark}
+              viewMode={viewMode}
+              grouped={grouped}
+            />
           ))}
         </div>
       )}

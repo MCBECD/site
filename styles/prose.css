@@ -1,6 +1,3 @@
-/* ----------------------------------------------------------
- * Prose typography overrides
- * ---------------------------------------------------------- */
 .prose {
   --tw-prose-headings: var(--color-text-primary);
   --tw-prose-body: var(--color-text-secondary);

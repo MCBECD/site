@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import { ChevronDown, ChevronUp, Check } from "lucide-react";
 import { LOCALES, NATIVE_NAMES, type Locale } from "@/lib/i18n/types";
 
-/** 语言选择下拉 — 带 portal 定位，防裁剪 */
 export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (v: Locale) => void }) {
   const [open, setOpen] = useState(false);
   const [flipUp, setFlipUp] = useState(false);
