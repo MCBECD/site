@@ -84,7 +84,9 @@
     "typeEntity": "实体",
     "typeUI": "界面",
     "typeAdvanced": "高级",
-    "typeOther": "其他"
+    "typeOther": "其他",
+    "bookmarksEmpty": "暂无收藏",
+    "historyEmpty": "暂无浏览记录"
   },
   "landing": {
     "tagline": "社区驱动的 Minecraft 基岩版命令参考，每条命令都经过验证，可直接复制使用。",

@@ -22,12 +22,11 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-5
-        bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border-light)]
-        shadow-[var(--shadow-xs)]"
+      className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-5 bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border-light)]"
     >
+      {/* Left: logo */}
       <Link
-        href="/"
+        href="/docs"
         className="flex items-center gap-2.5 no-underline group min-h-[44px] -ml-1"
       >
         <img
@@ -38,31 +37,17 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           fetchPriority="high"
           className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-[ring-color] duration-100"
         />
-        <span className="text-[15px] font-semibold tracking-tight font-mono text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
+        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
           MCBECD
         </span>
       </Link>
 
-      {/* Mid-nav links (md+ only) */}
-      <div className="hidden md:flex items-center gap-1 ml-8">
-        <Link href="/docs/" className="nav-link">{t("nav.docs")}</Link>
-        <a
-          href="https://github.com/MCBECD"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="nav-link"
-        >
-          {t("nav.github")}
-        </a>
-      </div>
-
-      <div className="flex items-center ml-auto">
-        {/* Theme segmented control — simple button group with radiogroup semantics */}
+      {/* Right: controls */}
+      <div className="flex items-center ml-auto gap-1">
+        {/* Theme toggle */}
         <div
-          className="relative flex items-center rounded-[var(--radius-sm)] p-[2px]"
-          style={{
-            background: "var(--color-bg-tertiary)",
-          }}
+          className="flex items-center rounded-[var(--radius-sm)] p-[2px]"
+          style={{ background: "var(--color-bg-tertiary)" }}
           role="radiogroup"
           aria-label={t("settings.theme")}
         >
@@ -73,15 +58,13 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                 key={key}
                 role="radio"
                 aria-checked={isActive}
-                className="relative z-[1] flex items-center justify-center select-none rounded-[calc(var(--radius-sm)-2px)]
+                className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm)-2px)]
                   transition-colors duration-200"
                 style={{
                   width: 30,
                   height: 30,
                   marginLeft: i > 0 ? 2 : 0,
-                  color: isActive
-                    ? "var(--color-accent)"
-                    : "var(--color-text-tertiary)",
+                  color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
                   background: isActive
                     ? "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))"
                     : "transparent",
@@ -111,8 +94,6 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
         >
           <Github className="w-[17px] h-[17px]" />
         </a>
-
-        <div className="nav-divider" aria-hidden="true" />
 
         <button
           onClick={onOpenSettings}

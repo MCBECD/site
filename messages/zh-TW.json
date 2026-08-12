@@ -76,7 +76,7 @@
     "filterCommands": "命令",
     "filterExamples": "範例",
     "group": "分組",
-        "viewCards": "卡片",
+    "viewCards": "卡片",
     "viewList": "列表",
     "typePlayer": "玩家",
     "typeWorld": "世界",
@@ -84,7 +84,9 @@
     "typeEntity": "實體",
     "typeUI": "介面",
     "typeAdvanced": "進階",
-    "typeOther": "其他"
+    "typeOther": "其他",
+    "bookmarksEmpty": "暫無收藏",
+    "historyEmpty": "暫無瀏覽記錄"
   },
   "landing": {
     "tagline": "社群驅動的 Minecraft 基岩版命令參考，每條命令都經過驗證，可直接複製使用。",

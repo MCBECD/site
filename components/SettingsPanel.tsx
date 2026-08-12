@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Moon, Monitor, X } from "lucide-react";
+import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -8,6 +8,10 @@ import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
 import { Section } from "./settings/Section";
+import { useDocs } from "@/contexts/DocsContext";
+import { getBookmarks, getHistory, removeBookmark, removeHistory, clearBookmarks, clearHistory } from "@/lib/storage";
+import type { DocMeta } from "@/lib/docs";
+import Link from "next/link";
 
 /* ---------- Constants ---------- */
 
@@ -23,16 +27,38 @@ const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
   { value: "large", labelKey: "settings.fontSizeLarge" },
 ];
 
-type Tab = "general" | "themes";
+type Tab = "general" | "data" | "themes";
 
 /* ---------- Main Panel ---------- */
 
 export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
+  const { docMap } = useDocs();
   const [tab, setTab] = useState<Tab>("general");
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  /* Bookmarks & History state */
+  const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [history, setHistory] = useState<{ id: string; title: string }[]>([]);
+
+  const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
+  const refreshHistory = useCallback(() => setHistory(getHistory()), []);
+
+  useEffect(() => {
+    refreshBookmarks();
+    refreshHistory();
+  }, [refreshBookmarks, refreshHistory]);
+
+  const bookmarkedDocs: DocMeta[] = bookmarks
+    .map((id) => docMap.get(id))
+    .filter((d): d is DocMeta => !!d);
+
+  const historyDocs: DocMeta[] = history
+    .map((h) => docMap.get(h.id))
+    .filter((d): d is DocMeta => !!d);
+
 
   const handleClose = useCallback(() => {
     setClosing(true);
@@ -90,8 +116,10 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
 
           {/* tabs */}
           <div className="flex gap-0 mx-5 mt-4 border-b border-[var(--color-border)] flex-shrink-0">
-            {(["general", "themes"] as Tab[]).map((key) => {
-              const labelKey = key === "general" ? "settings.tabGeneral" : "settings.tabPlugins";
+            {(["general", "data", "themes"] as Tab[]).map((key) => {
+              const labelKey = key === "general" ? "settings.tabGeneral"
+                : key === "data" ? "settings.tabData"
+                : "settings.tabPlugins";
               return (
                 <button
                   key={key}
@@ -153,6 +181,102 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                   <LocaleDropdown value={settings.locale} onChange={(locale) => updateSettings("locale", locale)} />
                 </Section>
               </>
+            ) : tab === "data" ? (
+              <div className="space-y-3">
+                {/* 收藏 */}
+                <Section
+                  title={t("doc.bookmarks")}
+                  action={
+                    bookmarkedDocs.length > 0 ? (
+                      <button
+                        onClick={() => { clearBookmarks(); refreshBookmarks(); }}
+                        className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        {t("settings.clearAll")}
+                      </button>
+                    ) : undefined
+                  }
+                >
+                  {bookmarkedDocs.length > 0 ? (
+                    <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden">
+                      {bookmarkedDocs.map((doc) => (
+                        <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
+                          <Link
+                            href={`/docs/${doc.id}`}
+                            className="flex items-center gap-2 flex-1 min-w-0 no-underline"
+                            onClick={handleClose}
+                          >
+                            <Star className="w-3 h-3 text-[var(--color-accent)] shrink-0" />
+                            <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate transition-colors">
+                              {doc.title}
+                            </span>
+                          </Link>
+                          <button
+                            onClick={() => { removeBookmark(doc.id); refreshBookmarks(); }}
+                            className="w-6 h-6 flex items-center justify-center rounded-md
+                              text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100
+                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[12px] text-[var(--color-text-tertiary)] py-2">
+                      {t("doc.noBookmarks")}
+                    </p>
+                  )}
+                </Section>
+
+                {/* 历史 */}
+                <Section
+                  title={t("doc.recent")}
+                  action={
+                    historyDocs.length > 0 ? (
+                      <button
+                        onClick={() => { clearHistory(); refreshHistory(); }}
+                        className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        {t("settings.clearAll")}
+                      </button>
+                    ) : undefined
+                  }
+                >
+                  {historyDocs.length > 0 ? (
+                    <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden">
+                      {historyDocs.slice(0, 8).map((doc) => (
+                        <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
+                          <Link
+                            href={`/docs/${doc.id}`}
+                            className="flex items-center gap-2 flex-1 min-w-0 no-underline"
+                            onClick={handleClose}
+                          >
+                            <Clock className="w-3 h-3 text-[var(--color-accent)] shrink-0" />
+                            <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate transition-colors">
+                              {doc.title}
+                            </span>
+                          </Link>
+                          <button
+                            onClick={() => { removeHistory(doc.id); refreshHistory(); }}
+                            className="w-6 h-6 flex items-center justify-center rounded-md
+                              text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100
+                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[12px] text-[var(--color-text-tertiary)] py-2">
+                      {t("doc.noRecent")}
+                    </p>
+                  )}
+                </Section>
+              </div>
             ) : (
               <div className="space-y-3">
                 <ColorThemePluginCard />

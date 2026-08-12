@@ -76,7 +76,7 @@
     "filterCommands": "Commandes",
     "filterExamples": "Exemples",
     "group": "Groupe",
-        "viewCards": "Cartes",
+    "viewCards": "Cartes",
     "viewList": "Liste",
     "typePlayer": "Joueur",
     "typeWorld": "Monde",
@@ -84,7 +84,9 @@
     "typeEntity": "Entité",
     "typeUI": "UI",
     "typeAdvanced": "Avancé",
-    "typeOther": "Autre"
+    "typeOther": "Autre",
+    "bookmarksEmpty": "Aucun favori",
+    "historyEmpty": "Aucun historique"
   },
   "landing": {
     "tagline": "Référence de commandes Minecraft Bedrock animée par la communauté. Chaque commande est vérifiée et prête à copier.",
