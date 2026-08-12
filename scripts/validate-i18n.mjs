@@ -91,7 +91,7 @@ function getNestedValue(obj, keyPath) {
   const parts = keyPath.split(".");
   let cur = obj;
   for (const p of parts) {
-    if (cur == null || typeof cur !== "object") return undefined;
+    if (cur === null || cur === undefined || typeof cur !== "object") return undefined;
     cur = cur[p];
   }
   return cur;

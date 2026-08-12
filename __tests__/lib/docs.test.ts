@@ -68,14 +68,14 @@ describe("docs.ts - Document Engine", () => {
       expect(doc).toBeNull();
     });
 
-    it("finds a flat document by id", () => {
-      const doc = getDocById("give");
+    it("finds a document by id", () => {
+      const doc = getDocById("commands/give");
       if (!hasContent) {
         expect(doc).toBeNull();
         return;
       }
       expect(doc).not.toBeNull();
-      expect(doc!.meta.id).toBe("give");
+      expect(doc!.meta.id).toBe("commands/give");
       expect(doc!.meta.title).toBeTruthy();
       expect(doc!.rawContent).toBeTypeOf("string");
       expect(doc!.rawContent.length).toBeGreaterThan(0);
@@ -94,7 +94,7 @@ describe("docs.ts - Document Engine", () => {
 
   describe("getDocRawContent", () => {
     it("returns raw content for existing doc", () => {
-      const content = getDocRawContent("give");
+      const content = getDocRawContent("commands/give");
       if (!hasContent) {
         expect(content).toBeNull();
         return;
