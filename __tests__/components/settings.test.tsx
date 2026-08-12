@@ -12,19 +12,26 @@ describe("ToggleSwitch", () => {
     expect(sw).toHaveAttribute("aria-checked", "true");
   });
 
+  it("has role=switch and reflects unchecked state", () => {
+    const { container } = render(<ToggleSwitch checked={false} onChange={vi.fn()} />);
+    const sw = container.querySelector('[role="switch"]');
+    expect(sw).toHaveAttribute("aria-checked", "false");
+  });
+
   it("calls onChange with opposite value on click", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<ToggleSwitch checked={false} onChange={onChange} />);
-    await user.click(screen.getByRole("switch"));
+    const { container } = render(<ToggleSwitch checked={false} onChange={onChange} />);
+    await user.click(container.querySelector('[role="switch"]')!);
     expect(onChange).toHaveBeenCalledWith(true);
+    expect(onChange).toHaveBeenCalledTimes(1);
   });
 
   it("toggles from on to off", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<ToggleSwitch checked={true} onChange={onChange} />);
-    await user.click(screen.getByRole("switch"));
+    const { container } = render(<ToggleSwitch checked={true} onChange={onChange} />);
+    await user.click(container.querySelector('[role="switch"]')!);
     expect(onChange).toHaveBeenCalledWith(false);
   });
 
@@ -32,6 +39,12 @@ describe("ToggleSwitch", () => {
     const { container } = render(<ToggleSwitch checked={true} onChange={vi.fn()} />);
     const btn = container.firstChild as HTMLElement;
     expect(btn.className).toContain("bg-[var(--color-accent)]");
+  });
+
+  it("does not call onChange on render", () => {
+    const onChange = vi.fn();
+    render(<ToggleSwitch checked={true} onChange={onChange} />);
+    expect(onChange).not.toHaveBeenCalled();
   });
 });
 
@@ -58,14 +71,20 @@ describe("SliderRow", () => {
   it("calls onChange when slider value changes", () => {
     const onChange = vi.fn();
     render(<SliderRow label="Blur" value={5} onChange={onChange} max={20} />);
-    const slider = screen.getByRole("slider");
+    const slider = screen.getByRole("slider", { name: "Blur" });
     fireEvent.change(slider, { target: { value: "10" } });
     expect(onChange).toHaveBeenCalledWith(10);
   });
 
   it("respects max prop", () => {
     render(<SliderRow label="Test" value={3} onChange={vi.fn()} max={20} />);
-    const slider = screen.getByRole("slider");
+    const slider = screen.getByRole("slider", { name: "Test" });
     expect(slider).toHaveAttribute("max", "20");
+  });
+
+  it("does not call onChange on render", () => {
+    const onChange = vi.fn();
+    render(<SliderRow label="Test" value={5} onChange={onChange} />);
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

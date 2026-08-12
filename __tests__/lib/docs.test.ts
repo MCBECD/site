@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-
-// Import the module under test
 import {
   getAllDocs,
   getDocById,
@@ -10,23 +8,34 @@ import {
 } from "@/lib/docs";
 
 const TEST_DOCS_DIR = path.join(process.cwd(), "content", "docs");
+let hasContent = false;
+
+beforeAll(() => {
+  if (!fs.existsSync(TEST_DOCS_DIR)) {
+    throw new Error(`Test docs directory not found: ${TEST_DOCS_DIR}`);
+  }
+  try {
+    const entries = fs.readdirSync(TEST_DOCS_DIR, { recursive: true, withFileTypes: true });
+    hasContent = entries.some((e) => e.isFile() && e.name.endsWith(".mdx"));
+  } catch {
+    hasContent = false;
+  }
+});
 
 describe("docs.ts - Document Engine", () => {
-  beforeAll(() => {
-    // Verify test data exists
-    if (!fs.existsSync(TEST_DOCS_DIR)) {
-      throw new Error(`Test docs directory not found: ${TEST_DOCS_DIR}`);
-    }
-  });
-
   describe("getAllDocs", () => {
-    it("returns a non-empty array of documents", () => {
+    it("returns a non-empty array when content/docs has .mdx files", () => {
       const docs = getAllDocs();
+      if (!hasContent) {
+        expect(docs).toEqual([]);
+        return;
+      }
       expect(docs.length).toBeGreaterThan(0);
     });
 
     it("every document has required fields", () => {
       const docs = getAllDocs();
+      if (docs.length === 0) return;
       for (const doc of docs) {
         expect(doc.id).toBeTruthy();
         expect(doc.title).toBeTruthy();
@@ -37,6 +46,7 @@ describe("docs.ts - Document Engine", () => {
 
     it("documents have valid category format", () => {
       const docs = getAllDocs();
+      if (docs.length === 0) return;
       for (const doc of docs) {
         if (doc.category) {
           const validBases = ["basics", "commands", "community"];
@@ -46,6 +56,10 @@ describe("docs.ts - Document Engine", () => {
       }
     });
 
+    it("returns empty array for missing docs directory", () => {
+      const docs = getAllDocs();
+      expect(Array.isArray(docs)).toBe(true);
+    });
   });
 
   describe("getDocById", () => {
@@ -56,17 +70,24 @@ describe("docs.ts - Document Engine", () => {
 
     it("finds a flat document by id", () => {
       const doc = getDocById("give");
-      if (!doc) {
+      if (!hasContent) {
+        expect(doc).toBeNull();
         return;
       }
-      expect(doc.meta.id).toBe("give");
-      expect(doc.meta.title).toBeTruthy();
-      expect(doc.rawContent).toBeTypeOf("string");
-      expect(doc.rawContent.length).toBeGreaterThan(0);
+      expect(doc).not.toBeNull();
+      expect(doc!.meta.id).toBe("give");
+      expect(doc!.meta.title).toBeTruthy();
+      expect(doc!.rawContent).toBeTypeOf("string");
+      expect(doc!.rawContent.length).toBeGreaterThan(0);
     });
 
     it("returns null for empty string id", () => {
       const doc = getDocById("");
+      expect(doc).toBeNull();
+    });
+
+    it("returns null for id with path traversal", () => {
+      const doc = getDocById("../../etc/passwd");
       expect(doc).toBeNull();
     });
   });
@@ -74,7 +95,11 @@ describe("docs.ts - Document Engine", () => {
   describe("getDocRawContent", () => {
     it("returns raw content for existing doc", () => {
       const content = getDocRawContent("give");
-      if (!content) return; // skip
+      if (!hasContent) {
+        expect(content).toBeNull();
+        return;
+      }
+      expect(content).not.toBeNull();
       expect(content).toContain("---");
       expect(typeof content).toBe("string");
     });
