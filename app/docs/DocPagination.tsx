@@ -4,7 +4,7 @@ import { memo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
-interface PaginationProps {
+interface DocPaginationProps {
   page: number;
   totalPages: number;
   pageNumbers: number[];
@@ -13,18 +13,18 @@ interface PaginationProps {
 
 const PageButton = memo(function PageButton({
   page,
-  active,
+  isActive,
   onClick,
 }: {
   page: number;
-  active: boolean;
+  isActive: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
       className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-[13px] font-medium transition-all duration-100 ${
-        active
+        isActive
           ? "bg-[var(--color-accent)] text-white shadow-sm shadow-[var(--color-accent)]/25"
           : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
       }`}
@@ -34,7 +34,7 @@ const PageButton = memo(function PageButton({
   );
 });
 
-const DocPagination = memo(function DocPagination({ page, totalPages, pageNumbers, onPageChange }: PaginationProps) {
+const DocPagination = memo(function DocPagination({ page, totalPages, pageNumbers, onPageChange }: DocPaginationProps) {
   const { t } = useLocale();
   if (totalPages <= 1) return null;
 
@@ -58,7 +58,7 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
             ...
           </span>
         ) : (
-          <PageButton key={p} page={p} active={p === page} onClick={() => onPageChange(p)} />
+          <PageButton key={p} page={p} isActive={p === page} onClick={() => onPageChange(p)} />
         ),
       )}
 
@@ -77,4 +77,4 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
   );
 });
 
-export default DocPagination;
+export { DocPagination };

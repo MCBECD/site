@@ -31,7 +31,7 @@ export function ScrollToTop() {
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  const scrollToTop = useCallback(() => {
+  const handleScrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: reducedMotion ? "instant" : "smooth" });
   }, [reducedMotion]);
 
@@ -40,7 +40,7 @@ export function ScrollToTop() {
       <div ref={sentinelRef} className="fixed top-0 left-0 w-0 h-0 pointer-events-none" aria-hidden="true" />
       <button
         type="button"
-        onClick={scrollToTop}
+        onClick={handleScrollToTop}
         aria-label={t("common.backToTop")}
         className={[
           "fixed bottom-6 right-6 z-[var(--z-sticky)]",

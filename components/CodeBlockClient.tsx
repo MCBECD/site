@@ -21,7 +21,7 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
     return () => clearTimeout(copiedTimer.current);
   }, []);
 
-  const doCopy = useCallback(async () => {
+  const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(code);
       if (copiedTimer.current) clearTimeout(copiedTimer.current);
@@ -36,19 +36,19 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
     (_e: React.MouseEvent) => {
       const selection = window.getSelection();
       if (selection && selection.toString().length > 0) return;
-      doCopy();
+      handleCopy();
     },
-    [doCopy],
+    [handleCopy],
   );
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        doCopy();
+        handleCopy();
       }
     },
-    [doCopy],
+    [handleCopy],
   );
 
   const toast = (

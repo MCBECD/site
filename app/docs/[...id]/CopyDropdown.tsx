@@ -4,11 +4,11 @@ import { useState, useRef, useEffect, useCallback, useMemo, memo } from "react";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
-interface Props {
+interface CopyDropdownProps {
   rawContent: string;
 }
 
-const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
+const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProps) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -38,7 +38,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
     toastTimer.current = setTimeout(() => setToastMsg(""), 2000);
   }, []);
 
-  const doCopy = useCallback(async (text: string, label: string) => {
+  const handleCopy = useCallback(async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -81,14 +81,14 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
         <div className="absolute right-0 top-full mt-1.5 w-36 py-1 rounded-[var(--radius)] border border-[var(--color-border)]
           bg-[var(--color-bg-primary)] shadow-lg z-[var(--z-dropdown)] dropdown-in">
           <button
-            onClick={() => doCopy(rawContent, t("code.copiedMd"))}
+            onClick={() => handleCopy(rawContent, t("code.copiedMd"))}
             className="w-full text-left px-3 py-2 text-[13px] text-[var(--color-text-secondary)]
               hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
           >
             {t("code.copyMd")}
           </button>
           <button
-            onClick={() => doCopy(plainText, t("code.copiedPlain"))}
+            onClick={() => handleCopy(plainText, t("code.copiedPlain"))}
             className="w-full text-left px-3 py-2 text-[13px] text-[var(--color-text-secondary)]
               hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
           >
@@ -108,4 +108,4 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
 }
 );
 
-export default CopyDropdown;
+export { CopyDropdown };

@@ -6,7 +6,7 @@ import { MDXRenderer } from "@/components/MDXRenderer";
 
 const SITE_URL = "https://mcbecd.pages.dev";
 
-interface Props {
+interface DocDetailPageProps {
   params: Promise<{ id: string[] }>;
 }
 
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
   return docs.map((doc) => ({ id: doc.id.split("/") }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: DocDetailPageProps): Promise<Metadata> {
   const { id } = await params;
   const docId = id.join("/");
   const doc = getDocById(docId);
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function DocDetailPage({ params }: Props) {
+export default async function DocDetailPage({ params }: DocDetailPageProps) {
   const { id } = await params;
   const docId = id.join("/");
 
@@ -59,7 +59,7 @@ export default async function DocDetailPage({ params }: Props) {
 
   // TODO(seo-locale): inLanguage should be dynamically set per locale.
   // Currently hardcoded to zh-CN because metadata is server-rendered with no locale context.
-  const webPageJsonLd = {
+  const WEBPAGE_JSON_LD = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: doc.meta.title,
@@ -71,7 +71,7 @@ export default async function DocDetailPage({ params }: Props) {
     isPartOf: { "@type": "WebSite", name: "MCBECD", url: SITE_URL },
   };
 
-  const breadcrumbJsonLd = {
+  const BREADCRUMB_JSON_LD = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
@@ -83,8 +83,8 @@ export default async function DocDetailPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBPAGE_JSON_LD) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_JSON_LD) }} />
       <DocDetailClient doc={doc} rawContent={rawFileContent}>
         <MDXRenderer source={doc.rawContent} />
       </DocDetailClient>

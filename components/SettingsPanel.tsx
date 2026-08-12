@@ -31,7 +31,7 @@ type Tab = "general" | "data" | "themes";
 
 /* ---------- Main Panel ---------- */
 
-export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
   const { docMap } = useDocs();
@@ -71,7 +71,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   useEffect(() => {
-    const shouldLock = open || closing;
+    const shouldLock = isOpen || closing;
     if (shouldLock) {
       document.body.style.overflow = "hidden";
     } else {
@@ -80,21 +80,21 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open, closing]);
+  }, [isOpen, closing]);
 
-  useEffect(() => { if (open) setTab("general"); }, [open]);
+  useEffect(() => { if (isOpen) setTab("general"); }, [isOpen]);
 
   // Escape key to close modal
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleClose();
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [open, handleClose]);
+  }, [isOpen, handleClose]);
 
-  if (!open && !closing) return null;
+  if (!isOpen && !closing) return null;
 
   const panelAnim = closing ? "settings-panel-out" : "settings-panel-in";
 

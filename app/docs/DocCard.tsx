@@ -10,12 +10,12 @@ import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
   doc: DocMeta;
-  bookmarked: boolean;
+  isBookmarked: boolean;
   onBookmark: (e: React.MouseEvent, id: string) => void;
   viewMode: "card" | "list";
 }
 
-const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }: DocCardProps) {
+const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode }: DocCardProps) {
   const { t } = useLocale();
   const typeKey = getCommandTypeI18nKey(doc.category);
   const typeLabel = typeKey ? t(typeKey) : undefined;
@@ -58,13 +58,13 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
           <button
             onClick={(e) => onBookmark(e, doc.id)}
             className={`w-7 h-7 flex items-center justify-center rounded-md transition-colors duration-100
-              ${bookmarked
+              ${isBookmarked
                 ? "text-yellow-500"
                 : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-yellow-500"}
             `}
-            aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
+            aria-label={isBookmarked ? t("common.unbookmark") : t("common.bookmark")}
           >
-            <Star className="w-3.5 h-3.5" fill={bookmarked ? "currentColor" : "none"} />
+            <Star className="w-3.5 h-3.5" fill={isBookmarked ? "currentColor" : "none"} />
           </button>
           <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-100" />
         </div>
@@ -91,4 +91,4 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
   );
 });
 
-export default DocCard;
+export { DocCard };

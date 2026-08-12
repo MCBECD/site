@@ -4,20 +4,20 @@ import { useEffect, useState, useCallback, type ReactNode } from "react";
 import Link from "next/link";
 import { Home, Star } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
-import CopyDropdown from "./CopyDropdown";
+import { CopyDropdown } from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
 import { addHistory, toggleBookmark, isBookmarked, getBookmarks } from "@/lib/storage";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
-interface Props {
+interface DocDetailClientProps {
   doc: DocContent;
   rawContent: string;
   children: ReactNode;
 }
 
-export function DocDetailClient({ doc, rawContent, children }: Props) {
+export function DocDetailClient({ doc, rawContent, children }: DocDetailClientProps) {
   const { t } = useLocale();
   const [bookmarked, setBookmarked] = useState(false);
   const categoryKey = getCategoryI18nKey(doc.meta.category);

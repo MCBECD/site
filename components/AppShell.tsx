@@ -20,7 +20,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     <>
       <BackgroundLayer />
       <Navbar onOpenSettings={openSettings} />
-      <SettingsPanel open={settingsOpen} onClose={closeSettings} />
+      <SettingsPanel isOpen={settingsOpen} onClose={closeSettings} />
       <main className="pt-[var(--navbar-height)] min-h-screen">
         <ErrorBoundary>
           <PageTransition>{children}</PageTransition>
