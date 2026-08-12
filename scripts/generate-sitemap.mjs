@@ -5,6 +5,19 @@ const SITE_URL = "https://mcbecd.pages.dev";
 const DOCS_DIR = path.join(process.cwd(), "content", "docs");
 const OUT_DIR = path.join(process.cwd(), "public");
 
+/**
+ * Escape special XML characters to produce valid XML output.
+ * Prevents broken sitemaps if doc IDs or metadata contain &, <, >, etc.
+ */
+function escapeXml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 function parseFrontmatter(str) {
   const m = str.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return {};
@@ -58,13 +71,14 @@ const docs = scanDocs(DOCS_DIR, "");
 const today = new Date().toISOString().split("T")[0];
 
 const urls = [];
-urls.push(`  <url><loc>${SITE_URL}/</loc><lastmod>${today}</lastmod><priority>1.0</priority></url>`);
-urls.push(`  <url><loc>${SITE_URL}/docs/</loc><lastmod>${today}</lastmod><priority>0.9</priority></url>`);
+urls.push(`  <url><loc>${escapeXml(SITE_URL)}/</loc><lastmod>${today}</lastmod><priority>1.0</priority></url>`);
+urls.push(`  <url><loc>${escapeXml(SITE_URL)}/docs/</loc><lastmod>${today}</lastmod><priority>0.9</priority></url>`);
 
 for (const doc of docs) {
   const lastmod = doc.updatedAt ? doc.updatedAt.split("T")[0] : today;
+  const loc = `${escapeXml(SITE_URL)}/docs/${escapeXml(doc.id)}/`;
   urls.push(
-    `  <url><loc>${SITE_URL}/docs/${doc.id}/</loc><lastmod>${lastmod}</lastmod><priority>0.8</priority></url>`
+    `  <url><loc>${loc}</loc><lastmod>${escapeXml(lastmod)}</lastmod><priority>0.8</priority></url>`
   );
 }
 
