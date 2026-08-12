@@ -1,7 +1,9 @@
 "use client";
 
+import { memo } from "react";
+
 /** Generic toggle switch component — supports role="switch" for accessibility */
-export function ToggleSwitch({ isChecked, onChange }: { isChecked: boolean; onChange: (v: boolean) => void }) {
+export const ToggleSwitch = memo(function ToggleSwitch({ isChecked, onChange }: { isChecked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
       role="switch"
@@ -21,4 +23,4 @@ export function ToggleSwitch({ isChecked, onChange }: { isChecked: boolean; onCh
       />
     </button>
   );
-}
+});

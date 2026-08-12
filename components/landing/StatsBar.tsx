@@ -1,12 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 
 interface StatsBarProps {
   docsCount: number;
 }
 
-export function StatsBar({ docsCount }: StatsBarProps) {
+export const StatsBar = memo(function StatsBar({ docsCount }: StatsBarProps) {
   const { t } = useLocale();
 
   const stats = [
@@ -31,4 +32,4 @@ export function StatsBar({ docsCount }: StatsBarProps) {
       </div>
     </section>
   );
-}
+});

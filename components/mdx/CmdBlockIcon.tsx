@@ -1,8 +1,9 @@
 "use client";
 
+import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 
-export function CmdBlockIcon({ type }: { type: string }) {
+export const CmdBlockIcon = memo(function CmdBlockIcon({ type }: { type: string }) {
   const { t } = useLocale();
   return (
     <img
@@ -13,4 +14,4 @@ export function CmdBlockIcon({ type }: { type: string }) {
       className="cmd-icon shrink-0 mt-2 mr-1"
     />
   );
-}
+});

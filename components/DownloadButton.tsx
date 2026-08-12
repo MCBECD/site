@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { Download } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -15,7 +15,7 @@ function sanitizeFilename(name: string): string {
   return name.replace(/\.+/g, "").replace(/[/\\]/g, "_");
 }
 
-export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
+export const DownloadButton = memo(function DownloadButton({ filename, getContent }: DownloadButtonProps) {
   const { t } = useLocale();
 
   const handleDownload = useCallback(() => {
@@ -49,4 +49,4 @@ export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
       <span className="hidden sm:inline">{t("code.download")}</span>
     </button>
   );
-}
+});

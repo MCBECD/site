@@ -35,6 +35,8 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
     setBookmarked(isBookmarked(doc.meta.id, getBookmarks()));
   }, [doc.meta.id]);
 
+  const getContent = useCallback(() => rawContent, [rawContent]);
+
   return (
     <div className="max-w-3xl mx-auto px-[var(--content-gutter)] pt-8 pb-24">
       <div className="doc-glass-card overflow-hidden detail-enter">
@@ -66,7 +68,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
             <CopyDropdown rawContent={rawContent} />
             <DownloadButton
               filename={doc.meta.id}
-              getContent={() => rawContent}
+              getContent={getContent}
             />
           </div>
         </div>

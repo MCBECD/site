@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { memo, useEffect, useState, useCallback, useRef } from "react";
 import { ArrowUp } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
 const SCROLL_THRESHOLD = 320;
 
-export function ScrollToTop() {
+export const ScrollToTop = memo(function ScrollToTop() {
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const { t } = useLocale();
@@ -62,4 +62,4 @@ export function ScrollToTop() {
       </button>
     </>
   );
-}
+});
