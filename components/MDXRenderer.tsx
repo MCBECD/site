@@ -1,14 +1,13 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
-import { createHighlighter, type Highlighter } from "shiki";
 import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
-import mcfunctionGrammar from "@/lib/mdx/mcfunction.json";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { makeCmdBlock } from "./mdx/CmdBlock";
+import { getHighlighter } from "@/lib/shiki";
 
 const CmdImpulse = makeCmdBlock("impulse");
 const CmdRepeat = makeCmdBlock("repeat");
@@ -17,27 +16,6 @@ const CmdConditionalImpulse = makeCmdBlock("conditional-impulse");
 const CmdConditionalRepeat = makeCmdBlock("conditional-repeat");
 const CmdConditionalChain = makeCmdBlock("conditional-chain");
 const CmdChat = makeCmdBlock("chat");
-
-const globalHighlighter = globalThis as unknown as {
-  __shikiHighlighter?: Highlighter;
-  __shikiHighlighterPromise?: Promise<Highlighter>;
-};
-
-async function getHighlighter(): Promise<Highlighter> {
-  if (globalHighlighter.__shikiHighlighter) {
-    return globalHighlighter.__shikiHighlighter;
-  }
-
-  if (!globalHighlighter.__shikiHighlighterPromise) {
-    globalHighlighter.__shikiHighlighterPromise = createHighlighter({
-      themes: ["github-light", "github-dark"],
-      langs: [mcfunctionGrammar],
-    });
-  }
-
-  globalHighlighter.__shikiHighlighter = await globalHighlighter.__shikiHighlighterPromise;
-  return globalHighlighter.__shikiHighlighter;
-}
 
 const components = {
   /* h2 is hidden in doc detail pages — the header card already shows the title */
@@ -51,14 +29,29 @@ const components = {
     const match = /language-(\w+)/.exec(className);
     const lang = match ? match[1]! : "mcfunction";
     const code = String(props.children ?? "").trim();
+    const lines = code.split("\n");
 
     const hl = await getHighlighter();
     const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
-    const html = hl.codeToHtml(code, {
-      lang: resolvedLang,
-      themes: { light: "github-light", dark: "github-dark" },
-    });
-    return <CodeBlockClient html={html} code={code} />;
+
+    if (lines.length === 1) {
+      const html = hl.codeToHtml(code, {
+        lang: resolvedLang,
+        themes: { light: "github-light", dark: "github-dark" },
+        defaultColor: false,
+      });
+      return <CodeBlockClient html={html} code={code} />;
+    }
+
+    return lines.map((line) => <CodeBlockClient
+      html={
+        hl.codeToHtml(line, {
+        lang: resolvedLang,
+        themes: { light: "github-light", dark: "github-dark" },
+        defaultColor: false,
+      })}
+      code={line}
+      />);
   },
   a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
     href && (href.startsWith("http://") || href.startsWith("https://")) ? (
