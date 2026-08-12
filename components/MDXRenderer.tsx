@@ -29,29 +29,15 @@ const components = {
     const match = /language-(\w+)/.exec(className);
     const lang = match ? match[1]! : "mcfunction";
     const code = String(props.children ?? "").trim();
-    const lines = code.split("\n");
 
     const hl = await getHighlighter();
     const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
-
-    if (lines.length === 1) {
-      const html = hl.codeToHtml(code, {
-        lang: resolvedLang,
-        themes: { light: "github-light", dark: "github-dark" },
-        defaultColor: false,
-      });
-      return <CodeBlockClient html={html} code={code} />;
-    }
-
-    return lines.map((line) => <CodeBlockClient
-      html={
-        hl.codeToHtml(line, {
-        lang: resolvedLang,
-        themes: { light: "github-light", dark: "github-dark" },
-        defaultColor: false,
-      })}
-      code={line}
-      />);
+    const html = hl.codeToHtml(code, {
+      lang: resolvedLang,
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+    });
+    return <CodeBlockClient html={html} code={code} />;
   },
   a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
     href && (href.startsWith("http://") || href.startsWith("https://")) ? (
