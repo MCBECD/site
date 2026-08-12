@@ -2,11 +2,11 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Command, LayoutList, List, Group } from "lucide-react";
+import { Search, X, Command, LayoutList, List } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
-import { getCategoryBase, getCommandType, getCommandTypeI18nKey, getBasicsOrder } from "@/lib/categories";
+import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
@@ -15,21 +15,6 @@ type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
 const DEBOUNCE_MS = 150;
-
-interface DocGroup {
-  typeLabel?: string;
-  items: import("@/lib/docs").DocMeta[];
-}
-
-const TYPE_ORDER: Record<string, number> = {
-  Player: 0,
-  World: 1,
-  Building: 2,
-  Entity: 3,
-  UI: 4,
-  Advanced: 5,
-  other: 99,
-};
 
 export default function DocsPageClient() {
   const { t, locale } = useLocale();
@@ -47,7 +32,6 @@ export default function DocsPageClient() {
   });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [category, setCategory] = useState<CategoryFilter>(() => (savedState?.category as CategoryFilter) ?? "all");
-  const [grouped, setGrouped] = useState<boolean>(() => (savedState?.grouped as boolean) ?? false);
   const [viewMode, setViewMode] = useState<ViewMode>(() => (savedState?.viewMode as ViewMode) ?? "card");
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -111,19 +95,18 @@ export default function DocsPageClient() {
 
   useEffect(() => {
     setPage(0);
-  }, [category, grouped, viewMode]);
+  }, [category, viewMode]);
 
   const scrollSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     saveDocsUIState({
       category,
-      grouped,
       viewMode,
       page,
       scrollY: scrollYRef.current,
     } as Parameters<typeof saveDocsUIState>[0]);
-  }, [category, grouped, viewMode, page]);
+  }, [category, viewMode, page]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -132,7 +115,6 @@ export default function DocsPageClient() {
       scrollSaveTimerRef.current = setTimeout(() => {
         saveDocsUIState({
           category,
-          grouped,
           viewMode,
           page,
           scrollY: scrollYRef.current,
@@ -145,13 +127,12 @@ export default function DocsPageClient() {
       if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
       saveDocsUIState({
         category,
-        grouped,
         viewMode,
         page,
         scrollY: scrollYRef.current,
       } as Parameters<typeof saveDocsUIState>[0]);
     };
-  }, [category, grouped, viewMode, page]);
+  }, [category, viewMode, page]);
 
   useLayoutEffect(() => {
     const targetScroll = savedState?.scrollY ?? 0;
@@ -172,8 +153,6 @@ export default function DocsPageClient() {
     };
     requestAnimationFrame(tryScroll);
   }, []);
-
-  const showGroupToggle = category === "commands" || category === "all";
 
   const filteredDocs = useMemo(() => {
     let result = docs;
@@ -205,22 +184,13 @@ export default function DocsPageClient() {
         return cmpTitle(a, b);
       });
 
-    const sortCommands = (arr: typeof result, grouped: boolean) =>
-      [...arr].sort((a, b) => {
-        if (grouped) {
-          const aT = getCommandType(a.category) ?? "other";
-          const bT = getCommandType(b.category) ?? "other";
-          const aTO = TYPE_ORDER[aT] ?? 99;
-          const bTO = TYPE_ORDER[bT] ?? 99;
-          if (aTO !== bTO) return aTO - bTO;
-        }
-        return cmpTitle(a, b);
-      });
+    const sortCommands = (arr: typeof result) =>
+      [...arr].sort((a, b) => cmpTitle(a, b));
 
     if (category === "basics") {
       result = sortBasics(result);
     } else if (category === "commands") {
-      result = sortCommands(result, grouped);
+      result = sortCommands(result);
     } else if (category === "examples") {
       result = result.sort((a, b) => {
         const aU = a.updatedAt ?? "";
@@ -230,7 +200,7 @@ export default function DocsPageClient() {
       });
     } else {
       const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
-      const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), grouped);
+      const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"));
       const otherDocs = result
         .filter((d) => {
           const base = getCategoryBase(d.category);
@@ -246,7 +216,7 @@ export default function DocsPageClient() {
     }
 
     return result;
-  }, [docs, debouncedQuery, category, grouped, locale]);
+  }, [docs, debouncedQuery, category, locale]);
 
   const isSearching = debouncedQuery.trim().length > 0;
   const totalPages = viewMode === "list" ? 1 : Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE_CARD));
@@ -268,36 +238,6 @@ export default function DocsPageClient() {
     }
     return pages;
   }, [totalPages, safePage]);
-
-  const groupedPageDocs = useMemo<DocGroup[] | null>(() => {
-    if (!grouped) return null;
-
-    const groups: DocGroup[] = [];
-    let currentGroup: DocGroup | null = null;
-
-    for (const doc of pageDocs) {
-      const typeKey = getCommandTypeI18nKey(doc.category);
-      const typeLabel = typeKey ? t(typeKey) : undefined;
-
-      if (typeLabel) {
-        if (currentGroup && currentGroup.typeLabel === typeLabel) {
-          currentGroup.items.push(doc);
-        } else {
-          currentGroup = { typeLabel, items: [doc] };
-          groups.push(currentGroup);
-        }
-      } else {
-        if (currentGroup && !currentGroup.typeLabel) {
-          currentGroup.items.push(doc);
-        } else {
-          currentGroup = { items: [doc] };
-          groups.push(currentGroup);
-        }
-      }
-    }
-
-    return groups;
-  }, [pageDocs, grouped, t]);
 
   const categoryTabs: { key: CategoryFilter; labelKey: string }[] = [
     { key: "all", labelKey: "doc.filterAll" },
@@ -344,22 +284,8 @@ export default function DocsPageClient() {
             );
           })}
         </div>
-        {/* 工具栏：分组 + 视图切换 */}
+        {/* 工具栏：视图切换 */}
         <div className="flex items-center gap-2">
-          {showGroupToggle && (
-            <button
-              onClick={() => setGrouped((prev) => !prev)}
-              className={`px-2 h-8 inline-flex items-center rounded-lg
-                ${grouped
-                  ? "bg-[var(--color-accent)] text-white border-transparent"
-                  : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
-              `}
-            >
-              <Group className="w-4 h-4" />
-              <span className="ml-1 text-[13px] font-medium hidden s420:block">{t("doc.group")}</span>
-            </button>
-          )}
-
           <button
             onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
             className="px-2 h-8 inline-flex items-center rounded-lg
@@ -423,30 +349,6 @@ export default function DocsPageClient() {
           </div>
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
-      ) : groupedPageDocs ? (
-        <div key={`${debouncedQuery}-${safePage}-${viewMode}-grouped`}>
-          {groupedPageDocs.map((group, gi) => (
-            <div key={gi} className={`${gi > 0 ? "mt-6 " : ""}${viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}`}>
-              {group.typeLabel && (
-                <span className="inline-flex items-center gap-1 text-[18px] text-[var(--color-accent)] shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
-                  {group.typeLabel}
-                </span>
-              )}
-              {group.items.map((doc, i) => (
-                <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
-                  <DocCard
-                    doc={doc}
-                    bookmarked={bookmarks.includes(doc.id)}
-                    onBookmark={handleToggleBookmark}
-                    viewMode={viewMode}
-                    grouped={grouped}
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
       ) : (
         <div
           className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
@@ -459,7 +361,6 @@ export default function DocsPageClient() {
                 bookmarked={bookmarks.includes(doc.id)}
                 onBookmark={handleToggleBookmark}
                 viewMode={viewMode}
-                grouped={grouped}
               />
             </div>
           ))}
