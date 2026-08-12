@@ -37,17 +37,9 @@ function scanDocs(dir, prefix) {
     const fullPath = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
-      const indexPath = path.join(fullPath, "index.mdx");
-      if (fs.existsSync(indexPath)) {
-        const raw = fs.readFileSync(indexPath, "utf-8");
-        const data = parseFrontmatter(raw);
-        const id = prefix ? `${prefix}/${entry.name}` : entry.name;
-        results.push({ id, updatedAt: data.updatedAt || "" });
-      } else {
         results.push(
           ...scanDocs(fullPath, prefix ? `${prefix}/${entry.name}` : entry.name)
         );
-      }
     } else if (entry.name.endsWith(".mdx")) {
       const raw = fs.readFileSync(fullPath, "utf-8");
       const data = parseFrontmatter(raw);

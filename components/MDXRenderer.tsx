@@ -18,16 +18,25 @@ const CmdConditionalRepeat = makeCmdBlock("conditional-repeat");
 const CmdConditionalChain = makeCmdBlock("conditional-chain");
 const CmdChat = makeCmdBlock("chat");
 
-let highlighter: Highlighter | null = null;
+const globalHighlighter = globalThis as unknown as {
+  __shikiHighlighter?: Highlighter;
+  __shikiHighlighterPromise?: Promise<Highlighter>;
+};
 
 async function getHighlighter(): Promise<Highlighter> {
-  if (!highlighter) {
-    highlighter = await createHighlighter({
+  if (globalHighlighter.__shikiHighlighter) {
+    return globalHighlighter.__shikiHighlighter;
+  }
+
+  if (!globalHighlighter.__shikiHighlighterPromise) {
+    globalHighlighter.__shikiHighlighterPromise = createHighlighter({
       themes: ["github-light", "github-dark"],
       langs: [mcfunctionGrammar],
     });
   }
-  return highlighter;
+
+  globalHighlighter.__shikiHighlighter = await globalHighlighter.__shikiHighlighterPromise;
+  return globalHighlighter.__shikiHighlighter;
 }
 
 const components = {

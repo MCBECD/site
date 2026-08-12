@@ -76,6 +76,8 @@
     "filterCommands": "Commands",
     "filterExamples": "Examples",
     "group": "Group",
+    "viewCards": "Cards",
+    "viewList": "List",
     "typePlayer": "Player",
     "typeWorld": "World",
     "typeBuilding": "Building",
