@@ -33,6 +33,7 @@ export const HeroSection = memo(function HeroSection() {
           >
             <Github className="w-4 h-4" />
             {t("landing.ctaSecondary")}
+            <span className="sr-only"> {t("common.opensInNewTab")}</span>
           </a>
         </div>
       </div>
