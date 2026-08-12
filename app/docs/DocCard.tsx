@@ -36,10 +36,10 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, g
           </span>
         )}
         <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
-          {renderTitleWithCode(doc.title)}
+          {...renderTitleWithCode(doc.title)}
         </h2>
         {doc.description && (
-          <span className="text-[12px] text-[var(--color-text-tertiary)] truncate max-w-[40%]">
+          <span className="hidden s480:block text-[12px] text-[var(--color-text-tertiary)] truncate max-w-[40%]">
             {doc.description}
           </span>
         )}
