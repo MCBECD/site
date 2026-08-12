@@ -515,27 +515,24 @@ export default function DocsPageClient() {
       ) : groupedPageDocs ? (
         <div key={`${debouncedQuery}-${safePage}-${viewMode}-grouped`}>
           {groupedPageDocs.map((group, gi) => (
-            <div key={gi} className={gi > 0 ? "mt-6" : ""}>
+            <div key={gi} className={`${gi > 0 ? "mt-6 " : ""}${viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}`}>
               {group.typeLabel && (
-                <p className="ml-3 text-[20px] text-[var(--color-accent)]">
-                    {group.typeLabel}
-                </p>
+                <span className="inline-flex items-center gap-1 text-[18px] text-[var(--color-accent)] shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+                  {group.typeLabel}
+                </span>
               )}
-              <div
-                className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
-              >
-                {group.items.map((doc, i) => (
-                  <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
-                    <DocCard
-                      doc={doc}
-                      bookmarked={bookmarks.includes(doc.id)}
-                      onBookmark={handleToggleBookmark}
-                      viewMode={viewMode}
-                      grouped={grouped}
-                    />
-                  </div>
-                ))}
-              </div>
+              {group.items.map((doc, i) => (
+                <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+                  <DocCard
+                    doc={doc}
+                    bookmarked={bookmarks.includes(doc.id)}
+                    onBookmark={handleToggleBookmark}
+                    viewMode={viewMode}
+                    grouped={grouped}
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </div>
