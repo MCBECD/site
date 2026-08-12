@@ -97,10 +97,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes heroFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+/* heroFadeIn removed — identical to fadeIn, use fadeIn directly */
 
 @keyframes blink {
   0%, 49%   { opacity: 1; }
@@ -124,4 +121,4 @@
 .landing-cta-enter      { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }
 .landing-feature-enter  { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 3) both; }
 .landing-stats-enter    { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 4) both; }
-.landing-terminal-enter { animation: heroFadeIn var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }
+.landing-terminal-enter { animation: fadeIn var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }

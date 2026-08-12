@@ -149,13 +149,17 @@
   border-radius: var(--radius);
   transition: color var(--duration-fast) var(--ease-out),
               border-color var(--duration-fast) var(--ease-out),
-              background var(--duration-fast) var(--ease-out);
+              background var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
   text-decoration: none;
 }
 .cta-secondary:hover {
   color: var(--color-text-primary);
   border-color: var(--color-text-tertiary);
   background: var(--color-bg-tertiary);
+}
+.cta-secondary:active {
+  transform: scale(0.97);
 }
 
 /* ----------------------------------------------------------

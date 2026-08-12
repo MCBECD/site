@@ -18,6 +18,18 @@ const PARALLAX_LERP = 0.08;
 const BackgroundLayer = memo(function BackgroundLayer() {
   const { settings } = useSettings();
   const bgEnabled = !!settings.plugins["background-image"] && !!settings.bgImage;
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  /* When user prefers reduced motion, disable parallax regardless of setting */
+  const parallaxEnabled = settings.bgParallax && !reducedMotion;
 
   const overlayStyle = useMemo(() => ({
     backgroundColor: "var(--color-bg-primary)",
@@ -50,7 +62,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
     if (!el || !bg) return;
 
     const centered = `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`;
-    if (!settings.bgParallax) { el.style.transform = centered; return; }
+    if (!parallaxEnabled) { el.style.transform = centered; return; }
 
     let mx = innerWidth / 2, my = innerHeight / 2;
     let sx = mx, sy = my;
@@ -76,7 +88,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
       removeEventListener("touchmove", onT);
       cancelAnimationFrame(raf);
     };
-  }, [bg, settings.bgParallax]);
+  }, [bg, parallaxEnabled]);
 
   return (
     <>
@@ -94,7 +106,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
               transformOrigin: "0 0",
               transform: `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`,
               filter: imgFilter,
-              willChange: settings.bgParallax ? "transform" : undefined,
+              willChange: parallaxEnabled ? "transform" : undefined,
             }}
           />
           <div className="fixed inset-0 -z-10" style={overlayStyle} aria-hidden="true" />
