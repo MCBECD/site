@@ -83,7 +83,9 @@
     "typeEntity": "엔티티",
     "typeUI": "UI",
     "typeAdvanced": "고급",
-    "typeOther": "기타"
+    "typeOther": "기타",
+    "bookmarksEmpty": "북마크 없음",
+    "historyEmpty": "기록 없음"
   },
   "landing": {
     "tagline": "커뮤니티 주도의 Minecraft 베드락 명령어 참고 자료. 모든 명령어는 검증되었으며 바로 복사해서 사용할 수 있습니다.",

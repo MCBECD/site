@@ -83,7 +83,9 @@
     "typeEntity": "Entity",
     "typeUI": "UI",
     "typeAdvanced": "Advanced",
-    "typeOther": "Other"
+    "typeOther": "Other",
+    "bookmarksEmpty": "No bookmarks",
+    "historyEmpty": "No history"
   },
   "landing": {
     "tagline": "Community-driven Minecraft Bedrock command reference. Every command is verified and ready to copy.",

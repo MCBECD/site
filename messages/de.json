@@ -83,7 +83,9 @@
     "typeEntity": "Entität",
     "typeUI": "UI",
     "typeAdvanced": "Fortgeschritten",
-    "typeOther": "Sonstige"
+    "typeOther": "Sonstige",
+    "bookmarksEmpty": "Keine Lesezeichen",
+    "historyEmpty": "Kein Verlauf"
   },
   "landing": {
     "tagline": "Community-gesteuerte Minecraft Bedrock-Befehlsreferenz. Jeder Befehl ist verifiziert und direkt kopierbar.",
