@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X, Command, LayoutList, List } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -128,12 +128,6 @@ export default function DocsPageClient() {
       });
     };
   }, [viewMode, page]);
-
-  useLayoutEffect(() => {
-    const targetScroll = savedState?.scrollY ?? 0;
-    if (targetScroll <= 0) return;
-    window.scrollTo(0, targetScroll);
-  }, []);
 
   useEffect(() => {
     const targetScroll = savedState?.scrollY ?? 0;

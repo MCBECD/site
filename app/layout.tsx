@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
-        <link rel="preload" href="https://avatars.githubusercontent.com/u/312049267?s=48" as="image" />
+        <link rel="preload" href="https://avatars.githubusercontent.com/u/312049267?s=64" as="image" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <script
           type="application/ld+json"
