@@ -1,6 +1,6 @@
 "use client";
 
-/** 通用开关组件 — 支持 role="switch" 无障碍 */
+/** Generic toggle switch component — supports role="switch" for accessibility */
 export function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button

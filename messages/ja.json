@@ -3,6 +3,9 @@
     "loading": "読み込み中...",
     "notFound": "ページが見つかりません",
     "backToList": "ホーム",
+    "backToTop": "トップへ戻る",
+    "opensInNewTab": "（新しいタブで開きます）",
+    "cmdIconAlt": "{type} コマンドブロック",
     "errorTitle": "エラー",
     "errorDesc": "予期しないエラーが発生しました。ページを再読み込みしてください。",
     "errorRetry": "再試行",
@@ -37,6 +40,7 @@
     "colorBlue": "青",
     "colorGreen": "緑",
     "colorCustom": "カスタム",
+    "colorCustomPicker": "カスタムカラーを選択",
     "pluginBgImage": "背景画像",
     "pluginBgImageDesc": "ページに背景画像を追加し、オーバーレイの透明度とぼかしを調整できます",
     "bgPreset1": "Cargil 1",
@@ -77,8 +81,15 @@
     "filterExamples": "例",
     "viewCards": "カード",
     "viewList": "リスト",
+    "previousPage": "前のページ",
+    "nextPage": "次のページ",
+    "clearSearch": "検索をクリア",
+    "switchToView": "{mode}に切り替え",
     "bookmarksEmpty": "ブックマークなし",
     "historyEmpty": "履歴なし"
+  },
+  "cmd": {
+    "iconAlt": "{type} コマンドブロック"
   },
   "landing": {
     "tagline": "コミュニティ主導の Minecraft 統合版コマンドリファレンス。各コマンドは検証済みで、すぐにコピーして使えます。",

@@ -101,7 +101,7 @@ export function BackgroundImagePluginCard() {
               <p className="text-[11px] text-red-500">{t("settings.bgImageTooLarge")}</p>
             )}
 
-            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-hidden="true" onChange={handleFileChange} />
             <button
               onClick={handleUpload}
               className={`w-full flex items-center justify-center gap-2 h-9 rounded-[var(--radius)] text-[12px] transition-colors

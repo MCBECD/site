@@ -1,13 +1,20 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
-import type { JSX, ReactNode } from "react";
+import type { CSSProperties, JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
+import { ExternalLink } from "./ExternalLink";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
+
+interface CodeElementProps {
+  className?: string;
+  children?: ReactNode;
+  style?: CSSProperties;
+}
 
 const CmdImpulse = makeCmdBlock("impulse");
 const CmdRepeat = makeCmdBlock("repeat");
@@ -24,8 +31,8 @@ const components = {
     if (!isValidElement(children))
       return <pre>{children}</pre>;
 
-    const props = children.props as Record<string, unknown>;
-    const className = (props.className as string) ?? "";
+    const props = children.props as CodeElementProps;
+    const className = props.className ?? "";
     const match = /language-(\w+)/.exec(className);
     const lang = match ? match[1]! : "mcfunction";
     const code = String(props.children ?? "").trim();
@@ -39,17 +46,15 @@ const components = {
     });
     return <CodeBlockClient html={html} code={code} />;
   },
-  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
+  a: ({ children, href, className, ...props }: JSX.IntrinsicElements["a"]) =>
     href && (href.startsWith("http://") || href.startsWith("https://")) ? (
-      <a
+      <ExternalLink
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
         className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
         {...props}
       >
         {children}
-      </a>
+      </ExternalLink>
     ) : (
       <Link
         href={href ?? ""}

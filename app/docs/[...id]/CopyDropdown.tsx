@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, memo } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, memo } from "react";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -15,6 +15,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
   const [toastMsg, setToastMsg] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -31,18 +32,29 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
   }, []);
 
   const doCopy = useCallback(async (text: string, label: string) => {
-    await navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // clipboard API unavailable
+    }
+    if (copiedTimer.current) clearTimeout(copiedTimer.current);
     setCopied(true);
     setOpen(false);
     showToast(label);
-    setTimeout(() => setCopied(false), 2000);
+    copiedTimer.current = setTimeout(() => setCopied(false), 2000);
   }, [showToast]);
 
-  const plainText = rawContent
-    .replace(/---[\s\S]*?---/, "")
-    .replace(/[#*`~>[\]()!_|{}.<>&-]/g, "")
-    .replace(/\n{2,}/g, "\n\n")
-    .trim();
+  const plainText = useMemo(() =>
+    rawContent
+      .replace(/^---[\s\S]*?---/, '')  // strip frontmatter
+      .replace(/^#{1,6}\s/gm, '')     // strip headings
+      .replace(/\*\*(.+?)\*\*/g, '$1') // strip bold
+      .replace(/\*(.+?)\*/g, '$1')     // strip italic
+      .replace(/`(.+?)`/g, '$1')       // strip inline code
+      .replace(/\[(.+?)\]\(.+?\)/g, '$1') // strip links
+      .trim(),
+    [rawContent]
+  );
 
   return (
     <div ref={ref} className="relative">
