@@ -32,6 +32,17 @@
   --grid-size: 32px;
   --grid-color: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
 
+  /* --- Z-index scale (layered stacking contexts) --- */
+  --z-bg-base: -30;       /* Solid background fill */
+  --z-bg-image: -20;     /* Background image */
+  --z-bg-overlay: -10;   /* Background overlay & decorative patterns */
+  --z-search: 10;        /* Internal search-bar elements */
+  --z-navbar: 40;        /* Fixed navbar */
+  --z-sticky: 45;        /* Scroll-to-top & fixed controls above navbar */
+  --z-dropdown: 50;      /* Dropdowns, inline toasts, modal overlays/panels */
+  --z-portal: 60;        /* Portaled elements that must top their parent modal */
+  --z-toast: 100;        /* Global portaled toasts (highest) */
+
   /* --- Landing page entrance animation (slower, ceremonial) --- */
   --duration-hero: 600ms;
   --duration-stagger-step: 80ms;

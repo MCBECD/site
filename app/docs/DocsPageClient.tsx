@@ -193,7 +193,7 @@ export default function DocsPageClient() {
   return (
     <div className="relative max-w-3xl mx-auto px-[var(--content-gutter)] pt-14 pb-24">
       {/* Top grid pattern — fades out */}
-      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none -z-10" aria-hidden="true" />
+      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none z-[var(--z-bg-overlay)]" aria-hidden="true" />
 
       {/* Hero */}
       <div className="mb-10">
@@ -209,9 +209,9 @@ export default function DocsPageClient() {
       </div>
 
       {/* Search bar + view toggle */}
-      <div className="relative z-10 flex items-center gap-2 mb-6 search-enter">
+      <div className="relative z-[var(--z-search)] flex items-center gap-2 mb-6 search-enter">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-[var(--z-search)]" />
           <input
             ref={searchRef}
             type="text"
@@ -228,7 +228,7 @@ export default function DocsPageClient() {
             <button
               onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
               aria-label={t("doc.clearSearch")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-10
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-[var(--z-search)]
                 flex items-center justify-center rounded-md
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
                 hover:bg-[var(--color-bg-tertiary)] transition-colors"
@@ -236,7 +236,7 @@ export default function DocsPageClient() {
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-10 inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-[var(--z-search)] inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
               text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
               pointer-events-none hidden sm:inline-flex">
               <Command className="w-2.5 h-2.5" />
