@@ -38,8 +38,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url,
       siteName: "MCBECD",
       modifiedTime: doc.meta.updatedAt,
+      // TODO(seo): Add publishedTime once createdAt is tracked in DocMeta frontmatter.
       authors: doc.meta.author ? [doc.meta.author] : undefined,
       tags: doc.meta.tags,
+      // TODO(seo): Add images array once an OG image is created.
     },
     twitter: { card: "summary", title, description },
   };
@@ -55,6 +57,8 @@ export default async function DocDetailPage({ params }: Props) {
   const rawFileContent = getDocRawContent(docId) ?? "";
   const url = `${SITE_URL}/docs/${docId}/`;
 
+  // TODO(seo-locale): inLanguage should be dynamically set per locale.
+  // Currently hardcoded to zh-CN because metadata is server-rendered with no locale context.
   const webPageJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
