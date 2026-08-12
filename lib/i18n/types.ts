@@ -17,9 +17,6 @@ export interface Messages {
     loading: string;
     notFound: string;
     backToList: string;
-    backToTop: string;
-    opensInNewTab: string;
-    cmdIconAlt: string;
     errorTitle: string;
     errorDesc: string;
     errorRetry: string;
@@ -54,7 +51,6 @@ export interface Messages {
     colorBlue: string;
     colorGreen: string;
     colorCustom: string;
-    colorCustomPicker: string;
     pluginBgImage: string;
     pluginBgImageDesc: string;
     bgPreset1: string;
@@ -93,15 +89,20 @@ export interface Messages {
     filterBasics: string;
     filterCommands: string;
     filterExamples: string;
+    sortByName: string;
+    sortByType: string;
+    group: string;
+    sortByUpdated: string;
+    viewMode: string;
     viewCards: string;
     viewList: string;
-    previousPage: string;
-    nextPage: string;
-    clearSearch: string;
-    switchToView: string;
-  };
-  cmd: {
-    iconAlt: string;
+    typePlayer: string;
+    typeWorld: string;
+    typeBuilding: string;
+    typeEntity: string;
+    typeUI: string;
+    typeAdvanced: string;
+    typeOther: string;
   };
   landing: {
     tagline: string;
@@ -135,8 +136,8 @@ export interface Messages {
 }
 
 /**
- * Generate a dot-path union type from a nested object type.
- * E.g. { a: { b: string } } → "a.b"
+ * 生成嵌套对象的点号路径联合类型。
+ * 例如 { a: { b: string } } → "a.b"
  */
 type DotPath<T, Prefix extends string = ""> = T extends string
   ? Prefix
@@ -146,5 +147,5 @@ type DotPath<T, Prefix extends string = ""> = T extends string
         : DotPath<T[K], `${Prefix}.${K}`>;
     }[keyof T & string];
 
-/** All valid i18n key paths, used as the type constraint for t() parameter */
+/** 所有合法的 i18n key 路径，用于 t() 参数类型约束 */
 export type MessageKey = DotPath<Messages>;

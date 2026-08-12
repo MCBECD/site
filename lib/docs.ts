@@ -3,9 +3,9 @@ import fs from "node:fs";
 import matter from "gray-matter";
 
 /* ============================================================
- * MCBECD Command Library Documentation Engine
+ * MCBECD 命令库文档引擎
  *
- * @/content/docs/**.mdx (metadata in frontmatter)
+ * @/content/docs/**.mdx（元数据在 frontmatter）
  * ============================================================ */
 
 export interface DocMeta {
@@ -25,7 +25,7 @@ export interface DocContent {
 }
 
 /* ----------------------------------------------------------
- * Internal utilities
+ * 内部工具
  * ---------------------------------------------------------- */
 
 function getDocsDir(): string {
@@ -44,12 +44,12 @@ function parseMdxMeta(filePath: string): { frontmatter: Record<string, unknown>;
   }
 }
 
-/** Safely extract a string from unknown; returns undefined if not a string */
+/** 从 unknown 中安全提取 string，非 string 返回 undefined */
 function asString(v: unknown): string | undefined {
   return typeof v === "string" && v.length > 0 ? v : undefined;
 }
 
-/** Safely extract a string[] from unknown; returns undefined if not an array or elements are not strings */
+/** 从 unknown 中安全提取 string[]，非数组或元素非 string 返回 undefined */
 function asStringArray(v: unknown): string[] | undefined {
   if (!Array.isArray(v)) return undefined;
   const valid = v.filter((t): t is string => typeof t === "string" && t.length > 0);
@@ -77,7 +77,7 @@ function buildMeta(
 }
 
 /* ----------------------------------------------------------
- * Recursive directory scanning
+ * 递归扫描
  * ---------------------------------------------------------- */
 
 function scanDirectory(dir: string, prefix: string): DocMeta[] {
@@ -113,17 +113,17 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 }
 
 /* ----------------------------------------------------------
- * Public API
+ * 公共 API
  * ---------------------------------------------------------- */
 
-/** Get all document metadata */
+/** 获取所有文档元数据 */
 export function getAllDocs(): DocMeta[] {
   const docsDir = getDocsDir();
   if (!fs.existsSync(docsDir)) return [];
   return scanDirectory(docsDir, "");
 }
 
-/** Get document content by ID; returns null if not found */
+/** 根据 ID 获取文档内容，null 表示不存在 */
 export function getDocById(id: string): DocContent | null {
   const docsDir = getDocsDir();
 
@@ -138,7 +138,7 @@ export function getDocById(id: string): DocContent | null {
   return null;
 }
 
-/** Get raw document file content (including frontmatter) for download */
+/** 获取文档原始文件内容（含 frontmatter）用于下载 */
 export function getDocRawContent(id: string): string | null {
   const docsDir = getDocsDir();
 

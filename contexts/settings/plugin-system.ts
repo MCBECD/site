@@ -1,8 +1,8 @@
 /**
- * Plugin system — Lightweight toggle management
+ * 插件系统 — 轻量级开关管理
  *
- * Each plugin has a single boolean toggle, stored in Settings.plugins.
- * Provides toggle / isEnabled utility functions.
+ * 每个插件一个 boolean 开关，存在 Settings.plugins 中。
+ * 提供 toggle / isEnabled 工具函数。
  */
 
 import { useCallback } from "react";
@@ -19,8 +19,8 @@ function togglePluginState(
 }
 
 /**
- * React hook — Creates a togglePlugin callback from setSettings.
- * Encapsulates the setState + persist pattern.
+ * React hook — 从 setSettings 创建 togglePlugin 回调
+ * 封装了 setState + persist 的模式
  */
 export function createTogglePlugin(
   setSettings: React.Dispatch<React.SetStateAction<import("@/contexts/SettingsContext").Settings>>,
