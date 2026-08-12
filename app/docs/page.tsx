@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import DocsPageClient from "./DocsPageClient";
+import { DocsPageClient } from "./DocsPageClient";
 
 const SITE_URL = "https://mcbecd.pages.dev";
 // TODO(seo-locale): Title and description should be locale-aware. The site uses

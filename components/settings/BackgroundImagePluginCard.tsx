@@ -104,7 +104,7 @@ export function BackgroundImagePluginCard() {
           <div className="text-[13px] font-medium text-[var(--color-text-primary)] leading-tight">{t("settings.pluginBgImage")}</div>
           <div className="text-[11px] text-[var(--color-text-tertiary)] mt-0.5 leading-snug">{t("settings.pluginBgImageDesc")}</div>
         </div>
-        <ToggleSwitch checked={enabled} onChange={handleToggle} />
+        <ToggleSwitch isChecked={enabled} onChange={handleToggle} />
       </div>
 
       {enabled && (
@@ -150,7 +150,7 @@ export function BackgroundImagePluginCard() {
 
             <div className="flex items-center justify-between">
               <span className="text-[12px] text-[var(--color-text-secondary)]">{t("settings.bgParallax")}</span>
-              <ToggleSwitch checked={settings.bgParallax} onChange={() => updateSettings("bgParallax", !settings.bgParallax)} />
+              <ToggleSwitch isChecked={settings.bgParallax} onChange={() => updateSettings("bgParallax", !settings.bgParallax)} />
             </div>
           </div>
         </div>

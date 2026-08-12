@@ -10,7 +10,7 @@ import ko from "@/messages/ko.json";
 import de from "@/messages/de.json";
 import fr from "@/messages/fr.json";
 
-const MSG: Record<Locale, Messages> = {
+const MESSAGES: Record<Locale, Messages> = {
   "zh-CN": zhCN,
   en,
   "zh-TW": zhTW,
@@ -54,7 +54,7 @@ function validateMessages(locale: Locale, messages: unknown): void {
   if (validatedLocales.has(locale)) return;
   validatedLocales.add(locale);
 
-  const base = MSG["en"] as unknown as Record<string, unknown>;
+  const base = MESSAGES["en"] as unknown as Record<string, unknown>;
   const target = messages as Record<string, unknown>;
   const missing: string[] = [];
 
@@ -101,7 +101,7 @@ interface LocaleContextValue {
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
-  const messages = MSG[locale];
+  const messages = MESSAGES[locale];
   validateMessages(locale, messages);
 
   // Keep the <html lang> attribute in sync with the active locale for SEO

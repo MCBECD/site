@@ -6,14 +6,14 @@ import { Section } from "@/components/settings/Section";
 import { SliderRow } from "@/components/settings/SliderRow";
 
 describe("ToggleSwitch", () => {
-  it("has role=switch and reflects checked state", () => {
-    render(<ToggleSwitch checked={true} onChange={vi.fn()} />);
+  it("has role=switch and reflects isChecked state", () => {
+    render(<ToggleSwitch isChecked={true} onChange={vi.fn()} />);
     const sw = screen.getByRole("switch");
     expect(sw).toHaveAttribute("aria-checked", "true");
   });
 
   it("has role=switch and reflects unchecked state", () => {
-    const { container } = render(<ToggleSwitch checked={false} onChange={vi.fn()} />);
+    const { container } = render(<ToggleSwitch isChecked={false} onChange={vi.fn()} />);
     const sw = container.querySelector('[role="switch"]');
     expect(sw).toHaveAttribute("aria-checked", "false");
   });
@@ -21,7 +21,7 @@ describe("ToggleSwitch", () => {
   it("calls onChange with opposite value on click", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    const { container } = render(<ToggleSwitch checked={false} onChange={onChange} />);
+    const { container } = render(<ToggleSwitch isChecked={false} onChange={onChange} />);
     await user.click(container.querySelector('[role="switch"]')!);
     expect(onChange).toHaveBeenCalledWith(true);
     expect(onChange).toHaveBeenCalledTimes(1);
@@ -30,20 +30,20 @@ describe("ToggleSwitch", () => {
   it("toggles from on to off", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    const { container } = render(<ToggleSwitch checked={true} onChange={onChange} />);
+    const { container } = render(<ToggleSwitch isChecked={true} onChange={onChange} />);
     await user.click(container.querySelector('[role="switch"]')!);
     expect(onChange).toHaveBeenCalledWith(false);
   });
 
-  it("applies accent styling when checked", () => {
-    const { container } = render(<ToggleSwitch checked={true} onChange={vi.fn()} />);
+  it("applies accent styling when isChecked", () => {
+    const { container } = render(<ToggleSwitch isChecked={true} onChange={vi.fn()} />);
     const btn = container.firstChild as HTMLElement;
     expect(btn.className).toContain("bg-[var(--color-accent)]");
   });
 
   it("does not call onChange on render", () => {
     const onChange = vi.fn();
-    render(<ToggleSwitch checked={true} onChange={onChange} />);
+    render(<ToggleSwitch isChecked={true} onChange={onChange} />);
     expect(onChange).not.toHaveBeenCalled();
   });
 });

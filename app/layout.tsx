@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
 };
 
-const websiteJsonLd = {
+const WEBSITE_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "MCBECD",
@@ -64,7 +64,7 @@ const websiteJsonLd = {
   inLanguage: "zh-CN",
 };
 
-const organizationJsonLd = {
+const ORGANIZATION_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "MCBECD",
@@ -85,11 +85,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
         />
         <script
           dangerouslySetInnerHTML={{

@@ -12,7 +12,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const select = useCallback(
+  const handleSelect = useCallback(
     (v: Locale) => { onChange(v); setOpen(false); },
     [onChange],
   );
@@ -97,7 +97,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
                 type="button"
                 role="option"
                 aria-selected={loc === value}
-                onClick={() => select(loc)}
+                onClick={() => handleSelect(loc)}
                 className={`w-full text-left px-3 py-2 text-[13px] flex items-center justify-between transition-colors
                   ${loc === value
                     ? "text-[var(--color-accent)]"

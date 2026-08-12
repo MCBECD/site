@@ -7,15 +7,15 @@ import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
 import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
-import DocCard from "./DocCard";
-import DocPagination from "./DocPagination";
+import { DocCard } from "./DocCard";
+import { DocPagination } from "./DocPagination";
 
 type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
 const DEBOUNCE_MS = 150;
 
-export default function DocsPageClient() {
+export function DocsPageClient() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
   const router = useRouter();
@@ -278,7 +278,7 @@ export default function DocsPageClient() {
             <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
               <DocCard
                 doc={doc}
-                bookmarked={bookmarks.includes(doc.id)}
+                isBookmarked={bookmarks.includes(doc.id)}
                 onBookmark={handleToggleBookmark}
                 viewMode={viewMode}
               />
