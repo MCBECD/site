@@ -1,8 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
-import { LOCALES, NATIVE_NAMES } from "@/lib/i18n/types";
-import type { Locale } from "@/lib/i18n/types";
+import { LOCALES, NATIVE_NAMES, type Locale } from "@/lib/i18n/types";
 
 function wrapperFactory(locale: Locale) {
   return function Wrapper({ children }: { children: React.ReactNode }) {

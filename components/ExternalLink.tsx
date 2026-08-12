@@ -1,7 +1,7 @@
 "use client";
 
-import { useLocale } from "@/contexts/LocaleContext";
 import type { ReactNode, AnchorHTMLAttributes } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export function ExternalLink({
   href,
