@@ -38,8 +38,7 @@ function parseMdxMeta(filePath: string): { frontmatter: Record<string, unknown>;
     const { data, content } = matter(raw);
     const wordCount = content.replace(/\s+/g, "").length;
     return { frontmatter: data, content, readingTime: Math.max(1, Math.ceil(wordCount / 400)) };
-  } catch (err) {
-    console.error(`[docs] Failed to parse MDX: ${filePath}`, err instanceof Error ? err.message : err);
+  } catch {
     return null;
   }
 }
@@ -86,8 +85,7 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch (err) {
-    console.error(`[docs] Failed to scan directory: ${dir}`, err instanceof Error ? err.message : err);
+  } catch {
     return results;
   }
 
@@ -145,8 +143,8 @@ export function getDocRawContent(id: string): string | null {
   try {
     const flatPath = path.join(docsDir, `${id}.mdx`);
     if (fs.existsSync(flatPath)) return fs.readFileSync(flatPath, "utf-8");
-  } catch (err) {
-    console.error(`[docs] Failed to read raw content for: ${id}`, err instanceof Error ? err.message : err);
+  } catch {
+    // Silently fail — caller handles null return
   }
 
   return null;
