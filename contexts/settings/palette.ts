@@ -9,6 +9,10 @@ export function hexToHSL(hex: string): [number, number, number] {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
   const b = parseInt(hex.slice(5, 7), 16) / 255;
+  if ([r, g, b].some(isNaN)) {
+    console.warn(`[palette] Invalid hex color: ${hex}, falling back to #3b82f6`);
+    return hexToHSL("#3b82f6");
+  }
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
   let h = 0, s = 0;
   const l = (max + min) / 2;
