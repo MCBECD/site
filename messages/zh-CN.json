@@ -52,7 +52,8 @@
     "bgOverlayOpacity": "遮罩透明度",
     "bgOverlayBlur": "模糊度",
     "bgParallax": "视差效果",
-    "bgImageTooLarge": "图片大小不能超过 2MB"
+    "bgImageTooLarge": "图片大小不能超过 2MB",
+    "bgImageWrongType": "不支持的图片格式，请使用 JPG、PNG、GIF、WebP 或 AVIF"
   },
   "code": {
     "copy": "复制",

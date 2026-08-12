@@ -52,7 +52,8 @@
     "bgOverlayOpacity": "Überlagerung",
     "bgOverlayBlur": "Unschärfe",
     "bgParallax": "Parallax",
-    "bgImageTooLarge": "Die Bildgröße darf 2 MB nicht überschreiten"
+    "bgImageTooLarge": "Die Bildgröße darf 2 MB nicht überschreiten",
+    "bgImageWrongType": "Nicht untersttztes Bildformat. Bitte verwenden Sie JPG, PNG, GIF, WebP oder AVIF"
   },
   "code": {
     "copy": "Kopieren",

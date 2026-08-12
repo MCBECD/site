@@ -52,7 +52,8 @@
     "bgOverlayOpacity": "Overlay",
     "bgOverlayBlur": "Blur",
     "bgParallax": "Parallax",
-    "bgImageTooLarge": "Image size cannot exceed 2MB"
+    "bgImageTooLarge": "Image size cannot exceed 2MB",
+    "bgImageWrongType": "Unsupported image format. Please use JPG, PNG, GIF, WebP, or AVIF"
   },
   "code": {
     "copy": "Copy",

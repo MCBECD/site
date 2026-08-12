@@ -52,7 +52,8 @@
     "bgOverlayOpacity": "オーバーレイ",
     "bgOverlayBlur": "ぼかし",
     "bgParallax": "パララックス",
-    "bgImageTooLarge": "画像サイズは2MBを超えられません"
+    "bgImageTooLarge": "画像サイズは2MBを超えられません",
+    "bgImageWrongType": "対応していない画像形式です。JPG、PNG、GIF、WebP、またはAVIFを使用してください"
   },
   "code": {
     "copy": "コピー",

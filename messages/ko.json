@@ -52,7 +52,8 @@
     "bgOverlayOpacity": "오버레이",
     "bgOverlayBlur": "흐림",
     "bgParallax": "시차 효과",
-    "bgImageTooLarge": "이미지 크기는 2MB를 초과할 수 없습니다"
+    "bgImageTooLarge": "이미지 크기는 2MB를 초과할 수 없습니다",
+    "bgImageWrongType": "지원되지 않는 이미지 형식입니다. JPG, PNG, GIF, WebP 또는 AVIF를 사용해 주세요"
   },
   "code": {
     "copy": "복사",

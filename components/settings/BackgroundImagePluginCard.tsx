@@ -31,7 +31,7 @@ export function BackgroundImagePluginCard() {
   const id = "background-image";
   const enabled = isPluginEnabled(id);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [uploadError, setUploadError] = useState(false);
+  const [uploadError, setUploadError] = useState<"size" | "type" | false>(false);
 
   const handleToggle = useCallback((v: boolean) => {
     togglePlugin(id, v);
@@ -51,13 +51,13 @@ export function BackgroundImagePluginCard() {
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      setUploadError(true);
+      setUploadError("size");
       return;
     }
 
     // Validate MIME type (the accept attribute is only a UI hint, not enforced)
     if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-      setUploadError(true);
+      setUploadError("type");
       return;
     }
 
@@ -67,7 +67,7 @@ export function BackgroundImagePluginCard() {
       if (typeof reader.result === "string") {
         // Double-check the data URL prefix is a safe image type
         if (!reader.result.startsWith("data:image/")) {
-          setUploadError(true);
+          setUploadError("type");
           return;
         }
         updateSettings("bgImage", reader.result);
@@ -75,7 +75,7 @@ export function BackgroundImagePluginCard() {
     };
     reader.onerror = () => {
       console.error("[BackgroundImage] Failed to read uploaded file");
-      setUploadError(true);
+      setUploadError("type");
     };
     reader.readAsDataURL(file);
     // Reset input so the same file can be re-selected
@@ -130,7 +130,9 @@ export function BackgroundImagePluginCard() {
             </div>
 
             {uploadError && (
-              <p className="text-[11px] text-red-500">{t("settings.bgImageTooLarge")}</p>
+              <p className="text-[11px] text-red-500">
+                {t(uploadError === "size" ? "settings.bgImageTooLarge" : "settings.bgImageWrongType")}
+              </p>
             )}
 
             <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-hidden="true" onChange={handleFileChange} />
