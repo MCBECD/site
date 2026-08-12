@@ -83,7 +83,9 @@
     "typeEntity": "エンティティ",
     "typeUI": "UI",
     "typeAdvanced": "上級",
-    "typeOther": "その他"
+    "typeOther": "その他",
+    "bookmarksEmpty": "ブックマークなし",
+    "historyEmpty": "履歴なし"
   },
   "landing": {
     "tagline": "コミュニティ主導の Minecraft 統合版コマンドリファレンス。各コマンドは検証済みで、すぐにコピーして使えます。",
