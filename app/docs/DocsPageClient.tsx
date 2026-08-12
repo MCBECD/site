@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Search, X, Command, LayoutList, List, Group } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -34,7 +34,6 @@ const TYPE_ORDER: Record<string, number> = {
 export default function DocsPageClient() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const savedState = loadDocsUIState();
 
@@ -42,7 +41,8 @@ export default function DocsPageClient() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(() => {
     if (savedState) return savedState.page;
-    const p = Number(searchParams.get("page"));
+    if (typeof window === "undefined") return 0;
+    const p = Number(new URLSearchParams(window.location.search).get("page"));
     return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
   });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
@@ -61,11 +61,14 @@ export default function DocsPageClient() {
 
   const navigatePage = useCallback((p: number) => {
     setPage(p);
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (p <= 0) params.delete("page");
     else params.set("page", String(p + 1));
-    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
-  }, [searchParams, router]);
+    const qs = params.toString();
+    const url = `/docs/${qs ? `?${qs}` : ""}`;
+    window.history.replaceState(null, "", url);
+    router.replace(url, { scroll: false });
+  }, [router]);
 
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
@@ -76,10 +79,13 @@ export default function DocsPageClient() {
 
   const resetPage = useCallback(() => {
     setPage(0);
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     params.delete("page");
-    router.replace(`/docs${params.toString() ? `?${params}` : ""}`, { scroll: false });
-  }, [searchParams, router]);
+    const qs = params.toString();
+    const url = `/docs/${qs ? `?${qs}` : ""}`;
+    window.history.replaceState(null, "", url);
+    router.replace(url, { scroll: false });
+  }, [router]);
 
   const handleInput = useCallback((value: string) => {
     setQuery(value);
