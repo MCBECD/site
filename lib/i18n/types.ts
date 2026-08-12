@@ -99,6 +99,8 @@ export interface Messages {
     nextPage: string;
     clearSearch: string;
     switchToView: string;
+    bookmarksEmpty: string;
+    historyEmpty: string;
   };
   cmd: {
     iconAlt: string;

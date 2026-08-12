@@ -5,14 +5,14 @@
  *
  * 校验所有 messages/*.json 文件的 key 完整性，以 zh-CN.json 为基准。
  * 用法: node scripts/validate-i18n.mjs
- * 退出码: 0=通过, 1=有问题
+ * 退出码: 0=Pass, 1=有问题
  */
 
 import fs from "node:fs";
 import path from "node:path";
 
 const MSGS_DIR = path.join(process.cwd(), "messages");
-const BASELINE = "zh-CN.json";
+const BASELINE = "en.json";
 
 let errors = 0;
 
@@ -37,7 +37,7 @@ function countPlaceholders(str) {
 // --- main ---
 const baselinePath = path.join(MSGS_DIR, BASELINE);
 if (!fs.existsSync(baselinePath)) {
-  console.error(`基准文件不存在: ${baselinePath}`);
+  console.error(`Baseline file not found: ${baselinePath}`);
   process.exit(1);
 }
 
@@ -46,7 +46,7 @@ const baselineKeys = getAllKeys(baseline);
 
 const files = fs.readdirSync(MSGS_DIR).filter((f) => f.endsWith(".json") && f !== BASELINE);
 
-console.log(`\n基准: ${BASELINE} (${baselineKeys.length} 个 key)\n`);
+console.log(`\nBaseline: ${BASELINE} (${baselineKeys.length} keys)\n`);
 
 for (const file of files) {
   const locale = file.replace(".json", "");
@@ -61,16 +61,16 @@ for (const file of files) {
   } else {
     console.log(`\x1b[31m✗ ${locale}\x1b[0m`);
     if (missing.length > 0) {
-      console.log(`  缺少: ${missing.join(", ")}`);
+      console.log(`  Missing: ${missing.join(", ")}`);
       errors += missing.length;
     }
     if (extra.length > 0) {
-      console.log(`  多余: ${extra.join(", ")}`);
+      console.log(`  Extra: ${extra.join(", ")}`);
       errors += extra.length;
     }
   }
 
-  // 插值变量检查
+  // Interpolation variable check
   for (const key of baselineKeys) {
     if (missing.includes(key)) continue;
     const bVal = getNestedValue(baseline, key);
@@ -79,12 +79,12 @@ for (const file of files) {
     const bPlaceholders = countPlaceholders(bVal);
     const lPlaceholders = countPlaceholders(lVal);
     if (JSON.stringify(bPlaceholders) !== JSON.stringify(lPlaceholders)) {
-      console.log(`\x1b[33m⚠ ${locale}/${key}\x1b[0m: 插值变量不匹配 (基准: ${bPlaceholders.join(",")}, 当前: ${lPlaceholders.join(",")})`);
+      console.log(`\x1b[33m⚠ ${locale}/${key}\x1b[0m: interpolation mismatch (基准: ${bPlaceholders.join(",")}, 当前: ${lPlaceholders.join(",")})`);
     }
   }
 }
 
-console.log(`\n---\n\x1b[32m通过\x1b[0m: ${errors === 0 ? "全部" : "部分"}  \x1b[31m错误: ${errors}\x1b[0m\n`);
+console.log(`\n---\n\x1b[32mPass\x1b[0m: ${errors === 0 ? "all" : "partial"}  \x1b[31mErrors: ${errors}\x1b[0m\n`);
 process.exit(errors > 0 ? 1 : 0);
 
 function getNestedValue(obj, keyPath) {
