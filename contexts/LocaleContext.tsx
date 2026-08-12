@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
-import type { Locale, MessageKey } from "@/lib/i18n/types";
+import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from "react";
+import type { Locale, MessageKey, Messages } from "@/lib/i18n/types";
 import zhCN from "@/messages/zh-CN.json";
 import en from "@/messages/en.json";
 import zhTW from "@/messages/zh-TW.json";
@@ -10,7 +10,7 @@ import ko from "@/messages/ko.json";
 import de from "@/messages/de.json";
 import fr from "@/messages/fr.json";
 
-const MSG: Record<Locale, unknown> = {
+const MSG: Record<Locale, Messages> = {
   "zh-CN": zhCN,
   en,
   "zh-TW": zhTW,
@@ -103,6 +103,11 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 export function LocaleProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
   const messages = MSG[locale];
   validateMessages(locale, messages);
+
+  // Keep the <html lang> attribute in sync with the active locale for SEO
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>): string => {

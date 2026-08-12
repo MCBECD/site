@@ -13,13 +13,16 @@ function getKey(key: string): string {
   return `${PREFIX}${key}`;
 }
 
-/** 读取并反序列化，失败返回 fallback */
+/** 读取并反序列化，失败时移除损坏的 key 并返回 fallback */
 export function storageRead<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
+  const fullKey = getKey(key);
   try {
-    const raw = localStorage.getItem(getKey(key));
-    return raw ? (JSON.parse(raw) as T) : fallback;
+    const raw = localStorage.getItem(fullKey);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
   } catch {
+    localStorage.removeItem(fullKey);
     return fallback;
   }
 }
