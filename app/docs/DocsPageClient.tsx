@@ -2,34 +2,18 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Command, LayoutList, List, Group } from "lucide-react";
+import { Search, X, Command, LayoutList, List } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
-import { getCategoryBase, getCommandType, getCommandTypeI18nKey, getBasicsOrder } from "@/lib/categories";
+import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
 import DocCard from "./DocCard";
 import DocPagination from "./DocPagination";
 
-type CategoryFilter = "all" | "basics" | "commands" | "examples";
 type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
 const DEBOUNCE_MS = 150;
-
-interface DocGroup {
-  typeLabel?: string;
-  items: import("@/lib/docs").DocMeta[];
-}
-
-const TYPE_ORDER: Record<string, number> = {
-  Player: 0,
-  World: 1,
-  Building: 2,
-  Entity: 3,
-  UI: 4,
-  Advanced: 5,
-  other: 99,
-};
 
 export default function DocsPageClient() {
   const { t, locale } = useLocale();
@@ -46,8 +30,6 @@ export default function DocsPageClient() {
     return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
   });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [category, setCategory] = useState<CategoryFilter>(() => (savedState?.category as CategoryFilter) ?? "all");
-  const [grouped, setGrouped] = useState<boolean>(() => (savedState?.grouped as boolean) ?? false);
   const [viewMode, setViewMode] = useState<ViewMode>(() => (savedState?.viewMode as ViewMode) ?? "card");
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -111,19 +93,17 @@ export default function DocsPageClient() {
 
   useEffect(() => {
     setPage(0);
-  }, [category, grouped, viewMode]);
+  }, [viewMode]);
 
   const scrollSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     saveDocsUIState({
-      category,
-      grouped,
       viewMode,
       page,
       scrollY: scrollYRef.current,
     } as Parameters<typeof saveDocsUIState>[0]);
-  }, [category, grouped, viewMode, page]);
+  }, [viewMode, page]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -131,8 +111,6 @@ export default function DocsPageClient() {
       if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
       scrollSaveTimerRef.current = setTimeout(() => {
         saveDocsUIState({
-          category,
-          grouped,
           viewMode,
           page,
           scrollY: scrollYRef.current,
@@ -144,14 +122,12 @@ export default function DocsPageClient() {
       window.removeEventListener("scroll", onScroll);
       if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
       saveDocsUIState({
-        category,
-        grouped,
         viewMode,
         page,
         scrollY: scrollYRef.current,
       } as Parameters<typeof saveDocsUIState>[0]);
     };
-  }, [category, grouped, viewMode, page]);
+  }, [viewMode, page]);
 
   useLayoutEffect(() => {
     const targetScroll = savedState?.scrollY ?? 0;
@@ -173,18 +149,8 @@ export default function DocsPageClient() {
     requestAnimationFrame(tryScroll);
   }, []);
 
-  const showGroupToggle = category === "commands" || category === "all";
-
   const filteredDocs = useMemo(() => {
     let result = docs;
-
-    if (category !== "all") {
-      if (category === "examples") {
-        result = result.filter((d) => d.category === "examples");
-      } else {
-        result = result.filter((d) => getCategoryBase(d.category) === category);
-      }
-    }
 
     const q = debouncedQuery.trim().toLowerCase();
     if (q) {
@@ -205,48 +171,25 @@ export default function DocsPageClient() {
         return cmpTitle(a, b);
       });
 
-    const sortCommands = (arr: typeof result, grouped: boolean) =>
-      [...arr].sort((a, b) => {
-        if (grouped) {
-          const aT = getCommandType(a.category) ?? "other";
-          const bT = getCommandType(b.category) ?? "other";
-          const aTO = TYPE_ORDER[aT] ?? 99;
-          const bTO = TYPE_ORDER[bT] ?? 99;
-          if (aTO !== bTO) return aTO - bTO;
-        }
-        return cmpTitle(a, b);
-      });
-
-    if (category === "basics") {
-      result = sortBasics(result);
-    } else if (category === "commands") {
-      result = sortCommands(result, grouped);
-    } else if (category === "examples") {
-      result = result.sort((a, b) => {
+    // 按分类分组排序：basics 在前（按编号），commands 按字母，其余按更新时间
+    const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
+    const commandsDocs = result
+      .filter((d) => getCategoryBase(d.category) === "commands")
+      .sort((a, b) => cmpTitle(a, b));
+    const otherDocs = result
+      .filter((d) => {
+        const base = getCategoryBase(d.category);
+        return base !== "basics" && base !== "commands";
+      })
+      .sort((a, b) => {
         const aU = a.updatedAt ?? "";
         const bU = b.updatedAt ?? "";
         if (aU !== bU) return bU.localeCompare(aU);
         return cmpTitle(a, b);
       });
-    } else {
-      const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
-      const commandsDocs = sortCommands(result.filter((d) => getCategoryBase(d.category) === "commands"), grouped);
-      const otherDocs = result
-        .filter((d) => {
-          const base = getCategoryBase(d.category);
-          return base !== "basics" && base !== "commands";
-        })
-        .sort((a, b) => {
-          const aU = a.updatedAt ?? "";
-          const bU = b.updatedAt ?? "";
-          if (aU !== bU) return bU.localeCompare(aU);
-          return a.title.localeCompare(b.title, locale ?? "zh-CN");
-        });
-      result = [...basicsDocs, ...commandsDocs, ...otherDocs];
-    }
 
-    return result;
-  }, [docs, debouncedQuery, category, grouped, locale]);
+    return [...basicsDocs, ...commandsDocs, ...otherDocs];
+  }, [docs, debouncedQuery, locale]);
 
   const isSearching = debouncedQuery.trim().length > 0;
   const totalPages = viewMode === "list" ? 1 : Math.max(1, Math.ceil(filteredDocs.length / PAGE_SIZE_CARD));
@@ -269,43 +212,6 @@ export default function DocsPageClient() {
     return pages;
   }, [totalPages, safePage]);
 
-  const groupedPageDocs = useMemo<DocGroup[] | null>(() => {
-    if (!grouped) return null;
-
-    const groups: DocGroup[] = [];
-    let currentGroup: DocGroup | null = null;
-
-    for (const doc of pageDocs) {
-      const typeKey = getCommandTypeI18nKey(doc.category);
-      const typeLabel = typeKey ? t(typeKey) : undefined;
-
-      if (typeLabel) {
-        if (currentGroup && currentGroup.typeLabel === typeLabel) {
-          currentGroup.items.push(doc);
-        } else {
-          currentGroup = { typeLabel, items: [doc] };
-          groups.push(currentGroup);
-        }
-      } else {
-        if (currentGroup && !currentGroup.typeLabel) {
-          currentGroup.items.push(doc);
-        } else {
-          currentGroup = { items: [doc] };
-          groups.push(currentGroup);
-        }
-      }
-    }
-
-    return groups;
-  }, [pageDocs, grouped, t]);
-
-  const categoryTabs: { key: CategoryFilter; labelKey: string }[] = [
-    { key: "all", labelKey: "doc.filterAll" },
-    { key: "basics", labelKey: "doc.filterBasics" },
-    { key: "commands", labelKey: "doc.filterCommands" },
-    { key: "examples", labelKey: "doc.filterExamples" },
-  ];
-
   return (
     <div className="relative max-w-3xl mx-auto px-5 pt-14 pb-24">
       {/* Top grid pattern — fades out */}
@@ -324,58 +230,8 @@ export default function DocsPageClient() {
         </p>
       </div>
 
-      {/* 分类筛选标签 */}
-      <div className="relative z-20 flex items-center mb-2 tabs-enter">
-        <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
-          {categoryTabs.map((tab) => {
-            const active = category === tab.key;
-            return (
-              <button
-                key={tab.key}
-                onClick={() => setCategory(tab.key)}
-                className={`shrink-0 px-3 h-8 rounded-full text-[13px] font-medium transition-colors
-                  ${active
-                    ? "bg-[var(--color-accent)] text-white shadow-sm"
-                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
-                `}
-              >
-                {t(tab.labelKey)}
-              </button>
-            );
-          })}
-        </div>
-        {/* 工具栏：分组 + 视图切换 */}
-        <div className="flex items-center gap-2">
-          {showGroupToggle && (
-            <button
-              onClick={() => setGrouped((prev) => !prev)}
-              className={`px-2 h-8 inline-flex items-center rounded-lg
-                ${grouped
-                  ? "bg-[var(--color-accent)] text-white border-transparent"
-                  : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
-              `}
-            >
-              <Group className="w-4 h-4" />
-              <span className="ml-1 text-[13px] font-medium hidden s420:block">{t("doc.group")}</span>
-            </button>
-          )}
-
-          <button
-            onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
-            className="px-2 h-8 inline-flex items-center rounded-lg
-              bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
-              border border-[var(--color-border)]
-              hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-              transition-colors"
-          >
-            {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-            <span className="ml-1 text-[13px] font-medium hidden s420:block">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 搜索栏 */}
-      <div className="relative z-10 flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
+      {/* 搜索栏 + 视图切换 */}
+      <div className="relative z-10 flex items-center gap-2 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
           <input
@@ -408,6 +264,16 @@ export default function DocsPageClient() {
             </kbd>
           )}
         </div>
+        <button
+          onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+          className="shrink-0 px-2 h-[42px] inline-flex items-center rounded-lg
+            bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
+            border border-[var(--color-border)]
+            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
+            transition-colors"
+        >
+          {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+        </button>
       </div>
 
       {isSearching && (
@@ -423,30 +289,6 @@ export default function DocsPageClient() {
           </div>
           <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
-      ) : groupedPageDocs ? (
-        <div key={`${debouncedQuery}-${safePage}-${viewMode}-grouped`}>
-          {groupedPageDocs.map((group, gi) => (
-            <div key={gi} className={`${gi > 0 ? "mt-6 " : ""}${viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}`}>
-              {group.typeLabel && (
-                <span className="inline-flex items-center gap-1 text-[18px] text-[var(--color-accent)] shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
-                  {group.typeLabel}
-                </span>
-              )}
-              {group.items.map((doc, i) => (
-                <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
-                  <DocCard
-                    doc={doc}
-                    bookmarked={bookmarks.includes(doc.id)}
-                    onBookmark={handleToggleBookmark}
-                    viewMode={viewMode}
-                    grouped={grouped}
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
       ) : (
         <div
           className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
@@ -459,7 +301,6 @@ export default function DocsPageClient() {
                 bookmarked={bookmarks.includes(doc.id)}
                 onBookmark={handleToggleBookmark}
                 viewMode={viewMode}
-                grouped={grouped}
               />
             </div>
           ))}

@@ -16,6 +16,7 @@ export interface DocMeta {
   tags?: string[];
   author?: string;
   updatedAt?: string;
+  hidden?: boolean;
 }
 
 export interface DocContent {
@@ -71,6 +72,7 @@ function buildMeta(
     author: asString(fm.author),
     updatedAt: asString(fm.updatedAt),
     category: asString(fm.category),
+    hidden: fm.hidden === true,
   };
 }
 
