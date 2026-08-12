@@ -16,7 +16,7 @@ export function ColorThemePluginCard() {
   const { settings, updateSettings } = useSettings();
 
   return (
-    <div className="rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)] overflow-hidden">
+    <div className="rounded-[var(--radius)] border border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)] overflow-hidden">
       <div className="flex items-center gap-3.5 px-4 py-3.5">
         <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--color-accent-muted)] text-[var(--color-accent)]">
           <Palette className="w-[18px] h-[18px]" />

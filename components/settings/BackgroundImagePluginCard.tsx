@@ -52,7 +52,7 @@ export function BackgroundImagePluginCard() {
 
   return (
     <div
-      className={`rounded-lg border transition-[border-color,background-color,opacity] duration-100 ${
+      className={`rounded-[var(--radius)] border transition-[border-color,background-color,opacity] duration-100 ${
         enabled
           ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
           : "border-[var(--color-border)] bg-[var(--color-bg-secondary)]"

@@ -45,7 +45,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
   ) : (
     <Link
       href={`/docs/${doc.id}/`}
-      className="doc-card block group px-4 py-3.5 rounded-xl
+      className="doc-card block group px-4 py-3.5 rounded-[var(--radius-lg)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
         no-underline"

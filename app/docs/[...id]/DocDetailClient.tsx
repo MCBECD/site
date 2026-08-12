@@ -36,7 +36,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   }, [doc.meta.id]);
 
   return (
-    <div className="max-w-3xl mx-auto px-5 pt-8 pb-24">
+    <div className="max-w-3xl mx-auto px-[var(--content-gutter)] pt-8 pb-24">
       <div className="doc-glass-card overflow-hidden detail-enter">
         {/* Top action bar */}
         <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
@@ -108,15 +108,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         <div
           className="px-6 pt-5 pb-8 detail-content-enter
           prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
-          prose-headings:text-[var(--color-text-primary)]
-          prose-p:text-[var(--color-text-secondary)]
-          prose-a:text-[var(--color-accent)] prose-a:no-underline hover:prose-a:underline
-          prose-code:text-[var(--color-accent)]
-          prose-strong:text-[var(--color-text-primary)]
-          prose-li:text-[var(--color-text-secondary)]
-          prose-hr:border-[var(--color-border)]
-          prose-blockquote:border-[var(--color-accent)]
-          prose-blockquote:text-[var(--color-text-secondary)]"
+          prose-a:no-underline hover:prose-a:underline"
         >
           {children}
         </div>

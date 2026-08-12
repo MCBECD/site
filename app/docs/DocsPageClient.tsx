@@ -191,7 +191,7 @@ export default function DocsPageClient() {
   }, [totalPages, safePage]);
 
   return (
-    <div className="relative max-w-3xl mx-auto px-5 pt-14 pb-24">
+    <div className="relative max-w-3xl mx-auto px-[var(--content-gutter)] pt-14 pb-24">
       {/* Top grid pattern — fades out */}
       <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none -z-10" aria-hidden="true" />
 
@@ -271,7 +271,7 @@ export default function DocsPageClient() {
         </div>
       ) : (
         <div
-          className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-card-bg)]"}
+          className={viewMode === "card" ? "space-y-1.5" : "space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-[var(--radius)] overflow-hidden bg-[var(--color-card-bg)]"}
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
           {pageDocs.map((doc, i) => (
