@@ -4,6 +4,7 @@
  */
 import {getHighlighter} from "@/lib/shiki";
 import { CodeBlockClient } from "../CodeBlockClient";
+import { CmdBlockIcon } from "./CmdBlockIcon";
 
 /** Factory for backward-compatible MDX component aliases */
 export function makeCmdBlock(icon: string) {
@@ -19,7 +20,7 @@ export function makeCmdBlock(icon: string) {
     });
 
     return <div className="flex items-center gap-1.5 align-middle">
-        <img src={`/icons/cmd/${icon}.png`} alt="" width={24} height={24} className="cmd-icon shrink-0 mt-2 mr-1" />
+        <CmdBlockIcon type={icon} />
         <CodeBlockClient html={html} code={code} />
       </div>;
   };

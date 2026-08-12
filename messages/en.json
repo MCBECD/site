@@ -3,6 +3,9 @@
     "loading": "Loading...",
     "notFound": "Page Not Found",
     "backToList": "Home",
+    "backToTop": "Back to top",
+    "opensInNewTab": "(opens in new tab)",
+    "cmdIconAlt": "{type} command block",
     "errorTitle": "Something went wrong",
     "errorDesc": "An unexpected error occurred. Please try refreshing the page.",
     "errorRetry": "Retry",
@@ -37,6 +40,7 @@
     "colorBlue": "Blue",
     "colorGreen": "Green",
     "colorCustom": "Custom",
+    "colorCustomPicker": "Pick custom color",
     "pluginBgImage": "Background Image",
     "pluginBgImageDesc": "Add a background image to the page with customizable overlay opacity and blur",
     "bgPreset1": "Cargil 1",
@@ -77,8 +81,15 @@
     "filterExamples": "Examples",
     "viewCards": "Cards",
     "viewList": "List",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "clearSearch": "Clear search",
+    "switchToView": "Switch to {mode}",
     "bookmarksEmpty": "No bookmarks",
     "historyEmpty": "No history"
+  },
+  "cmd": {
+    "iconAlt": "{type} command block"
   },
   "landing": {
     "tagline": "Community-driven Minecraft Bedrock command reference. Every command is verified and ready to copy.",

@@ -46,7 +46,7 @@ export function CommandPreview() {
                 isActive ? "opacity-100" : "opacity-40"
               }`}
             >
-              <span className="text-[var(--color-text-tertiary)]">{"> "}</span>
+              <span aria-hidden="true" className="text-[var(--color-text-tertiary)]">{"> "}</span>
               <span className="text-[var(--color-text-primary)]">{item.cmd}</span>
               {isActive && (
                 <>

@@ -70,18 +70,6 @@
   animation: fadeInUp 0.35s var(--ease-out) 0.06s both;
 }
 
-.bookmarks-enter {
-  animation: fadeInUp 0.3s var(--ease-out) 0.1s both;
-}
-
-.history-enter {
-  animation: fadeInUp 0.3s var(--ease-out) 0.13s both;
-}
-
-.tabs-enter {
-  animation: fadeInUp 0.3s var(--ease-out) 0.16s both;
-}
-
 .search-enter {
   animation: fadeInUp 0.3s var(--ease-out) 0.2s both;
 }

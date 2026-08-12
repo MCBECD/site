@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
+import { useState, useCallback, useEffect } from "react";
+import { SettingsProvider, useSettings, DEFAULT_LOCALE } from "@/contexts/SettingsContext";
 import { ThemeSync } from "@/contexts/ThemeSync";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import { Navbar } from "@/components/Navbar";
@@ -33,8 +33,11 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
 function SettingsAndLocale({ children }: { children: React.ReactNode }) {
   const { settings } = useSettings();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const locale = mounted ? settings.locale : DEFAULT_LOCALE;
   return (
-    <LocaleProvider locale={settings.locale}>
+    <LocaleProvider locale={locale}>
       {children}
     </LocaleProvider>
   );

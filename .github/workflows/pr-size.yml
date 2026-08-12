@@ -1,0 +1,44 @@
+name: PR Size Checker
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  size:
+    name: Check PR Size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check diff size
+        id: diff
+        run: |
+          # 获取变更行数（不含 submodule 差异）
+          LINES_ADDED=$(git diff --diff-filter=ACM --numstat remotes/origin/${{ github.base_ref }}...HEAD | awk '{s+=$1} END {print s+0}')
+          LINES_DELETED=$(git diff --diff-filter=ACM --numstat remotes/origin/${{ github.base_ref }}...HEAD | awk '{s+=$2} END {print s+0}')
+          FILES_CHANGED=$(git diff --diff-filter=ACM --name-only remotes/origin/${{ github.base_ref }}...HEAD | wc -l | tr -d ' ')
+          echo "added=${LINES_ADDED}" >> "$GITHUB_OUTPUT"
+          echo "deleted=${LINES_DELETED}" >> "$GITHUB_OUTPUT"
+          echo "files=${FILES_CHANGED}" >> "$GITHUB_OUTPUT"
+          echo "total=$((LINES_ADDED + LINES_DELETED))" >> "$GITHUB_OUTPUT"
+
+      - name: Comment PR size
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-size
+          message: |
+            ## 📏 PR Size
+            | Metric | Value |
+            |--------|-------|
+            | Files changed | ${{ steps.diff.outputs.files }} |
+            | Lines added | +${{ steps.diff.outputs.added }} |
+            | Lines deleted | -${{ steps.diff.outputs.deleted }} |
+
+      - name: Warn on large PR
+        if: steps.diff.outputs.total > 500
+        run: |
+          echo "::warning title=Large PR::This PR changes ${{ steps.diff.outputs.total }} lines. Consider splitting into smaller PRs for easier review."
