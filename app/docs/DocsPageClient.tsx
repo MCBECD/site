@@ -344,19 +344,13 @@ export default function DocsPageClient() {
   ];
 
   return (
-    <div className="relative max-w-3xl mx-auto px-5 pt-14 pb-24">
-      {/* Top grid pattern — fades out */}
-      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none -z-10" aria-hidden="true" />
-
+    <div className="max-w-3xl mx-auto px-5 pt-14 pb-24">
       {/* Hero */}
-      <div className="mb-10">
-        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
-          {t("nav.docs")}
-        </p>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
-        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
+        <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 hero-sub-enter">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
@@ -419,7 +413,7 @@ export default function DocsPageClient() {
       )}
 
       {/* 分类筛选标签 */}
-      <div className="relative z-20 flex items-center gap-1.5 mb-4 tabs-enter">
+      <div className="relative z-20 flex items-center mb-2 tabs-enter">
         <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
           {categoryTabs.map((tab) => {
             const active = category === tab.key;
@@ -427,7 +421,7 @@ export default function DocsPageClient() {
               <button
                 key={tab.key}
                 onClick={() => setCategory(tab.key)}
-                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all
+                className={`shrink-0 px-3 h-8 rounded-full text-[13px] font-medium transition-colors
                   ${active
                     ? "bg-[var(--color-accent)] text-white shadow-sm"
                     : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
@@ -443,27 +437,27 @@ export default function DocsPageClient() {
           {showGroupToggle && (
             <button
               onClick={() => setGrouped((prev) => !prev)}
-              className={`h-8 px-3 inline-flex items-center gap-1.5 rounded-lg border
+              className={`px-2 h-8 inline-flex items-center rounded-lg
                 ${grouped
                   ? "bg-[var(--color-accent)] text-white border-transparent"
                   : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"}
               `}
             >
               <Group className="w-4 h-4" />
-              <span className="text-[13px] font-medium">{t("doc.group")}</span>
+              <span className="ml-1 text-[13px] font-medium hidden s420:block">{t("doc.group")}</span>
             </button>
           )}
 
           <button
             onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
-            className="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg
+            className="px-2 h-8 inline-flex items-center rounded-lg
               bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
               border border-[var(--color-border)]
               hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
               transition-colors"
           >
             {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
-            <span className="text-[13px] font-medium">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
+            <span className="ml-1 text-[13px] font-medium hidden s420:block">{viewMode === "card" ? t("doc.viewList") : t("doc.viewCards")}</span>
           </button>
         </div>
       </div>
