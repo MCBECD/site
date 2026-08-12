@@ -48,6 +48,11 @@
   transition-duration: 50ms;
   transform: translateY(0);
 }
+.doc-card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-lg);
+}
 
 /* ----------------------------------------------------------
  * Navbar divider
@@ -136,6 +141,10 @@
 .cta-primary:active {
   transform: scale(0.97);
 }
+.cta-primary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
 
 .cta-secondary {
   display: inline-flex;
@@ -164,6 +173,10 @@
 }
 .cta-secondary:active {
   transform: scale(0.97);
+}
+.cta-secondary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 /* ----------------------------------------------------------
