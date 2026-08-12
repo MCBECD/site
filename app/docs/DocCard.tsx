@@ -5,7 +5,7 @@ import { Star, ChevronRight } from "lucide-react";
 import { memo } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
-import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
+import { getCommandTypeI18nKey } from "@/lib/categories";
 import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocCardProps {
@@ -16,10 +16,8 @@ interface DocCardProps {
   grouped: boolean;
 }
 
-const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, grouped }: DocCardProps) { 
+const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, grouped }: DocCardProps) {
   const { t } = useLocale();
-  const categoryKey = getCategoryI18nKey(doc.category);
-  const categoryLabel = categoryKey ? t(categoryKey) : undefined;
   const typeKey = getCommandTypeI18nKey(doc.category);
   const typeLabel = typeKey ? t(typeKey) : undefined;
 
@@ -31,15 +29,15 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, g
       <div className="flex items-center gap-2.5 min-w-0">
         {typeLabel && !grouped && (
           <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)] shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
             {typeLabel}
           </span>
         )}
         <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
-          {...renderTitleWithCode(doc.title)}
+          {renderTitleWithCode(doc.title)}
         </h2>
         {doc.description && (
-          <span className="hidden s480:block text-[12px] text-[var(--color-text-tertiary)] truncate max-w-[40%]">
+          <span className="hidden sm:block text-[12px] text-[var(--color-text-tertiary)] truncate max-w-[40%]">
             {doc.description}
           </span>
         )}
@@ -72,28 +70,23 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, g
           <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-100" />
         </div>
       </div>
-      <div className="flex items-center justify-between gap-3 mt-1">
-        {typeLabel && !grouped ? (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+      <div className="mt-1.5 flex items-center gap-2 text-[11px] text-[var(--color-text-tertiary)]">
+        {typeLabel && !grouped && (
+          <span className="inline-flex items-center gap-1 shrink-0 text-[var(--color-accent)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
             {typeLabel}
           </span>
-        ) : categoryLabel && (
-          <span className="text-[11px] text-[var(--color-text-tertiary)]">{categoryLabel}</span>
         )}
         {doc.description && (
-          <p className="text-xs text-[var(--color-text-tertiary)] line-clamp-1 leading-relaxed flex-1 min-w-0">
+          <p className="truncate leading-relaxed min-w-0">
             {doc.description}
           </p>
         )}
-        <div className="flex items-center gap-2 shrink-0">
-
-          {(doc.author || doc.updatedAt) && (
-            <span className="text-[11px] text-[var(--color-text-tertiary)] tabular-nums">
-              {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
-            </span>
-          )}
-        </div>
+        {(doc.author || doc.updatedAt) && (
+          <span className="shrink-0 tabular-nums ml-auto">
+            {doc.author}{doc.author && doc.updatedAt ? " · " : ""}{doc.updatedAt ?? ""}
+          </span>
+        )}
       </div>
     </Link>
   );
