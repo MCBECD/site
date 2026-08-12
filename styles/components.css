@@ -108,23 +108,6 @@
 }
 
 /* ----------------------------------------------------------
- * Nav link (mid-nav text links)
- * ---------------------------------------------------------- */
-.nav-link {
-  padding: 6px 12px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  transition: color var(--duration-fast) var(--ease-out),
-              background var(--duration-fast) var(--ease-out);
-  text-decoration: none;
-}
-.nav-link:hover {
-  color: var(--color-text-primary);
-  background: var(--color-bg-tertiary);
-}
-
-/* ----------------------------------------------------------
  * Primary / secondary CTA buttons
  * ---------------------------------------------------------- */
 .cta-primary {
@@ -173,22 +156,6 @@
   color: var(--color-text-primary);
   border-color: var(--color-text-tertiary);
   background: var(--color-bg-tertiary);
-}
-
-/* ----------------------------------------------------------
- * Type chip (doc card badge upgrade)
- * ---------------------------------------------------------- */
-.type-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-accent);
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--color-accent-muted);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
 }
 
 /* ----------------------------------------------------------
