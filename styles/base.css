@@ -67,6 +67,4 @@ html {
 
 @theme {
   --breakpoint-s480: 480px;
-  --breakpoint-s420: 420px;
-  --breakpoint-s300: 300px;
 }
