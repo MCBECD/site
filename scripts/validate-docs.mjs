@@ -13,7 +13,7 @@ import path from "node:path";
 
 const DOCS_DIR = path.join(process.cwd(), "content", "docs");
 const REQUIRED_FIELDS = ["title", "description", "author", "updatedAt"];
-const VALID_CATEGORIES = ["intro", "basics", "commands"];
+const VALID_CATEGORIES = ["basics", "commands", "community"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SKIP_FILES = new Set(["README.md", "CONTRIBUTING.md", "LICENSE"]);
 

@@ -18,7 +18,7 @@ export function StatsBar({ docsCount }: StatsBarProps) {
   return (
     <section className="max-w-[var(--landing-max-width)] mx-auto px-[var(--content-gutter)] py-8">
       <div className="landing-stats-enter flex items-center justify-center gap-8 md:gap-16 py-6 border-y border-[var(--color-border)]">
-        {stats.map((stat, i) => (
+        {stats.map((stat) => (
           <div key={stat.label} className="text-center">
             <div className="text-3xl font-bold font-mono tabular-nums text-[var(--color-text-primary)]">
               {stat.value}

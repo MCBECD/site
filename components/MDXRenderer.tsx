@@ -46,7 +46,7 @@ const components = {
     });
     return <CodeBlockClient html={html} code={code} />;
   },
-  a: ({ children, href, className, ...props }: JSX.IntrinsicElements["a"]) =>
+  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
     href && (href.startsWith("http://") || href.startsWith("https://")) ? (
       <ExternalLink
         href={href}

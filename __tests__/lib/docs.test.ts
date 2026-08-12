@@ -39,7 +39,7 @@ describe("docs.ts - Document Engine", () => {
       const docs = getAllDocs();
       for (const doc of docs) {
         if (doc.category) {
-          const validBases = ["basics", "commands", "examples"];
+          const validBases = ["basics", "commands", "community"];
           const base = doc.category.includes("/") ? doc.category.split("/")[0] : doc.category;
           expect(validBases).toContain(base);
         }

@@ -57,7 +57,7 @@ beforeEach(() => {
 describe("ScrollToTop", () => {
   it("renders the scroll-to-top button", () => {
     render(<ScrollToTop />, { wrapper: Wrapper });
-    const btn = screen.getByRole("button", { name: "首页" });
+    const btn = screen.getByRole("button", { name: "回到顶部" });
     expect(btn).toBeInTheDocument();
   });
 

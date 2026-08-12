@@ -54,7 +54,7 @@ function validateMessages(locale: Locale, messages: unknown): void {
   if (validatedLocales.has(locale)) return;
   validatedLocales.add(locale);
 
-  const base = MSG["en"] as Record<string, unknown>;
+  const base = MSG["en"] as unknown as Record<string, unknown>;
   const target = messages as Record<string, unknown>;
   const missing: string[] = [];
 
