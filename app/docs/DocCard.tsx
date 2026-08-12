@@ -13,9 +13,10 @@ interface DocCardProps {
   bookmarked: boolean;
   onBookmark: (e: React.MouseEvent, id: string) => void;
   viewMode: "card" | "list";
+  grouped: boolean;
 }
 
-const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }: DocCardProps) {
+const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, grouped }: DocCardProps) {
   const { t } = useLocale();
   const typeKey = getCommandTypeI18nKey(doc.category);
   const typeLabel = typeKey ? t(typeKey) : undefined;
@@ -26,7 +27,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
       className="block group py-2 no-underline"
     >
       <div className="flex items-center gap-2.5 min-w-0">
-        {typeLabel && (
+        {typeLabel && !grouped && (
           <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)] shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
             {typeLabel}
@@ -70,7 +71,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
         </div>
       </div>
       <div className="mt-1.5 flex items-center gap-2 text-[11px] text-[var(--color-text-tertiary)]">
-        {typeLabel && (
+        {typeLabel && !grouped && (
           <span className="inline-flex items-center gap-1 shrink-0 text-[var(--color-accent)]">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
             {typeLabel}
