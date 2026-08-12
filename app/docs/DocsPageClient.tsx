@@ -361,10 +361,10 @@ export default function DocsPageClient() {
         </p>
       </div>
 
-      {/* 收藏 & 历史 */}
+      {/* bookmarks & history */}
       {(bookmarkedDocs.length > 0 || historyDocs.length > 0) && (
         <div className="mb-6 space-y-3">
-          {/* 收藏 */}
+          {/* bookmarks */}
           {bookmarkedDocs.length > 0 && (
             <div className="bookmarks-enter">
               <CollapsibleSection
@@ -390,7 +390,7 @@ export default function DocsPageClient() {
             </div>
           )}
 
-          {/* 历史 */}
+          {/* history */}
           {historyDocs.length > 0 && (
             <div className="history-enter">
               <CollapsibleSection
@@ -418,7 +418,7 @@ export default function DocsPageClient() {
         </div>
       )}
 
-      {/* 分类筛选标签 */}
+      {/* category tabs */}
       <div className="relative z-20 flex items-center gap-1.5 mb-4 tabs-enter">
         <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none flex-1 min-w-0">
           {categoryTabs.map((tab) => {
@@ -438,7 +438,7 @@ export default function DocsPageClient() {
             );
           })}
         </div>
-        {/* 工具栏：分组 + 视图切换 */}
+        {/* group toggle + view mode */}
         <div className="flex items-center gap-2">
           {showGroupToggle && (
             <button
@@ -468,7 +468,7 @@ export default function DocsPageClient() {
         </div>
       </div>
 
-      {/* 搜索栏 + 工具栏 */}
+      {/* search */}
       <div className="relative z-10 flex flex-col sm:flex-row gap-2.5 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
