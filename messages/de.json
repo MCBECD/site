@@ -75,7 +75,7 @@
     "filterCommands": "Befehle",
     "filterExamples": "Beispiele",
     "group": "Gruppe",
-        "viewCards": "Karten",
+    "viewCards": "Karten",
     "viewList": "Liste",
     "typePlayer": "Spieler",
     "typeWorld": "Welt",
@@ -84,5 +84,34 @@
     "typeUI": "UI",
     "typeAdvanced": "Fortgeschritten",
     "typeOther": "Sonstige"
+  },
+  "landing": {
+    "tagline": "Community-gesteuerte Minecraft Bedrock-Befehlsreferenz. Jeder Befehl ist verifiziert und direkt kopierbar.",
+    "ctaPrimary": "Befehle durchsuchen",
+    "ctaSecondary": "Auf GitHub ansehen",
+    "feature1Title": "Kopieren & Einfügen",
+    "feature1Desc": "Jeder Befehl enthält Syntax, Parameterdetails und Beispiele zum direkten Einfügen in den Chat.",
+    "feature2Title": "Mehrsprachig",
+    "feature2Desc": "Die Oberfläche unterstützt 7 Sprachen, während Befehle in ihrer englischen Originalform bleiben.",
+    "feature3Title": "Anpassbare Designs",
+    "feature3Desc": "4 voreingestellte Farbschemata, Hell/Dunkel-Modi, benutzerdefinierte Hintergründe und Schriftgrößen.",
+    "statCommands": "Befehle",
+    "statLocales": "Sprachen",
+    "statLicense": "Open Source",
+    "cmdGive": "Items geben",
+    "cmdExecute": "Bedingte Ausführung",
+    "cmdTellraw": "Rohtext",
+    "cmdScoreboard": "Anzeigetafel",
+    "ctaSectionTitle": "Bereit?",
+    "ctaSectionDesc": "Von Grundlagen bis fortgeschrittenen Techniken, {count} Befehle warten auf dich.",
+    "ctaSectionButton": "Zur Befehlsbibliothek",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft ist eine Marke von Mojang Studios. Dieses Projekt ist nicht mit Mojang Studios oder Microsoft Corporation verbunden."
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "Die gesuchte Seite existiert nicht oder wurde verschoben. Vielleicht ein Tippfehler im Befehl oder falsche Portal-Koordinaten.",
+    "backHome": "Zurück zur Startseite",
+    "browseDocs": "Befehle durchsuchen"
   }
 }

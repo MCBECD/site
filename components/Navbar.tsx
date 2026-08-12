@@ -23,10 +23,11 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-40 flex items-center h-[var(--navbar-height)] px-5
-        bg-[var(--color-navbar-bg)] backdrop-blur-sm border-b border-[var(--color-border-light)]"
+        bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border-light)]
+        shadow-[var(--shadow-xs)]"
     >
       <Link
-        href="/docs"
+        href="/"
         className="flex items-center gap-2.5 no-underline group min-h-[44px] -ml-1"
       >
         <img
@@ -37,10 +38,23 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
           fetchPriority="high"
           className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-[ring-color] duration-100"
         />
-        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
+        <span className="text-[15px] font-semibold tracking-tight font-mono text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
           MCBECD
         </span>
       </Link>
+
+      {/* Mid-nav links (md+ only) */}
+      <div className="hidden md:flex items-center gap-1 ml-8">
+        <Link href="/docs/" className="nav-link">{t("nav.docs")}</Link>
+        <a
+          href="https://github.com/MCBECD"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-link"
+        >
+          {t("nav.github")}
+        </a>
+      </div>
 
       <div className="flex items-center ml-auto">
         {/* Theme segmented control — simple button group with radiogroup semantics */}
