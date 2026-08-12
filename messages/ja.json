@@ -12,7 +12,8 @@
   },
   "nav": {
     "settings": "設定",
-    "github": "GitHub"
+    "github": "GitHub",
+    "docs": "ドキュメント"
   },
   "settings": {
     "title": "設定",
@@ -84,5 +85,34 @@
     "typeUI": "UI",
     "typeAdvanced": "上級",
     "typeOther": "その他"
+  },
+  "landing": {
+    "tagline": "コミュニティ主導の Minecraft 統合版コマンドリファレンス。各コマンドは検証済みで、すぐにコピーして使えます。",
+    "ctaPrimary": "コマンドを見る",
+    "ctaSecondary": "GitHub で見る",
+    "feature1Title": "コピー＆ペースト",
+    "feature1Desc": "各コマンドに構文、パラメータ説明、チャット欄にそのまま貼り付けられる例が付いています。",
+    "feature2Title": "多言語対応",
+    "feature2Desc": "インターフェースは 7 言語に対応、コマンド自体は元の英語形式のままです。",
+    "feature3Title": "カスタマイズ可能なテーマ",
+    "feature3Desc": "4 つのプリセット配色、ライト/ダークモード、カスタム背景とフォントサイズ。",
+    "statCommands": "コマンド",
+    "statLocales": "言語",
+    "statLicense": "オープンソース",
+    "cmdGive": "アイテム付与",
+    "cmdExecute": "条件付き実行",
+    "cmdTellraw": "生テキスト",
+    "cmdScoreboard": "スコアボード",
+    "ctaSectionTitle": "準備はいいですか？",
+    "ctaSectionDesc": "基礎から上級テクニックまで、{count} 個のコマンドが待っています。",
+    "ctaSectionButton": "コマンドライブラリへ",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft は Mojang Studios の商標です。本プロジェクトは Mojang Studios および Microsoft Corporation とは関係ありません。"
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "アクセスしたページは存在しないか、移動されました。コマンドのスペルミスか、ポータルの座標がずれたのかもしれません。",
+    "backHome": "ホームに戻る",
+    "browseDocs": "コマンドを見る"
   }
 }
