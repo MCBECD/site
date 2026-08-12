@@ -124,8 +124,8 @@ export interface Messages {
 }
 
 /**
- * 生成嵌套对象的点号路径联合类型。
- * 例如 { a: { b: string } } → "a.b"
+ * Generate a dot-path union type from a nested object type.
+ * E.g. { a: { b: string } } → "a.b"
  */
 type DotPath<T, Prefix extends string = ""> = T extends string
   ? Prefix
@@ -135,5 +135,5 @@ type DotPath<T, Prefix extends string = ""> = T extends string
         : DotPath<T[K], `${Prefix}.${K}`>;
     }[keyof T & string];
 
-/** 所有合法的 i18n key 路径，用于 t() 参数类型约束 */
+/** All valid i18n key paths, used as the type constraint for t() parameter */
 export type MessageKey = DotPath<Messages>;

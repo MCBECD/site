@@ -146,7 +146,7 @@ export default function DocsPageClient() {
         return cmpTitle(a, b);
       });
 
-    // 按分类分组排序：basics 在前（按编号），commands 按字母，其余按更新时间
+    // Sort by category groups: basics first (by order number), commands alphabetically, others by update time
     const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
     const commandsDocs = result
       .filter((d) => getCategoryBase(d.category) === "commands")
@@ -205,7 +205,7 @@ export default function DocsPageClient() {
         </p>
       </div>
 
-      {/* 搜索栏 + 视图切换 */}
+      {/* Search bar + view toggle */}
       <div className="relative z-10 flex items-center gap-2 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />

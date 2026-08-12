@@ -38,7 +38,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
   return (
     <div className="max-w-3xl mx-auto px-5 pt-8 pb-24">
       <div className="doc-glass-card overflow-hidden detail-enter">
-        {/* 顶部操作栏 */}
+        {/* Top action bar */}
         <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
           <div className="flex items-center gap-2">
             <Link
@@ -71,7 +71,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
           </div>
         </div>
 
-        {/* 标题 + 元信息 */}
+        {/* Title + metadata */}
         <header className="px-6 pt-6 pb-3">
           <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {...renderTitleWithCode(doc.meta.title, false)}
@@ -104,7 +104,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
           </div>
         </header>
 
-        {/* 文档正文 */}
+        {/* Document body */}
         <div
           className="px-6 pt-5 pb-8 detail-content-enter
           prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed

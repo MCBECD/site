@@ -1,10 +1,10 @@
 /**
- * localStorage 工具 — 统一的客户端存储抽象
+ * localStorage utility — Unified client-side storage abstraction
  *
- * 所有客户端持久化都应通过此模块，确保：
- *   - 统一的 key 前缀（mcbecd-）
- *   - SSR 安全（typeof window 检查）
- *   - 容错（JSON 解析失败返回 fallback）
+ * All client-side persistence should go through this module, ensuring:
+ *   - Unified key prefix (mcbecd-)
+ *   - SSR safety (typeof window check)
+ *   - Fault tolerance (returns fallback on JSON parse failure)
  */
 
 const PREFIX = "mcbecd-";
@@ -13,7 +13,7 @@ function getKey(key: string): string {
   return `${PREFIX}${key}`;
 }
 
-/** 读取并反序列化，失败时移除损坏的 key 并返回 fallback */
+/** Read and deserialize; removes corrupted key and returns fallback on failure */
 export function storageRead<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   const fullKey = getKey(key);
@@ -27,7 +27,7 @@ export function storageRead<T>(key: string, fallback: T): T {
   }
 }
 
-/** 序列化并写入 */
+/** Serialize and write */
 export function storageWrite(key: string, value: unknown): void {
   if (typeof window === "undefined") return;
   try {
@@ -38,7 +38,7 @@ export function storageWrite(key: string, value: unknown): void {
 }
 
 /* ----------------------------------------------------------
- * 收藏 (Bookmarks)
+ * Bookmarks
  * ---------------------------------------------------------- */
 
 const BOOKMARKS_KEY = "bookmarks";
@@ -75,7 +75,7 @@ export function toggleBookmark(id: string): boolean {
 }
 
 /* ----------------------------------------------------------
- * 最近浏览 (Recent History)
+ * Recent History
  * ---------------------------------------------------------- */
 
 const HISTORY_KEY = "history";
@@ -93,11 +93,11 @@ export function getHistory(): HistoryEntry[] {
 
 export function addHistory(id: string, title: string): void {
   const list = getHistory();
-  // 去重：已存在则移到最前
+  // Deduplicate: move existing entry to front
   const idx = list.findIndex((e) => e.id === id);
   if (idx >= 0) list.splice(idx, 1);
   list.unshift({ id, title, ts: Date.now() });
-  // 超过上限裁剪
+  // Trim if exceeding max length
   if (list.length > MAX_HISTORY) list.length = MAX_HISTORY;
   storageWrite(HISTORY_KEY, list);
 }
@@ -114,7 +114,7 @@ export function clearHistory(): void {
 }
 
 /* ----------------------------------------------------------
- * 文档页 UI 状态 (分类筛选、排序、视图、页码、滚动位置)
+ * Docs page UI state (category filter, sort, view, page number, scroll position)
  * ---------------------------------------------------------- */
 
 const DOCS_UI_STATE_KEY = "docs-ui-state";
