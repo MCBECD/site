@@ -68,7 +68,7 @@ export function Navbar({ onOpenSettings }: NavbarProps) {
                   background: isActive
                     ? "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))"
                     : "transparent",
-                  boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                  boxShadow: isActive ? "var(--shadow-sm)" : "none",
                 }}
                 title={t(titleKey)}
                 onClick={() => updateSettings("theme", key)}
