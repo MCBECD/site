@@ -3,11 +3,12 @@
 import { memo } from "react";
 
 /** Generic toggle switch component — supports role="switch" for accessibility */
-export const ToggleSwitch = memo(function ToggleSwitch({ isChecked, onChange }: { isChecked: boolean; onChange: (v: boolean) => void }) {
+export const ToggleSwitch = memo(function ToggleSwitch({ isChecked, onChange, label }: { isChecked: boolean; onChange: (v: boolean) => void; label?: string }) {
   return (
     <button
       role="switch"
       aria-checked={isChecked}
+      aria-label={label}
       onClick={() => onChange(!isChecked)}
       className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 border ${
         isChecked
