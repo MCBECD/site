@@ -31,12 +31,11 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, g
       <div className="flex items-center gap-2.5 min-w-0">
         {typeLabel && !grouped && (
           <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)] shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
             {typeLabel}
           </span>
         )}
         <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
-          {...renderTitleWithCode(doc.title)}
+          {...renderTitleWithCode(doc.title, true)}
         </h2>
         {doc.description && (
           <span className="hidden s480:block text-[12px] text-[var(--color-text-tertiary)] truncate max-w-[40%]">
@@ -55,7 +54,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, g
     >
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-100">
-          {renderTitleWithCode(doc.title)}
+          {...renderTitleWithCode(doc.title, true)}
         </h2>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
@@ -75,7 +74,6 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode, g
       <div className="flex items-center justify-between gap-3 mt-1">
         {typeLabel && !grouped ? (
           <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-accent)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
             {typeLabel}
           </span>
         ) : categoryLabel && (

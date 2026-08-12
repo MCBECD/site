@@ -74,7 +74,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         {/* 标题 + 元信息 */}
         <header className="px-6 pt-6 pb-3">
           <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
-            {renderTitleWithCode(doc.meta.title)}
+            {...renderTitleWithCode(doc.meta.title, false)}
           </h1>
           {doc.meta.description && (
             <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
