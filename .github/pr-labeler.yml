@@ -1,0 +1,54 @@
+# PR Labeler — 按修改文件自动打标签
+docs:
+  - changed-files:
+      - any-glob-to:
+          - "content/docs/**"
+          - "scripts/validate-docs.mjs"
+          - "scripts/new-doc.mjs"
+
+i18n:
+  - changed-files:
+      - any-glob-to:
+          - "messages/**"
+          - "scripts/validate-i18n.mjs"
+          - "contexts/LocaleContext.tsx"
+
+components:
+  - changed-files:
+      - any-glob-to:
+          - "components/**"
+          - "app/**"
+
+styles:
+  - changed-files:
+      - any-glob-to:
+          - "styles/**"
+          - "postcss.config.mjs"
+
+lib:
+  - changed-files:
+      - any-glob-to:
+          - "lib/**"
+
+ci:
+  - changed-files:
+      - any-glob-to:
+          - ".github/**"
+
+tests:
+  - changed-files:
+      - any-glob-to:
+          - "__tests__/**"
+          - "vitest.config.mts"
+          - "vitest.setup.ts"
+
+dependencies:
+  - changed-files:
+      - any-glob-to:
+          - "package.json"
+          - "package-lock.json"
+
+assets:
+  - changed-files:
+      - any-glob-to:
+          - "public/**"
