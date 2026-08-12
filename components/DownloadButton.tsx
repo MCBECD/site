@@ -13,16 +13,20 @@ export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
   const { t } = useLocale();
 
   const handleDownload = useCallback(() => {
-    const content = getContent();
-    const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${filename}.mdx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const content = getContent();
+      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename}.mdx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("[DownloadButton] Failed to trigger download:", err);
+    }
   }, [filename, getContent]);
 
   return (

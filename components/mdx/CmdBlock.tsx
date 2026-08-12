@@ -2,9 +2,9 @@
  * Unified command block icon component.
  * Replaces 7 duplicate Cmd*.tsx files.
  */
-import { getHighlighter } from "@/lib/shiki";
-import { CodeBlockClient } from "@/components/CodeBlockClient";
-import { CmdBlockIcon } from "@/components/mdx/CmdBlockIcon";
+import {getHighlighter} from "@/lib/shiki";
+import { CodeBlockClient } from "../CodeBlockClient";
+import { CmdBlockIcon } from "./CmdBlockIcon";
 
 /** Factory for backward-compatible MDX component aliases */
 export function makeCmdBlock(icon: string) {
@@ -12,16 +12,26 @@ export function makeCmdBlock(icon: string) {
 
     const code = String(children).trim();
 
-    const hl = await getHighlighter();
-    const html = hl.codeToHtml(code, {
-      lang: "mcfunction",
-      themes: { light: "github-light", dark: "github-dark" },
-      defaultColor: false,
-    });
+    try {
+      const hl = await getHighlighter();
+      const html = hl.codeToHtml(code, {
+        lang: "mcfunction",
+        themes: { light: "github-light", dark: "github-dark" },
+        defaultColor: false,
+      });
 
-    return <div className="flex items-center gap-1.5 align-middle">
-        <CmdBlockIcon type={icon} />
-        <CodeBlockClient html={html} code={code} />
-      </div>;
+      return <div className="flex items-center gap-1.5 align-middle">
+          <CmdBlockIcon type={icon} />
+          <CodeBlockClient html={html} code={code} />
+        </div>;
+    } catch (err) {
+      console.error(`[CmdBlock:${icon}] Syntax highlighting failed, rendering plain code:`, err);
+      return <div className="flex items-center gap-1.5 align-middle">
+          <CmdBlockIcon type={icon} />
+          <pre className="p-4 rounded-lg bg-[var(--color-code-bg)] border border-[var(--color-border)] overflow-x-auto">
+            <code>{code}</code>
+          </pre>
+        </div>;
+    }
   };
 }

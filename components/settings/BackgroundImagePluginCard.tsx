@@ -47,6 +47,10 @@ export function BackgroundImagePluginCard() {
         updateSettings("bgImage", reader.result);
       }
     };
+    reader.onerror = () => {
+      console.error("[BackgroundImage] Failed to read uploaded file");
+      setUploadError(true);
+    };
     reader.readAsDataURL(file);
   }, [updateSettings]);
 

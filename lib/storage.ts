@@ -21,7 +21,8 @@ export function storageRead<T>(key: string, fallback: T): T {
     const raw = localStorage.getItem(fullKey);
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
-  } catch {
+  } catch (err) {
+    console.warn(`[storage] Failed to read key: ${fullKey}, removing corrupted entry`, err);
     localStorage.removeItem(fullKey);
     return fallback;
   }
@@ -32,8 +33,12 @@ export function storageWrite(key: string, value: unknown): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(getKey(key), JSON.stringify(value));
-  } catch {
-    // storage full — ignore
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "QuotaExceededError") {
+      console.warn(`[storage] Quota exceeded when writing key: ${key}`);
+    } else {
+      console.error(`[storage] Failed to write key: ${key}`, err);
+    }
   }
 }
 
