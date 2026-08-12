@@ -11,6 +11,7 @@ html {
 body {
   color: var(--color-text-primary);
   background: var(--color-bg-primary);
+  overflow-x: hidden;
 }
 
 code, kbd {
@@ -34,10 +35,22 @@ pre {
   margin-bottom: 0.5rem;
   border-radius: 0.25rem;
   border-left: 3px solid var(--color-accent);
-  word-wrap: break-all;
-  overflow-wrap: break-all;
-  white-space: pre-wrap;
+  overflow-x: auto;
+  white-space: pre;
   min-width: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollable code block wrapper for Shiki output */
+.code-block-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 0.25rem;
+}
+
+.code-block-scroll pre {
+  min-width: fit-content;
+  border-radius: 0;
 }
 
 [style*="--shiki-light"] {
@@ -81,4 +94,20 @@ html {
   --breakpoint-s480: 480px;
   --breakpoint-s420: 420px;
   --breakpoint-s300: 300px;
+}
+
+/* --- Responsive content gutter --- */
+@media (max-width: 374px) {
+  :root {
+    --content-gutter: 16px;
+  }
+}
+
+/* --- Responsive tables in prose --- */
+@media (max-width: 639px) {
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

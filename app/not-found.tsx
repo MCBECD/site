@@ -14,13 +14,13 @@ export default function NotFound() {
         <p className="text-[12px] font-mono text-[var(--color-accent)] cmd-prompt">
           {t("notFound.errorCode")}
         </p>
-        <h1 className="text-7xl md:text-8xl font-bold font-mono tracking-tight text-[var(--color-text-primary)]">
+        <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold font-mono tracking-tight text-[var(--color-text-primary)]">
           404
         </h1>
         <p className="text-[14px] text-[var(--color-text-secondary)] max-w-sm leading-relaxed">
           {t("notFound.description")}
         </p>
-        <div className="flex items-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center gap-3 pt-2">
           <Link href="/" className="cta-primary">
             {t("notFound.backHome")}
           </Link>

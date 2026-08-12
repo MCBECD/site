@@ -23,7 +23,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
   return viewMode === "list" ? (
     <Link
       href={`/docs/${doc.id}/`}
-      className="block group py-2 no-underline"
+      className="block group py-2 min-h-[44px] no-underline"
     >
       <div className="flex items-center gap-2.5 min-w-0">
         {typeLabel && (
@@ -48,7 +48,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
       className="doc-card block group px-4 py-3.5 rounded-[var(--radius-lg)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
-        no-underline"
+        no-underline min-h-[44px]"
     >
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-100">
@@ -57,7 +57,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={(e) => onBookmark(e, doc.id)}
-            className={`w-7 h-7 flex items-center justify-center rounded-md transition-colors duration-100
+            className={`w-11 h-11 flex items-center justify-center rounded-md transition-colors duration-100 -m-2
               ${isBookmarked
                 ? "text-yellow-500"
                 : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-yellow-500"}

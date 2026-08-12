@@ -67,7 +67,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[13px]
+        className="inline-flex items-center gap-1.5 h-11 px-2 rounded-lg text-[13px]
           text-[var(--color-text-secondary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
           transition-colors"

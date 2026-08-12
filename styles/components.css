@@ -113,8 +113,10 @@
 .cta-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  height: 42px;
+  min-height: 44px;
+  height: auto;
   padding: 0 20px;
   font-size: 14px;
   font-weight: 600;
@@ -138,8 +140,10 @@
 .cta-secondary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  height: 42px;
+  min-height: 44px;
+  height: auto;
   padding: 0 20px;
   font-size: 14px;
   font-weight: 500;
