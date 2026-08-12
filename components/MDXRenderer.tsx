@@ -4,7 +4,7 @@ import type { JSX, ReactNode } from "react";
 import { Suspense, isValidElement } from "react";
 import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
-import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
+import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
@@ -134,7 +134,8 @@ export function MDXRenderer({ source }: { source: string }) {
         components={components}
         options={{
           mdxOptions: {
-            remarkPlugins: [remarkGfm, remarkGithubAlerts],
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [rehypeGithubAlerts],
           },
         }}
       />
