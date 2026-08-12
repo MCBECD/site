@@ -62,7 +62,7 @@ export function CodeBlockClient({ html, code }: CodeBlockClientProps) {
   );
 
   return (
-    <div>
+    <div className="code-block-scroll">
       {/*
         Security note: dangerouslySetInnerHTML is safe here because `html` is produced
         exclusively by Shiki's codeToHtml(), which escapes all HTML entities in the code

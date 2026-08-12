@@ -13,7 +13,7 @@ export function CTASection({ docsCount }: CTASectionProps) {
 
   return (
     <section className="max-w-[var(--landing-max-width)] mx-auto px-[var(--content-gutter)] py-20 text-center">
-      <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[var(--color-text-primary)] mb-3">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--color-text-primary)] mb-3">
         {t("landing.ctaSectionTitle")}
       </h2>
       <p className="text-[14px] text-[var(--color-text-tertiary)] max-w-md mx-auto leading-relaxed mb-8">

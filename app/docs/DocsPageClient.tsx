@@ -200,7 +200,7 @@ export function DocsPageClient() {
         <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
           {t("nav.docs")}
         </p>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
         <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
@@ -246,7 +246,7 @@ export function DocsPageClient() {
         <button
           onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
           aria-label={t("doc.switchToView", { mode: viewMode === "card" ? t("doc.viewList") : t("doc.viewCards") })}
-          className="shrink-0 px-2 h-[42px] inline-flex items-center rounded-lg
+          className="shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-lg
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]

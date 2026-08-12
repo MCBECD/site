@@ -39,7 +39,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
     <div className="max-w-3xl mx-auto px-[var(--content-gutter)] pt-8 pb-24">
       <div className="doc-glass-card overflow-hidden detail-enter">
         {/* Top action bar */}
-        <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
+        <div className="flex items-center justify-between h-12 px-3 sm:px-5 border-b border-[var(--color-border-light)]">
           <div className="flex items-center gap-2">
             <Link
               href="/docs/"
@@ -51,10 +51,10 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
             </Link>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
               onClick={handleToggleBookmark}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg
+              className={`w-11 h-11 flex items-center justify-center rounded-lg
                 ${bookmarked
                   ? "text-yellow-500"
                   : "text-[var(--color-text-tertiary)] hover:text-yellow-500"
@@ -72,8 +72,8 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
         </div>
 
         {/* Title + metadata */}
-        <header className="px-6 pt-6 pb-3">
-          <h1 className="text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
+        <header className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
+          <h1 className="text-[20px] sm:text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
             {...renderTitleWithCode(doc.meta.title, false)}
           </h1>
           {doc.meta.description && (
@@ -106,7 +106,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
 
         {/* Document body */}
         <div
-          className="px-6 pt-5 pb-8 detail-content-enter
+          className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter
           prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
           prose-a:no-underline hover:prose-a:underline"
         >

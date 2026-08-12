@@ -39,7 +39,7 @@ export function DownloadButton({ filename, getContent }: DownloadButtonProps) {
   return (
     <button
       onClick={handleDownload}
-      className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-[var(--radius)] text-[13px]
+      className="inline-flex items-center gap-1.5 h-11 px-2 rounded-[var(--radius)] text-[13px]
         text-[var(--color-text-secondary)]
         hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
         transition-colors"
