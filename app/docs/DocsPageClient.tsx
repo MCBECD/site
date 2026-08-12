@@ -224,6 +224,7 @@ export default function DocsPageClient() {
           {query ? (
             <button
               onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
+              aria-label={t("doc.clearSearch")}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-10
                 flex items-center justify-center rounded-md
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
@@ -241,6 +242,7 @@ export default function DocsPageClient() {
         </div>
         <button
           onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+          aria-label={t("doc.switchToView", { mode: viewMode === "card" ? t("doc.viewList") : t("doc.viewCards") })}
           className="shrink-0 px-2 h-[42px] inline-flex items-center rounded-lg
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]

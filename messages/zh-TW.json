@@ -3,6 +3,9 @@
     "loading": "載入中...",
     "notFound": "頁面未找到",
     "backToList": "首頁",
+    "backToTop": "回到頂部",
+    "opensInNewTab": "（在新分頁中開啟）",
+    "cmdIconAlt": "{type} 命令方塊",
     "errorTitle": "錯誤",
     "errorDesc": "頁面遇到意外錯誤，請嘗試重新整理。",
     "errorRetry": "重試",
@@ -37,6 +40,7 @@
     "colorBlue": "藍",
     "colorGreen": "綠",
     "colorCustom": "自訂",
+    "colorCustomPicker": "選擇自訂顏色",
     "pluginBgImage": "背景圖片",
     "pluginBgImageDesc": "為頁面添加背景圖片，可自訂遮罩透明度和模糊度",
     "bgPreset1": "Cargil 1",
@@ -77,8 +81,15 @@
     "filterExamples": "範例",
     "viewCards": "卡片",
     "viewList": "列表",
+    "previousPage": "上一頁",
+    "nextPage": "下一頁",
+    "clearSearch": "清除搜尋",
+    "switchToView": "切換為{mode}",
     "bookmarksEmpty": "暫無收藏",
     "historyEmpty": "暫無瀏覽記錄"
+  },
+  "cmd": {
+    "iconAlt": "{type} 命令方塊"
   },
   "landing": {
     "tagline": "社群驅動的 Minecraft 基岩版命令參考，每條命令都經過驗證，可直接複製使用。",

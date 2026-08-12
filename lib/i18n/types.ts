@@ -17,6 +17,9 @@ export interface Messages {
     loading: string;
     notFound: string;
     backToList: string;
+    backToTop: string;
+    opensInNewTab: string;
+    cmdIconAlt: string;
     errorTitle: string;
     errorDesc: string;
     errorRetry: string;
@@ -51,6 +54,7 @@ export interface Messages {
     colorBlue: string;
     colorGreen: string;
     colorCustom: string;
+    colorCustomPicker: string;
     pluginBgImage: string;
     pluginBgImageDesc: string;
     bgPreset1: string;
@@ -91,6 +95,13 @@ export interface Messages {
     filterExamples: string;
     viewCards: string;
     viewList: string;
+    previousPage: string;
+    nextPage: string;
+    clearSearch: string;
+    switchToView: string;
+  };
+  cmd: {
+    iconAlt: string;
   };
   landing: {
     tagline: string;

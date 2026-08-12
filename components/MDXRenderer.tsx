@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
+import { ExternalLink } from "./ExternalLink";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
 
@@ -45,17 +46,15 @@ const components = {
     });
     return <CodeBlockClient html={html} code={code} />;
   },
-  a: ({ children, href, ...props }: JSX.IntrinsicElements["a"]) =>
+  a: ({ children, href, className, ...props }: JSX.IntrinsicElements["a"]) =>
     href && (href.startsWith("http://") || href.startsWith("https://")) ? (
-      <a
+      <ExternalLink
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
         className="text-[var(--color-accent)] underline underline-offset-2 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)]"
         {...props}
       >
         {children}
-      </a>
+      </ExternalLink>
     ) : (
       <Link
         href={href ?? ""}
