@@ -75,7 +75,7 @@
     "filterCommands": "命令",
     "filterExamples": "範例",
     "group": "分組",
-        "viewCards": "卡片",
+    "viewCards": "卡片",
     "viewList": "列表",
     "typePlayer": "玩家",
     "typeWorld": "世界",
@@ -84,5 +84,34 @@
     "typeUI": "介面",
     "typeAdvanced": "進階",
     "typeOther": "其他"
+  },
+  "landing": {
+    "tagline": "社群驅動的 Minecraft 基岩版命令參考，每條命令都經過驗證，可直接複製使用。",
+    "ctaPrimary": "瀏覽命令庫",
+    "ctaSecondary": "在 GitHub 查看",
+    "feature1Title": "即用即複製",
+    "feature1Desc": "每條命令都附帶語法、參數說明和可直接貼上到聊天欄的範例。",
+    "feature2Title": "多語種文件",
+    "feature2Desc": "介面支援 7 種語言，命令本身保持原始英文形式。",
+    "feature3Title": "可自訂主題",
+    "feature3Desc": "4 套預設色板、亮暗雙模式、自訂背景與字體大小。",
+    "statCommands": "條命令",
+    "statLocales": "種語言",
+    "statLicense": "開源協議",
+    "cmdGive": "給予物品",
+    "cmdExecute": "條件執行",
+    "cmdTellraw": "原始文字",
+    "cmdScoreboard": "記分板",
+    "ctaSectionTitle": "準備好了嗎？",
+    "ctaSectionDesc": "從基礎命令到進階技巧，{count} 條命令等你探索。",
+    "ctaSectionButton": "進入命令庫",
+    "footerCopyright": "© 2024-2026 MCBECD",
+    "footerDisclaimer": "Minecraft 是 Mojang Studios 的商標。本專案與 Mojang Studios 或 Microsoft Corporation 無關。"
+  },
+  "notFound": {
+    "errorCode": "ERROR_404",
+    "description": "你造訪的頁面不存在，或已被移動。可能是命令拼寫錯誤，也可能是傳送門座標失效。",
+    "backHome": "返回首頁",
+    "browseDocs": "瀏覽命令庫"
   }
 }
