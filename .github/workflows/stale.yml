@@ -1,0 +1,45 @@
+name: Stale
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # 每天 UTC 03:00 (UTC+8 11:00)
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: Mark Stale
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 30
+          days-before-close: 14
+          stale-issue-label: "stale"
+          stale-pr-label: "stale"
+          stale-issue-message: |
+            这个 issue 已经 30 天没有活动了。如果它仍然相关，请回复以保持开放。
+            如果不再需要，它将在 14 天后自动关闭。
+
+            This issue has been inactive for 30 days. If it's still relevant, please comment to keep it open. It will be auto-closed in 14 days if no activity occurs.
+          stale-pr-message: |
+            这个 PR 已经 30 天没有活动了。如果仍在进行中，请推送新 commit 以保持开放。
+            如果不再需要，它将在 14 天后自动关闭。
+
+            This PR has been inactive for 30 days. If you're still working on it, please push a commit to keep it open. It will be auto-closed in 14 days if no activity occurs.
+          close-issue-message: |
+            由于没有活动，此 issue 已自动关闭。如需重新开放，请随时回复。
+
+            This issue was auto-closed due to inactivity. Feel free to reopen if needed.
+          close-pr-message: |
+            由于没有活动，此 PR 已自动关闭。如需继续工作，请随时重新开放。
+
+            This PR was auto-closed due to inactivity. Feel free to reopen if needed.
+          exempt-issue-labels: "pinned,security,good first issue,help wanted"
+          exempt-pr-labels: "pinned,security,work-in-progress"
+          remove-stale-on-updates: true
+          # 不标记 Dependabot 的 PR
+          exempt-author: "dependabot[bot]"

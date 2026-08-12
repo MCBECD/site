@@ -12,12 +12,12 @@ function resolveTheme(theme: Theme): "light" | "dark" {
 }
 
 /**
- * ThemeSync — 将 SettingsContext 中的 theme 设置同步到 DOM。
+ * ThemeSync — Syncs the theme setting from SettingsContext to the DOM.
  *
- * 职责单一：只负责 dark class 和 color-scheme 的 DOM 操作，
- * 以及监听系统主题变化（当用户选择 "system" 时）。
+ * Single responsibility: only handles dark class and color-scheme DOM manipulation,
+ * and listens for system theme changes (when user selects "system").
  *
- * 不是 Context Provider，只是一个副作用组件。
+ * Not a Context Provider, just a side-effect component.
  */
 export function ThemeSync({ children }: { children: ReactNode }) {
   const { settings } = useSettings();

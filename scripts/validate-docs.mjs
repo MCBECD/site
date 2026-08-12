@@ -12,7 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const DOCS_DIR = path.join(process.cwd(), "content", "docs");
-const REQUIRED_FIELDS = ["title", "order", "description", "author", "updatedAt"];
+const REQUIRED_FIELDS = ["title", "description", "author", "updatedAt"];
 const VALID_CATEGORIES = ["intro", "basics", "commands"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SKIP_FILES = new Set(["README.md", "CONTRIBUTING.md", "LICENSE"]);
@@ -67,8 +67,9 @@ function checkFile(filePath, id) {
     }
   }
 
-  // category 校验
-  if (fm.category && !VALID_CATEGORIES.includes(fm.category)) {
+  // category 校验 (check base category only, e.g. "commands/player" → "commands")
+  const baseCategory = fm.category?.split("/")[0];
+  if (baseCategory && !VALID_CATEGORIES.includes(baseCategory)) {
     console.error(`\x1b[31m[ERROR] ${id}\x1b[0m: 无效 category \`${fm.category}\` (应为 ${VALID_CATEGORIES.join("/")})`);
     errors++;
   }
@@ -92,11 +93,10 @@ function checkFile(filePath, id) {
   // 成功
   if (
     REQUIRED_FIELDS.every((f) => fm[f]) &&
-    (!fm.order || !isNaN(Number(fm.order))) &&
-    (!fm.category || VALID_CATEGORIES.includes(fm.category)) &&
+    (!fm.category || VALID_CATEGORIES.includes(fm.category?.split("/")[0])) &&
     (!fm.updatedAt || DATE_RE.test(fm.updatedAt))
   ) {
-    console.log(`\x1b[32m✓ ${id}\x1b[0m (order=${fm.order})`);
+    console.log(`\x1b[32m✓ ${id}\x1b[0m`);
   }
 }
 

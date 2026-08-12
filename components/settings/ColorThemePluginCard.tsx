@@ -59,6 +59,7 @@ export function ColorThemePluginCard() {
                   updateSettings("customColor", e.target.value);
                   if (settings.colorTheme !== "custom") updateSettings("colorTheme", "custom");
                 }}
+                aria-label={t("settings.colorCustomPicker")}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
               <span className="w-full h-full block rounded-full" style={{ background: settings.customColor }} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X, Command, LayoutList, List } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -95,45 +95,20 @@ export default function DocsPageClient() {
     setPage(0);
   }, [viewMode]);
 
-  const scrollSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => {
-    saveDocsUIState({
-      viewMode,
-      page,
-      scrollY: scrollYRef.current,
-    } as Parameters<typeof saveDocsUIState>[0]);
-  }, [viewMode, page]);
-
   useEffect(() => {
     const onScroll = () => {
       scrollYRef.current = window.scrollY;
-      if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
-      scrollSaveTimerRef.current = setTimeout(() => {
-        saveDocsUIState({
-          viewMode,
-          page,
-          scrollY: scrollYRef.current,
-        } as Parameters<typeof saveDocsUIState>[0]);
-      }, 200);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      if (scrollSaveTimerRef.current) clearTimeout(scrollSaveTimerRef.current);
       saveDocsUIState({
         viewMode,
         page,
         scrollY: scrollYRef.current,
-      } as Parameters<typeof saveDocsUIState>[0]);
+      });
     };
   }, [viewMode, page]);
-
-  useLayoutEffect(() => {
-    const targetScroll = savedState?.scrollY ?? 0;
-    if (targetScroll <= 0) return;
-    window.scrollTo(0, targetScroll);
-  }, []);
 
   useEffect(() => {
     const targetScroll = savedState?.scrollY ?? 0;
@@ -171,7 +146,7 @@ export default function DocsPageClient() {
         return cmpTitle(a, b);
       });
 
-    // 按分类分组排序：basics 在前（按编号），commands 按字母，其余按更新时间
+    // Sort by category groups: basics first (by order number), commands alphabetically, others by update time
     const basicsDocs = sortBasics(result.filter((d) => getCategoryBase(d.category) === "basics"));
     const commandsDocs = result
       .filter((d) => getCategoryBase(d.category) === "commands")
@@ -230,7 +205,7 @@ export default function DocsPageClient() {
         </p>
       </div>
 
-      {/* 搜索栏 + 视图切换 */}
+      {/* Search bar + view toggle */}
       <div className="relative z-10 flex items-center gap-2 mb-6 search-enter">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none z-10" />
@@ -248,7 +223,8 @@ export default function DocsPageClient() {
           />
           {query ? (
             <button
-              onClick={() => { setQuery(""); setDebouncedQuery(""); }}
+              onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
+              aria-label={t("doc.clearSearch")}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-10
                 flex items-center justify-center rounded-md
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
@@ -266,6 +242,7 @@ export default function DocsPageClient() {
         </div>
         <button
           onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+          aria-label={t("doc.switchToView", { mode: viewMode === "card" ? t("doc.viewList") : t("doc.viewCards") })}
           className="shrink-0 px-2 h-[42px] inline-flex items-center rounded-lg
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]

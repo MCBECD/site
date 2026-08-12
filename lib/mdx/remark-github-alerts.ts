@@ -15,7 +15,7 @@ import { visit } from "unist-util-visit";
 
 const ALERT_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)/i;
 
-export const ALERT_META: Record<string, { className: string; defaultTitle: string }> = {
+const ALERT_META: Record<string, { className: string; defaultTitle: string }> = {
   NOTE:      { className: "gh-alert-note",      defaultTitle: "Note" },
   TIP:       { className: "gh-alert-tip",       defaultTitle: "Tip" },
   IMPORTANT: { className: "gh-alert-important", defaultTitle: "Important" },

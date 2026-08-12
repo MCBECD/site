@@ -22,7 +22,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
 
   return viewMode === "list" ? (
     <Link
-      href={`/docs/${doc.id}`}
+      href={`/docs/${doc.id}/`}
       className="block group py-2 no-underline"
     >
       <div className="flex items-center gap-2.5 min-w-0">
@@ -44,7 +44,7 @@ const DocCard = memo(function DocCard({ doc, bookmarked, onBookmark, viewMode }:
     </Link>
   ) : (
     <Link
-      href={`/docs/${doc.id}`}
+      href={`/docs/${doc.id}/`}
       className="doc-card block group px-4 py-3.5 rounded-xl
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]

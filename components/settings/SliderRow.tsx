@@ -12,6 +12,7 @@ export function SliderRow({ label, value, onChange, max = 100 }: {
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={label}
         className="flex-1 h-1.5 accent-[var(--color-accent)]"
       />
       <span className="text-[11px] text-[var(--color-text-tertiary)] w-8 text-right tabular-nums">{value}</span>

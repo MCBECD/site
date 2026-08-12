@@ -1,8 +1,8 @@
 /**
- * 颜色调色板引擎 — 从主色推导完整 CSS 变量集
+ * Color palette engine — Derives a complete CSS variable set from a primary color
  *
- * 纯函数，无副作用，可独立测试。
- * 支持亮/暗两套色板自动切换。
+ * Pure functions, no side effects, independently testable.
+ * Supports automatic light/dark palette switching.
  */
 
 export function hexToHSL(hex: string): [number, number, number] {
@@ -43,7 +43,7 @@ const CUSTOM_VARS = [
   "--color-toast-bg",
 ] as const;
 
-/** 清除所有自定义色盘 CSS 变量 */
+/** Clear all custom palette CSS variables */
 export function clearCustomPalette(el: HTMLElement): void {
   for (const v of CUSTOM_VARS) {
     el.style.removeProperty(v);
@@ -55,7 +55,7 @@ export interface Palette {
   dark: Record<string, string>;
 }
 
-/** 从主色推导完整亮/暗调色板（纯计算，不操作 DOM） */
+/** Derive a complete light/dark palette from the primary color (pure computation, no DOM manipulation) */
 export function generatePalette(hex: string): Palette {
   const [h, s] = hexToHSL(hex);
   const sc = s * 0.4;
@@ -107,7 +107,7 @@ export function generatePalette(hex: string): Palette {
   };
 }
 
-/** 将调色板应用到 DOM 元素 */
+/** Apply the palette to a DOM element */
 export function applyPalette(el: HTMLElement, palette: Record<string, string>): void {
   for (const [key, value] of Object.entries(palette)) {
     el.style.setProperty(key, value);

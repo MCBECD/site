@@ -3,6 +3,9 @@
     "loading": "Laden...",
     "notFound": "Seite nicht gefunden",
     "backToList": "Startseite",
+    "backToTop": "Nach oben",
+    "opensInNewTab": "(öffnet in neuem Tab)",
+    "cmdIconAlt": "{type}-Befehlsblock",
     "errorTitle": "Fehler",
     "errorDesc": "Ein unerwarteter Fehler ist aufgetreten. Bitte laden Sie die Seite neu.",
     "errorRetry": "Erneut versuchen",
@@ -37,6 +40,7 @@
     "colorBlue": "Blau",
     "colorGreen": "Grün",
     "colorCustom": "Benutzerdefiniert",
+    "colorCustomPicker": "Benutzerdefinierte Farbe wählen",
     "pluginBgImage": "Hintergrundbild",
     "pluginBgImageDesc": "Hintergrundbild zur Seite hinzufügen mit einstellbarer Überlagerungsdeckkraft und Unschärfe",
     "bgPreset1": "Cargil 1",
@@ -77,8 +81,15 @@
     "filterExamples": "Beispiele",
     "viewCards": "Karten",
     "viewList": "Liste",
+    "previousPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite",
+    "clearSearch": "Suche löschen",
+    "switchToView": "Wechseln zu {mode}",
     "bookmarksEmpty": "Keine Lesezeichen",
     "historyEmpty": "Kein Verlauf"
+  },
+  "cmd": {
+    "iconAlt": "{type}-Befehlsblock"
   },
   "landing": {
     "tagline": "Community-gesteuerte Minecraft Bedrock-Befehlsreferenz. Jeder Befehl ist verifiziert und direkt kopierbar.",
