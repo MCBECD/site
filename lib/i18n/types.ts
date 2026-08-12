@@ -89,20 +89,8 @@ export interface Messages {
     filterBasics: string;
     filterCommands: string;
     filterExamples: string;
-    sortByName: string;
-    sortByType: string;
-    group: string;
-    sortByUpdated: string;
-    viewMode: string;
     viewCards: string;
     viewList: string;
-    typePlayer: string;
-    typeWorld: string;
-    typeBuilding: string;
-    typeEntity: string;
-    typeUI: string;
-    typeAdvanced: string;
-    typeOther: string;
   };
   landing: {
     tagline: string;

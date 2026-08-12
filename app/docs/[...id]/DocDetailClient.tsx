@@ -42,7 +42,7 @@ export function DocDetailClient({ doc, rawContent, children }: Props) {
         <div className="flex items-center justify-between h-12 px-5 border-b border-[var(--color-border-light)]">
           <div className="flex items-center gap-2">
             <Link
-              href="/docs"
+              href="/docs/"
               className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
                 hover:text-[var(--color-accent)] transition-colors duration-100 no-underline min-h-[44px]"
             >

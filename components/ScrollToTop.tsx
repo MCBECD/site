@@ -32,7 +32,7 @@ export function ScrollToTop() {
       <button
         type="button"
         onClick={scrollToTop}
-        aria-label={t("doc.home")}
+        aria-label="Back to top"
         className={[
           "fixed bottom-6 right-6 z-[45]",
           "w-11 h-11 rounded-full",

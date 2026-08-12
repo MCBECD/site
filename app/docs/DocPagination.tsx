@@ -1,3 +1,5 @@
+"use client";
+
 import { memo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -39,6 +41,7 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
       <button
         onClick={() => onPageChange(Math.max(0, page - 1))}
         disabled={page === 0}
+        aria-label="Previous page"
         className="w-9 h-9 flex items-center justify-center rounded-lg
           text-[var(--color-text-tertiary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]
@@ -60,6 +63,7 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
       <button
         onClick={() => onPageChange(Math.min(totalPages - 1, page + 1))}
         disabled={page === totalPages - 1}
+        aria-label="Next page"
         className="w-9 h-9 flex items-center justify-center rounded-lg
           text-[var(--color-text-tertiary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]

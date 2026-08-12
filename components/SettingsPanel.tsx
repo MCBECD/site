@@ -84,6 +84,16 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
 
   useEffect(() => { if (open) setTab("general"); }, [open]);
 
+  // Escape key to close modal
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open, handleClose]);
+
   if (!open && !closing) return null;
 
   const panelAnim = closing ? "settings-panel-out" : "settings-panel-in";
@@ -108,7 +118,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
               className="w-8 h-8 flex items-center justify-center -mr-1 rounded-[var(--radius)]
                 text-[var(--color-text-tertiary)]
                 hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-              aria-label={t("common.backToList")}
+              aria-label={t("settings.title")}
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -203,7 +213,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                       {bookmarkedDocs.map((doc) => (
                         <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
                           <Link
-                            href={`/docs/${doc.id}`}
+                            href={`/docs/${doc.id}/`}
                             className="flex items-center gap-2 flex-1 min-w-0 no-underline"
                             onClick={handleClose}
                           >
@@ -250,7 +260,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
                       {historyDocs.slice(0, 8).map((doc) => (
                         <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
                           <Link
-                            href={`/docs/${doc.id}`}
+                            href={`/docs/${doc.id}/`}
                             className="flex items-center gap-2 flex-1 min-w-0 no-underline"
                             onClick={handleClose}
                           >

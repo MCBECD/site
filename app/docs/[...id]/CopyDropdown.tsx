@@ -15,6 +15,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
   const [toastMsg, setToastMsg] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -31,11 +32,16 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: Props) {
   }, []);
 
   const doCopy = useCallback(async (text: string, label: string) => {
-    await navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // clipboard API unavailable
+    }
+    if (copiedTimer.current) clearTimeout(copiedTimer.current);
     setCopied(true);
     setOpen(false);
     showToast(label);
-    setTimeout(() => setCopied(false), 2000);
+    copiedTimer.current = setTimeout(() => setCopied(false), 2000);
   }, [showToast]);
 
   const plainText = rawContent

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 import { ThemeSync } from "@/contexts/ThemeSync";
 import { LocaleProvider } from "@/contexts/LocaleContext";
@@ -33,8 +33,11 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
 function SettingsAndLocale({ children }: { children: React.ReactNode }) {
   const { settings } = useSettings();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const locale = mounted ? settings.locale : "zh-CN";
   return (
-    <LocaleProvider locale={settings.locale}>
+    <LocaleProvider locale={locale}>
       {children}
     </LocaleProvider>
   );

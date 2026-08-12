@@ -102,7 +102,7 @@ export default function DocsPageClient() {
       viewMode,
       page,
       scrollY: scrollYRef.current,
-    } as Parameters<typeof saveDocsUIState>[0]);
+    });
   }, [viewMode, page]);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function DocsPageClient() {
           viewMode,
           page,
           scrollY: scrollYRef.current,
-        } as Parameters<typeof saveDocsUIState>[0]);
+        });
       }, 200);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -125,7 +125,7 @@ export default function DocsPageClient() {
         viewMode,
         page,
         scrollY: scrollYRef.current,
-      } as Parameters<typeof saveDocsUIState>[0]);
+      });
     };
   }, [viewMode, page]);
 
@@ -248,7 +248,7 @@ export default function DocsPageClient() {
           />
           {query ? (
             <button
-              onClick={() => { setQuery(""); setDebouncedQuery(""); }}
+              onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-10
                 flex items-center justify-center rounded-md
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]

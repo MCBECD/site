@@ -117,9 +117,6 @@ export function clearHistory(): void {
 const DOCS_UI_STATE_KEY = "docs-ui-state";
 
 export interface DocsUIState {
-  category: string;
-  bookmarksCollapsed: boolean;
-  historyCollapsed: boolean;
   viewMode: string;
   page: number;
   scrollY: number;
