@@ -118,7 +118,6 @@
 /* Staggered entrance */
 .landing-hero-enter     { animation: heroFadeInUp var(--duration-hero) var(--ease-out) both; }
 .landing-sub-enter      { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 1) both; }
-.landing-cta-enter      { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }
-.landing-feature-enter  { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 3) both; }
-.landing-stats-enter    { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 4) both; }
-.landing-terminal-enter { animation: fadeIn var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }
+.landing-cta-enter      { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 1) both; }
+.landing-feature-enter  { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }
+.landing-stats-enter    { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }

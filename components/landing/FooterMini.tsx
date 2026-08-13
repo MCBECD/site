@@ -8,7 +8,7 @@ export const FooterMini = memo(function FooterMini() {
 
   return (
     <footer className="max-w-[var(--landing-max-width)] mx-auto px-[var(--content-gutter)] py-12 border-t border-[var(--color-border)]">
-      <p className="text-[12px] text-[var(--color-text-tertiary)] font-mono">
+      <p className="text-[12px] text-[var(--color-text-tertiary)]">
         {t("landing.footerCopyright")}
       </p>
       <p className="text-[11px] text-[var(--color-text-tertiary)] mt-2 max-w-lg leading-relaxed">
