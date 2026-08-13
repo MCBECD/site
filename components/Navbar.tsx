@@ -4,7 +4,6 @@ import { memo, useMemo, useCallback, useRef } from "react";
 import { Sun, Moon, Monitor, Settings } from "lucide-react";
 import { GithubIcon } from "@/components/icons/GithubIcon";
 import Link from "next/link";
-import Image from "next/image";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -67,12 +66,11 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
         href="/docs/"
         className="flex items-center gap-2.5 no-underline group min-h-[44px] min-w-[44px] -ml-1"
       >
-        <Image
+        <img
           src="/Logo.png"
           alt="MCBECD"
           width={28}
           height={28}
-          priority
           className="rounded-[var(--radius-sm)]"
         />
         <span className="hidden sm:inline text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
