@@ -4,6 +4,7 @@ import { memo, useMemo, useCallback, useRef } from "react";
 import { Sun, Moon, Monitor, Settings } from "lucide-react";
 import { GithubIcon } from "@/components/icons/GithubIcon";
 import Link from "next/link";
+import Image from "next/image";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -64,15 +65,15 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
       {/* Left: logo */}
       <Link
         href="/docs/"
-        className="flex items-center gap-2 no-underline group min-h-[44px] min-w-[44px] -ml-1"
+        className="flex items-center gap-2.5 no-underline group min-h-[44px] min-w-[44px] -ml-1"
       >
-        <img
-          src="https://avatars.githubusercontent.com/u/312049267?s=64"
+        <Image
+          src="/Logo.png"
           alt="MCBECD"
-          width={30}
-          height={30}
-          fetchPriority="high"
-          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-[ring-color] duration-100"
+          width={28}
+          height={28}
+          priority
+          className="rounded-[var(--radius-sm)]"
         />
         <span className="hidden sm:inline text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
           MCBECD
@@ -80,7 +81,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
       </Link>
 
       {/* Right: controls */}
-      <div className="flex items-center ml-auto gap-0.5 sm:gap-1">
+      <div className="flex items-center ml-auto gap-1">
         {/* Theme toggle */}
         <div
           className="flex items-center rounded-[var(--radius-sm)] p-[2px]"
@@ -98,34 +99,28 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 aria-checked={isActive}
                 tabIndex={isActive ? 0 : -1}
                 className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
-                  transition-colors duration-200 min-h-[44px]"
+                  transition-colors duration-150 min-h-[32px] min-w-[32px]"
                 style={{
-                  width: 28,
-                  height: 28,
-                  marginLeft: i > 0 ? 2 : 0,
                   color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
                   background: isActive
-                    ? "color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-elevated))"
+                    ? "var(--color-bg-elevated)"
                     : "transparent",
-                  boxShadow: isActive ? "var(--shadow-sm)" : "none",
                 }}
                 title={t(titleKey)}
                 onClick={() => handleThemeClick(key)}
                 onKeyDown={(e) => handleRadioKeyDown(e, i)}
               >
-                <Icon className="w-[14px] h-[14px]" />
+                <Icon className="w-3.5 h-3.5" />
               </button>
             );
           })}
         </div>
 
-        <div className="nav-divider" aria-hidden="true" />
-
         <a
           href="https://github.com/MCBECD"
           target="_blank"
           rel="noopener noreferrer"
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg
+          className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
             transition-colors duration-100 active:scale-[0.92]"
@@ -137,7 +132,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
 
         <button
           onClick={onOpenSettings}
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg
+          className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
             transition-colors duration-100 active:scale-[0.92]"
