@@ -19,7 +19,7 @@ export default function NotFound() {
           {t("notFound.description")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <Link href="/" className="cta-primary">
+          <Link href="/docs/" className="cta-primary">
             {t("notFound.backHome")}
           </Link>
           <Link href="/docs/" className="cta-secondary">

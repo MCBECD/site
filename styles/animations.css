@@ -61,7 +61,7 @@
 
 .page-fade-in { animation: fadeIn 0.1s ease both; }
 
-/* Hero & section entrance */
+/* Docs page entrance */
 .hero-enter {
   animation: fadeInUp 0.4s var(--ease-out) both;
 }
@@ -88,36 +88,3 @@
 .detail-content-enter {
   animation: fadeIn 0.3s ease 0.12s both;
 }
-
-/* ----------------------------------------------------------
- * Landing page entrance animations (slower, ceremonial)
- * ---------------------------------------------------------- */
-@keyframes heroFadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* heroFadeIn removed — identical to fadeIn, use fadeIn directly */
-
-@keyframes blink {
-  0%, 49%   { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-
-/* Terminal cursor */
-.terminal-cursor {
-  display: inline-block;
-  width: 8px;
-  height: 1em;
-  background: var(--color-accent);
-  margin-left: 2px;
-  vertical-align: text-bottom;
-  animation: blink 1.1s step-end infinite;
-}
-
-/* Staggered entrance */
-.landing-hero-enter     { animation: heroFadeInUp var(--duration-hero) var(--ease-out) both; }
-.landing-sub-enter      { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 1) both; }
-.landing-cta-enter      { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 1) both; }
-.landing-feature-enter  { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }
-.landing-stats-enter    { animation: heroFadeInUp var(--duration-hero) var(--ease-out) calc(var(--duration-stagger-step) * 2) both; }

@@ -65,55 +65,7 @@
 }
 
 /* ----------------------------------------------------------
- * Grid background pattern (L1 midground)
- * ---------------------------------------------------------- */
-.bg-grid {
-  background-image:
-    linear-gradient(var(--grid-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
-  background-position: -1px -1px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
-}
-
-/* ----------------------------------------------------------
- * Command terminal prompt (visual anchor for landing/docs)
- * ---------------------------------------------------------- */
-.cmd-prompt::before {
-  content: "> ";
-  color: var(--color-accent);
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 500;
-}
-
-/* ----------------------------------------------------------
- * Terminal block (landing preview + 404 page)
- * ---------------------------------------------------------- */
-.terminal-block {
-  background: color-mix(in srgb, var(--color-bg-primary) 92%, var(--color-accent) 8%);
-  border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-accent);
-  border-radius: var(--radius);
-  font-family: "JetBrains Mono", monospace;
-}
-
-/* ----------------------------------------------------------
- * Feature card (landing page)
- * ---------------------------------------------------------- */
-.feature-card {
-  transition: transform var(--duration-normal) var(--ease-out),
-              box-shadow var(--duration-normal) var(--ease-out),
-              border-color var(--duration-normal) var(--ease-out);
-}
-.feature-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
-}
-
-/* ----------------------------------------------------------
- * Primary / secondary CTA buttons
+ * Primary / secondary CTA buttons (used by 404, etc.)
  * ---------------------------------------------------------- */
 .cta-primary {
   display: inline-flex;
