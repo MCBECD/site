@@ -44,6 +44,28 @@ const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
 
 type Tab = "general" | "data" | "themes";
 
+/* ---------- Version footer ---------- */
+
+const APP_VERSION = process.env.NEXT_PUBLIC_VERSION ?? "0.1.0";
+
+function VersionFooter() {
+  const { t } = useLocale();
+  const [build, setBuild] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/version.json")
+      .then((r) => r.json())
+      .then((data: { build: number }) => setBuild(data.build))
+      .catch(() => { /* dev / offline — silently skip */ });
+  }, []);
+
+  return (
+    <div className="flex-shrink-0 px-5 py-3 border-t border-[var(--color-border)] text-[11px] text-[var(--color-text-tertiary)]">
+      v{APP_VERSION}{build !== null ? ` · ${t("settings.build")} ${build}` : ""}
+    </div>
+  );
+}
+
 /* ---------- Main Panel ---------- */
 
 export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -223,7 +245,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
           </div>
 
           {/* scrollable content */}
-          <div className="px-5 py-5 space-y-3 overflow-y-auto flex-1">
+          <div className="px-5 py-5 space-y-3 overflow-y-auto flex-1 min-h-0">
             {tab === "general" ? (
               <>
                 <Section title={t("settings.theme")}>
@@ -368,6 +390,9 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
               </div>
             )}
           </div>
+
+          {/* version footer — always visible */}
+          <VersionFooter />
         </div>
       </div>
     </>

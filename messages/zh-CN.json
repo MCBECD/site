@@ -53,6 +53,7 @@
     "bgOverlayBlur": "模糊度",
     "bgParallax": "视差效果",
     "bgImageTooLarge": "图片大小不能超过 2MB",
+    "build": "构建",
     "bgImageWrongType": "不支持的图片格式，请使用 JPG、PNG、GIF、WebP 或 AVIF"
   },
   "code": {

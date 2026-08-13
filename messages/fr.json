@@ -53,6 +53,7 @@
     "bgOverlayBlur": "Flou",
     "bgParallax": "Parallax",
     "bgImageTooLarge": "La taille de l'image ne peut pas dépasser 2 Mo",
+    "build": "Build",
     "bgImageWrongType": "Format d'image non pris en charge. Veuillez utiliser JPG, PNG, GIF, WebP ou AVIF"
   },
   "code": {
