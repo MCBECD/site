@@ -42,26 +42,84 @@ const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
   { value: "large", labelKey: "settings.fontSizeLarge" },
 ];
 
-type Tab = "general" | "data" | "themes";
-
-/* ---------- Version footer ---------- */
+type Tab = "general" | "data" | "plugins" | "about";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_VERSION ?? "0.1.0";
 
-function VersionFooter() {
+/* ---------- About Tab ---------- */
+
+function AboutTab() {
   const { t } = useLocale();
-  const [build, setBuild] = useState<number | null>(null);
+  const { docMap } = useDocs();
+  const [buildInfo, setBuildInfo] = useState<{ build: number; commit?: string } | null>(null);
 
   useEffect(() => {
     fetch("/version.json")
       .then((r) => r.json())
-      .then((data: { build: number }) => setBuild(data.build))
-      .catch(() => { /* dev / offline — silently skip */ });
+      .then((data) => setBuildInfo(data))
+      .catch(() => { /* dev / offline */ });
   }, []);
 
+  const commandCount = docMap.size;
+
   return (
-    <div className="flex-shrink-0 px-5 py-3 border-t border-[var(--color-border)] text-[11px] text-[var(--color-text-tertiary)]">
-      v{APP_VERSION}{build !== null ? ` · ${t("settings.build")} ${build}` : ""}
+    <div className="space-y-4">
+      <Section title={t("settings.aboutVersion")}>
+        <div className="space-y-2.5 text-[13px]">
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutVersionLabel")}</span>
+            <span className="font-mono text-[var(--color-text-primary)]">v{APP_VERSION}</span>
+          </div>
+          {buildInfo && (
+            <div className="flex justify-between items-center">
+              <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutBuildLabel")}</span>
+              <span className="font-mono text-[var(--color-text-primary)]">#{buildInfo.build}</span>
+            </div>
+          )}
+        </div>
+      </Section>
+
+      <Section title={t("settings.aboutStats")}>
+        <div className="space-y-2.5 text-[13px]">
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutCommands")}</span>
+            <span className="text-[var(--color-text-primary)]">{commandCount}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutLocales")}</span>
+            <span className="text-[var(--color-text-primary)]">7</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutLicense")}</span>
+            <span className="text-[var(--color-text-primary)]">MIT</span>
+          </div>
+        </div>
+      </Section>
+
+      <Section title={t("settings.aboutLinks")}>
+        <div className="space-y-1">
+          <Link
+            href="https://github.com/MCBECD/site"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors no-underline"
+          >
+            <span>GitHub</span>
+            <span className="text-[11px] text-[var(--color-text-tertiary)]">MCBECD/site ↗</span>
+          </Link>
+          <Link
+            href="/docs/"
+            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors no-underline"
+          >
+            <span>{t("nav.docs")}</span>
+            <span className="text-[11px] text-[var(--color-text-tertiary)]">/docs/</span>
+          </Link>
+        </div>
+      </Section>
+
+      <div className="pt-2 text-[11px] text-[var(--color-text-tertiary)] text-center">
+        © 2024-2026 MCBECD
+      </div>
     </div>
   );
 }
@@ -189,6 +247,13 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   const panelAnim = closing ? "settings-panel-out" : "settings-panel-in";
 
+  const TABS: { key: Tab; labelKey: string }[] = [
+    { key: "general", labelKey: "settings.tabGeneral" },
+    { key: "plugins", labelKey: "settings.tabPlugins" },
+    { key: "data", labelKey: "settings.tabData" },
+    { key: "about", labelKey: "settings.tabAbout" },
+  ];
+
   return (
     <>
       <div
@@ -222,26 +287,21 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
           {/* tabs */}
           <div className="flex gap-0 mx-5 mt-4 border-b border-[var(--color-border)] flex-shrink-0">
-            {(["general", "data", "themes"] as Tab[]).map((key) => {
-              const labelKey = key === "general" ? "settings.tabGeneral"
-                : key === "data" ? "settings.tabData"
-                : "settings.tabPlugins";
-              return (
-                <button
-                  key={key}
-                  onClick={() => setTab(key)}
-                  className={`px-3 pb-2.5 text-[13px] font-medium transition-colors relative -mb-px min-h-[44px] flex items-center
-                    ${tab === key
-                      ? "text-[var(--color-accent)]"
-                      : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"}`}
-                >
-                  {t(labelKey)}
-                  {tab === key && (
-                    <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full tab-indicator" />
-                  )}
-                </button>
-              );
-            })}
+            {TABS.map(({ key, labelKey }) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`px-3 pb-2.5 text-[13px] font-medium transition-colors relative -mb-px min-h-[44px] flex items-center
+                  ${tab === key
+                    ? "text-[var(--color-accent)]"
+                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"}`}
+              >
+                {t(labelKey)}
+                {tab === key && (
+                  <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full tab-indicator" />
+                )}
+              </button>
+            ))}
           </div>
 
           {/* scrollable content */}
@@ -383,16 +443,15 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   )}
                 </Section>
               </div>
-            ) : (
+            ) : tab === "plugins" ? (
               <div className="space-y-3">
                 <ColorThemePluginCard />
                 <BackgroundImagePluginCard />
               </div>
+            ) : (
+              <AboutTab />
             )}
           </div>
-
-          {/* version footer — always visible */}
-          <VersionFooter />
         </div>
       </div>
     </>
