@@ -80,10 +80,10 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
       </Link>
 
       {/* Right: controls */}
-      <div className="flex items-center ml-auto gap-0.5 sm:gap-1">
+      <div className="flex items-center ml-auto gap-1 sm:gap-1.5">
         {/* Theme toggle */}
         <div
-          className="flex items-center rounded-[var(--radius-sm)] p-[2px]"
+          className="flex items-center gap-0.5 rounded-[var(--radius-sm)] p-0.5"
           style={{ background: "var(--color-bg-tertiary)" }}
           role="radiogroup"
           aria-label={t("settings.theme")}
@@ -98,52 +98,45 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 aria-checked={isActive}
                 tabIndex={isActive ? 0 : -1}
                 className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
-                  transition-colors duration-200 min-h-[44px]"
+                  transition-colors duration-150 w-8 h-8"
                 style={{
-                  width: 28,
-                  height: 28,
-                  marginLeft: i > 0 ? 2 : 0,
                   color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
-                  background: isActive
-                    ? "var(--color-bg-elevated)"
-                    : "transparent",
+                  background: isActive ? "var(--color-bg-elevated)" : "transparent",
                 }}
                 title={t(titleKey)}
                 onClick={() => handleThemeClick(key)}
                 onKeyDown={(e) => handleRadioKeyDown(e, i)}
               >
-                <Icon className="w-[14px] h-[14px]" />
+                <Icon className="w-3.5 h-3.5" />
               </button>
             );
           })}
         </div>
 
-        <div className="nav-divider" aria-hidden="true" />
-
         <a
           href="https://github.com/MCBECD"
           target="_blank"
           rel="noopener noreferrer"
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg
+          className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
             transition-colors duration-100 active:scale-[0.92]"
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
-          <GithubIcon className="w-[17px] h-[17px]" />
+          <GithubIcon className="w-4 h-4" />
         </a>
 
         <button
           onClick={onOpenSettings}
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg
+          className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
             transition-colors duration-100 active:scale-[0.92]"
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >
-          <Settings className="w-[17px] h-[17px]" />
+          <Settings className="w-4 h-4" />
         </button>
       </div>
     </nav>
