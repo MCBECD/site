@@ -44,8 +44,7 @@
     display: none !important;
   }
 
-  /* Background layers (base fill, image, overlay, grid) */
-  .bg-grid,
+  /* Background layers (base fill, image, overlay) */
   .fixed {
     display: none !important;
   }
@@ -72,7 +71,6 @@
   /* Restore white background on content containers */
   .doc-glass-card,
   .doc-card,
-  .terminal-block,
   main > div,
   .prose > div,
   .prose {

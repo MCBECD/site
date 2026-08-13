@@ -28,10 +28,6 @@
   --landing-max-width: 1080px;
   --content-gutter: 24px;
 
-  /* --- Grid pattern (L1 midground, extremely subtle) --- */
-  --grid-size: 32px;
-  --grid-color: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
-
   /* --- Z-index scale (layered stacking contexts) --- */
   --z-bg-base: -30;       /* Solid background fill */
   --z-bg-image: -20;     /* Background image */
@@ -43,9 +39,6 @@
   --z-portal: 60;        /* Portaled elements that must top their parent modal */
   --z-toast: 100;        /* Global portaled toasts (highest) */
 
-  /* --- Landing page entrance animation (slower, ceremonial) --- */
-  --duration-hero: 600ms;
-  --duration-stagger-step: 80ms;
 }
 
 /* Dark mode: deeper shadows for visible elevation */
@@ -53,5 +46,4 @@
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
-  --grid-color: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 }
