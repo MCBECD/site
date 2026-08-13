@@ -44,7 +44,7 @@ const FONT_OPTIONS: { value: FontSize; labelKey: string }[] = [
 
 type Tab = "general" | "data" | "plugins" | "about";
 
-const APP_VERSION = process.env.NEXT_PUBLIC_VERSION ?? "0.1.0";
+const APP_VERSION = process.env.NEXT_PUBLIC_VERSION ?? "0.0.1-alpha";
 
 /* ---------- About Tab ---------- */
 
@@ -118,7 +118,7 @@ function AboutTab() {
       </Section>
 
       <div className="pt-2 text-[11px] text-[var(--color-text-tertiary)] text-center">
-        © 2024-2026 MCBECD
+        © 2026 MCBECD
       </div>
     </div>
   );
