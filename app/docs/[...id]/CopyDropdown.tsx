@@ -135,7 +135,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
             ref={(el) => { itemRefs.current[0] = el; }}
             role="menuitem"
             onClick={() => handleCopy(rawContent, t("code.copiedMd"))}
-            className={`w-full text-left px-3 py-2 text-[13px] transition-colors
+            className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] transition-colors
               ${activeIndex === 0
                 ? "bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                 : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"}`}
@@ -146,7 +146,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
             ref={(el) => { itemRefs.current[1] = el; }}
             role="menuitem"
             onClick={() => handleCopy(plainText, t("code.copiedPlain"))}
-            className={`w-full text-left px-3 py-2 text-[13px] transition-colors
+            className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] transition-colors
               ${activeIndex === 1
                 ? "bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                 : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"}`}

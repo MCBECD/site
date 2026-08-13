@@ -232,7 +232,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       <button
                         key={opt.value}
                         onClick={() => updateSettings("theme", opt.value)}
-                        className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-[var(--radius)] text-[13px] transition-colors
+                        className={`flex-1 flex items-center justify-center gap-1.5 h-11 rounded-[var(--radius)] text-[13px] transition-colors
                           ${settings.theme === opt.value
                             ? "bg-[var(--color-accent)] text-white"
                             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
@@ -250,7 +250,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       <button
                         key={opt.value}
                         onClick={() => updateSettings("fontSize", opt.value)}
-                        className={`flex-1 h-10 rounded-[var(--radius)] text-[13px] transition-colors
+                        className={`flex-1 h-11 rounded-[var(--radius)] text-[13px] transition-colors
                           ${settings.fontSize === opt.value
                             ? "bg-[var(--color-accent)] text-white"
                             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
