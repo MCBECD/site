@@ -24,37 +24,23 @@ export const CommandPreview = memo(function CommandPreview() {
   }, []);
 
   return (
-    <div className="terminal-block p-5 detail-enter">
-      {/* Terminal header */}
-      <div className="flex items-center gap-2 pb-3 border-b border-[var(--color-border)]">
-        <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
-          <span className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
-        </div>
-        <span className="text-[11px] text-[var(--color-text-tertiary)] font-mono ml-1">mcbedrock — bash</span>
-      </div>
-
+    <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-5 detail-enter">
       {/* Command list */}
-      <div className="pt-3 space-y-2">
+      <div className="space-y-2.5">
         {COMMANDS.map((item, i) => {
           const isActive = i === active;
           return (
             <div
               key={item.cmd}
-              className={`text-[13px] font-mono leading-relaxed transition-opacity duration-200 ${
-                isActive ? "opacity-100" : "opacity-40"
+              className={`text-[13px] leading-relaxed transition-opacity duration-200 ${
+                isActive ? "opacity-100" : "opacity-35"
               }`}
             >
-              <span aria-hidden="true" className="text-[var(--color-text-tertiary)]">{"> "}</span>
-              <span className="text-[var(--color-text-primary)]">{item.cmd}</span>
+              <span className="font-mono text-[var(--color-text-primary)]">{item.cmd}</span>
               {isActive && (
-                <>
-                  <div className="text-[11px] text-[var(--color-accent)] mt-0.5 ml-4">
-                    {t(item.descKey)}
-                  </div>
-                  <span className="terminal-cursor" />
-                </>
+                <div className="text-[12px] text-[var(--color-accent)] mt-0.5 ml-1">
+                  {t(item.descKey)}
+                </div>
               )}
             </div>
           );

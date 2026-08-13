@@ -193,12 +193,9 @@ export function DocsPageClient() {
 
   return (
     <div className="relative max-w-3xl mx-auto px-[var(--content-gutter)] pt-14 pb-24">
-      {/* Top grid pattern — fades out */}
-      <div className="absolute inset-x-0 top-0 h-64 bg-grid pointer-events-none z-[var(--z-bg-overlay)]" aria-hidden="true" />
-
       {/* Hero */}
       <div className="mb-10">
-        <p className="text-[12px] font-mono text-[var(--color-accent)] mb-2 cmd-prompt hero-enter">
+        <p className="text-[13px] text-[var(--color-accent)] mb-2 font-medium hero-enter">
           {t("nav.docs")}
         </p>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">

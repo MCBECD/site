@@ -11,12 +11,11 @@ export const HeroSection = memo(function HeroSection() {
   const { t } = useLocale();
 
   return (
-    <section className="relative max-w-[var(--landing-max-width)] mx-auto px-[var(--content-gutter)] pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-24 grid md:grid-cols-12 gap-8 items-center">
+    <section className="relative max-w-[var(--landing-max-width)] mx-auto px-[var(--content-gutter)] pt-12 pb-10 sm:pt-16 sm:pb-14 md:pt-20 md:pb-16 grid md:grid-cols-12 gap-8 items-center">
       {/* Left: brand + tagline + CTA (7/12) */}
       <div className="md:col-span-7 space-y-5 sm:space-y-6">
-        <h1 className="landing-hero-enter text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight font-mono text-[var(--color-text-primary)]">
+        <h1 className="landing-hero-enter text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[var(--color-text-primary)]">
           MCBECD
-          <span className="block mt-3 h-0.5 w-12 bg-[var(--color-accent)]" />
         </h1>
         <p className="landing-sub-enter text-lg text-[var(--color-text-secondary)] max-w-md leading-relaxed">
           {t("landing.tagline")}
@@ -40,7 +39,7 @@ export const HeroSection = memo(function HeroSection() {
       </div>
 
       {/* Right: terminal preview (5/12) */}
-      <div className="md:col-span-5 landing-terminal-enter">
+      <div className="md:col-span-5 landing-cta-enter">
         <CommandPreview />
       </div>
     </section>
