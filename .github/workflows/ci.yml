@@ -176,6 +176,12 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - run: npm ci --prefer-offline
+
+      - name: Generate version.json
+        run: |
+          BUILD=$(git rev-list --count HEAD)
+          echo "{\"build\":$BUILD}" > public/version.json
+
       - run: npm run build
 
   # ─── Summary ───────────────────────────────────────────
