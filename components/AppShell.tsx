@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, type ReactNode } from "react";
 import { SettingsProvider, useSettings, DEFAULT_LOCALE } from "@/contexts/SettingsContext";
 import { ThemeSync } from "@/contexts/ThemeSync";
 import { LocaleProvider } from "@/contexts/LocaleContext";
@@ -11,7 +11,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackgroundLayer } from "@/components/BackgroundLayer";
 
-function ShellInner({ children }: { children: React.ReactNode }) {
+function ShellInner({ children }: { children: ReactNode }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const openSettings = useCallback(() => setSettingsOpen(true), []);
   const closeSettings = useCallback(() => setSettingsOpen(false), []);
@@ -31,25 +31,27 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SettingsAndLocale({ children }: { children: React.ReactNode }) {
+function SettingsAndLocale({ children, mounted }: { children: ReactNode; mounted: boolean }) {
   const { settings } = useSettings();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
   const locale = mounted ? settings.locale : DEFAULT_LOCALE;
   return (
     <LocaleProvider locale={locale}>
-      {children}
+      <ShellInner>{children}</ShellInner>
     </LocaleProvider>
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <SettingsProvider>
-      <ThemeSync>
-        <SettingsAndLocale>
-          <ShellInner>{children}</ShellInner>
-        </SettingsAndLocale>
+      <ThemeSync mounted={mounted}>
+        <SettingsAndLocale mounted={mounted}>{children}</SettingsAndLocale>
       </ThemeSync>
     </SettingsProvider>
   );
