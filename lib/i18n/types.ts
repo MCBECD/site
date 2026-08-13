@@ -66,6 +66,16 @@ export interface Messages {
     bgOverlayBlur: string;
     bgParallax: string;
     bgImageTooLarge: string;
+    bgImageWrongType: string;
+    tabAbout: string;
+    aboutVersion: string;
+    aboutVersionLabel: string;
+    aboutBuildLabel: string;
+    aboutStats: string;
+    aboutCommands: string;
+    aboutLocales: string;
+    aboutLicense: string;
+    aboutLinks: string;
   };
   code: {
     copy: string;
