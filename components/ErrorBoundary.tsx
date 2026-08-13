@@ -55,7 +55,7 @@ function ErrorFallback({ onRetry }: { onRetry: () => void }) {
       <p className="text-xs text-[var(--color-text-tertiary)] max-w-sm">{t("common.errorDesc")}</p>
       <button
         onClick={onRetry}
-        className="mt-4 px-4 py-2 text-xs rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+        className="mt-4 px-5 py-2.5 text-xs min-h-[44px] flex items-center rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
       >
         {t("common.errorRetry")}
       </button>

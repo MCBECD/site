@@ -93,7 +93,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
               )}
               {commandTypeLabel && (
                 <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
+                  <span className="text-[var(--color-accent)]/60">·</span>
                   {commandTypeLabel}
                 </span>
               )}

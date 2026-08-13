@@ -229,7 +229,7 @@ export function DocsPageClient() {
             <button
               onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
               aria-label={t("doc.clearSearch")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 z-[var(--z-search)]
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 z-[var(--z-search)]
                 flex items-center justify-center rounded-md
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
                 hover:bg-[var(--color-bg-tertiary)] transition-colors"

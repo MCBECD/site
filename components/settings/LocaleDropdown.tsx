@@ -172,7 +172,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
                 role="option"
                 aria-selected={loc === value}
                 onClick={() => handleSelect(loc)}
-                className={`w-full text-left px-3 py-2 text-[13px] flex items-center justify-between transition-colors
+                className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] flex items-center justify-between transition-colors
                   ${i === activeIndex
                     ? "bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                     : loc === value

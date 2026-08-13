@@ -37,8 +37,8 @@ describe("ToggleSwitch", () => {
 
   it("applies accent styling when isChecked", () => {
     const { container } = render(<ToggleSwitch isChecked={true} onChange={vi.fn()} />);
-    const btn = container.firstChild as HTMLElement;
-    expect(btn.className).toContain("bg-[var(--color-accent)]");
+    const track = (container.firstChild as HTMLElement).firstChild as HTMLElement;
+    expect(track.className).toContain("bg-[var(--color-accent)]");
   });
 
   it("does not call onChange on render", () => {
