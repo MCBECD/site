@@ -2,7 +2,8 @@
 
 import { memo } from "react";
 import Link from "next/link";
-import { ArrowRight, Github } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { GithubIcon } from "@/components/icons/GithubIcon";
 import { useLocale } from "@/contexts/LocaleContext";
 import { CommandPreview } from "./CommandPreview";
 
@@ -31,7 +32,7 @@ export const HeroSection = memo(function HeroSection() {
             rel="noopener noreferrer"
             className="cta-secondary"
           >
-            <Github className="w-4 h-4" />
+            <GithubIcon className="w-4 h-4" />
             {t("landing.ctaSecondary")}
             <span className="sr-only"> {t("common.opensInNewTab")}</span>
           </a>

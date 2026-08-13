@@ -1,7 +1,8 @@
 "use client";
 
 import { memo, useMemo, useCallback, useRef } from "react";
-import { Sun, Moon, Monitor, Github, Settings } from "lucide-react";
+import { Sun, Moon, Monitor, Settings } from "lucide-react";
+import { GithubIcon } from "@/components/icons/GithubIcon";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -131,7 +132,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
-          <Github className="w-[17px] h-[17px]" />
+          <GithubIcon className="w-[17px] h-[17px]" />
         </a>
 
         <button
