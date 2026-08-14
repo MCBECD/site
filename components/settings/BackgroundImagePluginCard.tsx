@@ -84,7 +84,7 @@ export function BackgroundImagePluginCard() {
 
   return (
     <div
-      className={`rounded-[var(--radius)] border transition-[border-color,background-color,opacity] duration-100 ${
+      className={`rounded-[var(--radius)] border transition-[border-color,background-color,opacity] duration-[var(--duration-fast)] ${
         enabled
           ? "border-[var(--color-accent)]/30 bg-[var(--color-bg-primary)]"
           : "border-[var(--color-border)] bg-[var(--color-bg-secondary)]"
@@ -92,7 +92,7 @@ export function BackgroundImagePluginCard() {
     >
       <div className="flex items-center gap-3.5 px-4 py-3.5">
         <div
-          className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0 transition-colors duration-100 ${
+          className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0 transition-colors duration-[var(--duration-fast)] ${
             enabled
               ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
               : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]"
@@ -115,7 +115,7 @@ export function BackgroundImagePluginCard() {
                 <button
                   key={p.value}
                   onClick={() => updateSettings("bgImage", p.value)}
-                  className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-100 overflow-hidden
+                  className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)] overflow-hidden
                     ${settings.bgImage === p.value
                       ? "ring-1 ring-[var(--color-accent)]"
                       : "hover:bg-[var(--color-bg-tertiary)]"}`}
@@ -130,7 +130,7 @@ export function BackgroundImagePluginCard() {
             </div>
 
             {uploadError && (
-              <p className="text-[11px] text-red-500">
+              <p className="text-[11px] text-[var(--color-accent)]">
                 {t(uploadError === "size" ? "settings.bgImageTooLarge" : "settings.bgImageWrongType")}
               </p>
             )}
@@ -138,7 +138,7 @@ export function BackgroundImagePluginCard() {
             <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-hidden="true" onChange={handleFileChange} />
             <button
               onClick={handleUpload}
-              className={`w-full flex items-center justify-center gap-2 h-11 rounded-[var(--radius)] text-[13px] transition-colors duration-100
+              className={`w-full flex items-center justify-center gap-2 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
                 ${settings.bgImage && !BG_PRESETS.some((p) => p.value === settings.bgImage)
                   ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
                   : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}

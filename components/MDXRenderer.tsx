@@ -128,7 +128,7 @@ const components = {
     </details>
   ),
   summary: ({ children, ...props }: JSX.IntrinsicElements["summary"]) => (
-    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-[var(--radius)] select-none hover:bg-[var(--color-bg-secondary)] transition-colors duration-100" {...props}>
+    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-[var(--radius)] select-none hover:bg-[var(--color-bg-secondary)] transition-colors duration-[var(--duration-fast)]" {...props}>
       {children}
     </summary>
   ),

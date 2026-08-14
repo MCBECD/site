@@ -32,7 +32,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
             {typeLabel}
           </span>
         )}
-        <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0">
+        <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate flex-1 min-w-0 transition-colors duration-[var(--duration-fast)]">
           {...renderTitleWithCode(doc.title, true)}
         </h2>
         {doc.description && (
@@ -51,13 +51,13 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
         no-underline min-h-[44px]"
     >
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-100">
+        <h2 className="text-[15px] font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors duration-[var(--duration-fast)]">
           {...renderTitleWithCode(doc.title, true)}
         </h2>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={(e) => onBookmark(e, doc.id)}
-            className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)] active:scale-[0.92] transition-colors duration-100 -m-2
+            className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)] -m-2
               ${isBookmarked
                 ? "text-[var(--color-accent)]"
                 : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
@@ -66,7 +66,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
           >
             <Star className="w-3.5 h-3.5" fill={isBookmarked ? "currentColor" : "none"} />
           </button>
-          <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-100" />
+          <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-[var(--duration-fast)]" />
         </div>
       </div>
       <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-[var(--color-text-tertiary)]">

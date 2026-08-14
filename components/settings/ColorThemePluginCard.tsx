@@ -34,7 +34,7 @@ export function ColorThemePluginCard() {
               <button
                 key={p.value}
                 onClick={() => updateSettings("colorTheme", p.value)}
-                className={`flex flex-col items-center gap-2 p-3 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-100
+                className={`flex flex-col items-center gap-2 p-3 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
                   ${settings.colorTheme === p.value
                     ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
                     : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)]"}`}
@@ -46,7 +46,7 @@ export function ColorThemePluginCard() {
           </div>
 
           <div
-            className={`flex items-center gap-3 px-3 py-3 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-100
+            className={`flex items-center gap-3 px-3 py-3 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
               ${settings.colorTheme === "custom"
                 ? "bg-[var(--color-accent-muted)] ring-1 ring-[var(--color-accent)]"
                 : "bg-[var(--color-bg-tertiary)]"}`}

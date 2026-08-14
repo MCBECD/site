@@ -59,7 +59,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-[var(--z-navbar)] flex items-center h-[var(--navbar-height)] px-3 sm:px-5 bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border-light)]"
+      className="fixed top-0 left-0 right-0 z-[var(--z-navbar)] flex items-center h-[var(--navbar-height)] px-3 sm:px-5 bg-[var(--color-navbar-bg)] backdrop-blur-[var(--blur-md)] border-b border-[var(--color-border-light)]"
     >
       {/* Left: logo */}
       <Link
@@ -72,9 +72,9 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
           width={30}
           height={30}
           fetchPriority="high"
-          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-[ring-color] duration-100"
+          className="w-[30px] h-[30px] ring-1 ring-[var(--color-border)] group-hover:ring-[var(--color-accent)]/40 transition-[ring-color] duration-[var(--duration-fast)]"
         />
-        <span className="hidden sm:inline text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-100">
+        <span className="hidden sm:inline text-[15px] font-semibold tracking-tight text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-[var(--duration-fast)]">
           MCBECD
         </span>
       </Link>
@@ -97,7 +97,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 aria-checked={isActive}
                 tabIndex={isActive ? 0 : -1}
                 className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
-                  transition-colors duration-100 w-8 h-8"
+                  transition-colors duration-[var(--duration-fast)] w-8 h-8"
                 style={{
                   color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
                   background: isActive ? "var(--color-bg-elevated)" : "transparent",
@@ -119,7 +119,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
           className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-colors duration-100 active:scale-[0.92]"
+            transition-colors duration-[var(--duration-fast)] active:scale-[0.92]"
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
@@ -131,7 +131,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
           className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-colors duration-100 active:scale-[0.92]"
+            transition-colors duration-[var(--duration-fast)] active:scale-[0.92]"
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >
