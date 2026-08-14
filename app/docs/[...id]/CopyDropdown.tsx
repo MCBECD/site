@@ -120,7 +120,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
         className="inline-flex items-center gap-1.5 h-11 px-2 rounded-[var(--radius)] text-[13px]
           text-[var(--color-text-secondary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
-          transition-colors duration-100"
+          active:scale-[0.92] transition-colors duration-100"
       >
         {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
         <span className="hidden sm:inline">{copied ? t("code.copied") : t("code.copy")}</span>
@@ -135,7 +135,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
             ref={(el) => { itemRefs.current[0] = el; }}
             role="menuitem"
             onClick={() => handleCopy(rawContent, t("code.copiedMd"))}
-            className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] transition-colors
+            className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] transition-colors duration-100
               ${activeIndex === 0
                 ? "bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                 : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"}`}

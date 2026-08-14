@@ -23,10 +23,10 @@ const PageButton = memo(function PageButton({
   return (
     <button
       onClick={onClick}
-      className={`min-w-[44px] h-11 flex items-center justify-center rounded-[var(--radius-sm)] text-[13px] font-medium transition-all duration-100 ${
+      className={`min-w-[44px] h-11 flex items-center justify-center rounded-[var(--radius-sm)] text-[13px] font-medium transition-all duration-100 active:scale-[0.92] ${
         isActive
           ? "bg-[var(--color-accent)] text-white shadow-[var(--shadow-sm)] shadow-[var(--color-accent)]/25"
-          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"
+          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
       }`}
     >
       {page + 1}
@@ -46,8 +46,8 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
         aria-label={t("doc.previousPage")}
         className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
           text-[var(--color-text-tertiary)]
-          hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]
-          disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-100"
+          hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
+          disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.92] transition-all duration-100"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -68,8 +68,8 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
         aria-label={t("doc.nextPage")}
         className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
           text-[var(--color-text-tertiary)]
-          hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]
-          disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-100"
+          hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
+          disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.92] transition-all duration-100"
       >
         <ChevronRight className="w-4 h-4" />
       </button>

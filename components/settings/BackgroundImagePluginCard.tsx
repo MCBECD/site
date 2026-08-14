@@ -92,7 +92,7 @@ export function BackgroundImagePluginCard() {
     >
       <div className="flex items-center gap-3.5 px-4 py-3.5">
         <div
-          className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0 transition-colors ${
+          className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0 transition-colors duration-100 ${
             enabled
               ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
               : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]"
@@ -115,7 +115,7 @@ export function BackgroundImagePluginCard() {
                 <button
                   key={p.value}
                   onClick={() => updateSettings("bgImage", p.value)}
-                  className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] transition-colors overflow-hidden
+                  className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-100 overflow-hidden
                     ${settings.bgImage === p.value
                       ? "ring-1 ring-[var(--color-accent)]"
                       : "hover:bg-[var(--color-bg-tertiary)]"}`}

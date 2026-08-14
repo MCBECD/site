@@ -54,7 +54,7 @@ export const CodeBlockClient = memo(function CodeBlockClient({ html, code }: Cod
   const toast = (
     <div
       role="status"
-      className={`fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-sm font-medium shadow-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)] transition-all duration-300 pointer-events-none ${copied ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+      className={`fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)] transition-all duration-100 pointer-events-none ${copied ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
     >
       <Check className="w-4 h-4" />
       <span>{t("code.copied")}</span>

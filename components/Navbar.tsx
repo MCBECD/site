@@ -97,7 +97,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 aria-checked={isActive}
                 tabIndex={isActive ? 0 : -1}
                 className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
-                  transition-colors duration-150 w-8 h-8"
+                  transition-colors duration-100 w-8 h-8"
                 style={{
                   color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
                   background: isActive ? "var(--color-bg-elevated)" : "transparent",
