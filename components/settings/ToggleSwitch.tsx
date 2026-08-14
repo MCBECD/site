@@ -20,7 +20,7 @@ export const ToggleSwitch = memo(function ToggleSwitch({ isChecked, onChange, la
         }`}
       >
         <span
-          className={`block absolute top-1/2 -translate-y-1/2 left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform
+          className={`block absolute top-1/2 -translate-y-1/2 left-[3px] w-[18px] h-[18px] rounded-full bg-[var(--color-bg-primary)] shadow-[var(--shadow-sm)] transition-transform
             duration-100 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
             isChecked ? "translate-x-5" : "translate-x-0"
           }`}

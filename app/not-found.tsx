@@ -15,7 +15,7 @@ export default function NotFound() {
         <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight text-[var(--color-text-primary)]">
           404
         </h1>
-        <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">
+        <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed">
           {t("notFound.description")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">

@@ -45,8 +45,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
           <div className="flex items-center gap-2">
             <Link
               href="/docs/"
-              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)]
-                hover:text-[var(--color-accent)] transition-colors duration-100 no-underline min-h-[44px]"
+              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] active:scale-[0.92] transition-colors duration-100 no-underline min-h-[44px]"
             >
               <Home className="w-4 h-4" />
               <span className="hidden sm:inline">{t("common.backToList")}</span>
@@ -60,7 +59,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
                 ${bookmarked
                   ? "text-[var(--color-accent)]"
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
-                } hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100`}
+                } hover:bg-[var(--color-bg-tertiary)] active:scale-[0.92] transition-colors duration-100`}
               aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
@@ -109,7 +108,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
         {/* Document body */}
         <div
           className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter
-          prose max-w-none text-[14px] leading-relaxed
+          prose max-w-none text-[15px] leading-relaxed
           prose-a:no-underline hover:prose-a:underline"
         >
           {children}

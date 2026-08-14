@@ -139,7 +139,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
           border border-[var(--color-border)]
           hover:border-[var(--color-accent)]/30
-          transition-colors text-left"
+          active:scale-[0.92] transition-colors duration-100 text-left"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -172,7 +172,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
                 role="option"
                 aria-selected={loc === value}
                 onClick={() => handleSelect(loc)}
-                className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] flex items-center justify-between transition-colors
+                className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] flex items-center justify-between active:scale-[0.92] transition-colors duration-100
                   ${i === activeIndex
                     ? "bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                     : loc === value

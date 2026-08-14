@@ -201,7 +201,7 @@ export function DocsPageClient() {
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
-        <p className="text-[14px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
+        <p className="text-[15px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
           {t("doc.subtitle", { count: docs.length })}
         </p>
       </div>
@@ -216,7 +216,7 @@ export function DocsPageClient() {
             value={query}
             onChange={(e) => handleInput(e.target.value)}
             placeholder={t("doc.searchPlaceholder")}
-            className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-[var(--radius)]
+            className="search-input w-full pl-10 pr-10 py-2.5 text-[13px] rounded-[var(--radius)]
               text-[var(--color-text-primary)]
               placeholder:text-[var(--color-text-tertiary)]
               border border-[var(--color-border)]
@@ -226,10 +226,10 @@ export function DocsPageClient() {
             <button
               onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
               aria-label={t("doc.clearSearch")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 z-[var(--z-search)]
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 z-[var(--z-search)]
                 flex items-center justify-center rounded-[var(--radius-sm)]
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
-                hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100"
+                hover:bg-[var(--color-bg-tertiary)] active:scale-[0.92] transition-colors duration-100"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -237,7 +237,7 @@ export function DocsPageClient() {
             <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-[var(--z-search)] inline-flex items-center gap-1 px-1.5 rounded-[var(--radius-sm)] text-[11px] font-mono leading-none
               text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
               pointer-events-none hidden sm:inline-flex">
-              <Command className="w-2.5 h-2.5" />
+              <Command className="w-3 h-3" />
             </kbd>
           )}
         </div>
@@ -248,7 +248,7 @@ export function DocsPageClient() {
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-colors duration-100"
+            active:scale-[0.92] transition-colors duration-100"
         >
           {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
         </button>
@@ -262,8 +262,8 @@ export function DocsPageClient() {
 
       {pageDocs.length === 0 ? (
         <div className="py-24 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg-tertiary)] mb-4">
-            <Search className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] mb-4">
+            <Search className="w-[18px] h-[18px] text-[var(--color-text-tertiary)]" />
           </div>
           <p className="text-[13px] text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>

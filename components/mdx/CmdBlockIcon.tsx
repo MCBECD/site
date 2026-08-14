@@ -9,8 +9,8 @@ export const CmdBlockIcon = memo(function CmdBlockIcon({ type }: { type: string 
     <img
       src={`/icons/cmd/${type}.png`}
       alt={t("cmd.iconAlt", { type })}
-      width={24}
-      height={24}
+      width={18}
+      height={18}
       className="cmd-icon shrink-0 mr-1"
     />
   );

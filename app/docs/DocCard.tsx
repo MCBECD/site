@@ -57,7 +57,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={(e) => onBookmark(e, doc.id)}
-            className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)] transition-colors duration-100 -m-2
+            className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)] active:scale-[0.92] transition-colors duration-100 -m-2
               ${isBookmarked
                 ? "text-[var(--color-accent)]"
                 : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
