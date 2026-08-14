@@ -45,7 +45,7 @@
   --color-border-light: #222222;
   --color-accent: #60a5fa;
   --color-accent-hover: #93bbfd;
-  --color-accent-muted: rgba(96, 165, 250, 0.1);
+  --color-accent-muted: rgba(96, 165, 250, 0.08);
   --color-code-bg: #1a1a1a;
   --color-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
   --color-card-hover-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);

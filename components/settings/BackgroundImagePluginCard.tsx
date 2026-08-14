@@ -121,7 +121,7 @@ export function BackgroundImagePluginCard() {
                       : "hover:bg-[var(--color-bg-tertiary)]"}`}
                 >
                   <span
-                    className="w-full h-12 rounded bg-cover bg-center border border-[var(--color-border)]"
+                    className="w-full h-12 rounded-[var(--radius-sm)] bg-cover bg-center border border-[var(--color-border)]"
                     style={{ backgroundImage: `url(${p.value})` }}
                   />
                   <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>

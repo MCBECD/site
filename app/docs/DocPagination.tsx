@@ -49,7 +49,7 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]
           disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-100"
       >
-        <ChevronLeft />
+        <ChevronLeft className="w-4 h-4" />
       </button>
 
       {pageNumbers.map((p, i) =>
@@ -71,7 +71,7 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]
           disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-100"
       >
-        <ChevronRight />
+        <ChevronRight className="w-4 h-4" />
       </button>
     </div>
   );

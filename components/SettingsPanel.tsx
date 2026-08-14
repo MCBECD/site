@@ -276,9 +276,9 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
             <button
               data-close-btn
               onClick={handleClose}
-              className="w-11 h-11 flex items-center justify-center -mr-1 rounded-[var(--radius)]
+              className="w-11 h-11 flex items-center justify-center -mr-1 rounded-[var(--radius-sm)]
                 text-[var(--color-text-tertiary)]
-                hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+                hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100"
               aria-label={t("settings.close")}
             >
               <X className="w-3.5 h-3.5" />
