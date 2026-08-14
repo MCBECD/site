@@ -64,7 +64,7 @@ const components = {
     } catch (err) {
       console.error("[MDXRenderer] Syntax highlighting failed, rendering plain code:", err);
       return (
-        <pre className="p-4 rounded-lg bg-[var(--color-code-bg)] border border-[var(--color-border)] overflow-x-auto">
+        <pre className="p-4 rounded-[var(--radius-sm)] bg-[var(--color-code-bg)] border border-[var(--color-border)] overflow-x-auto">
           <code>{code}</code>
         </pre>
       );
@@ -92,7 +92,7 @@ const components = {
     );
   },
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
-    <div className="overflow-x-auto overflow-hidden my-4 rounded-lg">
+    <div className="overflow-x-auto overflow-hidden my-4 rounded-[var(--radius)]">
       <table className="min-w-full border-collapse border border-[var(--color-border)]" {...props}>
         {children}
       </table>
@@ -123,19 +123,19 @@ const components = {
     ),
   /* Details/summary for collapsible sections */
   details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (
-    <details className="gh-details my-4 rounded-lg border border-[var(--color-border)]" {...props}>
+    <details className="gh-details my-4 rounded-[var(--radius)] border border-[var(--color-border)]" {...props}>
       {children}
     </details>
   ),
   summary: ({ children, ...props }: JSX.IntrinsicElements["summary"]) => (
-    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-lg select-none hover:bg-[var(--color-bg-secondary)] transition-colors" {...props}>
+    <summary className="gh-summary cursor-pointer px-4 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] rounded-t-[var(--radius)] select-none hover:bg-[var(--color-bg-secondary)] transition-colors duration-100" {...props}>
       {children}
     </summary>
   ),
   /* Keyboard shortcut */
   kbd: ({ children, ...props }: JSX.IntrinsicElements["kbd"]) => (
     <kbd
-      className="inline-flex items-center h-5 px-1.5 rounded text-[11px] font-mono leading-none
+      className="inline-flex items-center h-5 px-1.5 rounded-[var(--radius-sm)] text-[11px] font-mono leading-none
         bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)] text-[var(--color-kbd-text)]"
       {...props}
     >

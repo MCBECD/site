@@ -92,7 +92,7 @@ export function BackgroundImagePluginCard() {
     >
       <div className="flex items-center gap-3.5 px-4 py-3.5">
         <div
-          className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+          className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0 transition-colors ${
             enabled
               ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
               : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]"
@@ -138,7 +138,7 @@ export function BackgroundImagePluginCard() {
             <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-hidden="true" onChange={handleFileChange} />
             <button
               onClick={handleUpload}
-              className={`w-full flex items-center justify-center gap-2 h-11 rounded-[var(--radius)] text-[12px] transition-colors
+              className={`w-full flex items-center justify-center gap-2 h-11 rounded-[var(--radius)] text-[13px] transition-colors duration-100
                 ${settings.bgImage && !BG_PRESETS.some((p) => p.value === settings.bgImage)
                   ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
                   : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}

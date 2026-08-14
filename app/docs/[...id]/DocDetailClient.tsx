@@ -56,11 +56,11 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
           <div className="flex items-center gap-0.5">
             <button
               onClick={handleToggleBookmark}
-              className={`w-11 h-11 flex items-center justify-center rounded-lg
+              className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
                 ${bookmarked
                   ? "text-yellow-500"
                   : "text-[var(--color-text-tertiary)] hover:text-yellow-500"
-                } hover:bg-[var(--color-bg-tertiary)] transition-colors`}
+                } hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100`}
               aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
@@ -109,7 +109,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
         {/* Document body */}
         <div
           className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter
-          prose prose-slate dark:prose-invert max-w-none text-[14px] leading-relaxed
+          prose max-w-none text-[14px] leading-relaxed
           prose-a:no-underline hover:prose-a:underline"
         >
           {children}

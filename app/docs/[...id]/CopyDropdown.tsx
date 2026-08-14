@@ -117,10 +117,10 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t("code.copy")}
-        className="inline-flex items-center gap-1.5 h-11 px-2 rounded-lg text-[13px]
+        className="inline-flex items-center gap-1.5 h-11 px-2 rounded-[var(--radius)] text-[13px]
           text-[var(--color-text-secondary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
-          transition-colors"
+          transition-colors duration-100"
       >
         {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
         <span className="hidden sm:inline">{copied ? t("code.copied") : t("code.copy")}</span>
