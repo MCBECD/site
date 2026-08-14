@@ -267,7 +267,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
           role="dialog"
           aria-modal="true"
           aria-label={t("settings.title")}
-          className={`w-full sm:w-[min(440px,calc(100vw-32px))] max-h-[min(85vh,calc(100vh-48px))] sm:max-h-[min(600px,calc(100vh-48px))] rounded-t-[var(--radius-lg)] sm:rounded-[var(--radius-lg)] shadow-xl flex flex-col
+          className={`w-full sm:w-[min(440px,calc(100vw-32px))] max-h-[min(85vh,calc(100vh-48px))] sm:max-h-[min(600px,calc(100vh-48px))] rounded-t-[var(--radius-lg)] sm:rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] flex flex-col
             bg-[var(--color-bg-primary)] border border-[var(--color-border)] border-b-0 sm:border-b pointer-events-auto ${panelAnim}`}
         >
           {/* header */}
@@ -365,7 +365,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   }
                 >
                   {bookmarkedDocs.length > 0 ? (
-                    <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden">
+                    <div className="space-y-0.5 rounded-[var(--radius)] border border-[var(--color-border)] overflow-hidden">
                       {bookmarkedDocs.map((doc) => (
                         <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
                           <Link
@@ -380,9 +380,9 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                           </Link>
                           <button
                             onClick={() => { removeBookmark(doc.id); refreshBookmarks(); }}
-                            className="w-11 h-11 flex items-center justify-center rounded-md
+                            className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
                               text-[var(--color-text-tertiary)] sm:opacity-0 sm:group-hover:opacity-100
-                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
+                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors duration-100 shrink-0"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -412,7 +412,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   }
                 >
                   {historyDocs.length > 0 ? (
-                    <div className="space-y-0.5 rounded-lg border border-[var(--color-border)] overflow-hidden">
+                    <div className="space-y-0.5 rounded-[var(--radius)] border border-[var(--color-border)] overflow-hidden">
                       {historyDocs.slice(0, 8).map((doc) => (
                         <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors group">
                           <Link
@@ -427,9 +427,9 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                           </Link>
                           <button
                             onClick={() => { removeHistory(doc.id); refreshHistory(); }}
-                            className="w-11 h-11 flex items-center justify-center rounded-md
+                            className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
                               text-[var(--color-text-tertiary)] sm:opacity-0 sm:group-hover:opacity-100
-                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors shrink-0"
+                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors duration-100 shrink-0"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>

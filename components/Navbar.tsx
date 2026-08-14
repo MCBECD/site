@@ -83,8 +83,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
       <div className="flex items-center ml-auto gap-1 sm:gap-1.5">
         {/* Theme toggle */}
         <div
-          className="flex items-center gap-0.5 rounded-[var(--radius-sm)] p-0.5"
-          style={{ background: "var(--color-bg-tertiary)" }}
+          className="flex items-center gap-0.5 rounded-[var(--radius-sm)] p-0.5 bg-[var(--color-bg-tertiary)]"
           role="radiogroup"
           aria-label={t("settings.theme")}
         >

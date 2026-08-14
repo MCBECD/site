@@ -57,7 +57,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={(e) => onBookmark(e, doc.id)}
-            className={`w-11 h-11 flex items-center justify-center rounded-md transition-colors duration-100 -m-2
+            className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)] transition-colors duration-100 -m-2
               ${isBookmarked
                 ? "text-yellow-500"
                 : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-yellow-500"}
@@ -69,7 +69,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
           <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-100" />
         </div>
       </div>
-      <div className="mt-1.5 flex items-center gap-2 text-[11px] text-[var(--color-text-tertiary)]">
+      <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-[var(--color-text-tertiary)]">
         {typeLabel && (
           <span className="inline-flex items-center gap-1 shrink-0 text-[var(--color-accent)]">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />

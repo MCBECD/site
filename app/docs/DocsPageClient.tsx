@@ -216,7 +216,7 @@ export function DocsPageClient() {
             value={query}
             onChange={(e) => handleInput(e.target.value)}
             placeholder={t("doc.searchPlaceholder")}
-            className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-lg
+            className="search-input w-full pl-10 pr-10 py-2.5 text-[14px] rounded-[var(--radius)]
               text-[var(--color-text-primary)]
               placeholder:text-[var(--color-text-tertiary)]
               border border-[var(--color-border)]
@@ -227,14 +227,14 @@ export function DocsPageClient() {
               onClick={() => { setQuery(""); setDebouncedQuery(""); resetPage(); }}
               aria-label={t("doc.clearSearch")}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 z-[var(--z-search)]
-                flex items-center justify-center rounded-md
+                flex items-center justify-center rounded-[var(--radius-sm)]
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
-                hover:bg-[var(--color-bg-tertiary)] transition-colors"
+                hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-[var(--z-search)] inline-flex items-center gap-1 px-1.5 rounded-md text-[11px] font-mono leading-none
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-[var(--z-search)] inline-flex items-center gap-1 px-1.5 rounded-[var(--radius-sm)] text-[11px] font-mono leading-none
               text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
               pointer-events-none hidden sm:inline-flex">
               <Command className="w-2.5 h-2.5" />
@@ -244,18 +244,18 @@ export function DocsPageClient() {
         <button
           onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
           aria-label={t("doc.switchToView", { mode: viewMode === "card" ? t("doc.viewList") : t("doc.viewCards") })}
-          className="shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-lg
+          className="shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-[var(--radius-sm)]
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-colors"
+            transition-colors duration-100"
         >
           {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
         </button>
       </div>
 
       {isSearching && (
-        <p className="text-xs text-[var(--color-text-tertiary)] mb-3 px-0.5">
+        <p className="text-[12px] text-[var(--color-text-tertiary)] mb-3 px-0.5">
           {t("doc.resultCount", { count: filteredDocs.length })}
         </p>
       )}
@@ -265,7 +265,7 @@ export function DocsPageClient() {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-bg-tertiary)] mb-4">
             <Search className="w-5 h-5 text-[var(--color-text-tertiary)]" />
           </div>
-          <p className="text-sm text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
+          <p className="text-[13px] text-[var(--color-text-tertiary)]">{t("doc.noResults")}</p>
         </div>
       ) : (
         <div

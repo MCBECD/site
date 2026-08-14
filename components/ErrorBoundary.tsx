@@ -51,11 +51,11 @@ function ErrorFallback({ onRetry }: { onRetry: () => void }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
         </svg>
       </div>
-      <h2 className="text-sm font-medium text-[var(--color-text-primary)] mb-1">{t("common.errorTitle")}</h2>
-      <p className="text-xs text-[var(--color-text-tertiary)] max-w-sm">{t("common.errorDesc")}</p>
+      <h2 className="text-[13px] font-medium text-[var(--color-text-primary)] mb-1">{t("common.errorTitle")}</h2>
+      <p className="text-[12px] text-[var(--color-text-tertiary)] max-w-sm">{t("common.errorDesc")}</p>
       <button
         onClick={onRetry}
-        className="mt-4 px-5 py-2.5 text-xs min-h-[44px] flex items-center rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+        className="mt-4 px-5 py-2.5 text-[13px] min-h-[44px] flex items-center rounded-[var(--radius)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors duration-100"
       >
         {t("common.errorRetry")}
       </button>

@@ -24,7 +24,7 @@ code, kbd {
   color: var(--color-accent);
   background-color: var(--color-code-bg);
   padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
 }
 
 /* --- Code blocks (Shiki) --- */
@@ -33,7 +33,7 @@ pre {
   padding: 0.125rem 0.25rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   border-left: 3px solid var(--color-accent);
   overflow-x: auto;
   white-space: pre;
@@ -45,7 +45,7 @@ pre {
 .code-block-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
 }
 
 .code-block-scroll pre {
