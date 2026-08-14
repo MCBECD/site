@@ -59,8 +59,8 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
             onClick={(e) => onBookmark(e, doc.id)}
             className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)] transition-colors duration-100 -m-2
               ${isBookmarked
-                ? "text-yellow-500"
-                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-yellow-500"}
+                ? "text-[var(--color-accent)]"
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 hover:text-[var(--color-accent)]"}
             `}
             aria-label={isBookmarked ? t("common.unbookmark") : t("common.bookmark")}
           >

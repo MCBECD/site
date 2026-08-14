@@ -91,7 +91,7 @@
   box-shadow: var(--shadow-md);
 }
 .cta-primary:active {
-  transform: scale(0.97);
+  transform: scale(0.92);
 }
 .cta-primary:focus-visible {
   outline: 2px solid var(--color-accent);
@@ -124,7 +124,7 @@
   background: var(--color-bg-tertiary);
 }
 .cta-secondary:active {
-  transform: scale(0.97);
+  transform: scale(0.92);
 }
 .cta-secondary:focus-visible {
   outline: 2px solid var(--color-accent);

@@ -135,7 +135,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-10 flex items-center justify-between px-3 rounded-[var(--radius)] text-[13px]
+        className="w-full h-11 flex items-center justify-between px-3 rounded-[var(--radius)] text-[13px]
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
           border border-[var(--color-border)]
           hover:border-[var(--color-accent)]/30
@@ -154,7 +154,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
             role="listbox"
             aria-activedescendant={activeIndex >= 0 ? `locale-option-${activeIndex}` : undefined}
             className="fixed py-1 rounded-[var(--radius)] border border-[var(--color-border)]
-              bg-[var(--color-bg-primary)] shadow-lg z-[var(--z-portal)] overflow-y-auto dropdown-in"
+              bg-[var(--color-bg-primary)] shadow-[var(--shadow-lg)] z-[var(--z-portal)] overflow-y-auto dropdown-in"
             style={{
               top: flipUp ? undefined : pos.top + pos.height + 6,
               bottom: flipUp ? window.innerHeight - pos.top + 6 : undefined,

@@ -129,7 +129,7 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
 
       {open && (
         <div className="absolute right-0 top-full mt-1.5 w-36 py-1 rounded-[var(--radius)] border border-[var(--color-border)]
-          bg-[var(--color-bg-primary)] shadow-lg z-[var(--z-dropdown)] dropdown-in"
+          bg-[var(--color-bg-primary)] shadow-[var(--shadow-lg)] z-[var(--z-dropdown)] dropdown-in"
           role="menu">
           <button
             ref={(el) => { itemRefs.current[0] = el; }}
@@ -157,8 +157,9 @@ const CopyDropdown = memo(function CopyDropdown({ rawContent }: CopyDropdownProp
       )}
 
       {toastMsg && (
-        <div className="absolute right-0 top-full mt-2 px-3 py-1.5 rounded-[var(--radius)] text-[12px] text-white
-          bg-[var(--color-toast-bg)] shadow-lg z-[var(--z-dropdown)] whitespace-nowrap dropdown-in">
+        <div className="absolute right-0 top-full mt-2 px-3 py-1.5 rounded-[var(--radius)] text-[12px] font-medium
+          bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30
+          shadow-[var(--shadow-lg)] z-[var(--z-dropdown)] whitespace-nowrap dropdown-in">
           {toastMsg}
         </div>
       )}
