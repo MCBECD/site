@@ -102,14 +102,14 @@ function AboutTab() {
             href="https://github.com/MCBECD/site"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors no-underline"
+            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] no-underline"
           >
             <span>GitHub</span>
             <span className="text-[11px] text-[var(--color-text-tertiary)]">MCBECD/site ↗</span>
           </Link>
           <Link
             href="/docs/"
-            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors no-underline"
+            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] no-underline"
           >
             <span>{t("nav.docs")}</span>
             <span className="text-[11px] text-[var(--color-text-tertiary)]">/docs/</span>
@@ -278,7 +278,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
               onClick={handleClose}
               className="w-11 h-11 flex items-center justify-center -mr-1 rounded-[var(--radius-sm)]
                 text-[var(--color-text-tertiary)]
-                hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100"
+                hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)]"
               aria-label={t("settings.close")}
             >
               <X className="w-3.5 h-3.5" />
@@ -291,7 +291,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
               <button
                 key={key}
                 onClick={() => setTab(key)}
-                className={`px-3 pb-2.5 text-[13px] font-medium transition-colors duration-100 relative -mb-px min-h-[44px] active:scale-[0.92] flex items-center
+                className={`px-3 pb-2.5 text-[13px] font-medium transition-colors duration-[var(--duration-fast)] relative -mb-px min-h-[44px] active:scale-[0.92] flex items-center
                   ${tab === key
                     ? "text-[var(--color-accent)]"
                     : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"}`}
@@ -314,10 +314,10 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       <button
                         key={opt.value}
                         onClick={() => updateSettings("theme", opt.value)}
-                        className={`flex-1 flex items-center justify-center gap-1.5 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-colors duration-100
+                        className={`flex-1 flex items-center justify-center gap-1.5 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
                           ${settings.theme === opt.value
-                            ? "bg-[var(--color-accent)] text-white"
-                            : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
+                            ? "bg-[var(--color-accent)] text-[var(--color-bg-primary)]"
+                            : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}}`}
                       >
                         <opt.icon className="w-3.5 h-3.5" />
                         {t(opt.labelKey)}
@@ -332,10 +332,10 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       <button
                         key={opt.value}
                         onClick={() => updateSettings("fontSize", opt.value)}
-                        className={`flex-1 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-colors duration-100
+                        className={`flex-1 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
                           ${settings.fontSize === opt.value
-                            ? "bg-[var(--color-accent)] text-white"
-                            : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}
+                            ? "bg-[var(--color-accent)] text-[var(--color-bg-primary)]"
+                            : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}}`}
                       >
                         {t(opt.labelKey)}
                       </button>
@@ -356,7 +356,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                     bookmarkedDocs.length > 0 ? (
                       <button
                         onClick={() => { clearBookmarks(); refreshBookmarks(); }}
-                        className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-red-400 active:scale-[0.92] transition-colors duration-100 min-h-[44px] px-1 -mx-1"
+                        className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)] min-h-[44px] px-1 -mx-1"
                       >
                         <Trash2 className="w-3 h-3" />
                         {t("settings.clearAll")}
@@ -367,14 +367,14 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   {bookmarkedDocs.length > 0 ? (
                     <div className="space-y-0.5 rounded-[var(--radius)] border border-[var(--color-border)] overflow-hidden">
                       {bookmarkedDocs.map((doc) => (
-                        <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100 group">
+                        <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] group">
                           <Link
                             href={`/docs/${doc.id}/`}
                             className="flex items-center gap-2 flex-1 min-w-0 no-underline"
                             onClick={handleClose}
                           >
                             <Star className="w-3 h-3 text-[var(--color-accent)] shrink-0" />
-                            <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate transition-colors">
+                            <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate transition-colors duration-[var(--duration-fast)]">
                               {doc.title}
                             </span>
                           </Link>
@@ -382,7 +382,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                             onClick={() => { removeBookmark(doc.id); refreshBookmarks(); }}
                             className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
                               text-[var(--color-text-tertiary)] sm:opacity-0 sm:group-hover:opacity-100
-                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors duration-100 shrink-0"
+                              hover:text-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] transition-colors duration-[var(--duration-fast)] shrink-0"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -403,7 +403,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                     historyDocs.length > 0 ? (
                       <button
                         onClick={() => { clearHistory(); refreshHistory(); }}
-                        className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-red-400 active:scale-[0.92] transition-colors duration-100 min-h-[44px] px-1 -mx-1"
+                        className="flex items-center gap-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)] min-h-[44px] px-1 -mx-1"
                       >
                         <Trash2 className="w-3 h-3" />
                         {t("settings.clearAll")}
@@ -414,14 +414,14 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   {historyDocs.length > 0 ? (
                     <div className="space-y-0.5 rounded-[var(--radius)] border border-[var(--color-border)] overflow-hidden">
                       {historyDocs.slice(0, 8).map((doc) => (
-                        <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors duration-100 group">
+                        <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] group">
                           <Link
                             href={`/docs/${doc.id}/`}
                             className="flex items-center gap-2 flex-1 min-w-0 no-underline"
                             onClick={handleClose}
                           >
                             <Clock className="w-3 h-3 text-[var(--color-accent)] shrink-0" />
-                            <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate transition-colors">
+                            <span className="text-[13px] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] truncate transition-colors duration-[var(--duration-fast)]">
                               {doc.title}
                             </span>
                           </Link>
@@ -429,7 +429,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                             onClick={() => { removeHistory(doc.id); refreshHistory(); }}
                             className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
                               text-[var(--color-text-tertiary)] sm:opacity-0 sm:group-hover:opacity-100
-                              hover:text-red-400 hover:bg-[var(--color-bg-secondary)] transition-colors duration-100 shrink-0"
+                              hover:text-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] transition-colors duration-[var(--duration-fast)] shrink-0"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>

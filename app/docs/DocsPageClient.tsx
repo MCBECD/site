@@ -195,9 +195,6 @@ export function DocsPageClient() {
     <div className="relative max-w-3xl mx-auto px-[var(--content-gutter)] pt-14 pb-24">
       {/* Hero */}
       <div className="mb-10">
-        <p className="text-[13px] text-[var(--color-accent)] mb-2 font-medium hero-enter">
-          {t("nav.docs")}
-        </p>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
           {t("doc.title")}
         </h1>
@@ -229,7 +226,7 @@ export function DocsPageClient() {
               className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 z-[var(--z-search)]
                 flex items-center justify-center rounded-[var(--radius-sm)]
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
-                hover:bg-[var(--color-bg-tertiary)] active:scale-[0.92] transition-colors duration-100"
+                hover:bg-[var(--color-bg-tertiary)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -248,7 +245,7 @@ export function DocsPageClient() {
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            active:scale-[0.92] transition-colors duration-100"
+            active:scale-[0.92] transition-colors duration-[var(--duration-fast)]"
         >
           {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
         </button>

@@ -46,9 +46,9 @@ export const ScrollToTop = memo(function ScrollToTop() {
           "fixed bottom-6 right-6 z-[var(--z-sticky)]",
           "w-11 h-11 rounded-full",
           "flex items-center justify-center",
-          "bg-[var(--color-accent)] text-white",
+          "bg-[var(--color-accent)] text-[var(--color-bg-primary)]",
           "hover:bg-[var(--color-accent-hover)] active:scale-[0.92]",
-          "transition-all duration-100",
+          "transition-[opacity,transform] duration-[var(--duration-fast)]",
           "shadow-[var(--shadow-md)]",
           visible
             ? "opacity-100 translate-y-0 pointer-events-auto"

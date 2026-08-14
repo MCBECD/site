@@ -24,8 +24,8 @@
 /* ----------------------------------------------------------
  * Animation utilities
  * ---------------------------------------------------------- */
-.overlay-in  { animation: fadeIn 0.2s ease both; }
-.overlay-out { animation: fadeIn 0.15s ease reverse both; }
+.overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
+.overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
 .settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
 .settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
@@ -59,7 +59,7 @@
   transform-origin: left;
 }
 
-.page-fade-in { animation: fadeIn 0.1s ease both; }
+.page-fade-in { animation: fadeIn var(--duration-fast) var(--ease-out) both; }
 
 /* Docs page entrance */
 .hero-enter {
@@ -86,5 +86,5 @@
 }
 
 .detail-content-enter {
-  animation: fadeIn 0.3s ease 0.12s both;
+  animation: fadeIn 0.3s var(--ease-out) 0.12s both;
 }
