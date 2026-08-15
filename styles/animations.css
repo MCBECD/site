@@ -6,39 +6,19 @@
   to   { opacity: 1; }
 }
 
-@keyframes tabSlideIn {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-/* ----------------------------------------------------------
- * Spring keyframes — single clean overshoot (smooth, not bouncy)
- * The overshoot comes from `var(--ease-spring)`, not from extra steps,
- * so each element moves once and settles once.
- * ---------------------------------------------------------- */
-@keyframes springUp {
-  from { opacity: 0; transform: translateY(24px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes springFade {
-  from { opacity: 0; transform: translateY(14px); }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes springPopIn {
-  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes springPopOut {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to   { opacity: 0; transform: translateY(12px) scale(0.97); }
-}
-
-@keyframes dropdownSpring {
-  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes tabSlideIn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 /* ----------------------------------------------------------
@@ -47,16 +27,35 @@
 .overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
-.settings-panel-in  { animation: springPopIn 0.5s var(--ease-spring) both; }
-.settings-panel-out { animation: springPopOut 0.22s var(--ease-in) both; }
+.settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
+.settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
 
-.dropdown-in {
-  animation: dropdownSpring 0.35s var(--ease-spring) both;
-  transform-origin: top;
+@keyframes settingsPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+@keyframes settingsPanelOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.dropdown-in  { animation: slideDown 0.15s var(--ease-out) both; }
+
 .tab-indicator {
-  animation: tabSlideIn 0.25s var(--ease-spring) both;
+  animation: tabSlideIn 0.1s var(--ease-out) both;
   transform-origin: left;
 }
 
@@ -64,28 +63,28 @@
 
 /* Docs page entrance */
 .hero-enter {
-  animation: springUp 0.7s var(--ease-spring) both;
+  animation: fadeInUp 0.4s var(--ease-out) both;
 }
 
 .hero-sub-enter {
-  animation: springFade 0.6s var(--ease-spring) 0.1s both;
+  animation: fadeInUp 0.35s var(--ease-out) 0.06s both;
 }
 
 .search-enter {
-  animation: springFade 0.55s var(--ease-spring) 0.2s both;
+  animation: fadeInUp 0.3s var(--ease-out) 0.2s both;
 }
 
 /* Doc cards staggered entrance */
 .doc-card-enter {
-  animation: springUp 0.55s var(--ease-spring) both;
-  animation-delay: calc(var(--stagger-index, 0) * 50ms + 0.25s);
+  animation: fadeInUp 0.3s var(--ease-out) both;
+  animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.24s);
 }
 
 /* Detail page entrance */
 .detail-enter {
-  animation: springUp 0.65s var(--ease-spring) both;
+  animation: fadeInUp 0.35s var(--ease-out) both;
 }
 
 .detail-content-enter {
-  animation: springFade 0.5s var(--ease-spring) 0.12s both;
+  animation: fadeIn 0.3s var(--ease-out) 0.12s both;
 }
