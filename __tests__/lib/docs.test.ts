@@ -16,7 +16,7 @@ beforeAll(() => {
   }
   try {
     const entries = fs.readdirSync(TEST_DOCS_DIR, { recursive: true, withFileTypes: true });
-    hasContent = entries.some((e) => e.isFile() && e.name.endsWith(".mdx"));
+    hasContent = entries.some((e) => e.isFile() && e.name.endsWith(".md"));
   } catch {
     hasContent = false;
   }
@@ -24,7 +24,7 @@ beforeAll(() => {
 
 describe("docs.ts - Document Engine", () => {
   describe("getAllDocs", () => {
-    it("returns a non-empty array when content/docs has .mdx files", () => {
+    it("returns a non-empty array when content/docs has .md files", () => {
       const docs = getAllDocs();
       if (!hasContent) {
         expect(docs).toEqual([]);

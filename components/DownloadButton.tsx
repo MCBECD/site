@@ -26,7 +26,7 @@ export const DownloadButton = memo(function DownloadButton({ filename, getConten
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${safeName}.mdx`;
+      a.download = `${safeName}.md`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

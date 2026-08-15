@@ -24,7 +24,7 @@ if (!/^[a-z0-9-]+$/.test(commandName)) {
   process.exit(1);
 }
 
-const targetPath = path.join(DOCS_DIR, `${commandName}.mdx`);
+const targetPath = path.join(DOCS_DIR, `${commandName}.md`);
 if (fs.existsSync(targetPath)) {
   console.error(`文件已存在: ${targetPath}`);
   process.exit(1);

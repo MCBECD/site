@@ -5,7 +5,7 @@ import matter from "gray-matter";
 /* ============================================================
  * MCBECD Command Library Documentation Engine
  *
- * @/content/docs/**.mdx (metadata in frontmatter)
+ * @/content/docs/**.md (metadata in frontmatter)
  * ============================================================ */
 
 export interface DocMeta {
@@ -97,7 +97,7 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
       continue;
     }
     if (entry.isDirectory()) dirs.push(entry);
-    else if (entry.name.endsWith(".mdx")) files.push(entry);
+    else if (entry.name.endsWith(".md")) files.push(entry);
   }
 
   // Sort for deterministic ordering
@@ -112,7 +112,7 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 
   for (const entry of files) {
     const fullPath = path.join(dir, entry.name);
-    const docId = prefix ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}` : entry.name.replace(/\.mdx$/, "");
+    const docId = prefix ? `${prefix}/${entry.name.replace(/\.md$/, "")}` : entry.name.replace(/\.md$/, "");
     const mdxMeta = parseMdxMeta(fullPath);
     const meta = buildMeta(docId, docId, mdxMeta);
     if (meta) results.push(meta);
@@ -142,8 +142,8 @@ export function getDocById(id: string): DocContent | null {
   if (!isSafeDocId(id)) return null;
   const docsDir = getDocsDir();
 
-  // path.join correctly handles ids with slashes (e.g. "commands/give" → content/docs/commands/give.mdx)
-  const filePath = path.join(docsDir, `${id}.mdx`);
+  // path.join correctly handles ids with slashes (e.g. "commands/give" → content/docs/commands/give.md)
+  const filePath = path.join(docsDir, `${id}.md`);
   if (!fs.existsSync(filePath)) return null;
 
   const mdxMeta = parseMdxMeta(filePath);
@@ -158,7 +158,7 @@ export function getDocRawContent(id: string): string | null {
   const docsDir = getDocsDir();
 
   try {
-    const filePath = path.join(docsDir, `${id}.mdx`);
+    const filePath = path.join(docsDir, `${id}.md`);
     if (fs.existsSync(filePath)) return fs.readFileSync(filePath, "utf-8");
   } catch {
     // Silently fail — caller handles null return
