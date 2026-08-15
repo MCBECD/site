@@ -97,7 +97,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 aria-checked={isActive}
                 tabIndex={isActive ? 0 : -1}
                 className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
-                  transition-colors duration-[var(--duration-fast)] w-8 h-8"
+                  transition-[color,background,transform] duration-[var(--duration-fast)] w-8 h-8"
                 style={{
                   color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
                   background: isActive ? "var(--color-bg-elevated)" : "transparent",
@@ -119,7 +119,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
           className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-colors duration-[var(--duration-fast)] active:scale-[0.92]"
+            transition-[color,transform] duration-[var(--duration-fast)] active:scale-[0.92]"
           title={t("nav.github")}
           aria-label={t("nav.github")}
         >
@@ -131,7 +131,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
           className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
             text-[var(--color-text-tertiary)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-colors duration-[var(--duration-fast)] active:scale-[0.92]"
+            transition-[color,transform] duration-[var(--duration-fast)] active:scale-[0.92]"
           title={t("nav.settings")}
           aria-label={t("nav.settings")}
         >

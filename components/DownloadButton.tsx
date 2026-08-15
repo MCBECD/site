@@ -42,7 +42,7 @@ export const DownloadButton = memo(function DownloadButton({ filename, getConten
       className="inline-flex items-center gap-1.5 h-11 px-2 rounded-[var(--radius)] text-[13px]
         text-[var(--color-text-secondary)]
         hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
-        active:scale-[0.92] transition-colors duration-[var(--duration-fast)]"
+        active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]"
       title={t("code.download")}
     >
       <Download className="w-3.5 h-3.5" />
