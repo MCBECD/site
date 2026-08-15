@@ -100,7 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased">
         <a
           href="#main-content"
-          className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-[9999] focus-visible:px-4 focus-visible:py-2 focus-visible:rounded-[var(--radius-sm)] focus-visible:bg-[var(--color-accent)] focus-visible:text-[var(--color-bg-primary)] focus-visible:text-[13px] focus-visible:font-semibold focus-visible:outline-none focus-visible:shadow-[var(--shadow-lg)]"
+          className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-[9999] focus-visible:px-4 focus-visible:py-2 focus-visible:rounded-[var(--radius-sm)] focus-visible:bg-[var(--color-accent)] focus-visible:text-[var(--color-on-accent)] focus-visible:text-[13px] focus-visible:font-semibold focus-visible:outline-none focus-visible:shadow-[var(--shadow-lg)]"
         >
           Skip to content
         </a>

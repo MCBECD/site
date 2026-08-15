@@ -39,6 +39,9 @@
   --z-portal: 60;        /* Portaled elements that must top their parent modal */
   --z-toast: 100;        /* Global portaled toasts (highest) */
 
+  /* --- On-accent foreground (always white, for text on accent bg) --- */
+  --color-on-accent: #ffffff;
+
 }
 
 /* Dark mode: deeper shadows for visible elevation */
