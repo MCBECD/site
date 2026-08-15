@@ -12,40 +12,33 @@
 }
 
 /* ----------------------------------------------------------
- * Spring keyframes — explicit overshoot for a real "spring" feel
- * (go past the target, bounce back, then settle)
+ * Spring keyframes — single clean overshoot (smooth, not bouncy)
+ * The overshoot comes from `var(--ease-spring)`, not from extra steps,
+ * so each element moves once and settles once.
  * ---------------------------------------------------------- */
 @keyframes springUp {
-  0%   { opacity: 0; transform: translateY(32px) scale(0.94); }
-  55%  { opacity: 1; transform: translateY(-8px) scale(1.02); }
-  75%  { transform: translateY(4px) scale(0.99); }
-  90%  { transform: translateY(-2px) scale(1.005); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes springFade {
-  0%   { opacity: 0; transform: translateY(20px); }
-  60%  { opacity: 1; transform: translateY(-5px); }
-  80%  { transform: translateY(2px); }
-  100% { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes springPopIn {
-  0%   { opacity: 0; transform: translateY(28px) scale(0.94); }
-  60%  { opacity: 1; transform: translateY(-6px) scale(1.015); }
-  80%  { transform: translateY(3px) scale(0.995); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes springPopOut {
-  0%   { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(16px) scale(0.96); }
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(12px) scale(0.97); }
 }
 
 @keyframes dropdownSpring {
-  0%   { opacity: 0; transform: translateY(-10px) scale(0.96); }
-  60%  { opacity: 1; transform: translateY(2px) scale(1.01); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ----------------------------------------------------------
@@ -54,16 +47,16 @@
 .overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
-.settings-panel-in  { animation: springPopIn 0.45s ease-in-out both; }
-.settings-panel-out { animation: springPopOut 0.2s ease-in both; }
+.settings-panel-in  { animation: springPopIn 0.5s var(--ease-spring) both; }
+.settings-panel-out { animation: springPopOut 0.22s var(--ease-in) both; }
 
 .dropdown-in {
-  animation: dropdownSpring 0.3s ease-in-out both;
+  animation: dropdownSpring 0.35s var(--ease-spring) both;
   transform-origin: top;
 }
 
 .tab-indicator {
-  animation: tabSlideIn 0.2s var(--ease-spring) both;
+  animation: tabSlideIn 0.25s var(--ease-spring) both;
   transform-origin: left;
 }
 
@@ -71,28 +64,28 @@
 
 /* Docs page entrance */
 .hero-enter {
-  animation: springUp 0.6s ease-in-out both;
+  animation: springUp 0.7s var(--ease-spring) both;
 }
 
 .hero-sub-enter {
-  animation: springFade 0.5s ease-in-out 0.08s both;
+  animation: springFade 0.6s var(--ease-spring) 0.1s both;
 }
 
 .search-enter {
-  animation: springFade 0.45s ease-in-out 0.18s both;
+  animation: springFade 0.55s var(--ease-spring) 0.2s both;
 }
 
 /* Doc cards staggered entrance */
 .doc-card-enter {
-  animation: springUp 0.45s ease-in-out both;
-  animation-delay: calc(var(--stagger-index, 0) * 45ms + 0.2s);
+  animation: springUp 0.55s var(--ease-spring) both;
+  animation-delay: calc(var(--stagger-index, 0) * 50ms + 0.25s);
 }
 
 /* Detail page entrance */
 .detail-enter {
-  animation: springUp 0.55s ease-in-out both;
+  animation: springUp 0.65s var(--ease-spring) both;
 }
 
 .detail-content-enter {
-  animation: springFade 0.4s ease-in-out 0.1s both;
+  animation: springFade 0.5s var(--ease-spring) 0.12s both;
 }
