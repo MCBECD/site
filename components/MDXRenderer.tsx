@@ -56,7 +56,7 @@ async function renderCodeBlock(className: string, code: string) {
 
 const components = {
   h2: () => null,
-  pre: async ({ children }: { children: ReactNode }) => {
+  pre: async ({ children }: { children?: ReactNode }) => {
     if (!isValidElement(children))
       return <pre>{children}</pre>;
 
