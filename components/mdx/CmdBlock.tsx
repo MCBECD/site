@@ -20,13 +20,13 @@ export function makeCmdBlock(icon: string) {
         defaultColor: false,
       });
 
-      return <div className="flex items-start gap-1.5">
+      return <div className="flex items-center gap-1.5">
           <CmdBlockIcon type={icon} />
           <CodeBlockClient html={html} code={code} />
         </div>;
     } catch (err) {
       console.error(`[CmdBlock:${icon}] Syntax highlighting failed, rendering plain code:`, err);
-      return <div className="flex items-start gap-1.5">
+      return <div className="flex items-center gap-1.5">
           <CmdBlockIcon type={icon} />
           <pre className="p-4 rounded-[var(--radius-sm)] bg-[var(--color-code-bg)] border border-[var(--color-border)] overflow-x-auto">
             <code>{code}</code>

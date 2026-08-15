@@ -11,7 +11,7 @@ export const CmdBlockIcon = memo(function CmdBlockIcon({ type }: { type: string 
       alt={t("cmd.iconAlt", { type })}
       width={18}
       height={18}
-      className="cmd-icon shrink-0 mr-1"
+      className="cmd-icon shrink-0"
     />
   );
 });

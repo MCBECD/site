@@ -4,16 +4,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 /**
- * Cross-page transition — pure CSS, opacity only.
+ * Cross-page transition — key-based remount for inner entrance animations.
  *
- * No framer-motion: JS-driven animation on the main thread causes jank.
- * No y-translate: vertical movement during page swap looks stuttery
- * because content height differs between pages.
- * No exit animation: avoids the "two flash" sequential feel.
+ * No wrapper fade: each page has its own staggered entrance animations
+ * (hero-enter, doc-card-enter, etc.) that handle the opacity 0→1.
+ * A wrapper-level fade would cause a visible double-fade / stutter.
  *
  * The `key` forces a fresh DOM element on each route, restarting
- * the CSS animation. `animation-fill-mode: both` ensures the new
- * element starts at opacity 0 from the very first paint (no flash).
+ * all inner CSS animations naturally.
  */
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
@@ -30,9 +28,12 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   /* First mount: bare fragment, no wrapper, no animation */
   if (isFirst.current) return <>{children}</>;
 
-  /* Navigation: key change remounts the div → CSS animation restarts */
+  /* Navigation: key change remounts the div → inner entrance animations restart.
+   * No page-fade-in here: each page has its own staggered entrance animations
+   * (hero-enter, doc-card-enter, etc.) that already handle the opacity 0→1.
+   * Adding a wrapper fade would cause a visible double-fade / stutter. */
   return (
-    <div key={pathname} className="page-fade-in">
+    <div key={pathname}>
       {children}
     </div>
   );
