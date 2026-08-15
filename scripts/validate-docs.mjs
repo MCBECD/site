@@ -44,8 +44,8 @@ function scanDir(dir, prefix = "") {
     const id = prefix ? `${prefix}/${entry.name}` : entry.name;
     if (entry.isDirectory()) {
       scanDir(full, id);
-    } else if (entry.name.endsWith(".mdx")) {
-      const docId = entry.name.replace(/\.mdx$/, "");
+    } else if (entry.name.endsWith(".md")) {
+      const docId = entry.name.replace(/\.md$/, "");
       checkFile(full, prefix ? `${prefix}/${docId}` : docId);
     }
   }

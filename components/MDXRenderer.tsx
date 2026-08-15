@@ -1,48 +1,20 @@
-import { MDXRemote } from "next-mdx-remote/rsc";
+import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import type { CSSProperties, JSX, ReactNode } from "react";
-import { Suspense, isValidElement } from "react";
-import { Loader2 } from "lucide-react";
+import { isValidElement } from "react";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { ExternalLink } from "./ExternalLink";
-import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
 
-const CMD_TAGS = "Cmd(?:Impulse|Repeat|Chain|ConditionalImpulse|ConditionalRepeat|ConditionalChain|Chat)";
-const CMD_EXPR_RE = new RegExp(`<(${CMD_TAGS})>\\{("(?:[^"\\\\]|\\\\.)*")\\}</\\1>`, "g");
-
-/**
- * Pre-process MDX source to fix Cmd* components that contain JSX expressions
- * with nested braces (e.g. JSON/NBT data). The MDX parser cannot handle
- * `{"...{...}..."}` patterns, so we convert them to escaped plain text:
- *   <CmdRepeat>{"...{...}..."}</CmdRepeat>  →  <CmdRepeat>...\{...\}...</CmdRepeat>
- */
 function preprocessCmdExpressions(source: string): string {
-  return source.replace(CMD_EXPR_RE, (match, tag: string, rawStr: string) => {
-    const inner = rawStr.slice(1, -1);
-
-    if (!inner.includes("{") && !inner.includes("}")) {
-      return match;
-    }
-
-    const decoded = inner
-      .replace(/\\"/g, '"')
-      .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
-
-    const escaped = decoded
-      .replace(/\{/g, "\\{")
-      .replace(/\}/g, "\\}");
-
-    return `<${tag}>${escaped}</${tag}>`;
-  });
+  return source.replace(/<Cmd([^>]+)>[\s\n]*`([^`]+)`/g, (_, cmdType, code) => (
+     "```Cmd" + cmdType + "\n" + code + "\n```"
+  ));
 }
 
-/**
- * Sanitize an href value to prevent javascript: and other dangerous protocol URLs.
- * Allows absolute paths (/...), fragment links (#...), relative paths (../...), and http(s) URLs.
- */
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
   const trimmed = href.trim();
@@ -58,16 +30,31 @@ interface CodeElementProps {
   style?: CSSProperties;
 }
 
-const CmdImpulse = makeCmdBlock("impulse");
-const CmdRepeat = makeCmdBlock("repeat");
-const CmdChain = makeCmdBlock("chain");
-const CmdConditionalImpulse = makeCmdBlock("conditional-impulse");
-const CmdConditionalRepeat = makeCmdBlock("conditional-repeat");
-const CmdConditionalChain = makeCmdBlock("conditional-chain");
-const CmdChat = makeCmdBlock("chat");
+async function renderCodeBlock(className: string, code: string) {
+  const match = /language-(\w+)/.exec(className);
+  const lang = match ? match[1]! : "mcfunction";
+
+  const hl = await getHighlighter();
+  const html = hl.codeToHtml(code, {
+    lang: hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction",
+    themes: { light: "github-light", dark: "github-dark" },
+    defaultColor: false,
+  });
+  if (lang.startsWith("Cmd")) {
+    return <div className="flex items-center gap-1.5">
+          <img
+            src={`/icons/cmd/${lang.toLowerCase().replace("cmd", "")}.png`}
+            width={24}
+            height={24}
+            className="cmd-icon shrink-0 mt-2"
+          />
+          <CodeBlockClient html={html} code={code} />
+        </div>;
+  }
+  return <CodeBlockClient html={html} code={code} />;
+}
 
 const components = {
-  /* h2 is hidden in doc detail pages — the header card already shows the title */
   h2: () => null,
   pre: async ({ children }: { children: ReactNode }) => {
     if (!isValidElement(children))
@@ -75,27 +62,9 @@ const components = {
 
     const props = children.props as CodeElementProps;
     const className = props.className ?? "";
-    const match = /language-(\w+)/.exec(className);
-    const lang = match ? match[1]! : "mcfunction";
     const code = String(props.children ?? "").trim();
 
-    try {
-      const hl = await getHighlighter();
-      const resolvedLang = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
-      const html = hl.codeToHtml(code, {
-        lang: resolvedLang,
-        themes: { light: "github-light", dark: "github-dark" },
-        defaultColor: false,
-      });
-      return <CodeBlockClient html={html} code={code} />;
-    } catch (err) {
-      console.error("[MDXRenderer] Syntax highlighting failed, rendering plain code:", err);
-      return (
-        <pre className="p-4 rounded-[var(--radius-sm)] bg-[var(--color-code-bg)] border border-[var(--color-border)] overflow-x-auto">
-          <code>{code}</code>
-        </pre>
-      );
-    }
+    return renderCodeBlock(className, code);
   },
   a: ({ children, href, className, id, title }: JSX.IntrinsicElements["a"]) => {
     const safeHref = sanitizeHref(href);
@@ -135,7 +104,6 @@ const components = {
       {children}
     </td>
   ),
-  /* GitHub-style task list checkbox — only whitelist known-safe attributes */
   input: ({ checked, disabled, type }: JSX.IntrinsicElements["input"]) =>
     type === "checkbox" ? (
       <input
@@ -148,7 +116,6 @@ const components = {
     ) : (
       <input type={type} checked={checked} disabled={disabled} />
     ),
-  /* Details/summary for collapsible sections */
   details: ({ children, ...props }: JSX.IntrinsicElements["details"]) => (
     <details className="gh-details my-4 rounded-[var(--radius)] border border-[var(--color-border)]" {...props}>
       {children}
@@ -159,46 +126,24 @@ const components = {
       {children}
     </summary>
   ),
-  /* Keyboard shortcut */
   kbd: ({ children, ...props }: JSX.IntrinsicElements["kbd"]) => (
     <kbd
-      className="inline-flex items-center h-5 px-1.5 rounded-[var(--radius-sm)] text-[11px] font-mono leading-none
-        bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)] text-[var(--color-kbd-text)]"
+      className="inline-flex items-center h-5 px-1.5 rounded-[var(--radius-sm)] text-[11px] font-mono leading-none bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)] text-[var(--color-kbd-text)]"
       {...props}
     >
       {children}
     </kbd>
   ),
-  /* Command block icons */
-  CmdImpulse,
-  CmdRepeat,
-  CmdChain,
-  CmdConditionalImpulse,
-  CmdConditionalRepeat,
-  CmdConditionalChain,
-  CmdChat,
 };
 
 export function MDXRenderer({ source }: { source: string }) {
   const processedSource = preprocessCmdExpressions(source);
   return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)]" />
-        </div>
-      }
-    >
-      <MDXRemote
-        source={processedSource}
-        components={components}
-        options={{
-          mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [rehypeGithubAlerts],
-          },
-        }}
-      />
-    </Suspense>
+    <ReactMarkdown
+      children={processedSource}
+      components={components}
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw, rehypeGithubAlerts]}
+    />
   );
 }

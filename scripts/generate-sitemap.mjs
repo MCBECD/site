@@ -53,12 +53,12 @@ function scanDocs(dir, prefix) {
         results.push(
           ...scanDocs(fullPath, prefix ? `${prefix}/${entry.name}` : entry.name)
         );
-    } else if (entry.name.endsWith(".mdx")) {
+    } else if (entry.name.endsWith(".md")) {
       const raw = fs.readFileSync(fullPath, "utf-8");
       const data = parseFrontmatter(raw);
       const docId = prefix
-        ? `${prefix}/${entry.name.replace(/\.mdx$/, "")}`
-        : entry.name.replace(/\.mdx$/, "");
+        ? `${prefix}/${entry.name.replace(/\.md$/, "")}`
+        : entry.name.replace(/\.md$/, "");
       results.push({ id: docId, updatedAt: data.updatedAt || "" });
     }
   }
