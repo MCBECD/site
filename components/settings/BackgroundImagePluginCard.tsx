@@ -115,7 +115,7 @@ export function BackgroundImagePluginCard() {
                 <button
                   key={p.value}
                   onClick={() => updateSettings("bgImage", p.value)}
-                  className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)] overflow-hidden
+                  className={`relative flex flex-col items-center gap-2 p-2.5 rounded-[var(--radius)] active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)] overflow-hidden
                     ${settings.bgImage === p.value
                       ? "ring-1 ring-[var(--color-accent)]"
                       : "hover:bg-[var(--color-bg-tertiary)]"}`}
@@ -138,7 +138,7 @@ export function BackgroundImagePluginCard() {
             <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-hidden="true" onChange={handleFileChange} />
             <button
               onClick={handleUpload}
-              className={`w-full flex items-center justify-center gap-2 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
+              className={`w-full flex items-center justify-center gap-2 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]
                 ${settings.bgImage && !BG_PRESETS.some((p) => p.value === settings.bgImage)
                   ? "bg-[var(--color-accent-muted)] text-[var(--color-accent)]"
                   : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}`}

@@ -24,10 +24,12 @@ export function DocsPageClient() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(() => {
-    if (savedState) return savedState.page;
-    if (typeof window === "undefined") return 0;
-    const p = Number(new URLSearchParams(window.location.search).get("page"));
-    return Number.isFinite(p) && p >= 1 ? p - 1 : 0;
+    // URL parameter takes priority over localStorage
+    if (typeof window !== "undefined") {
+      const p = Number(new URLSearchParams(window.location.search).get("page"));
+      if (Number.isFinite(p) && p >= 1) return p - 1;
+    }
+    return savedState?.page ?? 0;
   });
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>(() => (savedState?.viewMode as ViewMode) ?? "card");
@@ -93,7 +95,7 @@ export function DocsPageClient() {
       document.removeEventListener("keydown", handler);
       clearTimeout(debounceRef.current);
     };
-  }, []);
+  }, [resetPage]);
 
   useEffect(() => {
     setPage(0);
@@ -114,7 +116,11 @@ export function DocsPageClient() {
     };
   }, [viewMode, page]);
 
+  // Only restore scroll position if no page URL parameter is present
+  // (otherwise we'd scroll to a position saved from a different page)
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("page")) return;
     const targetScroll = savedState?.scrollY ?? 0;
     if (targetScroll <= 0) return;
     let attempts = 0;
@@ -226,7 +232,7 @@ export function DocsPageClient() {
               className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 z-[var(--z-search)]
                 flex items-center justify-center rounded-[var(--radius-sm)]
                 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]
-                hover:bg-[var(--color-bg-tertiary)] active:scale-[0.92] transition-colors duration-[var(--duration-fast)]"
+                hover:bg-[var(--color-bg-tertiary)] active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -245,7 +251,7 @@ export function DocsPageClient() {
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
             border border-[var(--color-border)]
             hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            active:scale-[0.92] transition-colors duration-[var(--duration-fast)]"
+            active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]"
         >
           {viewMode === "card" ? <List className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
         </button>

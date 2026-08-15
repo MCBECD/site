@@ -139,7 +139,7 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
           bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]
           border border-[var(--color-border)]
           hover:border-[var(--color-accent)]/30
-          active:scale-[0.92] transition-colors duration-[var(--duration-fast)] text-left"
+          active:scale-[0.92] transition-[color,border-color,transform] duration-[var(--duration-fast)] text-left"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -172,11 +172,11 @@ export function LocaleDropdown({ value, onChange }: { value: Locale; onChange: (
                 role="option"
                 aria-selected={loc === value}
                 onClick={() => handleSelect(loc)}
-                className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] flex items-center justify-between active:scale-[0.92] transition-colors duration-[var(--duration-fast)]
+                className={`w-full text-left px-3 py-3 min-h-[44px] text-[13px] flex items-center justify-between active:scale-[0.92] transition-[color,background-color,transform] duration-[var(--duration-fast)]
                   ${i === activeIndex
                     ? "bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                     : loc === value
-                      ? "text-[var(--color-accent)]"
+                      ? "text-[var(--color-accent)] hover:bg-[var(--color-bg-tertiary)]"
                       : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]"}`}
               >
                 <span>{NATIVE_NAMES[loc]}</span>
