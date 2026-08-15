@@ -8,6 +8,7 @@ import rehypeRaw from "rehype-raw";
 import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
 import { remarkCommandBlocks } from "@/lib/mdx/remark-command-blocks";
 import { ExternalLink } from "./ExternalLink";
+import { getHighlighter } from "@/lib/shiki";
 
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
@@ -38,9 +39,16 @@ interface CodeElementProps {
   style?: CSSProperties;
 }
 
-function renderCodeBlock(className: string, code: string) {
+async function renderCodeBlock(className: string, code: string) {
   const match = /language-(\w+)/.exec(className);
   const lang = match ? match[1]! : "mcfunction";
+
+  const hl = await getHighlighter();
+  const html = hl.codeToHtml(code, {
+    lang: hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction",
+    themes: { light: "github-light", dark: "github-dark" },
+    defaultColor: false,
+  });
 
   // Server-rendered copy button. Copying is handled by a single delegated
   // listener in DocDetailClient (no per-block client component → faster hydrate).
@@ -57,11 +65,9 @@ function renderCodeBlock(className: string, code: string) {
     </button>
   );
 
-  // Plain <pre><code> keeps large docs light (no per-token highlight spans);
-  // long commands scroll horizontally via base.css.
   const inner = (
     <div className="code-block relative group min-w-0 flex-1">
-      <pre><code className={`language-${lang}`}>{code}</code></pre>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
       {copyButton}
     </div>
   );
@@ -86,7 +92,7 @@ function renderCodeBlock(className: string, code: string) {
 
 const components = {
   h2: () => null,
-  pre: ({ children }: { children?: ReactNode }) => {
+  pre: async ({ children }: { children?: ReactNode }) => {
     if (!isValidElement(children)) {
       return <pre>{children}</pre>;
     }
