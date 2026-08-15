@@ -30,7 +30,7 @@ code, kbd {
 /* --- Code blocks (Shiki) --- */
 pre {
   background-color: var(--color-code-bg);
-  padding: 0.125rem 0.25rem;
+  padding: 0.25rem 0.5rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   border-radius: var(--radius-sm);

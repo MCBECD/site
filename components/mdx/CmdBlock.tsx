@@ -6,11 +6,26 @@ import {getHighlighter} from "@/lib/shiki";
 import { CodeBlockClient } from "../CodeBlockClient";
 import { CmdBlockIcon } from "./CmdBlockIcon";
 
+/** Safely extract a plain string from MDX children of various shapes */
+function extractCode(children: React.ReactNode): string {
+  if (typeof children === "string") return children.trim();
+  if (typeof children === "number") return String(children);
+  if (Array.isArray(children))
+    return children
+      .map((c) => {
+        if (typeof c === "string" || typeof c === "number") return String(c);
+        return "";
+      })
+      .join("")
+      .trim();
+  return "";
+}
+
 /** Factory for backward-compatible MDX component aliases */
 export function makeCmdBlock(icon: string) {
   return async function CmdAlias({ children }: { children?: React.ReactNode }) {
-
-    const code = String(children).trim();
+    const code = extractCode(children);
+    if (!code) return null;
 
     try {
       const hl = await getHighlighter();

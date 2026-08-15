@@ -23,10 +23,10 @@ const PageButton = memo(function PageButton({
   return (
     <button
       onClick={onClick}
-      className={`min-w-[44px] h-11 flex items-center justify-center rounded-[var(--radius-sm)] text-[13px] font-medium transition-[color,transform,box-shadow] duration-[var(--duration-fast)] active:scale-[0.92] ${
+      className={`min-w-[44px] h-11 flex items-center justify-center rounded-[var(--radius-sm)] text-[13px] font-medium transition-[color,background,transform,box-shadow] duration-[var(--duration-fast)] active:scale-[0.92] ${
         isActive
           ? "bg-[var(--color-accent)] text-[var(--color-on-accent)] shadow-[var(--shadow-sm)] shadow-[var(--color-accent)]/25"
-          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
+          : "bg-[var(--color-bg-secondary)]/50 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
       }`}
     >
       {page + 1}
@@ -39,15 +39,15 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-1.5 mt-12">
+    <div className="flex items-center justify-center gap-1.5 mt-12 px-2 py-2">
       <button
         onClick={() => onPageChange(Math.max(0, page - 1))}
         disabled={page === 0}
         aria-label={t("doc.previousPage")}
         className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
-          text-[var(--color-text-tertiary)]
+          bg-[var(--color-bg-secondary)]/50 text-[var(--color-text-secondary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
-          disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]"
+          disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.92] transition-[color,background,transform] duration-[var(--duration-fast)]"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -67,9 +67,9 @@ const DocPagination = memo(function DocPagination({ page, totalPages, pageNumber
         disabled={page === totalPages - 1}
         aria-label={t("doc.nextPage")}
         className="w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
-          text-[var(--color-text-tertiary)]
+          bg-[var(--color-bg-secondary)]/50 text-[var(--color-text-secondary)]
           hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]
-          disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]"
+          disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.92] transition-[color,background,transform] duration-[var(--duration-fast)]"
       >
         <ChevronRight className="w-4 h-4" />
       </button>

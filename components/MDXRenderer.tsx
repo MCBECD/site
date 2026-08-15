@@ -10,6 +10,35 @@ import { ExternalLink } from "./ExternalLink";
 import { makeCmdBlock } from "./mdx/CmdBlock";
 import { getHighlighter } from "@/lib/shiki";
 
+const CMD_TAGS = "Cmd(?:Impulse|Repeat|Chain|ConditionalImpulse|ConditionalRepeat|ConditionalChain|Chat)";
+const CMD_EXPR_RE = new RegExp(`<(${CMD_TAGS})>\\{("(?:[^"\\\\]|\\\\.)*")\\}</\\1>`, "g");
+
+/**
+ * Pre-process MDX source to fix Cmd* components that contain JSX expressions
+ * with nested braces (e.g. JSON/NBT data). The MDX parser cannot handle
+ * `{"...{...}..."}` patterns, so we convert them to escaped plain text:
+ *   <CmdRepeat>{"...{...}..."}</CmdRepeat>  →  <CmdRepeat>...\{...\}...</CmdRepeat>
+ */
+function preprocessCmdExpressions(source: string): string {
+  return source.replace(CMD_EXPR_RE, (match, tag: string, rawStr: string) => {
+    const inner = rawStr.slice(1, -1);
+
+    if (!inner.includes("{") && !inner.includes("}")) {
+      return match;
+    }
+
+    const decoded = inner
+      .replace(/\\"/g, '"')
+      .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+
+    const escaped = decoded
+      .replace(/\{/g, "\\{")
+      .replace(/\}/g, "\\}");
+
+    return `<${tag}>${escaped}</${tag}>`;
+  });
+}
+
 /**
  * Sanitize an href value to prevent javascript: and other dangerous protocol URLs.
  * Allows absolute paths (/...), fragment links (#...), relative paths (../...), and http(s) URLs.
@@ -151,6 +180,7 @@ const components = {
 };
 
 export function MDXRenderer({ source }: { source: string }) {
+  const processedSource = preprocessCmdExpressions(source);
   return (
     <Suspense
       fallback={
@@ -160,7 +190,7 @@ export function MDXRenderer({ source }: { source: string }) {
       }
     >
       <MDXRemote
-        source={source}
+        source={processedSource}
         components={components}
         options={{
           mdxOptions: {
