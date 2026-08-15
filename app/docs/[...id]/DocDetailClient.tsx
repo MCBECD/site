@@ -45,21 +45,20 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
           <div className="flex items-center gap-2">
             <Link
               href="/docs/"
-              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]/60 active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)] no-underline min-h-[44px]"
+              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]/60 min-h-[44px]"
             >
               <Home className="w-4 h-4" />
               <span className="hidden sm:inline">{t("common.backToList")}</span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-4">
             <button
               onClick={handleToggleBookmark}
-              className={`w-11 h-11 flex items-center justify-center rounded-[var(--radius-sm)]
-                ${bookmarked
+              className={`w-11 h-11 flex items-center justify-center hover:text-[var(--color-accent)]/60 ${bookmarked
                   ? "text-[var(--color-accent)]"
                   : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
-                } hover:text-[var(--color-accent)]/60 active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]`}
+                }`}
               aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
