@@ -82,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <link rel="preload" href="/Logo.png" as="image" />
+        <link rel="preload" href="/fonts/PingFangSC-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <script
           type="application/ld+json"
