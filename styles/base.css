@@ -35,26 +35,10 @@ pre {
   margin-bottom: 0.5rem;
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--color-accent);
-  overflow-x: auto;
-  white-space: pre;
+  word-break: break-all;
+  white-space: pre-wrap;
   min-width: 0;
   -webkit-overflow-scrolling: touch;
-}
-
-/* Scrollable code block wrapper for Shiki output */
-.code-block-scroll {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: var(--radius-sm);
-}
-
-.code-block-scroll pre {
-  min-width: fit-content;
-  border-radius: 0;
-  /* Reset global pre margins so Shiki blocks inside CmdBlock align with the icon */
-  margin: 0;
-  /* Override the tight global pre padding for Shiki syntax-highlighted blocks */
-  padding: 0.75rem 1rem;
 }
 
 [style*="--shiki-light"] {
