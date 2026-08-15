@@ -1,0 +1,46 @@
+/* ----------------------------------------------------------
+ * PingFang SC（苹方-简）
+ * 来源：https://github.com/refinec/PingFangSC
+ * 自托管 woff2，覆盖简体中文与拉丁字符。
+ * ---------------------------------------------------------- */
+
+@font-face {
+  font-family: "PingFang SC";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/PingFangSC-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PingFang SC";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/PingFangSC-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PingFang SC";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/PingFangSC-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PingFang SC";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/PingFangSC-Semibold.woff2") format("woff2");
+}
+
+/* 苹方没有真正的 700 Bold，用 Semibold 顶替，避免浏览器合成加粗失真 */
+@font-face {
+  font-family: "PingFang SC";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/PingFangSC-Semibold.woff2") format("woff2");
+}
