@@ -82,14 +82,14 @@
  * Doc cards — translucent bg, no blur (avoids stacking)
  * ---------------------------------------------------------- */
 .doc-card {
-  transition: box-shadow var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out);
+  transition: box-shadow 200ms var(--ease-out),
+              border-color 200ms var(--ease-out),
+              transform 350ms var(--ease-spring);
 }
 
 .doc-card:hover {
   box-shadow: var(--color-card-hover-shadow);
-  transform: translateY(-1px);
+  transform: translateY(-3px) scale(1.01);
 }
 
 .doc-card:active {
