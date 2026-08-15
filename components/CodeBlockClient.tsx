@@ -2,7 +2,7 @@
 
 import { memo, useState, useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 
 interface CodeBlockClientProps {
@@ -32,25 +32,6 @@ export const CodeBlockClient = memo(function CodeBlockClient({ html, code }: Cod
     }
   }, [code]);
 
-  const handleBlockClick = useCallback(
-    (_e: React.MouseEvent) => {
-      const selection = window.getSelection();
-      if (selection && selection.toString().length > 0) return;
-      handleCopy();
-    },
-    [handleCopy],
-  );
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleCopy();
-      }
-    },
-    [handleCopy],
-  );
-
   const toast = (
     <div
       role="status"
@@ -62,16 +43,22 @@ export const CodeBlockClient = memo(function CodeBlockClient({ html, code }: Cod
   );
 
   return (
-    <div>
-      <div
-        className="flex"
-        role="button"
-        tabIndex={0}
+    <div className="code-block relative group min-w-0 flex-1">
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <button
+        type="button"
+        onClick={handleCopy}
         aria-label={t("code.copy")}
-        onClick={handleBlockClick}
-        onKeyDown={handleKeyDown}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+        title={t("code.copy")}
+        className={`absolute top-2 right-2 z-[var(--z-search)] inline-flex items-center gap-1.5 h-7 px-2 rounded-[var(--radius-sm)] text-[12px] font-medium border transition-[color,background,border-color,opacity] duration-[var(--duration-fast)]
+          ${copied
+            ? "text-[var(--color-accent)] border-[var(--color-accent)]/40 bg-[var(--color-accent-muted)] opacity-100"
+            : "text-[var(--color-text-tertiary)] border-[var(--color-border)] bg-[var(--color-code-bg)] opacity-60 group-hover:opacity-100 hover:text-[var(--color-text-primary)] hover:border-[var(--color-text-tertiary)] focus-visible:opacity-100"
+          }`}
+      >
+        {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{copied ? t("code.copied") : t("code.copy")}</span>
+      </button>
       {mounted && createPortal(toast, document.body)}
     </div>
   );
