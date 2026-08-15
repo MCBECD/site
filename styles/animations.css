@@ -77,7 +77,7 @@
 /* Doc cards staggered entrance */
 .doc-card-enter {
   animation: fadeInUp 0.3s var(--ease-out) both;
-   animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.24s);
+  animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.24s);
 }
 
 /* Detail page entrance */

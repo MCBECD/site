@@ -257,7 +257,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
   return (
     <>
       <div
-        className={`fixed inset-0 z-[var(--z-dropdown)] backdrop-blur-[2px] ${closing ? "overlay-out" : "overlay-in"}`}
+        className={`fixed inset-0 z-[var(--z-dropdown)] backdrop-blur-[2px] bg-black/30 dark:bg-black/50 ${closing ? "overlay-out" : "overlay-in"}`}
         onClick={handleClose}
         aria-hidden="true"
       />
