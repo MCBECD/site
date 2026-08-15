@@ -85,7 +85,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
       <div className="flex items-center ml-auto gap-1 sm:gap-1.5">
         {/* Theme toggle */}
         <div
-          className="flex items-center gap-0.5 rounded-[var(--radius-sm)] p-0.5 bg-[var(--color-bg-tertiary)]"
+          className="flex items-center gap-0.5 rounded-full p-0.5 bg-[var(--color-bg-tertiary)]"
           role="radiogroup"
           aria-label={t("settings.theme")}
         >
@@ -98,7 +98,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
                 role="radio"
                 aria-checked={isActive}
                 tabIndex={isActive ? 0 : -1}
-                className="flex items-center justify-center select-none rounded-[calc(var(--radius-sm) - 2px)]
+                className="flex items-center justify-center select-none rounded-full
                   transition-[color,background,transform] duration-[var(--duration-fast)] w-8 h-8"
                 style={{
                   color: isActive ? "var(--color-accent)" : "var(--color-text-tertiary)",
