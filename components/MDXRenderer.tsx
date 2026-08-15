@@ -12,17 +12,15 @@ import { getHighlighter } from "@/lib/shiki";
 
 /**
  * Sanitize an href value to prevent javascript: and other dangerous protocol URLs.
- * Only allows relative paths (starting with / or #) and http(s) URLs.
+ * Allows absolute paths (/...), fragment links (#...), relative paths (../...), and http(s) URLs.
  */
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
   const trimmed = href.trim();
-  // Allow relative paths and fragment-only links
   if (trimmed.startsWith("/") || trimmed.startsWith("#")) return trimmed;
-  // Allow only http/https protocols
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  // Block everything else (javascript:, data:, vbscript:, etc.)
-  return "";
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return "";
+  return trimmed;
 }
 
 interface CodeElementProps {
