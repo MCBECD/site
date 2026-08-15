@@ -2,13 +2,12 @@ import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import type { CSSProperties, JSX, ReactNode } from "react";
 import { isValidElement } from "react";
+import { Copy, Check } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
 import { remarkCommandBlocks } from "@/lib/mdx/remark-command-blocks";
-import { CodeBlockClient } from "./CodeBlockClient";
 import { ExternalLink } from "./ExternalLink";
-import { getHighlighter } from "@/lib/shiki";
 
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
@@ -39,16 +38,33 @@ interface CodeElementProps {
   style?: CSSProperties;
 }
 
-async function renderCodeBlock(className: string, code: string) {
+function renderCodeBlock(className: string, code: string) {
   const match = /language-(\w+)/.exec(className);
   const lang = match ? match[1]! : "mcfunction";
 
-  const hl = await getHighlighter();
-  const html = hl.codeToHtml(code, {
-    lang: hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction",
-    themes: { light: "github-light", dark: "github-dark" },
-    defaultColor: false,
-  });
+  // Server-rendered copy button. Copying is handled by a single delegated
+  // listener in DocDetailClient (no per-block client component → faster hydrate).
+  const copyButton = (
+    <button
+      type="button"
+      className="code-copy-btn"
+      data-code={code}
+      aria-label="复制"
+      title="复制"
+    >
+      <Copy className="code-copy-icon w-3.5 h-3.5" />
+      <Check className="code-copy-check w-3.5 h-3.5" />
+    </button>
+  );
+
+  // Plain <pre><code> keeps large docs light (no per-token highlight spans);
+  // long commands scroll horizontally via base.css.
+  const inner = (
+    <div className="code-block relative group min-w-0 flex-1">
+      <pre><code className={`language-${lang}`}>{code}</code></pre>
+      {copyButton}
+    </div>
+  );
 
   if (lang.startsWith("Cmd")) {
     return (
@@ -61,16 +77,16 @@ async function renderCodeBlock(className: string, code: string) {
           height={24}
           className="cmd-icon shrink-0 mt-2"
         />
-        <CodeBlockClient html={html} code={code} />
+        {inner}
       </div>
     );
   }
-  return <CodeBlockClient html={html} code={code} />;
+  return inner;
 }
 
 const components = {
   h2: () => null,
-  pre: async ({ children }: { children?: ReactNode }) => {
+  pre: ({ children }: { children?: ReactNode }) => {
     if (!isValidElement(children)) {
       return <pre>{children}</pre>;
     }

@@ -25,6 +25,47 @@
   padding-right: 3.5rem;
 }
 
+.code-copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: var(--z-search);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-code-bg);
+  color: var(--color-text-tertiary);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out);
+}
+
+.code-copy-btn:hover,
+.code-block:hover .code-copy-btn,
+.code-copy-btn:focus-visible {
+  opacity: 1;
+  color: var(--color-text-primary);
+  border-color: var(--color-text-tertiary);
+}
+
+.code-copy-btn .code-copy-check { display: none; }
+
+.code-copy-btn.copied {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: var(--color-accent-muted);
+  opacity: 1;
+}
+.code-copy-btn.copied .code-copy-icon { display: none; }
+.code-copy-btn.copied .code-copy-check { display: inline-block; }
+
 /* ----------------------------------------------------------
  * Glass card — detail page container (single blur layer)
  * ---------------------------------------------------------- */
