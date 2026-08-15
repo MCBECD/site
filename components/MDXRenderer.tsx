@@ -5,15 +5,10 @@ import { isValidElement } from "react";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
+import { remarkCommandBlocks } from "@/lib/mdx/remark-command-blocks";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { ExternalLink } from "./ExternalLink";
 import { getHighlighter } from "@/lib/shiki";
-
-function preprocessCmdExpressions(source: string): string {
-  return source.replace(/<Cmd([^>]+)>[\s\n]*`([^`]+)`/g, (_, cmdType, code) => (
-     "```Cmd" + cmdType + "\n" + code + "\n```"
-  ));
-}
 
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
@@ -22,6 +17,20 @@ function sanitizeHref(href: string | undefined): string {
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return "";
   return trimmed;
+}
+
+/** Extract plain text from a ReactNode (string, array, or nested element). */
+function extractText(children: ReactNode): string {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) return children.map(extractText).join("");
+  if (isValidElement(children)) return extractText((children.props as { children?: ReactNode }).children);
+  return String(children ?? "");
+}
+
+/** Convert a `CmdXxx` code-fence language to its icon filename (kebab-case). */
+function cmdIconName(lang: string): string {
+  const type = lang.startsWith("Cmd") ? lang.slice(3) : lang;
+  return type.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 interface CodeElementProps {
@@ -40,16 +49,21 @@ async function renderCodeBlock(className: string, code: string) {
     themes: { light: "github-light", dark: "github-dark" },
     defaultColor: false,
   });
+
   if (lang.startsWith("Cmd")) {
-    return <div className="flex items-center gap-1.5">
-          <img
-            src={`/icons/cmd/${lang.toLowerCase().replace("cmd", "")}.png`}
-            width={24}
-            height={24}
-            className="cmd-icon shrink-0 mt-2"
-          />
-          <CodeBlockClient html={html} code={code} />
-        </div>;
+    return (
+      <div className="flex items-center gap-1.5">
+        <img
+          src={`/icons/cmd/${cmdIconName(lang)}.png`}
+          alt=""
+          aria-hidden="true"
+          width={24}
+          height={24}
+          className="cmd-icon shrink-0 mt-2"
+        />
+        <CodeBlockClient html={html} code={code} />
+      </div>
+    );
   }
   return <CodeBlockClient html={html} code={code} />;
 }
@@ -57,12 +71,13 @@ async function renderCodeBlock(className: string, code: string) {
 const components = {
   h2: () => null,
   pre: async ({ children }: { children?: ReactNode }) => {
-    if (!isValidElement(children))
+    if (!isValidElement(children)) {
       return <pre>{children}</pre>;
+    }
 
     const props = children.props as CodeElementProps;
     const className = props.className ?? "";
-    const code = String(props.children ?? "").trim();
+    const code = extractText(props.children).trim();
 
     return renderCodeBlock(className, code);
   },
@@ -137,12 +152,11 @@ const components = {
 };
 
 export function MDXRenderer({ source }: { source: string }) {
-  const processedSource = preprocessCmdExpressions(source);
   return (
     <ReactMarkdown
-      children={processedSource}
+      children={source}
       components={components}
-      remarkPlugins={[remarkGfm]}
+      remarkPlugins={[remarkGfm, remarkCommandBlocks]}
       rehypePlugins={[rehypeRaw, rehypeGithubAlerts]}
     />
   );
