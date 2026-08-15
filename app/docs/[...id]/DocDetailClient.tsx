@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback, type ReactNode } from "react";
+import { useEffect, useState, useCallback, useRef, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Home, Star } from "lucide-react";
+import { Home, Star, Check } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
 import { CopyDropdown } from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -36,6 +37,46 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
   }, [doc.meta.id]);
 
   const getContent = useCallback(() => rawContent, [rawContent]);
+
+  const [copied, setCopied] = useState(false);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    return () => clearTimeout(copiedTimer.current);
+  }, []);
+
+  // Single delegated listener handles copy for every code block — avoids one
+  // client component (and one hydration unit) per block in long documents.
+  const handleBodyClick = useCallback((e: React.MouseEvent) => {
+    const btn = (e.target as HTMLElement).closest?.("[data-code]");
+    if (!btn) return;
+    const code = btn.getAttribute("data-code");
+    if (code === null) return;
+    navigator.clipboard.writeText(code).then(() => {
+      if (copiedTimer.current) clearTimeout(copiedTimer.current);
+      setCopied(true);
+      btn.classList.add("copied");
+      copiedTimer.current = setTimeout(() => {
+        setCopied(false);
+        btn.classList.remove("copied");
+      }, 1500);
+    }).catch(() => {
+      // clipboard API unavailable — silent fail
+    });
+  }, []);
+
+  const copyToast = copied
+    ? createPortal(
+        <div
+          role="status"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
+        >
+          <Check className="w-4 h-4" />
+          <span>{t("code.copied")}</span>
+        </div>,
+        document.body,
+      )
+    : null;
 
   return (
     <div className="max-w-3xl mx-auto px-[var(--content-gutter)] pt-8 pb-24">
@@ -109,9 +150,11 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
           className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter
           prose max-w-none text-[15px] leading-relaxed
           prose-a:no-underline hover:prose-a:underline"
+          onClick={handleBodyClick}
         >
           {children}
         </div>
+        {copyToast}
       </div>
     </div>
   );
