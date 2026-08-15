@@ -22,13 +22,17 @@ export function ThemeSync({ children, mounted }: { children: ReactNode; mounted:
   const { theme } = settings;
 
   const resolvedTheme = resolveTheme(theme);
-  const effectiveTheme = mounted ? resolvedTheme : "light";
 
   useEffect(() => {
+    // Don't touch the DOM until after hydration: the inline <head> script in
+    // layout.tsx has already applied the correct `dark` class pre-paint. Forcing
+    // `effectiveTheme = "light"` here would strip that class on first render and
+    // cause a visible light-theme flash for dark-mode users.
+    if (!mounted) return;
     const root = document.documentElement;
-    root.classList.toggle("dark", effectiveTheme === "dark");
-    root.style.colorScheme = effectiveTheme;
-  }, [effectiveTheme]);
+    root.classList.toggle("dark", resolvedTheme === "dark");
+    root.style.colorScheme = resolvedTheme;
+  }, [mounted, resolvedTheme]);
 
   useEffect(() => {
     if (theme !== "system") return;
