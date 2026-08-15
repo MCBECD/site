@@ -69,7 +69,6 @@ export const CodeBlockClient = memo(function CodeBlockClient({ html, code }: Cod
         content. No user-controlled text is ever interpolated into this HTML string.
       */}
       <div
-        className="flex"
         role="button"
         tabIndex={0}
         aria-label={t("code.copy")}

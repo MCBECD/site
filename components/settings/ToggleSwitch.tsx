@@ -13,7 +13,7 @@ export const ToggleSwitch = memo(function ToggleSwitch({ isChecked, onChange, la
       className="relative w-11 min-h-[44px] flex items-center flex-shrink-0 cursor-pointer"
     >
       <span
-        className={`relative w-11 h-6 rounded-full transition-[color,border-color] duration-[var(--duration-fast)] border ${
+        className={`relative w-11 h-6 rounded-full transition-[color,border-color,background-color] duration-[var(--duration-fast)] border ${
           isChecked
             ? "bg-[var(--color-accent)] border-[var(--color-accent)]"
             : "bg-[var(--color-bg-tertiary)] border-[var(--color-border)]"
