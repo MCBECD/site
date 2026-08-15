@@ -316,7 +316,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         onClick={() => updateSettings("theme", opt.value)}
                         className={`flex-1 flex items-center justify-center gap-1.5 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]
                           ${settings.theme === opt.value
-                            ? "bg-[var(--color-accent)] text-[var(--color-bg-primary)]"
+                            ? "bg-[var(--color-accent)] text-[var(--color-on-accent)]"
                             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}}`}
                       >
                         <opt.icon className="w-3.5 h-3.5" />
@@ -334,7 +334,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         onClick={() => updateSettings("fontSize", opt.value)}
                         className={`flex-1 h-11 rounded-[var(--radius)] text-[13px] active:scale-[0.92] transition-[color,transform] duration-[var(--duration-fast)]
                           ${settings.fontSize === opt.value
-                            ? "bg-[var(--color-accent)] text-[var(--color-bg-primary)]"
+                            ? "bg-[var(--color-accent)] text-[var(--color-on-accent)]"
                             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)]"}}`}
                       >
                         {t(opt.labelKey)}
