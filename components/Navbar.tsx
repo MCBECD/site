@@ -51,9 +51,9 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
       } else {
         return;
       }
-			if (index !== nextIndex) {
-				radioRefs.current[nextIndex]?.focus();
-			}
+      if (index !== nextIndex) {
+        radioRefs.current[nextIndex]?.focus();
+      }
       updateSettings("theme", THEMES[nextIndex]!.key);
     },
     [updateSettings],

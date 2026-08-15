@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Command, LayoutList, List } from "lucide-react";
+import { Search, X, LayoutList, List } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
@@ -19,23 +19,41 @@ export function DocsPageClient() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
   const router = useRouter();
-  const savedState = loadDocsUIState();
 
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [page, setPage] = useState(() => {
-    // URL parameter takes priority over localStorage
-    if (typeof window !== "undefined") {
-      const p = Number(new URLSearchParams(window.location.search).get("page"));
-      if (Number.isFinite(p) && p >= 1) return p - 1;
-    }
-    return savedState?.page ?? 0;
-  });
+  const [page, setPage] = useState(0);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<ViewMode>(() => (savedState?.viewMode as ViewMode) ?? "card");
+  const [viewMode, setViewMode] = useState<ViewMode>("card");
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const scrollYRef = useRef<number>(savedState?.scrollY ?? 0);
+  const scrollYRef = useRef<number>(0);
+
+  // Apply URL param / saved UI state after hydration. Reading localStorage and
+  // window.location during the initial render would make the server HTML and the
+  // first client render disagree (hydration mismatch), so it happens here instead.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlPage = Number(params.get("page"));
+    const hasUrlPage = Number.isFinite(urlPage) && urlPage >= 1;
+
+    const saved = loadDocsUIState();
+    if (saved) {
+      if (saved.viewMode === "card" || saved.viewMode === "list") {
+        setViewMode(saved.viewMode);
+      }
+      const savedScroll = Number(saved.scrollY);
+      if (Number.isFinite(savedScroll) && savedScroll > 0) scrollYRef.current = savedScroll;
+    }
+
+    // URL `page` param takes priority over the saved page number.
+    if (hasUrlPage) {
+      setPage(urlPage - 1);
+    } else if (saved) {
+      const savedPage = Number(saved.page);
+      if (Number.isFinite(savedPage) && savedPage >= 0) setPage(savedPage);
+    }
+  }, []);
 
   const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
 
@@ -121,7 +139,7 @@ export function DocsPageClient() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) return;
-    const targetScroll = savedState?.scrollY ?? 0;
+    const targetScroll = scrollYRef.current;
     if (targetScroll <= 0) return;
     let attempts = 0;
     const tryScroll = () => {
@@ -240,7 +258,7 @@ export function DocsPageClient() {
             <kbd className="absolute right-3 top-1/2 -translate-y-1/2 h-5 z-[var(--z-search)] inline-flex items-center gap-1 px-1.5 rounded-[var(--radius-sm)] text-[11px] font-mono leading-none
               text-[var(--color-kbd-text)] bg-[var(--color-kbd-bg)] border border-[var(--color-kbd-border)]
               pointer-events-none hidden sm:inline-flex">
-              <Command className="w-3 h-3" />
+              <span>/</span>
             </kbd>
           )}
         </div>

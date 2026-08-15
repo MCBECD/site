@@ -119,7 +119,14 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(() => loadSettings());
+  // Start from defaults so the server render and first client render match.
+  // Saved settings are read in a mount effect below to avoid a hydration
+  // mismatch (localStorage is only available on the client).
+  const [settings, setSettings] = useState<Settings>(() => defaultSettings());
+
+  useEffect(() => {
+    setSettings(loadSettings());
+  }, []);
 
   const persist = useCallback((s: Settings) => {
     storageWrite(SETTINGS_KEY, s);
