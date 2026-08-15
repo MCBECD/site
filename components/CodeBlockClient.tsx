@@ -62,13 +62,9 @@ export const CodeBlockClient = memo(function CodeBlockClient({ html, code }: Cod
   );
 
   return (
-    <div className="code-block-scroll">
-      {/*
-        Security note: dangerouslySetInnerHTML is safe here because `html` is produced
-        exclusively by Shiki's codeToHtml(), which escapes all HTML entities in the code
-        content. No user-controlled text is ever interpolated into this HTML string.
-      */}
+    <div>
       <div
+        className="flex"
         role="button"
         tabIndex={0}
         aria-label={t("code.copy")}
