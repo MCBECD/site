@@ -3,7 +3,7 @@
 /**
  * validate-docs.mjs
  *
- * 校验 content/docs/ 下所有 MDX 文档的 frontmatter 完整性。
+ * 校验 content/docs/ 下所有 MD 文档的 frontmatter 完整性。
  * 用法: node scripts/validate-docs.mjs
  * 退出码: 0=全部通过, 1=有问题
  */

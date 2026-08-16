@@ -4,7 +4,7 @@ import type { CSSProperties, JSX, ReactNode } from "react";
 import { isValidElement } from "react";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { rehypeGithubAlerts } from "@/lib/mdx/rehype-github-alerts";
+import { rehypeGithubAlerts } from "@/lib/md/rehype-github-alerts";
 import { CodeBlockClient } from "./CodeBlockClient";
 import { ExternalLink } from "./ExternalLink";
 import { getHighlighter } from "@/lib/shiki";
@@ -136,7 +136,7 @@ const components = {
   ),
 };
 
-export function MDXRenderer({ source }: { source: string }) {
+export function MDRenderer({ source }: { source: string }) {
   const processedSource = preprocessCmdExpressions(source);
   return (
     <ReactMarkdown
