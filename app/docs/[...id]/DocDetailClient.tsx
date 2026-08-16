@@ -39,14 +39,17 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
   const getContent = useCallback(() => rawContent, [rawContent]);
 
   const [copied, setCopied] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
-    return () => clearTimeout(copiedTimer.current);
+    return () => {
+      clearTimeout(copiedTimer.current);
+      clearTimeout(leaveTimer.current);
+    };
   }, []);
 
-  // Single delegated listener handles copy for every code block — avoids one
-  // client component (and one hydration unit) per block in long documents.
   const handleBodyClick = useCallback((e: React.MouseEvent) => {
     const btn = (e.target as HTMLElement).closest?.("[data-code]");
     if (!btn) return;
@@ -54,22 +57,26 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
     if (code === null) return;
     navigator.clipboard.writeText(code).then(() => {
       if (copiedTimer.current) clearTimeout(copiedTimer.current);
+      if (leaveTimer.current) clearTimeout(leaveTimer.current);
+      setLeaving(false);
       setCopied(true);
       btn.classList.add("copied");
       copiedTimer.current = setTimeout(() => {
-        setCopied(false);
+        setLeaving(true);
         btn.classList.remove("copied");
+        leaveTimer.current = setTimeout(() => {
+          setCopied(false);
+          setLeaving(false);
+        }, 250);
       }, 1500);
-    }).catch(() => {
-      // clipboard API unavailable — silent fail
-    });
+    }).catch(() => {});
   }, []);
 
   const copyToast = copied
     ? createPortal(
         <div
           role="status"
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
+          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)] bg-white text-[var(--color-accent)] ${leaving ? "toast-out" : "toast-in"}`}
         >
           <Check className="w-4 h-4" />
           <span>{t("code.copied")}</span>

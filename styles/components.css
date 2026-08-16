@@ -21,36 +21,37 @@
 /* ----------------------------------------------------------
  * Code block (copy button overlay)
  * ---------------------------------------------------------- */
-.code-block pre {
-  padding-right: 3.5rem;
-}
 
 .code-copy-btn {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.3rem;
+  right: 0.3rem;
   z-index: var(--z-search);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 1.75rem;
   height: 1.75rem;
+  padding: 0;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-code-bg);
   color: var(--color-text-tertiary);
-  opacity: 0.6;
+  opacity: 0;
+  pointer-events: none;
   cursor: pointer;
-  transition: color var(--duration-fast) var(--ease-out),
-              background var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out),
-              opacity var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
 }
 
-.code-copy-btn:hover,
-.code-block:hover .code-copy-btn,
-.code-copy-btn:focus-visible {
+:hover > .code-copy-btn,
+.code-copy-btn:focus-visible,
+.code-copy-btn.copied {
   opacity: 1;
+  pointer-events: auto;
   color: var(--color-text-primary);
   border-color: var(--color-text-tertiary);
 }
@@ -64,7 +65,7 @@
   opacity: 1;
 }
 .code-copy-btn.copied .code-copy-icon { display: none; }
-.code-copy-btn.copied .code-copy-check { display: inline-block; }
+.code-copy-btn.copied .code-copy-check { display: block; }
 
 /* ----------------------------------------------------------
  * Glass card — detail page container (single blur layer)
