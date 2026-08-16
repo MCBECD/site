@@ -14,11 +14,10 @@ import { renderTitleWithCode } from "@/app/docs/renderTitle";
 
 interface DocDetailClientProps {
   doc: DocContent;
-  rawContent: string;
   children: ReactNode;
 }
 
-export function DocDetailClient({ doc, rawContent, children }: DocDetailClientProps) {
+export function DocDetailClient({ doc, children }: DocDetailClientProps) {
   const { t } = useLocale();
   const [bookmarked, setBookmarked] = useState(false);
   const categoryKey = getCategoryI18nKey(doc.meta.category);
@@ -36,7 +35,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
     setBookmarked(isBookmarked(doc.meta.id, getBookmarks()));
   }, [doc.meta.id]);
 
-  const getContent = useCallback(() => rawContent, [rawContent]);
+  const getContent = useCallback(() => doc.rawContent, [doc.rawContent]);
 
   const [copied, setCopied] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -111,7 +110,7 @@ export function DocDetailClient({ doc, rawContent, children }: DocDetailClientPr
             >
               <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
             </button>
-            <CopyDropdown rawContent={rawContent} />
+            <CopyDropdown rawContent={doc.rawContent} />
             <DownloadButton
               filename={doc.meta.id}
               getContent={getContent}

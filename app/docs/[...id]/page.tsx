@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getDocById, getDocRawContent, getAllDocs } from "@/lib/docs";
+import { getDocById, getAllDocs } from "@/lib/docs";
 import { DocDetailClient } from "./DocDetailClient";
 import { MDRenderer } from "@/components/MDRenderer";
 
@@ -54,11 +54,8 @@ export default async function DocDetailPage({ params }: DocDetailPageProps) {
   const doc = getDocById(docId);
   if (!doc) notFound();
 
-  const rawFileContent = getDocRawContent(docId) ?? "";
   const url = `${SITE_URL}/docs/${docId}/`;
 
-  // TODO(seo-locale): inLanguage should be dynamically set per locale.
-  // Currently hardcoded to zh-CN because metadata is server-rendered with no locale context.
   const WEBPAGE_JSON_LD = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -85,7 +82,7 @@ export default async function DocDetailPage({ params }: DocDetailPageProps) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBPAGE_JSON_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_JSON_LD) }} />
-      <DocDetailClient doc={doc} rawContent={rawFileContent}>
+      <DocDetailClient doc={doc}>
         <MDRenderer source={doc.rawContent} />
       </DocDetailClient>
     </>
