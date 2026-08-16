@@ -71,6 +71,15 @@
   transform-origin: left;
 }
 
+/* Settings tab content switch */
+.tab-content-enter {
+  animation: tabContentIn 0.22s var(--ease-out) both;
+}
+@keyframes tabContentIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .page-fade-in { animation: fadeIn var(--duration-fast) var(--ease-out) both; }
 
 /* Docs page entrance */
