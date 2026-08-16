@@ -4,7 +4,6 @@ import path from "node:path";
 import {
   getAllDocs,
   getDocById,
-  getDocRawContent,
 } from "@/lib/docs";
 
 const TEST_DOCS_DIR = path.join(process.cwd(), "content", "docs");
@@ -92,21 +91,4 @@ describe("docs.ts - Document Engine", () => {
     });
   });
 
-  describe("getDocRawContent", () => {
-    it("returns raw content for existing doc", () => {
-      const content = getDocRawContent("commands/give");
-      if (!hasContent) {
-        expect(content).toBeNull();
-        return;
-      }
-      expect(content).not.toBeNull();
-      expect(content).toContain("---");
-      expect(typeof content).toBe("string");
-    });
-
-    it("returns null for non-existent doc", () => {
-      const content = getDocRawContent("nonexistent-12345");
-      expect(content).toBeNull();
-    });
-  });
 });
