@@ -33,9 +33,9 @@ describe("remarkCommandBlocks", () => {
 
   it("does not transform <Cmd...> examples inside a fenced code block", async () => {
     const result = await transform(
-      "```mdx\n<CmdChat>`/scoreboard objectives add 雪球菜单 dummy`\n```",
+      "```markdownx\n<CmdChat>`/scoreboard objectives add 雪球菜单 dummy`\n```",
     );
-    expect(result).toContain("```mdx");
+    expect(result).toContain("```markdownx");
     expect(result).toContain("<CmdChat>");
     // Must not introduce a nested Cmd fence
     expect(result).not.toContain("```CmdChat");

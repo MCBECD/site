@@ -16,7 +16,7 @@ export async function getHighlighter(): Promise<Highlighter> {
   if (!g.__shikiHighlighterPromise) {
     g.__shikiHighlighterPromise = createHighlighter({
       themes: ["github-light", "github-dark"],
-      langs: [mcfunctionGrammar],
+      langs: [mcfunctionGrammar, "markdown", "sh"],
     }).catch((err) => {
       // Clear the stale promise so the next call can retry
       g.__shikiHighlighterPromise = undefined;

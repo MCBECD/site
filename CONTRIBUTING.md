@@ -4,7 +4,7 @@ Thanks for helping improve Minecraft Bedrock Edition command documentation!
 
 ## Quick Start
 
-```bash
+```sh
 git clone https://github.com/MCBECD/site.git
 cd site
 npm install
@@ -39,7 +39,7 @@ functions/               # Cloudflare Pages Functions
 
 ### Option 1: Use the scaffolding script (recommended)
 
-```bash
+```sh
 npm run new-doc -- /clear
 ```
 
@@ -99,7 +99,7 @@ Use gaps of 1-2 between commands so future inserts don't require reordering ever
 
 Before submitting, run:
 
-```bash
+```sh
 # Check all documents have valid frontmatter
 npm run validate:docs
 
