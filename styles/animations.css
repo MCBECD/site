@@ -51,7 +51,7 @@
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
 .settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
-.settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
+.settings-panel-out { animation: settingsPanelOut 0.16s var(--ease-in) both; }
 
 @keyframes settingsPanelIn {
   from {
@@ -67,11 +67,11 @@
 @keyframes settingsPanelOut {
   from {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   to {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px) scale(0.97);
   }
 }
 
