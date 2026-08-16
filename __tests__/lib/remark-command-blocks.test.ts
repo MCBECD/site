@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
-import { remarkCommandBlocks } from "@/lib/mdx/remark-command-blocks";
+import { remarkCommandBlocks } from "@/lib/md/remark-command-blocks";
 
 async function transform(markdown: string): Promise<string> {
   const file = await unified()
