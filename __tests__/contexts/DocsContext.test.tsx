@@ -16,9 +16,9 @@ function Consumer() {
 }
 
 const MOCK_DOCS: DocMeta[] = [
-  { id: "cmd/give", title: "give 命令", description: "给予物品", tags: ["物品"], author: "MCBECD", updatedAt: "2025-01-01" },
-  { id: "cmd/tp", title: "tp 命令", description: "传送玩家", tags: ["传送"] },
-  { id: "cmd/say", title: "say 命令" },
+  { id: "cmd/give", title: "give 命令", description: "给予物品", tags: ["物品"], author: "MCBECD", updatedAt: "2025-01-01", category: "commands" },
+  { id: "cmd/tp", title: "tp 命令", description: "传送玩家", tags: ["传送"], category: "commands" },
+  { id: "cmd/say", title: "say 命令", category: "commands" },
 ];
 
 describe("DocsContext", () => {
@@ -60,9 +60,9 @@ describe("DocsContext", () => {
 
   it("filters out hidden documents from docs array", () => {
     const docs: DocMeta[] = [
-      { id: "a", title: "Visible A" },
-      { id: "b", title: "Hidden B", hidden: true },
-      { id: "c", title: "Visible C" },
+      { id: "a", title: "Visible A", category: "test" },
+      { id: "b", title: "Hidden B", hidden: true, category: "test" },
+      { id: "c", title: "Visible C", category: "test" },
     ];
 
     function FilterConsumer() {

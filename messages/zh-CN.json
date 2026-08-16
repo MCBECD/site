@@ -92,6 +92,8 @@
     "filterAll": "全部",
     "filterBasics": "基础",
     "filterCommands": "命令",
+    "filterCommunity": "社区",
+    "filterHidden": "隐藏",
     "filterExamples": "示例",
     "viewCards": "卡片",
     "viewList": "列表",
@@ -100,7 +102,12 @@
     "clearSearch": "清除搜索",
     "switchToView": "切换为{mode}",
     "bookmarksEmpty": "暂无收藏",
-    "historyEmpty": "暂无浏览记录"
+    "historyEmpty": "暂无浏览记录",
+    "hiddenTitle": "文档标准规范",
+    "hiddenSubtitle": "共 {count} 篇标准文档，涵盖 Frontmatter、标签体系、结构规范等",
+    "hiddenSectionTitle": "文档标准规范",
+    "hiddenCardTitle": "文档标准规范",
+    "hiddenCardDesc": "Frontmatter 规范、标签体系、命名规则、文档结构等全部标准文档"
   },
   "cmd": {
     "iconAlt": "{type} 命令方块"

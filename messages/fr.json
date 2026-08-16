@@ -92,6 +92,8 @@
     "filterAll": "Tout",
     "filterBasics": "Bases",
     "filterCommands": "Commandes",
+    "filterCommunity": "Communauté",
+    "filterHidden": "Masqué",
     "filterExamples": "Exemples",
     "viewCards": "Cartes",
     "viewList": "Liste",
@@ -100,7 +102,12 @@
     "clearSearch": "Effacer la recherche",
     "switchToView": "Passer en {mode}",
     "bookmarksEmpty": "Aucun favori",
-    "historyEmpty": "Aucun historique"
+    "historyEmpty": "Aucun historique",
+    "hiddenTitle": "Normes de documentation",
+    "hiddenSubtitle": "{count} documents standards couvrant Frontmatter, balises, structure, etc.",
+    "hiddenSectionTitle": "Normes de documentation",
+    "hiddenCardTitle": "Normes de documentation",
+    "hiddenCardDesc": "Spécifications Frontmatter, système de balises, règles de nommage, structure des documents et tous les documents standards"
   },
   "cmd": {
     "iconAlt": "Bloc de commande {type}"

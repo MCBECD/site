@@ -92,6 +92,8 @@
     "filterAll": "全部",
     "filterBasics": "基礎",
     "filterCommands": "命令",
+    "filterCommunity": "社群",
+    "filterHidden": "隱藏",
     "filterExamples": "範例",
     "viewCards": "卡片",
     "viewList": "列表",
@@ -100,7 +102,12 @@
     "clearSearch": "清除搜尋",
     "switchToView": "切換為{mode}",
     "bookmarksEmpty": "暫無收藏",
-    "historyEmpty": "暫無瀏覽記錄"
+    "historyEmpty": "暫無瀏覽記錄",
+    "hiddenTitle": "文件標準規範",
+    "hiddenSubtitle": "共 {count} 篇標準文件，涵蓋 Frontmatter、標籤體系、結構規範等",
+    "hiddenSectionTitle": "文件標準規範",
+    "hiddenCardTitle": "文件標準規範",
+    "hiddenCardDesc": "Frontmatter 規範、標籤體系、命名規則、文件結構等全部標準文件"
   },
   "cmd": {
     "iconAlt": "{type} 命令方塊"

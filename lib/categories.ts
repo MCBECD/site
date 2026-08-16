@@ -2,6 +2,8 @@
 const CATEGORY_I18N_KEYS: Record<string, string> = {
   basics: "doc.filterBasics",
   commands: "doc.filterCommands",
+  community: "doc.filterCommunity",
+  hidden: "doc.filterHidden",
 };
 
 export function getCategoryBase(category?: string): string {
@@ -43,4 +45,12 @@ export function getBasicsOrder(category?: string): number {
   if (base !== "basics") return Infinity;
   const sub = getCategorySub(category);
   return sub !== undefined ? Number(sub) : Infinity;
+}
+
+/** Extract numeric prefix from a community doc filename (id sub-part). */
+export function getCommunityOrder(id: string): number {
+  const parts = id.split("/");
+  const filename = parts[parts.length - 1] ?? "";
+  const numMatch = filename.match(/^(\d+)/);
+  return numMatch ? Number(numMatch[1]) : Infinity;
 }

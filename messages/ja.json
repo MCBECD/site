@@ -92,6 +92,8 @@
     "filterAll": "すべて",
     "filterBasics": "基礎",
     "filterCommands": "コマンド",
+    "filterCommunity": "コミュニティ",
+    "filterHidden": "非表示",
     "filterExamples": "例",
     "viewCards": "カード",
     "viewList": "リスト",
@@ -100,7 +102,12 @@
     "clearSearch": "検索をクリア",
     "switchToView": "{mode}に切り替え",
     "bookmarksEmpty": "ブックマークなし",
-    "historyEmpty": "履歴なし"
+    "historyEmpty": "履歴なし",
+    "hiddenTitle": "ドキュメント標準規範",
+    "hiddenSubtitle": "Frontmatter、タグ体系、構造規範など、計 {count} 件の標準ドキュメント",
+    "hiddenSectionTitle": "ドキュメント標準規範",
+    "hiddenCardTitle": "ドキュメント標準規範",
+    "hiddenCardDesc": "Frontmatter仕様、タグ体系、命名規則、ドキュメント構造など全ての標準ドキュメント"
   },
   "cmd": {
     "iconAlt": "{type} コマンドブロック"

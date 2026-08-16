@@ -92,6 +92,8 @@
     "filterAll": "전체",
     "filterBasics": "기초",
     "filterCommands": "명령어",
+    "filterCommunity": "커뮤니티",
+    "filterHidden": "숨김",
     "filterExamples": "예제",
     "viewCards": "카드",
     "viewList": "목록",
@@ -100,7 +102,12 @@
     "clearSearch": "검색 지우기",
     "switchToView": "{mode}(으)로 전환",
     "bookmarksEmpty": "북마크 없음",
-    "historyEmpty": "기록 없음"
+    "historyEmpty": "기록 없음",
+    "hiddenTitle": "문서 표준 규범",
+    "hiddenSubtitle": "Frontmatter, 태그 체계, 구조 규범 등 총 {count}개의 표준 문서",
+    "hiddenSectionTitle": "문서 표준 규범",
+    "hiddenCardTitle": "문서 표준 규범",
+    "hiddenCardDesc": "Frontmatter 사양, 태그 체계, 명명 규칙, 문서 구조 등 모든 표준 문서"
   },
   "cmd": {
     "iconAlt": "{type} 명령 블록"

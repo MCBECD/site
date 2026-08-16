@@ -104,6 +104,8 @@ export interface Messages {
     filterAll: string;
     filterBasics: string;
     filterCommands: string;
+    filterCommunity: string;
+    filterHidden: string;
     filterExamples: string;
     viewCards: string;
     viewList: string;

@@ -12,7 +12,7 @@ export interface DocMeta {
   id: string;
   title: string;
   description?: string;
-  category?: string;
+  category: string;
   tags?: string[];
   author?: string;
   updatedAt?: string;
@@ -58,6 +58,7 @@ function asStringArray(v: unknown): string[] | undefined {
 function buildMeta(
   id: string,
   fallbackName: string,
+  category: string,
   mdMeta: ReturnType<typeof parseMdMeta> | null,
 ): DocMeta | null {
   if (!mdMeta) return null;
@@ -70,51 +71,40 @@ function buildMeta(
     tags: asStringArray(fm.tags),
     author: asString(fm.author),
     updatedAt: asString(fm.updatedAt),
-    category: asString(fm.category),
+    category,
     hidden: fm.hidden === true,
   };
 }
 
 /* ----------------------------------------------------------
- * Recursive directory scanning
+ * Targeted directory scanning (only basics, commands, community, no subdirs)
  * ---------------------------------------------------------- */
 
-function scanDirectory(dir: string, prefix: string): DocMeta[] {
-  const results: DocMeta[] = [];
-  let entries: fs.Dirent[];
+const SCAN_CATEGORIES = ["basics", "commands", "community"] as const;
 
+function scanCategoryDir(docsDir: string, category: string): DocMeta[] {
+  const results: DocMeta[] = [];
+  const categoryDir = path.join(docsDir, category);
+
+  let entries: fs.Dirent[];
   try {
-    entries = fs.readdirSync(dir, { withFileTypes: true });
+    entries = fs.readdirSync(categoryDir, { withFileTypes: true });
   } catch {
     return results;
   }
 
-  // Separate directories and files for consistent ordering: dirs first, then files alphabetically
-  const dirs: fs.Dirent[] = [];
   const files: fs.Dirent[] = [];
-  for (const entry of entries) {
-    if (entry.name.startsWith(".") || ["README.md", "CONTRIBUTING.md", "LICENSE"].includes(entry.name)) {
-      continue;
-    }
-    if (entry.isDirectory()) dirs.push(entry);
-    else if (entry.name.endsWith(".md")) files.push(entry);
-  }
+  for (const entry of entries)
+    if (entry.isFile() && entry.name.endsWith(".md"))
+      files.push(entry);
 
-  // Sort for deterministic ordering
-  dirs.sort((a, b) => a.name.localeCompare(b.name));
   files.sort((a, b) => a.name.localeCompare(b.name));
 
-  for (const entry of dirs) {
-    const fullPath = path.join(dir, entry.name);
-    const id = prefix ? `${prefix}/${entry.name}` : entry.name;
-    results.push(...scanDirectory(fullPath, id));
-  }
-
   for (const entry of files) {
-    const fullPath = path.join(dir, entry.name);
-    const docId = prefix ? `${prefix}/${entry.name.replace(/\.md$/, "")}` : entry.name.replace(/\.md$/, "");
+    const fullPath = path.join(categoryDir, entry.name);
+    const docId = `${category}/${entry.name.replace(/\.md$/, "")}`;
     const mdMeta = parseMdMeta(fullPath);
-    const meta = buildMeta(docId, docId, mdMeta);
+    const meta = buildMeta(docId, docId, category, mdMeta);
     if (meta) results.push(meta);
   }
 
@@ -129,7 +119,11 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
 export function getAllDocs(): DocMeta[] {
   const docsDir = getDocsDir();
   if (!fs.existsSync(docsDir)) return [];
-  return scanDirectory(docsDir, "");
+  const results: DocMeta[] = [];
+  for (const category of SCAN_CATEGORIES)
+    results.push(...scanCategoryDir(docsDir, category));
+
+  return results;
 }
 
 /** Reject IDs containing path traversal sequences */
@@ -142,12 +136,16 @@ export function getDocById(id: string): DocContent | null {
   if (!isSafeDocId(id)) return null;
   const docsDir = getDocsDir();
 
+  // Extract category from id (format: category/filename)
+  const slashIndex = id.indexOf("/");
+  const category = slashIndex === -1 ? "" : id.slice(0, slashIndex);
+
   // path.join correctly handles ids with slashes (e.g. "commands/give" → content/docs/commands/give.md)
   const filePath = path.join(docsDir, `${id}.md`);
   if (!fs.existsSync(filePath)) return null;
 
   const mdMeta = parseMdMeta(filePath);
-  const meta = buildMeta(id, id, mdMeta);
+  const meta = buildMeta(id, id, category, mdMeta);
   if (!meta) return null;
   return { meta, rawContent: mdMeta?.content ?? "" };
 }

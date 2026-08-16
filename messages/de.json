@@ -92,6 +92,8 @@
     "filterAll": "Alle",
     "filterBasics": "Grundlagen",
     "filterCommands": "Befehle",
+    "filterCommunity": "Gemeinschaft",
+    "filterHidden": "Ausgeblendet",
     "filterExamples": "Beispiele",
     "viewCards": "Karten",
     "viewList": "Liste",
@@ -100,7 +102,12 @@
     "clearSearch": "Suche löschen",
     "switchToView": "Wechseln zu {mode}",
     "bookmarksEmpty": "Keine Lesezeichen",
-    "historyEmpty": "Kein Verlauf"
+    "historyEmpty": "Kein Verlauf",
+    "hiddenTitle": "Dokumentationsstandards",
+    "hiddenSubtitle": "{count} Standarddokumente zu Frontmatter, Tags, Struktur und mehr",
+    "hiddenSectionTitle": "Dokumentationsstandards",
+    "hiddenCardTitle": "Dokumentationsstandards",
+    "hiddenCardDesc": "Frontmatter-Spezifikationen, Tag-System, Namensregeln, Dokumentstruktur und alle Standarddokumente"
   },
   "cmd": {
     "iconAlt": "{type}-Befehlsblock"

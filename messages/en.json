@@ -92,6 +92,8 @@
     "filterAll": "All",
     "filterBasics": "Basics",
     "filterCommands": "Commands",
+    "filterCommunity": "Community",
+    "filterHidden": "Hidden",
     "filterExamples": "Examples",
     "viewCards": "Cards",
     "viewList": "List",
@@ -100,7 +102,12 @@
     "clearSearch": "Clear search",
     "switchToView": "Switch to {mode}",
     "bookmarksEmpty": "No bookmarks",
-    "historyEmpty": "No history"
+    "historyEmpty": "No history",
+    "hiddenTitle": "Documentation Standards",
+    "hiddenSubtitle": "{count} standard documents covering Frontmatter, tags, structure, and more",
+    "hiddenSectionTitle": "Documentation Standards",
+    "hiddenCardTitle": "Documentation Standards",
+    "hiddenCardDesc": "Frontmatter specs, tagging system, naming rules, document structure and all standard documents"
   },
   "cmd": {
     "iconAlt": "{type} command block"
