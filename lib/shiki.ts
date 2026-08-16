@@ -1,5 +1,5 @@
 import { createHighlighter, type Highlighter } from "shiki";
-import mcfunctionGrammar from "@/lib/mdx/mcfunction.json";
+import mcfunctionGrammar from "@/lib/md/mcfunction.json";
 
 type ShikiGlobal = typeof globalThis & {
   __shikiHighlighter?: Highlighter;

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDocById, getDocRawContent, getAllDocs } from "@/lib/docs";
 import { DocDetailClient } from "./DocDetailClient";
-import { MDXRenderer } from "@/components/MDXRenderer";
+import { MDRenderer } from "@/components/MDRenderer";
 
 const SITE_URL = "https://mcbecd.pages.dev";
 
@@ -86,7 +86,7 @@ export default async function DocDetailPage({ params }: DocDetailPageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBPAGE_JSON_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_JSON_LD) }} />
       <DocDetailClient doc={doc} rawContent={rawFileContent}>
-        <MDXRenderer source={doc.rawContent} />
+        <MDRenderer source={doc.rawContent} />
       </DocDetailClient>
     </>
   );

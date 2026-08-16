@@ -9,7 +9,7 @@
  *   > Useful information that users should know.
  *
  * This plugin operates on the HAST (HTML AST) and creates proper `element` nodes,
- * unlike the old remark plugin which created `raw` HTML nodes that broke MDX.
+ * unlike the old remark plugin which created `raw` HTML nodes that broke MD.
  */
 
 import type { Plugin } from "unified";

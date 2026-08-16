@@ -24,5 +24,5 @@
 - Next.js 16 + React 19 + Tailwind 4 技术栈
 - 7 语言 i18n 支持
 - 暗色/亮色主题 + 自定义颜色 + 背景图插件
-- MDX 文档引擎 + Shiki 代码高亮
+- MD 文档引擎 + Shiki 代码高亮
 - Cloudflare Pages 部署

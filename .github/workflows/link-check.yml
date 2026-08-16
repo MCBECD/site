@@ -5,13 +5,13 @@ on:
     paths:
       - "content/docs/**"
       - "**/*.md"
-      - "**/*.mdx"
+      - "**/*.md"
   push:
     branches: [main]
     paths:
       - "content/docs/**"
       - "**/*.md"
-      - "**/*.mdx"
+      - "**/*.md"
   workflow_dispatch:
   schedule:
     # 每周一 9:00 UTC+8 = 01:00 UTC 检查一次

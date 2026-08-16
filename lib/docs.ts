@@ -32,7 +32,7 @@ function getDocsDir(): string {
   return path.join(process.cwd(), "content", "docs");
 }
 
-function parseMdxMeta(filePath: string): { frontmatter: Record<string, unknown>; content: string; readingTime: number } | null {
+function parseMdMeta(filePath: string): { frontmatter: Record<string, unknown>; content: string; readingTime: number } | null {
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
     const { data, content } = matter(raw);
@@ -58,11 +58,11 @@ function asStringArray(v: unknown): string[] | undefined {
 function buildMeta(
   id: string,
   fallbackName: string,
-  mdxMeta: ReturnType<typeof parseMdxMeta> | null,
+  mdMeta: ReturnType<typeof parseMdMeta> | null,
 ): DocMeta | null {
-  if (!mdxMeta) return null;
+  if (!mdMeta) return null;
 
-  const fm = mdxMeta.frontmatter;
+  const fm = mdMeta.frontmatter;
   return {
     id,
     title: asString(fm.title) ?? fallbackName,
@@ -113,8 +113,8 @@ function scanDirectory(dir: string, prefix: string): DocMeta[] {
   for (const entry of files) {
     const fullPath = path.join(dir, entry.name);
     const docId = prefix ? `${prefix}/${entry.name.replace(/\.md$/, "")}` : entry.name.replace(/\.md$/, "");
-    const mdxMeta = parseMdxMeta(fullPath);
-    const meta = buildMeta(docId, docId, mdxMeta);
+    const mdMeta = parseMdMeta(fullPath);
+    const meta = buildMeta(docId, docId, mdMeta);
     if (meta) results.push(meta);
   }
 
@@ -146,10 +146,10 @@ export function getDocById(id: string): DocContent | null {
   const filePath = path.join(docsDir, `${id}.md`);
   if (!fs.existsSync(filePath)) return null;
 
-  const mdxMeta = parseMdxMeta(filePath);
-  const meta = buildMeta(id, id, mdxMeta);
+  const mdMeta = parseMdMeta(filePath);
+  const meta = buildMeta(id, id, mdMeta);
   if (!meta) return null;
-  return { meta, rawContent: mdxMeta?.content ?? "" };
+  return { meta, rawContent: mdMeta?.content ?? "" };
 }
 
 /** Get raw document file content (including frontmatter) for download */

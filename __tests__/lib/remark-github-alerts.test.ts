@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
-import { remarkGithubAlerts } from "@/lib/mdx/remark-github-alerts";
+import { remarkGithubAlerts } from "@/lib/md/remark-github-alerts";
 
 async function transform(markdown: string): Promise<string> {
   const file = await unified()

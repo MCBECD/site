@@ -21,16 +21,16 @@ app/                     # Next.js App Router 页面
     DocsPageClient.tsx   # 首页命令卡片列表
     [...id]/             # 动态路由：文档详情
 components/              # React 组件
-  MDXRenderer.tsx        # MDX 渲染 + Shiki 代码高亮
+  MDRenderer.tsx        # MD 渲染 + Shiki 代码高亮
   Navbar.tsx             # 顶部导航栏
   SettingsPanel.tsx      # 设置面板
 contexts/                # React Context（设置/主题/语言）
 lib/                     # 工具库
   docs.ts                # 文档扫描引擎（frontmatter 解析）
-  mdx/                   # remark 插件
+  md/                   # remark 插件
   i18n/                  # i18n 类型定义
 messages/                # 7 种语言的翻译文件（JSON）
-content/docs/            # 文档内容（MDX 文件）
+content/docs/            # 文档内容（MD 文件）
 styles/globals.css       # 全局样式 + 设计令牌
 functions/               # Cloudflare Pages Functions
 ```
@@ -43,11 +43,11 @@ functions/               # Cloudflare Pages Functions
 npm run new-doc -- /clear
 ```
 
-This creates `content/docs/clear.mdx` with the correct frontmatter template.
+This creates `content/docs/clear.md` with the correct frontmatter template.
 
 ### Option 2: Manual
 
-1. Create `content/docs/<command>.mdx`
+1. Create `content/docs/<command>.md`
 2. Use this frontmatter:
 
 ```yaml
