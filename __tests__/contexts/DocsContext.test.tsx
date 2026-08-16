@@ -58,7 +58,7 @@ describe("DocsContext", () => {
     expect(screen.getByText("not found")).toBeInTheDocument();
   });
 
-  it("filters out hidden documents from docs array", () => {
+  it("exposes all documents (hidden filtering happens in the list view)", () => {
     const docs: DocMeta[] = [
       { id: "a", title: "Visible A", category: "test" },
       { id: "b", title: "Hidden B", hidden: true, category: "test" },
@@ -82,7 +82,7 @@ describe("DocsContext", () => {
       </DocsProvider>,
     );
 
-    expect(screen.getByTestId("visible-count").textContent).toBe("2");
+    expect(screen.getByTestId("visible-count").textContent).toBe("3");
     expect(screen.getByTestId("map-size").textContent).toBe("3");
     expect(screen.getByTestId("map-has-hidden").textContent).toBe("yes");
   });
