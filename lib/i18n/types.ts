@@ -29,7 +29,6 @@ export interface Messages {
   };
   nav: {
     settings: string;
-    github: string;
     docs: string;
   };
   settings: {

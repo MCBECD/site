@@ -68,10 +68,6 @@ const AUTHORS: { name: string; links: { href: string; label: string; icon: IconC
       { href: "https://v.kuaishou.com/JTZL7bix", label: "快手", icon: Video },
     ],
   },
-  {
-    name: "官方•Dingding OvO",
-    links: [{ href: "https://github.com/DingdingOvO", label: "GitHub", icon: GithubIcon }],
-  },
 ];
 
 function AboutTab() {
