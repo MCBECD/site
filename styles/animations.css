@@ -22,24 +22,36 @@
 }
 
 /* ----------------------------------------------------------
+ * Spring keyframes — single clean overshoot (rise, overshoot, settle)
+ * ---------------------------------------------------------- */
+@keyframes springUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes springFade {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes springSlide {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dropdownSpring {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ----------------------------------------------------------
  * Animation utilities
  * ---------------------------------------------------------- */
 .overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
-.settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
+.settings-panel-in  { animation: springSlide 0.4s var(--ease-spring) both; }
 .settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
-
-@keyframes settingsPanelIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 @keyframes settingsPanelOut {
   from {
@@ -52,10 +64,13 @@
   }
 }
 
-.dropdown-in  { animation: slideDown 0.15s var(--ease-out) both; }
+.dropdown-in {
+  animation: dropdownSpring 0.3s var(--ease-spring) both;
+  transform-origin: top;
+}
 
 .tab-indicator {
-  animation: tabSlideIn 0.1s var(--ease-out) both;
+  animation: tabSlideIn 0.2s var(--ease-spring) both;
   transform-origin: left;
 }
 
@@ -72,28 +87,28 @@
 
 /* Docs page entrance */
 .hero-enter {
-  animation: fadeInUp 0.4s var(--ease-out) both;
+  animation: springUp 0.55s var(--ease-spring) both;
 }
 
 .hero-sub-enter {
-  animation: fadeInUp 0.35s var(--ease-out) 0.06s both;
+  animation: springFade 0.5s var(--ease-spring) 0.08s both;
 }
 
 .search-enter {
-  animation: fadeInUp 0.3s var(--ease-out) 0.2s both;
+  animation: springFade 0.45s var(--ease-spring) 0.18s both;
 }
 
 /* Doc cards staggered entrance */
 .doc-card-enter {
-  animation: fadeInUp 0.3s var(--ease-out) both;
-  animation-delay: calc(var(--stagger-index, 0) * 40ms + 0.24s);
+  animation: springUp 0.4s var(--ease-spring) both;
+  animation-delay: calc(var(--stagger-index, 0) * 45ms + 0.2s);
 }
 
 /* Detail page entrance */
 .detail-enter {
-  animation: fadeInUp 0.35s var(--ease-out) both;
+  animation: springUp 0.5s var(--ease-spring) both;
 }
 
 .detail-content-enter {
-  animation: fadeIn 0.3s var(--ease-out) 0.12s both;
+  animation: springFade 0.4s var(--ease-spring-soft) 0.1s both;
 }
