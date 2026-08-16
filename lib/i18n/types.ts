@@ -77,7 +77,6 @@ export interface Messages {
     aboutLicense: string;
     aboutLinks: string;
     aboutAuthors: string;
-    aboutSourceCode: string;
   };
   code: {
     copy: string;

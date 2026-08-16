@@ -64,7 +64,6 @@
     "aboutLicense": "라이선스",
     "aboutLinks": "링크",
     "aboutAuthors": "작성자",
-    "aboutSourceCode": "소스 코드",
     "bgImageWrongType": "지원되지 않는 이미지 형식입니다. JPG, PNG, GIF, WebP 또는 AVIF를 사용해 주세요"
   },
   "code": {
