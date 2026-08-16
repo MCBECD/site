@@ -1,0 +1,57 @@
+name: Render Demo Video
+
+# 手动触发：Actions 标签页 → Render Demo Video → Run workflow
+# 产物：video-kit/mcbecd-demo.mp4（Artifacts 里下载）
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install site deps
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Install video-kit deps (playwright + ffmpeg-static)
+        working-directory: video-kit
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium + system deps
+        working-directory: video-kit
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Chinese font for subtitles
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
+
+      - name: Serve + Record + Assemble
+        working-directory: video-kit
+        run: |
+          node serve.mjs ../out &
+          SERVER_PID=$!
+          sleep 3
+          SITE_URL=http://localhost:8080 node record.mjs
+          kill "$SERVER_PID" || true
+          bash assemble.sh
+
+      - name: Upload MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcbecd-demo
+          path: video-kit/mcbecd-demo.mp4
+          retention-days: 30
