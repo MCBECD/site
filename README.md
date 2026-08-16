@@ -11,7 +11,7 @@ Built with Next.js 16, TypeScript, Tailwind CSS 4.
 
 ## Local Development
 
-```bash
+```sh
 git clone --recurse-submodules https://github.com/MCBECD/site.git
 cd site
 npm install

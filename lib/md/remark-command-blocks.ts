@@ -13,7 +13,7 @@
  * Operating on the AST (rather than a regex over the raw source) means we only
  * rewrite real command blocks and never corrupt:
  *   - inline-code mentions like `use the <CmdRepeat> component`
- *   - fenced examples inside ```mdx blocks (already `code` nodes)
+ *   - fenced examples inside ```markdownx blocks (already `code` nodes)
  */
 
 import type { Plugin } from "unified";
