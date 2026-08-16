@@ -63,8 +63,6 @@
     "aboutLocales": "Sprachen",
     "aboutLicense": "Lizenz",
     "aboutLinks": "Links",
-    "aboutAuthors": "Autoren",
-    "aboutSourceCode": "Quellcode",
     "bgImageWrongType": "Nicht untersttztes Bildformat. Bitte verwenden Sie JPG, PNG, GIF, WebP oder AVIF"
   },
   "code": {
