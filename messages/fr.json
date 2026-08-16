@@ -63,6 +63,8 @@
     "aboutLocales": "Langues",
     "aboutLicense": "Licence",
     "aboutLinks": "Liens",
+    "aboutAuthors": "Auteurs",
+    "aboutSourceCode": "Code source",
     "bgImageWrongType": "Format d'image non pris en charge. Veuillez utiliser JPG, PNG, GIF, WebP ou AVIF"
   },
   "code": {

@@ -76,6 +76,8 @@ export interface Messages {
     aboutLocales: string;
     aboutLicense: string;
     aboutLinks: string;
+    aboutAuthors: string;
+    aboutSourceCode: string;
   };
   code: {
     copy: string;
