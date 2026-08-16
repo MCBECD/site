@@ -22,7 +22,7 @@
 }
 
 /* ----------------------------------------------------------
- * Spring keyframes — single clean overshoot (rise, overshoot, settle)
+ * Spring keyframes — single clean overshoot
  * ---------------------------------------------------------- */
 @keyframes springUp {
   from { opacity: 0; transform: translateY(24px) scale(0.97); }
@@ -31,11 +31,6 @@
 
 @keyframes springFade {
   from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes springSlide {
-  from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -50,8 +45,19 @@
 .overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
-.settings-panel-in  { animation: springSlide 0.4s var(--ease-spring) both; }
+.settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
 .settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
+
+@keyframes settingsPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @keyframes settingsPanelOut {
   from {
@@ -70,17 +76,8 @@
 }
 
 .tab-indicator {
-  animation: tabSlideIn 0.2s var(--ease-spring) both;
+  animation: tabSlideIn 0.1s var(--ease-out) both;
   transform-origin: left;
-}
-
-/* Settings tab content switch */
-.tab-content-enter {
-  animation: tabContentIn 0.22s var(--ease-out) both;
-}
-@keyframes tabContentIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .page-fade-in { animation: fadeIn var(--duration-fast) var(--ease-out) both; }
