@@ -2,7 +2,6 @@
 
 import { memo, useMemo, useCallback, useRef } from "react";
 import { Sun, Moon, Monitor, Settings } from "lucide-react";
-import { GithubIcon } from "@/components/icons/GithubIcon";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -113,20 +112,6 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
             );
           })}
         </div>
-
-        <a
-          href="https://github.com/MCBECD"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)]
-            text-[var(--color-text-tertiary)]
-            hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-            transition-[color,transform] duration-[var(--duration-fast)] active:scale-[0.92]"
-          title={t("nav.github")}
-          aria-label={t("nav.github")}
-        >
-          <GithubIcon className="w-4 h-4" />
-        </a>
 
         <button
           onClick={onOpenSettings}
