@@ -32,7 +32,7 @@ export const remarkCommandBlocks: Plugin<[], Root> = () => (tree: Root) => {
     const [tagNode, codeNode] = meaningful;
     if (tagNode!.type !== "html" || codeNode!.type !== "inlineCode") return;
 
-    const match = /^<([A-Za-z]+)>$/.exec((tagNode as Html).value);
+    const match = /^<(\w*)>$/.exec((tagNode as Html).value);
     if (!match) return;
 
     const code: Code = {
