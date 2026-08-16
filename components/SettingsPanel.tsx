@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { Sun, Moon, Monitor, X, Star, Clock, Trash2 } from "lucide-react";
+import { Sun, Moon, Monitor, X, Star, Clock, Trash2, Tv, Video } from "lucide-react";
+import { GithubIcon } from "@/components/icons/GithubIcon";
+import { LOCALES } from "@/lib/i18n/types";
+import { getCategoryBase } from "@/lib/categories";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -48,9 +51,32 @@ const APP_VERSION = process.env.NEXT_PUBLIC_VERSION ?? "0.0.1-alpha";
 
 /* ---------- About Tab ---------- */
 
+const LINK_ROW =
+  "flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] no-underline";
+
+const LINK_PILL =
+  "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[var(--color-bg-tertiary)] text-[12px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-colors duration-[var(--duration-fast)] no-underline";
+
+type IconComponent = React.ComponentType<{ className?: string }>;
+
+const AUTHORS: { name: string; links: { href: string; label: string; icon: IconComponent }[] }[] = [
+  {
+    name: "丁丁QZ",
+    links: [
+      { href: "https://github.com/DingdingOvO", label: "GitHub", icon: GithubIcon },
+      { href: "https://b23.tv/v9QuaTO", label: "哔哩哔哩", icon: Tv },
+      { href: "https://v.kuaishou.com/JTZL7bix", label: "快手", icon: Video },
+    ],
+  },
+  {
+    name: "官方•Dingding OvO",
+    links: [{ href: "https://github.com/DingdingOvO", label: "GitHub", icon: GithubIcon }],
+  },
+];
+
 function AboutTab() {
   const { t } = useLocale();
-  const { docMap } = useDocs();
+  const { docs } = useDocs();
   const [buildInfo, setBuildInfo] = useState<{ build: number; commit?: string } | null>(null);
 
   useEffect(() => {
@@ -60,7 +86,11 @@ function AboutTab() {
       .catch(() => { /* dev / offline */ });
   }, []);
 
-  const commandCount = docMap.size;
+  const commandCount = useMemo(
+    () => docs.filter((d) => getCategoryBase(d.category) === "commands").length,
+    [docs],
+  );
+  const localeCount = LOCALES.length;
 
   return (
     <div className="space-y-4">
@@ -80,37 +110,65 @@ function AboutTab() {
       </Section>
 
       <Section title={t("settings.aboutStats")}>
-        <div className="space-y-2.5 text-[13px]">
-          <div className="flex justify-between items-center">
-            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutCommands")}</span>
-            <span className="text-[var(--color-text-primary)]">{commandCount}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutLocales")}</span>
-            <span className="text-[var(--color-text-primary)]">7</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutLicense")}</span>
-            <span className="text-[var(--color-text-primary)]">MIT</span>
-          </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { label: t("settings.aboutCommands"), value: String(commandCount) },
+            { label: t("settings.aboutLocales"), value: String(localeCount) },
+            { label: t("settings.aboutLicense"), value: "MIT" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="rounded-[var(--radius)] bg-[var(--color-bg-tertiary)] px-3 py-2.5 text-center"
+            >
+              <div className="text-[15px] font-semibold text-[var(--color-text-primary)]">{s.value}</div>
+              <div className="text-[11px] text-[var(--color-text-tertiary)] mt-0.5">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title={t("settings.aboutAuthors")}>
+        <div className="space-y-2">
+          {AUTHORS.map((author) => (
+            <div key={author.name} className="rounded-[var(--radius)] border border-[var(--color-border)] p-3">
+              <div className="text-[13px] font-medium text-[var(--color-text-primary)]">{author.name}</div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {author.links.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={LINK_PILL}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </Section>
 
       <Section title={t("settings.aboutLinks")}>
         <div className="space-y-1">
-          <Link
+          <a
             href="https://github.com/MCBECD/site"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] no-underline"
+            className={LINK_ROW}
           >
-            <span>GitHub</span>
+            <span className="flex items-center gap-2">
+              <GithubIcon className="w-4 h-4" />
+              <span>{t("settings.aboutSourceCode")}</span>
+            </span>
             <span className="text-[11px] text-[var(--color-text-tertiary)]">MCBECD/site ↗</span>
-          </Link>
-          <Link
-            href="/docs/"
-            className="flex items-center justify-between px-2 py-2 rounded-[var(--radius)] text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] no-underline"
-          >
+          </a>
+          <Link href="/docs/" className={LINK_ROW}>
             <span>{t("nav.docs")}</span>
             <span className="text-[11px] text-[var(--color-text-tertiary)]">/docs/</span>
           </Link>

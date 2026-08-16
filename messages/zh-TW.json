@@ -63,6 +63,8 @@
     "aboutLocales": "語言數",
     "aboutLicense": "開源協議",
     "aboutLinks": "連結",
+    "aboutAuthors": "作者",
+    "aboutSourceCode": "原始碼",
     "bgImageWrongType": "不支援的圖片格式，請使用 JPG、PNG、GIF、WebP 或 AVIF"
   },
   "code": {
