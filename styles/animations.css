@@ -27,28 +27,40 @@
 .overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
 
-.settings-panel-in  { animation: settingsPanelIn 0.25s var(--ease-out) both; }
-.settings-panel-out { animation: settingsPanelOut 0.18s var(--ease-in) both; }
+.settings-panel-in  { animation: settingsPanelIn 0.28s var(--ease-out) both; }
+.settings-panel-out { animation: settingsPanelOut 0.2s var(--ease-in) both; }
+
+/* Mobile: bottom sheet rises from the bottom edge; desktop: centered dialog scales in. */
+.settings-panel-in,
+.settings-panel-out {
+  transform-origin: bottom center;
+}
+@media (min-width: 640px) {
+  .settings-panel-in,
+  .settings-panel-out {
+    transform-origin: center;
+  }
+}
 
 @keyframes settingsPanelIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(20px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes settingsPanelOut {
   from {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   to {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(16px) scale(0.97);
   }
 }
 
