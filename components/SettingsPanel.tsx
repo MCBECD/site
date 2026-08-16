@@ -305,7 +305,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
           </div>
 
           {/* scrollable content */}
-          <div key={tab} className="px-5 py-5 space-y-3 overflow-y-auto flex-1 min-h-0 tab-content-enter">
+          <div className="px-5 py-5 space-y-3 overflow-y-auto flex-1 min-h-0">
             {tab === "general" ? (
               <>
                 <Section title={t("settings.theme")}>
