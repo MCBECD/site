@@ -23,12 +23,9 @@
 .prose thead th { font-weight: 600; background: var(--color-bg-tertiary); }
 .prose tbody tr:nth-child(even) { background: var(--color-bg-secondary); }
 .prose tbody tr:hover { background: var(--color-accent-muted); }
-.prose td code,
-.prose th code { color: inherit; background: transparent; padding: 0; font-size: inherit; }
+.prose td code, .prose th code { color: inherit; background: transparent; padding: 0; font-size: inherit; }
 .prose p + p { margin-top: 1rem; }
-.prose p + pre,
-.prose p + .group { margin-top: 1.25rem; }
-.prose pre + p { margin-top: 1.25rem; }
+.prose p + pre, .prose pre + p, .prose p + .group { margin-top: 1rem; }
 .prose ul, .prose ol { margin-top: 0.5rem; margin-bottom: 0.5rem; }
 .prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
 .prose blockquote {
