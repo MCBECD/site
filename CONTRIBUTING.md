@@ -56,7 +56,6 @@ author: "Your Name"
 updatedAt: "YYYY-MM-DD"
 title: "/command  Description"
 order: <number>
-category: commands
 description: "Brief one-line description"
 ---
 
@@ -112,7 +111,7 @@ npm run validate
 
 ## Quality Checklist
 
-- [ ] Frontmatter has all required fields: `title`, `order`, `category`, `description`, `author`, `updatedAt`
+- [ ] Frontmatter has all required fields: `title`, `order`, `description`, `author`, `updatedAt`
 - [ ] Cross-references use relative paths (`./other-command`)
 - [ ] Bedrock-specific notes are included (not Java Edition info)
 - [ ] Examples use proper fenced code blocks with `mcfunction` language tag

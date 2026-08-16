@@ -11,10 +11,9 @@ interface DocsContextValue {
 const DocsContext = createContext<DocsContextValue | null>(null);
 
 export function DocsProvider({ docs, children }: { docs: DocMeta[]; children: ReactNode }) {
-  const visibleDocs = useMemo(() => docs.filter((d) => !d.hidden), [docs]);
   const docMap = useMemo(() => new Map(docs.map((d) => [d.id, d])), [docs]);
   return (
-    <DocsContext value={{ docs: visibleDocs, docMap }}>
+    <DocsContext value={{ docs, docMap }}>
       {children}
     </DocsContext>
   );

@@ -39,7 +39,6 @@ author: "官方•Dingding OvO"
 updatedAt: "${today}"
 title: "${title}"
 ${order ? `order: ${order}` : "order: "}
-category: commands
 description: "一句话描述 /${commandName} 命令的用途"
 ---
 
