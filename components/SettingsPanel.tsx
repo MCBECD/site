@@ -152,6 +152,18 @@ function AboutTab() {
 
       <Section title={t("settings.aboutLinks")}>
         <div className="space-y-1">
+          <a
+            href="https://github.com/MCBECD/site"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={LINK_ROW}
+          >
+            <span className="flex items-center gap-2">
+              <GithubIcon className="w-4 h-4" />
+              <span>{t("settings.aboutSourceCode")}</span>
+            </span>
+            <span className="text-[11px] text-[var(--color-text-tertiary)]">MCBECD/site ↗</span>
+          </a>
           <Link href="/docs/" className={LINK_ROW}>
             <span>{t("nav.docs")}</span>
             <span className="text-[11px] text-[var(--color-text-tertiary)]">/docs/</span>

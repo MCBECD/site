@@ -63,6 +63,7 @@
     "aboutLicense": "开源协议",
     "aboutLinks": "链接",
     "aboutAuthors": "作者",
+    "aboutSourceCode": "源代码",
     "bgImageWrongType": "不支持的图片格式，请使用 JPG、PNG、GIF、WebP 或 AVIF"
   },
   "code": {
