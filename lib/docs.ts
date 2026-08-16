@@ -55,6 +55,13 @@ function asStringArray(v: unknown): string[] | undefined {
   return valid.length > 0 ? valid : undefined;
 }
 
+/** Derive a doc's category from its id/path when the frontmatter omits it. */
+function deriveCategory(id: string): string {
+  if (id.startsWith("commands/")) return "commands";
+  if (id.startsWith("community/")) return "community";
+  return "basics";
+}
+
 function buildMeta(
   id: string,
   fallbackName: string,
@@ -70,7 +77,7 @@ function buildMeta(
     tags: asStringArray(fm.tags),
     author: asString(fm.author),
     updatedAt: asString(fm.updatedAt),
-    category: asString(fm.category),
+    category: asString(fm.category) ?? deriveCategory(id),
     hidden: fm.hidden === true,
   };
 }
