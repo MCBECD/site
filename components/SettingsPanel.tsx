@@ -133,6 +133,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const { t } = useLocale();
   const { docMap } = useDocs();
   const [tab, setTab] = useState<Tab>("general");
+  const indicatorDirRef = useRef<"forward" | "backward">("forward");
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -290,7 +291,12 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
             {TABS.map(({ key, labelKey }) => (
               <button
                 key={key}
-                onClick={() => setTab(key)}
+                onClick={() => {
+                  const idx = TABS.findIndex((t) => t.key === key);
+                  const prev = TABS.findIndex((t) => t.key === tab);
+                  indicatorDirRef.current = idx >= prev ? "forward" : "backward";
+                  setTab(key);
+                }}
                 className={`px-3 pb-2.5 text-[13px] font-medium transition-[color,transform] duration-[var(--duration-fast)] relative -mb-px min-h-[44px] active:scale-[0.92] flex items-center
                   ${tab === key
                     ? "text-[var(--color-accent)]"
@@ -298,14 +304,14 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
               >
                 {t(labelKey)}
                 {tab === key && (
-                  <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full tab-indicator" />
+                  <span className={`absolute bottom-0 inset-x-0 h-[2px] bg-[var(--color-accent)] rounded-full tab-indicator ${indicatorDirRef.current === "backward" ? "tab-indicator-backward" : "tab-indicator-forward"}`} />
                 )}
               </button>
             ))}
           </div>
 
           {/* scrollable content */}
-          <div className="px-5 py-5 space-y-3 overflow-y-auto flex-1 min-h-0">
+          <div key={tab} className="px-5 py-5 space-y-3 overflow-y-auto flex-1 min-h-0 tab-content-enter">
             {tab === "general" ? (
               <>
                 <Section title={t("settings.theme")}>
@@ -348,7 +354,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 </Section>
               </>
             ) : tab === "data" ? (
-              <div className="space-y-3">
+              <>
                 {/* Bookmarks */}
                 <Section
                   title={t("doc.bookmarks")}
@@ -442,12 +448,12 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                     </p>
                   )}
                 </Section>
-              </div>
+              </>
             ) : tab === "plugins" ? (
-              <div className="space-y-3">
+              <>
                 <ColorThemePluginCard />
                 <BackgroundImagePluginCard />
-              </div>
+              </>
             ) : (
               <AboutTab />
             )}

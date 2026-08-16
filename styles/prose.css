@@ -31,7 +31,19 @@
 .prose pre + p { margin-top: 1.25rem; }
 .prose ul, .prose ol { margin-top: 0.5rem; margin-bottom: 0.5rem; }
 .prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
-.prose blockquote { margin-top: 1rem; margin-bottom: 1rem; }
+.prose blockquote {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-left: 3px solid var(--color-border);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+}
+.prose blockquote p { margin: 0.25rem 0; }
+.prose h2, .prose h3, .prose h4 {
+  scroll-margin-top: calc(var(--navbar-height) + 1rem);
+}
 .prose hr { margin-top: 2rem; margin-bottom: 2rem; }
 
 /* Images (exclude cmd icons) */
