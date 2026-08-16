@@ -64,7 +64,6 @@
     "aboutLicense": "License",
     "aboutLinks": "Links",
     "aboutAuthors": "Authors",
-    "aboutSourceCode": "Source code",
     "bgImageWrongType": "Unsupported image format. Please use JPG, PNG, GIF, WebP, or AVIF"
   },
   "code": {

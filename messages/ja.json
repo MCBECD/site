@@ -64,7 +64,6 @@
     "aboutLicense": "ライセンス",
     "aboutLinks": "リンク",
     "aboutAuthors": "作者",
-    "aboutSourceCode": "ソースコード",
     "bgImageWrongType": "対応していない画像形式です。JPG、PNG、GIF、WebP、またはAVIFを使用してください"
   },
   "code": {
