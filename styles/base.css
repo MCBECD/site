@@ -30,13 +30,14 @@ code, kbd {
 /* --- Code blocks (Shiki) --- */
 pre {
   background-color: var(--color-code-bg);
-  padding: 0.25rem 0.5rem;
+  padding: 0.75rem 1rem;
   margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--color-accent);
-  word-break: break-all;
-  white-space: pre-wrap;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.6;
   min-width: 0;
   -webkit-overflow-scrolling: touch;
 }
