@@ -7,7 +7,7 @@
 // 要点：
 //   - 系统鼠标指针替换为 AOSP 自定义光标（cursors/dark/*.svg），28px
 //   - 光标用 mousemove 事件实时跟随真实鼠标，不额外轮询，跟手不抖
-//   - 移动用非线性缓动（easeInOutCubic / Quart / Expo），快而不突兀
+//   - 移动用非线性缓动（easeInOutQuint / Quart / Expo），快而不突兀
 
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
@@ -21,10 +21,17 @@ const SITE_URL = process.env.SITE_URL ?? "https://mcbecd.pages.dev";
 const WIDTH = 1920;
 const HEIGHT = 1080;
 
-/* ================= 缓动函数 ================= */
-const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-const easeInOutQuart = (t) => (t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2);
+/* ================= 高级缓动函数（非线性，杜绝直上直下） ================= */
+// 5 次方：起步/收尾减速更明显，中间加速更猛
+const easeInOutQuint = (t) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2);
 const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5);
+// 指数级：最明显的「疾进缓停」
+const easeInOutExpo = (t) =>
+  t === 0 ? 0 : t === 1 ? 1 : t < 0.5 ? Math.pow(2, 20 * t - 10) / 2 : (2 - Math.pow(2, -20 * t + 10)) / 2;
+// 圆弧缓动：观感更圆润
+const easeInOutCirc = (t) =>
+  t < 0.5 ? (1 - Math.sqrt(1 - Math.pow(2 * t, 2))) / 2 : (Math.sqrt(1 - Math.pow(-2 * t + 2, 2)) + 1) / 2;
+// 通用三阶贝塞尔，可生成任意高级曲线
 const cubicBezier = (p1, p2) => (t) => {
   const cu = 3 * p1, cv = 3 * p2;
   const a = 3 * cu - cv + 1, b = 3 * cv - 6 * cu, c = 3 * cu;
@@ -38,7 +45,13 @@ const cubicBezier = (p1, p2) => (t) => {
   }
   return sample(x);
 };
-const easeInOutExpo = cubicBezier(0.87, 0.13);
+// 带轻微「回弹」的 easeInOutBack（小位移上用，不弹得夸张）
+const easeInOutBack = (t) => {
+  const c1 = 1.70158, c2 = c1 * 1.525;
+  return t < 0.5
+    ? (Math.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
+    : (Math.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
+};
 
 /* ================= 自定义光标（跟手） ================= */
 function cursorDataURL(name) {
@@ -79,20 +92,28 @@ async function setCursor(page, name) {
 }
 
 /* ================= 带缓动的移动 / 点击 ================= */
-async function moveCursor(page, toX, toY, { duration = 420, easing = easeInOutCubic, steps = 24, cursor = null } = {}) {
+async function moveCursor(page, toX, toY, { duration = 520, easing = easeInOutQuint, steps = 32, cursor = null, arc = 0.12 } = {}) {
   if (cursor) await setCursor(page, cursor);
-  const from = await page.evaluate(() => {
+  const [x1, y1] = await page.evaluate(() => {
     const el = document.getElementById("__custom_cursor");
     const m = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el?.style.transform ?? "");
     return m ? [parseFloat(m[1]), parseFloat(m[2])] : [960, 540];
   });
+  const dx = toX - x1, dy = toY - y1;
+  const len = Math.hypot(dx, dy) || 1;
+  // 垂直方向单位向量：让轨迹带一点弧线，像人手甩鼠标，不是笔直一条线
+  const nx = -dy / len, ny = dx / len;
+  const arcH = len * arc;
   for (let i = 1; i <= steps; i++) {
-    const t = easing(i / steps);
-    const x = from[0] + (toX - from[0]) * t;
-    const y = from[1] + (toY - from[1]) * t;
-    await page.mouse.move(x, y, { steps: 1 }); // 触发 mousemove，光标图层自动跟随
+    const e = easing(i / steps);
+    const a = Math.sin(Math.PI * e) * arcH; // 弧在中间最高，两端归零
+    const x = x1 + dx * e + nx * a;
+    const y = y1 + dy * e + ny * a;
+    await page.mouse.move(x, y, { steps: 1 });
     await page.waitForTimeout(duration / steps);
   }
+  // 落点精确归位，避免弧线造成的偏差影响点击
+  await page.mouse.move(toX, toY, { steps: 1 });
 }
 async function clickAt(page, x, y, opts = {}) {
   await moveCursor(page, x, y, { cursor: "pointer_hand", ...opts });
@@ -129,18 +150,18 @@ async function tour(page) {
 
   /* 1) 列表：搜索 + 清空 + 视图切换 */
   await hoverAt(page, 960, 250, 500, { easing: easeInOutExpo });
-  await tryClick(page, 'input[type="text"]', { easing: easeInOutQuart });
+  await tryClick(page, 'input[type="text"]', { easing: easeInOutCirc });
   await page.keyboard.type("scoreboard", { delay: 55 });
   await page.waitForTimeout(550);
   await tryClick(page, 'button[aria-label*="清除"], button[aria-label*="clear"]', { easing: easeOutQuint });
   await page.waitForTimeout(400);
-  await tryClick(page, 'button[aria-label*="切换"], button[aria-label*="列表"], button[aria-label*="视图"]', { easing: easeInOutQuart });
+  await tryClick(page, 'button[aria-label*="切换"], button[aria-label*="列表"], button[aria-label*="视图"]', { easing: easeInOutCirc });
   await page.waitForTimeout(500);
-  await tryClick(page, 'button[aria-label*="切换"], button[aria-label*="卡片"]', { easing: easeInOutQuart });
+  await tryClick(page, 'button[aria-label*="切换"], button[aria-label*="卡片"]', { easing: easeInOutCirc });
   await page.waitForTimeout(500);
 
   /* 2) 命令详情：滚动 + 复制 */
-  await tryClick(page, "a[href*='/docs/commands/execute/']", { duration: 550, easing: easeInOutQuart });
+  await tryClick(page, "a[href*='/docs/commands/execute/']", { duration: 550, easing: easeInOutCirc });
   await page.waitForTimeout(1100);
   for (let i = 0; i < 3; i++) {
     await page.mouse.wheel(0, 850);
@@ -148,40 +169,40 @@ async function tour(page) {
   }
   const copyBtn = await centerOf(page, 'button[aria-label*="复制"], button[title*="复制"], .code-copy-btn');
   if (copyBtn) {
-    await hoverAt(page, copyBtn[0], copyBtn[1], 400, { easing: easeInOutCubic });
+    await hoverAt(page, copyBtn[0], copyBtn[1], 400, { easing: easeInOutQuint });
     await clickAt(page, copyBtn[0], copyBtn[1], { easing: easeOutQuint });
     await page.waitForTimeout(450);
   }
 
   /* 3) 社区装置 */
-  await tryClick(page, "a[href='/docs/'], a[href*='/docs']", { easing: easeInOutQuart });
+  await tryClick(page, "a[href='/docs/'], a[href*='/docs']", { easing: easeInOutCirc });
   await page.waitForTimeout(750);
-  await tryClick(page, "a[href*='/docs/community/']", { duration: 550, easing: easeInOutQuart });
+  await tryClick(page, "a[href*='/docs/community/']", { duration: 550, easing: easeInOutCirc });
   await page.waitForTimeout(1100);
   await page.mouse.wheel(0, 700);
   await page.waitForTimeout(350);
 
   /* 4) 设置：通用 → 主题/字体 */
   const gear = await centerOf(page, 'nav button:last-of-type, button[aria-label*="设置"], button[title*="设置"]');
-  if (gear) await clickAt(page, gear[0], gear[1], { easing: easeInOutQuart });
+  if (gear) await clickAt(page, gear[0], gear[1], { easing: easeInOutCirc });
   await page.waitForTimeout(850);
-  await tryClick(page, 'button[title*="深色"], button[aria-label*="深色"], button:has-text("深色")', { easing: easeInOutCubic });
+  await tryClick(page, 'button[title*="深色"], button[aria-label*="深色"], button:has-text("深色")', { easing: easeInOutQuint });
   await page.waitForTimeout(500);
-  await tryClick(page, 'button:has-text("大"), button[title*="大"]', { easing: easeInOutCubic });
+  await tryClick(page, 'button:has-text("大"), button[title*="大"]', { easing: easeInOutQuint });
   await page.waitForTimeout(500);
 
   /* 5) 插件：配色 */
-  await tryClick(page, 'button:has-text("插件"), button:has-text("Plugins")', { easing: easeInOutQuart });
+  await tryClick(page, 'button:has-text("插件"), button:has-text("Plugins")', { easing: easeInOutCirc });
   await page.waitForTimeout(650);
-  await tryClick(page, 'button:has-text("蓝"), button:has-text("Blue")', { easing: easeInOutCubic });
+  await tryClick(page, 'button:has-text("蓝"), button:has-text("Blue")', { easing: easeInOutQuint });
   await page.waitForTimeout(500);
 
   /* 6) 数据 */
-  await tryClick(page, 'button:has-text("数据"), button:has-text("Data")', { easing: easeInOutQuart });
+  await tryClick(page, 'button:has-text("数据"), button:has-text("Data")', { easing: easeInOutCirc });
   await page.waitForTimeout(650);
 
   /* 7) 关于 */
-  await tryClick(page, 'button:has-text("关于"), button:has-text("About")', { easing: easeInOutQuart });
+  await tryClick(page, 'button:has-text("关于"), button:has-text("About")', { easing: easeInOutCirc });
   await page.waitForTimeout(900);
   await page.keyboard.press("Escape");
   await page.waitForTimeout(450);
