@@ -26,22 +26,11 @@ fi
 echo "输入：$INPUT"
 echo "输出：$OUTPUT"
 
-# 动态模糊：
-#   - 默认：tmix 轻量帧混合（1:2:1 高斯），几秒钟跑完，快且稳
-#   - MOTION=pro：minterpolate 运动补偿（更顺滑，但 1080p 可能要跑几十分钟到一小时，慎用）
-# 注意：真·专业运动模糊（光学流，如 ReelSmart Motion Blur）ffmpeg 给不了，需要 AE/DaVinci。
-if [[ "${MOTION:-}" == "pro" ]]; then
-  BLUR="minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,tmix=frames=3:weights=1 2 1"
-else
-  BLUR="tmix=frames=3:weights=1 2 1"
-fi
-
-echo "动态模糊模式：${MOTION:-motion-compensated(默认)}"
-echo "开始合成（动态模糊 + 字幕烧录）..."
+# 不加动态模糊，保留录制原生帧率（纯靠高帧/原生运动），只烧字幕
+echo "开始合成（仅烧字幕，不做动态模糊）..."
 "$FF" -hide_banner -loglevel warning -y -i "$INPUT" \
-  -vf "$BLUR,ass=subtitles.ass,format=yuv420p" \
+  -vf "ass=subtitles.ass,format=yuv420p" \
   -c:v libx264 -preset slow -crf 17 -profile:v high \
-  -r 30 \
   -movflags +faststart \
   "$OUTPUT"
 
