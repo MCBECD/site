@@ -27,9 +27,13 @@ jobs:
         working-directory: animation
         run: npm install --no-audit --no-fund
 
+      - name: Typecheck
+        working-directory: animation
+        run: npx tsc --noEmit
+
       - name: Render animation
         working-directory: animation
-        run: npx remotion render DemoAnimation out/mcbecd-animation.mp4 --codec=h264
+        run: npx remotion render DemoAnimation out/mcbecd-animation.mp4 --codec=h264 --concurrency=50%
 
       - name: Upload MP4
         uses: actions/upload-artifact@v4
