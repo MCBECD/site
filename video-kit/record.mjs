@@ -31,27 +31,6 @@ const easeInOutExpo = (t) =>
 // 圆弧缓动：观感更圆润
 const easeInOutCirc = (t) =>
   t < 0.5 ? (1 - Math.sqrt(1 - Math.pow(2 * t, 2))) / 2 : (Math.sqrt(1 - Math.pow(-2 * t + 2, 2)) + 1) / 2;
-// 通用三阶贝塞尔，可生成任意高级曲线
-const cubicBezier = (p1, p2) => (t) => {
-  const cu = 3 * p1, cv = 3 * p2;
-  const a = 3 * cu - cv + 1, b = 3 * cv - 6 * cu, c = 3 * cu;
-  const sample = (x) => ((a * x + b) * x + c) * x;
-  let x = t;
-  for (let i = 0; i < 8; i++) {
-    const err = sample(x) - t;
-    if (Math.abs(err) < 1e-5) break;
-    const d = 3 * a * x * x + 2 * b * x + c;
-    x -= err / d;
-  }
-  return sample(x);
-};
-// 带轻微「回弹」的 easeInOutBack（小位移上用，不弹得夸张）
-const easeInOutBack = (t) => {
-  const c1 = 1.70158, c2 = c1 * 1.525;
-  return t < 0.5
-    ? (Math.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
-    : (Math.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
-};
 
 /* ================= 自定义光标（跟手） ================= */
 function cursorDataURL(name) {

@@ -27,4 +27,24 @@ export default tseslint.config(
       },
     },
   },
+  // video-kit is a self-contained Node script package (playwright recorder +
+  // static server). Its record.mjs embeds browser-context code inside
+  // page.evaluate(), so it legitimately references browser globals too.
+  {
+    files: ["video-kit/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        // Node
+        process: "readonly",
+        console: "readonly",
+        __dirname: "readonly",
+        Buffer: "readonly",
+        // Browser (page.evaluate / injected cursor layer)
+        document: "readonly",
+        window: "readonly",
+        navigator: "readonly",
+        location: "readonly",
+      },
+    },
+  },
 );
