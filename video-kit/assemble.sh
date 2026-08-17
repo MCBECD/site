@@ -27,15 +27,13 @@ echo "输入：$INPUT"
 echo "输出：$OUTPUT"
 
 # 动态模糊：
-#   - 默认：运动补偿插帧到 120fps（minterpolate/mci）→ 5 帧高斯混合（tmix）→ 降到 30fps，
-#     相当于「长快门」把快速运动拖出模糊，比单纯 tmix 好一档。
-#   - MOTION=light：只用 tmix，快但模糊弱（适合调试）
-# 注意：真·专业运动模糊（光学流矢量，如 ReelSmart Motion Blur）ffmpeg 给不了，
-#       需要 After Effects / DaVinci；这里默认方案是免费的「运动补偿近似」里最好的一档。
-if [[ "${MOTION:-}" == "light" ]]; then
-  BLUR="tmix=frames=3:weights=1 2 1"
+#   - 默认：tmix 轻量帧混合（1:2:1 高斯），几秒钟跑完，快且稳
+#   - MOTION=pro：minterpolate 运动补偿（更顺滑，但 1080p 可能要跑几十分钟到一小时，慎用）
+# 注意：真·专业运动模糊（光学流，如 ReelSmart Motion Blur）ffmpeg 给不了，需要 AE/DaVinci。
+if [[ "${MOTION:-}" == "pro" ]]; then
+  BLUR="minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,tmix=frames=3:weights=1 2 1"
 else
-  BLUR="minterpolate=fps=120:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,tmix=frames=5:weights=1 2 4 2 1"
+  BLUR="tmix=frames=3:weights=1 2 1"
 fi
 
 echo "动态模糊模式：${MOTION:-motion-compensated(默认)}"
