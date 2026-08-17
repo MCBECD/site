@@ -118,7 +118,7 @@ async function setCursor(page, name) {
 }
 
 /* ================= 带缓动的移动 / 点击 ================= */
-async function moveCursor(page, toX, toY, { duration = 380, easing = easeInOutQuint, steps = 14, cursor = null, arc = 0.12 } = {}) {
+async function moveCursor(page, toX, toY, { duration = 320, easing = easeInOutQuint, steps = 10, cursor = null, arc = 0.12 } = {}) {
   if (cursor) await setCursor(page, cursor);
   const [x1, y1] = await page.evaluate(() => [window.__cursorX ?? 960, window.__cursorY ?? 540]);
   const dx = toX - x1, dy = toY - y1;
@@ -149,10 +149,10 @@ async function hoverAt(page, x, y, ms = 400, opts = {}) {
 }
 async function centerOf(page, selector) {
   try {
-    return await page.locator(selector).first().evaluate((el) => {
-      const r = el.getBoundingClientRect();
-      return [r.x + r.width / 2, r.y + r.height / 2];
-    });
+    // 2 秒超时：选择器匹配不到时快速跳过，而不是默认等 30 秒拖慢整段录制
+    const el = await page.locator(selector).first().elementHandle({ timeout: 2000 });
+    const box = await el.boundingBox();
+    return box ? [box.x + box.width / 2, box.y + box.height / 2] : null;
   } catch {
     return null;
   }
