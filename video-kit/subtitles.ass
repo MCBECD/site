@@ -1,6 +1,6 @@
 [Script Info]
-; MCBECD 演示视频字幕 —— 中文在上，英文在下，3D 立体描边+投影
-; 时间轴为示例，录制后请按实际镜头微调
+; MCBECD 演示视频字幕 —— 中文在上，英文在下，立体描边+投影
+; 时间轴按录制脚本 tour() 的节奏估算，出片后请按实际镜头微调
 ScriptType: v4.00+
 PlayResX: 1920
 PlayResY: 1080
@@ -9,43 +9,41 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-; 中文：白字 + 深色描边 + 右下投影（立体感）
 Style: CN,Noto Sans CJK SC,58,&H00FFFFFF,&H00FFFFFF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,4,4,8,60,60,40,1
-; 英文：白字 + 深色描边 + 投影，略小一号
 Style: EN,DejaVu Sans,34,&H00FFFFFF,&H00FFFFFF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,3,3,8,60,60,40,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
-Dialogue: 0,0:00:00.00,0:00:04.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(200,200)}MCBECD —— 社区驱动的 Minecraft 基岩版命令库
-Dialogue: 0,0:00:00.00,0:00:04.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(200,200)}MCBECD — a community-driven Minecraft Bedrock command library
+Dialogue: 0,0:00:00.00,0:00:05.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(200,200)}MCBECD —— 社区驱动的 Minecraft 基岩版命令库
+Dialogue: 0,0:00:00.00,0:00:05.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(200,200)}MCBECD — a community-driven Minecraft Bedrock command library
 
-Dialogue: 0,0:00:04.00,0:00:09.00,CN,,0,0,0,,{\an8\pos(960,930)}收录 26 条命令：语法、参数、示例、基岩版注意
-Dialogue: 0,0:00:04.00,0:00:09.00,EN,,0,0,0,,{\an8\pos(960,1000)}26 commands: syntax, parameters, examples, Bedrock notes
+Dialogue: 0,0:00:05.00,0:00:12.00,CN,,0,0,0,,{\an8\pos(960,930)}顶部搜索框，输入命令名就能筛选
+Dialogue: 0,0:00:05.00,0:00:12.00,EN,,0,0,0,,{\an8\pos(960,1000)}Search box: type a command name to filter
 
-Dialogue: 0,0:00:09.00,0:00:14.00,CN,,0,0,0,,{\an8\pos(960,930)}每条命令都讲真实原理，不是空话
-Dialogue: 0,0:00:09.00,0:00:14.00,EN,,0,0,0,,{\an8\pos(960,1000)}Every command explains the real mechanics behind it
+Dialogue: 0,0:00:12.00,0:00:20.00,CN,,0,0,0,,{\an8\pos(960,930)}点开一条命令，看语法、参数和真实原理
+Dialogue: 0,0:00:12.00,0:00:20.00,EN,,0,0,0,,{\an8\pos(960,1000)}Open a command: syntax, parameters, real mechanics
 
-Dialogue: 0,0:00:14.00,0:00:19.00,CN,,0,0,0,,{\an8\pos(960,930)}命令方块图标、代码高亮、一键复制
-Dialogue: 0,0:00:14.00,0:00:19.00,EN,,0,0,0,,{\an8\pos(960,1000)}Command-block icons, syntax highlighting, one-click copy
+Dialogue: 0,0:00:20.00,0:00:27.00,CN,,0,0,0,,{\an8\pos(960,930)}命令方块图标、代码高亮，一键复制
+Dialogue: 0,0:00:20.00,0:00:27.00,EN,,0,0,0,,{\an8\pos(960,1000)}Command-block icons, highlighting, one-click copy
 
-Dialogue: 0,0:00:19.00,0:00:25.00,CN,,0,0,0,,{\an8\pos(960,930)}7 种界面语言 · 浅色/深色主题 · 自定义配色
-Dialogue: 0,0:00:19.00,0:00:25.00,EN,,0,0,0,,{\an8\pos(960,1000)}7 UI languages · light/dark themes · custom colors
+Dialogue: 0,0:00:27.00,0:00:34.00,CN,,0,0,0,,{\an8\pos(960,930)}社区装置：雪球菜单、玩家互传……
+Dialogue: 0,0:00:27.00,0:00:34.00,EN,,0,0,0,,{\an8\pos(960,1000)}Community builds: snowball menu, TPA…
 
-Dialogue: 0,0:00:25.00,0:00:31.00,CN,,0,0,0,,{\an8\pos(960,930)}社区装置：雪球菜单、玩家互传、在线计时……
-Dialogue: 0,0:00:25.00,0:00:31.00,EN,,0,0,0,,{\an8\pos(960,1000)}Community builds: snowball menu, TPA, online timers…
+Dialogue: 0,0:00:34.00,0:00:42.00,CN,,0,0,0,,{\an8\pos(960,930)}设置里：浅色/深色主题、字体大小
+Dialogue: 0,0:00:34.00,0:00:42.00,EN,,0,0,0,,{\an8\pos(960,1000)}Settings: light/dark theme, font size
 
-Dialogue: 0,0:00:31.00,0:00:38.00,CN,,0,0,0,,{\an8\pos(960,930)\c&HFFE5E5&}但要先说清楚：项目目前非常、非常早期
-Dialogue: 0,0:00:31.00,0:00:38.00,EN,,0,0,0,,{\an8\pos(960,1000)\c&HFFE5E5&}To be honest: it is a very, very early project
+Dialogue: 0,0:00:42.00,0:00:49.00,CN,,0,0,0,,{\an8\pos(960,930)}插件：自定义配色与背景
+Dialogue: 0,0:00:42.00,0:00:49.00,EN,,0,0,0,,{\an8\pos(960,1000)}Plugins: custom colors and background
 
-Dialogue: 0,0:00:38.00,0:00:45.00,CN,,0,0,0,,{\an8\pos(960,930)\c&HFFE5E5&}还有大量错误、大量细节没有打磨
-Dialogue: 0,0:00:38.00,0:00:45.00,EN,,0,0,0,,{\an8\pos(960,1000)\c&HFFE5E5&}It still has many bugs and unfinished details
+Dialogue: 0,0:00:49.00,0:00:56.00,CN,,0,0,0,,{\an8\pos(960,930)}关于：版本、统计与作者
+Dialogue: 0,0:00:49.00,0:00:56.00,EN,,0,0,0,,{\an8\pos(960,1000)}About: version, stats and authors
 
-Dialogue: 0,0:00:45.00,0:00:52.00,CN,,0,0,0,,{\an8\pos(960,930)}发现错误？欢迎指出，或直接参与修复
-Dialogue: 0,0:00:45.00,0:00:52.00,EN,,0,0,0,,{\an8\pos(960,1000)}Found an error? Please report it — or help fix it
+Dialogue: 0,0:00:56.00,0:01:04.00,CN,,0,0,0,,{\an8\pos(960,930)\c&HFFE5E5&}项目目前非常早期，还有很多错误
+Dialogue: 0,0:00:56.00,0:01:04.00,EN,,0,0,0,,{\an8\pos(960,1000)\c&HFFE5E5&}It is a very early project with many bugs
 
-Dialogue: 0,0:00:52.00,0:01:00.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(0,300)}作者：丁丁QZ · GitHub / 哔哩哔哩 / 快手
-Dialogue: 0,0:00:52.00,0:01:00.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(0,300)}Author: DingdingQZ · GitHub / Bilibili / Kuaishou
+Dialogue: 0,0:01:04.00,0:01:12.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(0,300)}作者：丁丁QZ · GitHub / 哔哩哔哩 / 快手
+Dialogue: 0,0:01:04.00,0:01:12.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(0,300)}Author: DingdingQZ · GitHub / Bilibili / Kuaishou
 
-Dialogue: 0,0:01:00.00,0:01:06.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(0,400)}感谢观看 —— 它会继续变好
-Dialogue: 0,0:01:00.00,0:01:06.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(0,400)}Thanks for watching — it will keep improving
+Dialogue: 0,0:01:12.00,0:01:18.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(0,400)}感谢观看 —— 它会继续变好
+Dialogue: 0,0:01:12.00,0:01:18.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(0,400)}Thanks for watching — it will keep improving

@@ -59,11 +59,24 @@ function cursorDataURL(name) {
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
-// 注入一个 28px 的光标图层，靠 mousemove 事件实时跟随，杜绝逐帧 evaluate 的抖动
+// 热点表（单位 dp，取自 cursors.json）：把光标「点击点」对准真实鼠标位置
+const CURSOR_SCALE = 28 / 24;
+const CURSOR_HOTSPOTS = {
+  pointer_arrow: [4.5, 3.5],
+  pointer_hand: [9.5, 2.5],
+  pointer_text: [12, 11],
+  pointer_crosshair: [12, 12],
+  pointer_grab: [12, 12],
+  pointer_grabbing: [12, 12],
+};
+
+// 注入 28px 光标图层：靠 mousemove 实时跟随，并按热点偏移对齐，避免箭头尖和点击点错位
 async function injectCustomCursor(page, cursorName = "pointer_arrow") {
   const url = cursorDataURL(cursorName);
+  const [hx, hy] = CURSOR_HOTSPOTS[cursorName] ?? [0, 0];
+  const ox = hx * CURSOR_SCALE, oy = hy * CURSOR_SCALE;
   await page.addStyleTag({ content: `* { cursor: none !important; }` });
-  await page.evaluate((url) => {
+  await page.evaluate(({ url, ox, oy }) => {
     const img = document.createElement("img");
     img.id = "__custom_cursor";
     img.src = url;
@@ -75,30 +88,39 @@ async function injectCustomCursor(page, cursorName = "pointer_arrow") {
       "filter: drop-shadow(0 2px 3px rgba(0,0,0,0.45))",
     ].join("; ");
     document.body.appendChild(img);
+    window.__cursorOx = ox;
+    window.__cursorOy = oy;
+    window.__cursorX = 960;
+    window.__cursorY = 540;
     const follow = (e) => {
-      img.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      window.__cursorX = e.clientX;
+      window.__cursorY = e.clientY;
+      img.style.transform = `translate(${e.clientX - window.__cursorOx}px, ${e.clientY - window.__cursorOy}px)`;
     };
     document.addEventListener("mousemove", follow);
     window.__cursorFollow = follow;
-  }, url);
+  }, { url, ox, oy });
 }
 
 async function setCursor(page, name) {
   const url = cursorDataURL(name);
-  await page.evaluate((url) => {
+  const [hx, hy] = CURSOR_HOTSPOTS[name] ?? [0, 0];
+  const ox = hx * CURSOR_SCALE, oy = hy * CURSOR_SCALE;
+  await page.evaluate(({ url, ox, oy }) => {
     const el = document.getElementById("__custom_cursor");
     if (el) el.src = url;
-  }, url);
+    window.__cursorOx = ox;
+    window.__cursorOy = oy;
+    if (window.__cursorFollow) {
+      window.__cursorFollow({ clientX: window.__cursorX, clientY: window.__cursorY });
+    }
+  }, { url, ox, oy });
 }
 
 /* ================= 带缓动的移动 / 点击 ================= */
-async function moveCursor(page, toX, toY, { duration = 520, easing = easeInOutQuint, steps = 32, cursor = null, arc = 0.12 } = {}) {
+async function moveCursor(page, toX, toY, { duration = 380, easing = easeInOutQuint, steps = 14, cursor = null, arc = 0.12 } = {}) {
   if (cursor) await setCursor(page, cursor);
-  const [x1, y1] = await page.evaluate(() => {
-    const el = document.getElementById("__custom_cursor");
-    const m = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el?.style.transform ?? "");
-    return m ? [parseFloat(m[1]), parseFloat(m[2])] : [960, 540];
-  });
+  const [x1, y1] = await page.evaluate(() => [window.__cursorX ?? 960, window.__cursorY ?? 540]);
   const dx = toX - x1, dy = toY - y1;
   const len = Math.hypot(dx, dy) || 1;
   // 垂直方向单位向量：让轨迹带一点弧线，像人手甩鼠标，不是笔直一条线
