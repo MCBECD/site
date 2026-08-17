@@ -75,7 +75,7 @@ export function DocDetailClient({ doc, children }: DocDetailClientProps) {
     ? createPortal(
         <div
           role="status"
-          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)] bg-white text-[var(--color-accent)] ${leaving ? "toast-out" : "toast-in"}`}
+          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)] bg-[var(--color-toast-bg)] text-white ${leaving ? "toast-out" : "toast-in"}`}
         >
           <Check className="w-4 h-4" />
           <span>{t("code.copied")}</span>

@@ -25,7 +25,7 @@ const PageButton = memo(function PageButton({
       onClick={onClick}
       className={`min-w-[44px] h-11 flex items-center justify-center rounded-[var(--radius-sm)] text-[13px] font-medium transition-[color,background,transform,box-shadow] duration-[var(--duration-fast)] active:scale-[0.92] ${
         isActive
-          ? "bg-[var(--color-accent)] text-[var(--color-on-accent)] shadow-[var(--shadow-sm)] shadow-[var(--color-accent)]/25"
+          ? "bg-[var(--color-accent)] text-[var(--color-on-accent)] shadow-[var(--shadow-sm)]"
           : "bg-[var(--color-bg-secondary)]/50 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
       }`}
     >
