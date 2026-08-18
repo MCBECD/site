@@ -205,12 +205,10 @@ async function tour(page) {
   await page.waitForTimeout(500);
   step("回到列表并清空搜索");
 
-  /* 4) 视图切换（列表 ↔ 卡片） */
+  /* 4) 视图切换（card → list，list 视图显示全部分区，社区链接才在 DOM） */
   await tryClick(page, 'button[aria-label*="切换"]', { easing: easeInOutCirc });
-  await page.waitForTimeout(450);
-  await tryClick(page, 'button[aria-label*="切换"]', { easing: easeInOutCirc });
-  await page.waitForTimeout(450);
-  step("视图切换完成");
+  await page.waitForTimeout(500);
+  step("已切到列表视图");
 
   /* 5) 社区装置 */
   await tryClick(page, "a[href*='/docs/community/']", { duration: 500, easing: easeInOutCirc });
