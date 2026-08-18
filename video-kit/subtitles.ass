@@ -1,6 +1,6 @@
 [Script Info]
 ; MCBECD 演示视频字幕 —— 中文在上，英文在下，立体描边+投影
-; 时间轴对齐 31 秒成片（GitHub Actions 录制，实测镜头时间）
+; 时间轴对齐 28 秒成片（GitHub Actions 录制，实测镜头时间）
 ScriptType: v4.00+
 PlayResX: 1920
 PlayResY: 1080
@@ -15,32 +15,32 @@ Style: EN,DejaVu Sans,34,&H00FFFFFF,&H00FFFFFF,&H00101010,&H80000000,-1,0,0,0,10
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
-Dialogue: 0,0:00:00.00,0:00:02.50,CN,,0,0,0,,{\an8\pos(960,930)\fad(150,150)}MCBECD · 基岩版命令库
-Dialogue: 0,0:00:00.00,0:00:02.50,EN,,0,0,0,,{\an8\pos(960,1000)\fad(150,150)}MCBECD · Bedrock command library
+Dialogue: 0,0:00:00.00,0:00:02.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(150,150)}MCBECD · 基岩版命令库
+Dialogue: 0,0:00:00.00,0:00:02.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(150,150)}MCBECD · Bedrock command library
 
-Dialogue: 0,0:00:02.50,0:00:06.50,CN,,0,0,0,,{\an8\pos(960,930)}搜索框筛选命令
-Dialogue: 0,0:00:02.50,0:00:06.50,EN,,0,0,0,,{\an8\pos(960,1000)}Search box filters commands
+Dialogue: 0,0:00:02.00,0:00:05.00,CN,,0,0,0,,{\an8\pos(960,930)}搜索框筛选命令
+Dialogue: 0,0:00:02.00,0:00:05.00,EN,,0,0,0,,{\an8\pos(960,1000)}Search box filters commands
 
-Dialogue: 0,0:00:06.50,0:00:10.50,CN,,0,0,0,,{\an8\pos(960,930)}点开命令看语法与原理
-Dialogue: 0,0:00:06.50,0:00:10.50,EN,,0,0,0,,{\an8\pos(960,1000)}Open a command: syntax & mechanics
+Dialogue: 0,0:00:05.00,0:00:08.00,CN,,0,0,0,,{\an8\pos(960,930)}点开命令看语法与原理
+Dialogue: 0,0:00:05.00,0:00:08.00,EN,,0,0,0,,{\an8\pos(960,1000)}Open a command: syntax & mechanics
 
-Dialogue: 0,0:00:10.50,0:00:13.50,CN,,0,0,0,,{\an8\pos(960,930)}图标高亮 · 一键复制
-Dialogue: 0,0:00:10.50,0:00:13.50,EN,,0,0,0,,{\an8\pos(960,1000)}Icons, highlighting, one-click copy
+Dialogue: 0,0:00:08.00,0:00:11.00,CN,,0,0,0,,{\an8\pos(960,930)}图标高亮 · 一键复制
+Dialogue: 0,0:00:08.00,0:00:11.00,EN,,0,0,0,,{\an8\pos(960,1000)}Icons, highlighting, one-click copy
 
-Dialogue: 0,0:00:13.50,0:00:16.50,CN,,0,0,0,,{\an8\pos(960,930)}列表视图展示全部命令
-Dialogue: 0,0:00:13.50,0:00:16.50,EN,,0,0,0,,{\an8\pos(960,1000)}List view shows all commands
+Dialogue: 0,0:00:11.00,0:00:13.50,CN,,0,0,0,,{\an8\pos(960,930)}列表视图展示全部命令
+Dialogue: 0,0:00:11.00,0:00:13.50,EN,,0,0,0,,{\an8\pos(960,1000)}List view shows all commands
 
-Dialogue: 0,0:00:16.50,0:00:19.00,CN,,0,0,0,,{\an8\pos(960,930)}社区装置：雪球菜单、互传
-Dialogue: 0,0:00:16.50,0:00:19.00,EN,,0,0,0,,{\an8\pos(960,1000)}Community: snowball menu, TPA
+Dialogue: 0,0:00:13.50,0:00:16.00,CN,,0,0,0,,{\an8\pos(960,930)}社区装置：雪球菜单、互传
+Dialogue: 0,0:00:13.50,0:00:16.00,EN,,0,0,0,,{\an8\pos(960,1000)}Community: snowball menu, TPA
 
-Dialogue: 0,0:00:19.00,0:00:24.00,CN,,0,0,0,,{\an8\pos(960,930)}主题 / 字体 / 插件配色
-Dialogue: 0,0:00:19.00,0:00:24.00,EN,,0,0,0,,{\an8\pos(960,1000)}Theme, font size, color plugins
+Dialogue: 0,0:00:16.00,0:00:21.00,CN,,0,0,0,,{\an8\pos(960,930)}主题 / 字体 / 插件配色
+Dialogue: 0,0:00:16.00,0:00:21.00,EN,,0,0,0,,{\an8\pos(960,1000)}Theme, font size, color plugins
 
-Dialogue: 0,0:00:24.00,0:00:28.00,CN,,0,0,0,,{\an8\pos(960,930)}关于：版本与作者
-Dialogue: 0,0:00:24.00,0:00:28.00,EN,,0,0,0,,{\an8\pos(960,1000)}About: version & authors
+Dialogue: 0,0:00:21.00,0:00:25.00,CN,,0,0,0,,{\an8\pos(960,930)}关于：版本与作者
+Dialogue: 0,0:00:21.00,0:00:25.00,EN,,0,0,0,,{\an8\pos(960,1000)}About: version & authors
 
-Dialogue: 0,0:00:28.00,0:00:30.00,CN,,0,0,0,,{\an8\pos(960,930)\c&HFFE5E5&}项目非常早期，还有很多错误
-Dialogue: 0,0:00:28.00,0:00:30.00,EN,,0,0,0,,{\an8\pos(960,1000)\c&HFFE5E5&}Very early project, still buggy
+Dialogue: 0,0:00:25.00,0:00:27.00,CN,,0,0,0,,{\an8\pos(960,930)\c&HFFE5E5&}项目非常早期，还有很多错误
+Dialogue: 0,0:00:25.00,0:00:27.00,EN,,0,0,0,,{\an8\pos(960,1000)\c&HFFE5E5&}Very early project, still buggy
 
-Dialogue: 0,0:00:30.00,0:00:31.00,CN,,0,0,0,,{\an8\pos(960,930)\fad(0,300)}丁丁QZ · 感谢观看
-Dialogue: 0,0:00:30.00,0:00:31.00,EN,,0,0,0,,{\an8\pos(960,1000)\fad(0,300)}DingdingQZ · Thanks for watching
+Dialogue: 0,0:00:27.00,0:00:28.08,CN,,0,0,0,,{\an8\pos(960,930)\fad(0,300)}丁丁QZ · 感谢观看
+Dialogue: 0,0:00:27.00,0:00:28.08,EN,,0,0,0,,{\an8\pos(960,1000)\fad(0,300)}DingdingQZ · Thanks for watching
