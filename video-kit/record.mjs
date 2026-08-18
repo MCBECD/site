@@ -97,7 +97,8 @@ async function setCursor(page, name) {
 }
 
 /* ================= 带缓动的移动 / 点击 ================= */
-async function moveCursor(page, toX, toY, { duration = 320, easing = easeInOutQuint, steps = 10, cursor = null, arc = 0.12 } = {}) {
+// steps 足够多（平滑不跳变），duration 适中（不快不慢）
+async function moveCursor(page, toX, toY, { duration = 480, easing = easeInOutQuint, steps = 24, cursor = null, arc = 0.12 } = {}) {
   if (cursor) await setCursor(page, cursor);
   const [x1, y1] = await page.evaluate(() => [window.__cursorX ?? 960, window.__cursorY ?? 540]);
   const dx = toX - x1, dy = toY - y1;
@@ -126,20 +127,35 @@ async function hoverAt(page, x, y, ms = 400, opts = {}) {
   await moveCursor(page, x, y, { cursor: "pointer_hand", ...opts });
   await page.waitForTimeout(ms);
 }
+/* 等元素可见：出现即继续（不傻等固定时长，也不因页面未加载完而点错/跳过） */
+async function waitFor(page, selector, timeout = 8000) {
+  try {
+    await page.waitForSelector(selector, { state: "visible", timeout });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function centerOf(page, selector) {
   try {
-    // 2 秒超时：选择器匹配不到时快速跳过，而不是默认等 30 秒拖慢整段录制
-    const el = await page.locator(selector).first().elementHandle({ timeout: 2000 });
+    // 元素应已可见（waitFor 前置过），超时给足余量
+    const el = await page.locator(selector).first().elementHandle({ timeout: 3000 });
     const box = await el.boundingBox();
     return box ? [box.x + box.width / 2, box.y + box.height / 2] : null;
   } catch {
     return null;
   }
 }
+
 async function tryClick(page, selector, opts = {}) {
+  // 先等元素出现：页面跳转/渲染完成时立刻继续，不会在空白页上干等
+  if (!(await waitFor(page, selector))) {
+    console.log("跳过（未找到）:", selector);
+    return null;
+  }
   const c = await centerOf(page, selector);
   if (c) await clickAt(page, c[0], c[1], opts);
-  else console.log("跳过（未找到）:", selector);
   return c;
 }
 
@@ -176,7 +192,7 @@ async function tour(page) {
   }
 
   /* 3) 社区装置 */
-  await tryClick(page, "a[href='/docs/'], a[href*='/docs']", { easing: easeInOutCirc });
+  await tryClick(page, "a[href='/docs/']", { easing: easeInOutCirc });
   await page.waitForTimeout(750);
   await tryClick(page, "a[href*='/docs/community/']", { duration: 550, easing: easeInOutCirc });
   await page.waitForTimeout(1100);
@@ -184,7 +200,8 @@ async function tour(page) {
   await page.waitForTimeout(350);
 
   /* 4) 设置：通用 → 主题/字体 */
-  const gear = await centerOf(page, 'nav button:last-of-type, button[aria-label*="设置"], button[title*="设置"]');
+  // nav button:last-of-type 会误匹配主题切换组，必须用 title/aria-label 定位设置齿轮
+  const gear = await centerOf(page, 'button[title*="设置"], button[aria-label*="设置"]');
   if (gear) await clickAt(page, gear[0], gear[1], { easing: easeInOutCirc });
   await page.waitForTimeout(850);
   await tryClick(page, 'button[title*="深色"], button[aria-label*="深色"], button:has-text("深色")', { easing: easeInOutQuint });
@@ -222,8 +239,10 @@ const context = await browser.newContext({
   recordVideo: { dir: ".", size: { width: WIDTH, height: HEIGHT } },
 });
 const page = await context.newPage();
-await page.goto(SITE_URL, { waitUntil: "networkidle" });
-await page.waitForTimeout(900);
+// networkidle 会被持续的页面请求拖到 30s 超时（表现为"光标停住很久没动作"），
+// 用 domcontentloaded + 首屏缓冲替代
+await page.goto(SITE_URL, { waitUntil: "domcontentloaded", timeout: 20000 });
+await page.waitForTimeout(1200);
 
 await tour(page);
 
