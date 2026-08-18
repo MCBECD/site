@@ -128,7 +128,7 @@ async function hoverAt(page, x, y, ms = 400, opts = {}) {
   await page.waitForTimeout(ms);
 }
 /* 等元素可见：出现即继续（不傻等固定时长，也不因页面未加载完而点错/跳过） */
-async function waitFor(page, selector, timeout = 8000) {
+async function waitFor(page, selector, timeout = 5000) {
   try {
     await page.waitForSelector(selector, { state: "visible", timeout });
     return true;
@@ -160,76 +160,94 @@ async function tryClick(page, selector, opts = {}) {
 }
 
 /* ================= 演示流程 ================= */
+// 流程要点：
+//   - 搜索词与点击目标一致（搜 "execute" 再点 execute 卡片），避免"搜了 A 却找不到 B"
+//   - 用 Escape 清空搜索（比找清除按钮可靠）
+//   - 页面跳转后由 waitForSelector 驱动（元素一出现立刻继续，不傻等固定时长）
+//   - 每步打印日志，便于 CI 里定位问题
 async function tour(page) {
+  const step = (name) => console.log(`[step] ${name} url=${page.url()}`);
+
   await injectCustomCursor(page);
   await page.mouse.move(940, 520);
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(600);
+  step("首屏就绪");
 
-  /* 1) 列表：搜索 + 清空 + 视图切换 */
-  await hoverAt(page, 960, 250, 500, { easing: easeInOutExpo });
+  /* 1) 搜索 execute → 点开 execute 详情（搜索词 = 点击目标） */
+  await hoverAt(page, 960, 250, 400, { easing: easeInOutExpo });
   await tryClick(page, 'input[type="text"]', { easing: easeInOutCirc });
-  await page.keyboard.type("scoreboard", { delay: 55 });
-  await page.waitForTimeout(550);
-  await tryClick(page, 'button[aria-label*="清除"], button[aria-label*="clear"]', { easing: easeOutQuint });
-  await page.waitForTimeout(400);
-  await tryClick(page, 'button[aria-label*="切换"], button[aria-label*="列表"], button[aria-label*="视图"]', { easing: easeInOutCirc });
-  await page.waitForTimeout(500);
-  await tryClick(page, 'button[aria-label*="切换"], button[aria-label*="卡片"]', { easing: easeInOutCirc });
-  await page.waitForTimeout(500);
+  await page.keyboard.type("execute", { delay: 70 });
+  await page.waitForTimeout(600);
+  step("已搜索 execute");
+  await tryClick(page, "a[href*='/docs/commands/execute/']", { duration: 500, easing: easeInOutCirc });
+  await page.waitForTimeout(700); // 页面切换的视觉缓冲
+  step("进入 execute 详情");
 
-  /* 2) 命令详情：滚动 + 复制 */
-  await tryClick(page, "a[href*='/docs/commands/execute/']", { duration: 550, easing: easeInOutCirc });
-  await page.waitForTimeout(1100);
+  /* 2) 详情：滚动 + 点击代码块复制 */
   for (let i = 0; i < 3; i++) {
-    await page.mouse.wheel(0, 850);
-    await page.waitForTimeout(320);
+    await page.mouse.wheel(0, 800);
+    await page.waitForTimeout(300);
   }
-  const copyBtn = await centerOf(page, 'button[aria-label*="复制"], button[title*="复制"], .code-copy-btn');
+  const copyBtn = await centerOf(page, '.code-copy-btn, button[aria-label*="复制"], button[title*="复制"]');
   if (copyBtn) {
-    await hoverAt(page, copyBtn[0], copyBtn[1], 400, { easing: easeInOutQuint });
+    await hoverAt(page, copyBtn[0], copyBtn[1], 350, { easing: easeInOutQuint });
     await clickAt(page, copyBtn[0], copyBtn[1], { easing: easeOutQuint });
-    await page.waitForTimeout(450);
+    await page.waitForTimeout(500);
+    step("已复制代码");
+  } else {
+    console.log("复制按钮未找到");
   }
 
-  /* 3) 社区装置 */
+  /* 3) 返回列表 + Escape 清空搜索 */
   await tryClick(page, "a[href='/docs/']", { easing: easeInOutCirc });
-  await page.waitForTimeout(750);
-  await tryClick(page, "a[href*='/docs/community/']", { duration: 550, easing: easeInOutCirc });
-  await page.waitForTimeout(1100);
-  await page.mouse.wheel(0, 700);
-  await page.waitForTimeout(350);
+  await page.waitForTimeout(600);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+  step("回到列表并清空搜索");
 
-  /* 4) 设置：通用 → 主题/字体 */
+  /* 4) 视图切换（列表 ↔ 卡片） */
+  await tryClick(page, 'button[aria-label*="切换"]', { easing: easeInOutCirc });
+  await page.waitForTimeout(450);
+  await tryClick(page, 'button[aria-label*="切换"]', { easing: easeInOutCirc });
+  await page.waitForTimeout(450);
+  step("视图切换完成");
+
+  /* 5) 社区装置 */
+  await tryClick(page, "a[href*='/docs/community/']", { duration: 500, easing: easeInOutCirc });
+  await page.waitForTimeout(700);
+  await page.mouse.wheel(0, 650);
+  await page.waitForTimeout(350);
+  step("社区页");
+
+  /* 6) 设置：齿轮 → 深色 / 大字体 */
   // nav button:last-of-type 会误匹配主题切换组，必须用 title/aria-label 定位设置齿轮
   const gear = await centerOf(page, 'button[title*="设置"], button[aria-label*="设置"]');
-  if (gear) await clickAt(page, gear[0], gear[1], { easing: easeInOutCirc });
-  await page.waitForTimeout(850);
-  await tryClick(page, 'button[title*="深色"], button[aria-label*="深色"], button:has-text("深色")', { easing: easeInOutQuint });
-  await page.waitForTimeout(500);
-  await tryClick(page, 'button:has-text("大"), button[title*="大"]', { easing: easeInOutQuint });
-  await page.waitForTimeout(500);
-
-  /* 5) 插件：配色 */
-  await tryClick(page, 'button:has-text("插件"), button:has-text("Plugins")', { easing: easeInOutCirc });
-  await page.waitForTimeout(650);
-  await tryClick(page, 'button:has-text("蓝"), button:has-text("Blue")', { easing: easeInOutQuint });
-  await page.waitForTimeout(500);
-
-  /* 6) 数据 */
-  await tryClick(page, 'button:has-text("数据"), button:has-text("Data")', { easing: easeInOutCirc });
-  await page.waitForTimeout(650);
+  if (gear) {
+    await clickAt(page, gear[0], gear[1], { easing: easeInOutCirc });
+    await page.waitForTimeout(800);
+    step("设置面板已打开");
+  } else {
+    console.log("设置齿轮未找到");
+  }
+  await tryClick(page, 'button:has-text("深色")', { easing: easeInOutQuint });
+  await page.waitForTimeout(450);
+  await tryClick(page, 'button:has-text("大")', { easing: easeInOutQuint });
+  await page.waitForTimeout(450);
+  step("主题/字体已设置");
 
   /* 7) 关于 */
-  await tryClick(page, 'button:has-text("关于"), button:has-text("About")', { easing: easeInOutCirc });
-  await page.waitForTimeout(900);
+  await tryClick(page, 'button:has-text("关于")', { easing: easeInOutCirc });
+  await page.waitForTimeout(700);
   await page.keyboard.press("Escape");
   await page.waitForTimeout(450);
+  step("关于页");
 
   /* 8) 收尾 */
   await page.mouse.wheel(0, -3000);
   await page.waitForTimeout(400);
-  await hoverAt(page, 960, 300, 600, { easing: easeInOutExpo });
-  await page.waitForTimeout(700);
+  await hoverAt(page, 960, 300, 500, { easing: easeInOutExpo });
+  await page.waitForTimeout(600);
+  step("收尾完成");
 }
 
 /* ================= 主流程 ================= */
@@ -240,9 +258,10 @@ const context = await browser.newContext({
 });
 const page = await context.newPage();
 // networkidle 会被持续的页面请求拖到 30s 超时（表现为"光标停住很久没动作"），
-// 用 domcontentloaded + 首屏缓冲替代
+// 用 domcontentloaded + 等首屏元素出现替代
 await page.goto(SITE_URL, { waitUntil: "domcontentloaded", timeout: 20000 });
-await page.waitForTimeout(1200);
+await waitFor(page, "input[type='text']", 15000);
+await page.waitForTimeout(600);
 
 await tour(page);
 
