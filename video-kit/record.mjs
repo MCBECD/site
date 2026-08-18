@@ -155,7 +155,17 @@ async function tryClick(page, selector, opts = {}) {
     return null;
   }
   const c = await centerOf(page, selector);
-  if (c) await clickAt(page, c[0], c[1], opts);
+  if (!c) {
+    console.log("跳过（无坐标）:", selector);
+    return null;
+  }
+  // 光标先平滑移过去（视觉），再用 page.click 命中（自动滚动到元素，避免坐标偏移）
+  await moveCursor(page, c[0], c[1], { cursor: "pointer_hand", ...opts });
+  try {
+    await page.click(selector, { position: { x: 10, y: 10 } });
+  } catch {
+    await page.mouse.click(c[0], c[1]);
+  }
   return c;
 }
 
