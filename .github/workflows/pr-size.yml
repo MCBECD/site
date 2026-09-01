@@ -27,7 +27,7 @@ jobs:
           echo "total=$((LINES_ADDED + LINES_DELETED))" >> "$GITHUB_OUTPUT"
 
       - name: Comment PR size
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: pr-size
           message: |
