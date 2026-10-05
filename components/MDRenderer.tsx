@@ -7,7 +7,6 @@ import rehypeRaw from "rehype-raw";
 import { rehypeGithubAlerts } from "@/lib/md/rehype-github-alerts";
 import { remarkCommandBlocks } from "@/lib/md/remark-command-blocks";
 import { ExternalLink } from "./ExternalLink";
-import { getHighlighter } from "@/lib/shiki";
 import { CodeBlockClient } from "./CodeBlockClient";
 
 function sanitizeHref(href: string | undefined): string {
@@ -27,7 +26,7 @@ interface CodeElementProps {
 
 const components = {
   h2: () => null,
-  pre: async ({ children }: { children?: ReactNode }) => {
+  pre: ({ children }: { children?: ReactNode }) => {
     if (!isValidElement(children)) {
       return <pre>{children}</pre>;
     }
@@ -37,13 +36,7 @@ const components = {
     const match = /language-(\w+)/.exec(props.className ?? "");
     const lang = match ? match[1]! : "mcfunction";
 
-    const hl = await getHighlighter();
-    const html = hl.codeToHtml(code, {
-      lang: hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction",
-      themes: { light: "github-light", dark: "github-dark" },
-    });
-
-    return <CodeBlockClient lang={lang} code={code} html={html} />;
+    return <CodeBlockClient lang={lang} code={code} />;
   },
   a: ({ children, href, className, id, title }: JSX.IntrinsicElements["a"]) => {
     const safeHref = sanitizeHref(href);

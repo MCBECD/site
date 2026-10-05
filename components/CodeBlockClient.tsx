@@ -1,13 +1,46 @@
 "use client"
 
+import { useEffect, useState } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { Copy, Check } from "lucide-react";
+import { getHighlighter } from "@/lib/shiki";
 
-export function CodeBlockClient({ lang, code, html }: { lang: string; code: string; html: string }) {
+export function CodeBlockClient({ lang, code }: { lang: string; code: string }) {
   const { t } = useLocale();
+  const [html, setHtml] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    getHighlighter()
+      .then((hl) => {
+        if (!active) return;
+        const target = hl.getLoadedLanguages().includes(lang) ? lang : "mcfunction";
+        setHtml(
+          hl.codeToHtml(code, {
+            lang: target,
+            themes: { light: "github-light", dark: "github-dark" },
+          }),
+        );
+      })
+      .catch(() => {
+        // 高亮失败时保留未高亮的纯文本
+      });
+    return () => {
+      active = false;
+    };
+  }, [lang, code]);
+
+  const codeInner = html ? (
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  ) : (
+    <pre className="p-4 overflow-x-auto text-[13px] leading-relaxed">
+      <code>{code}</code>
+    </pre>
+  );
+
   const codeBlock = (
     <div className="relative min-w-0 flex-1 my-2">
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      {codeInner}
       <button
         type="button"
         className="code-copy-btn"
