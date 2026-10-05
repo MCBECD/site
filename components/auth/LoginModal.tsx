@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { GithubIcon } from "@/components/icons/GithubIcon";
 import { Modal } from "./Modal";
 
 type Mode = "login" | "signup";
@@ -13,13 +14,25 @@ const inputClass =
   "focus:outline-none focus:border-[var(--color-accent)]/50 transition-colors duration-[var(--duration-fast)]";
 
 export function LoginModal() {
-  const { isLoginOpen, closeLogin, signIn, signUp } = useAuth();
+  const { isLoginOpen, closeLogin, signIn, signUp, signInWithGitHub } = useAuth();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [gitHubSubmitting, setGitHubSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  const handleGitHub = useCallback(async () => {
+    setGitHubSubmitting(true);
+    setError(null);
+    try {
+      await signInWithGitHub();
+    } catch (err) {
+      setError((err as Error).message || "GitHub 登录失败，请重试");
+      setGitHubSubmitting(false);
+    }
+  }, [signInWithGitHub]);
 
   const switchMode = useCallback((next: Mode) => {
     setMode(next);
@@ -71,6 +84,29 @@ export function LoginModal() {
       title={mode === "login" ? "登录" : "注册"}
     >
       <form onSubmit={handleSubmit} className="space-y-3">
+        <button
+          type="button"
+          onClick={handleGitHub}
+          disabled={gitHubSubmitting}
+          className="w-full py-2.5 mt-1 text-[13px] font-medium rounded-[var(--radius-sm)]
+            text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]
+            border border-[var(--color-border)]
+            inline-flex items-center justify-center gap-2
+            hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent)]
+            active:scale-[0.98]
+            disabled:opacity-60 disabled:active:scale-100
+            transition-[opacity,transform,color,border-color] duration-[var(--duration-fast)]"
+        >
+          <GithubIcon className="w-4 h-4" />
+          {gitHubSubmitting ? "跳转中..." : "使用 GitHub 登录"}
+        </button>
+
+        <div className="flex items-center gap-2 pt-1">
+          <span className="h-px flex-1 bg-[var(--color-border)]" />
+          <span className="text-[12px] text-[var(--color-text-tertiary)]">或</span>
+          <span className="h-px flex-1 bg-[var(--color-border)]" />
+        </div>
+
         <div>
           <label className="block text-[12px] text-[var(--color-text-secondary)] mb-1.5">
             邮箱
