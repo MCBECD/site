@@ -70,7 +70,8 @@ function parseDocMeta(
   }
 }
 
-const SCAN_CATEGORIES = ["basics", "commands", "community"] as const;
+// Community docs are no longer parsed from the filesystem; they come from Supabase.
+const SCAN_CATEGORIES = ["basics", "commands"] as const;
 
 /* ----------------------------------------------------------
  * Public API
@@ -105,6 +106,9 @@ export function getDocById(id: string): DocContent | null {
 
   const slashIndex = id.indexOf("/");
   const category = slashIndex === -1 ? "" : id.slice(0, slashIndex);
+
+  // Community content is served from Supabase, not the filesystem.
+  if (category === "community") return null;
 
   const filePath = path.join(docsDir, `${id}.md`);
   if (!fs.existsSync(filePath)) return null;

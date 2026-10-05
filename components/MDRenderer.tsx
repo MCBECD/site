@@ -115,11 +115,31 @@ const components = {
   ),
 };
 
-export function MDRenderer({ source }: { source: string }) {
+export function MDRenderer({
+  source,
+  showHeadings = false,
+}: {
+  source: string;
+  showHeadings?: boolean;
+}) {
   return (
     <ReactMarkdown
       children={source}
-      components={components}
+      components={
+        showHeadings
+          ? {
+              ...components,
+              h2: ({ children, ...props }: JSX.IntrinsicElements["h2"]) => (
+                <h2
+                  className="mt-8 mb-4 pb-2.5 text-[19px] font-bold tracking-tight text-[var(--color-text-primary)] border-b border-[var(--color-border-light)]"
+                  {...props}
+                >
+                  {children}
+                </h2>
+              ),
+            }
+          : components
+      }
       remarkPlugins={[remarkGfm, remarkCommandBlocks]}
       rehypePlugins={[rehypeRaw, rehypeGithubAlerts]}
     />

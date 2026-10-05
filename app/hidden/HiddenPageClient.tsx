@@ -7,8 +7,8 @@ import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
 import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
-import { DocCard } from "@/app/docs/DocCard";
-import { DocPagination } from "@/app/docs/DocPagination";
+import { DocCard } from "@/app/doc/DocCard";
+import { DocPagination } from "@/app/doc/DocPagination";
 import type { DocMeta } from "@/lib/docs";
 
 type ViewMode = "card" | "list";
@@ -59,7 +59,7 @@ export function HiddenPageClient() {
     if (p <= 0) params.delete("page");
     else params.set("page", String(p + 1));
     const qs = params.toString();
-    const url = `/docs/hidden/${qs ? `?${qs}` : ""}`;
+    const url = `/hidden/${qs ? `?${qs}` : ""}`;
     window.history.replaceState(null, "", url);
     router.replace(url, { scroll: false });
   }, [router]);
@@ -179,7 +179,7 @@ export function HiddenPageClient() {
   return (
     <div className="relative max-w-3xl mx-auto px-[var(--content-gutter)] pt-14 pb-24">
       <button
-        onClick={() => router.push("/docs/")}
+        onClick={() => router.push("/")}
         className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] mb-6 -ml-1 px-1 py-1 rounded-[var(--radius-sm)] hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)]"
       >
         <ChevronLeft className="w-4 h-4" />

@@ -10,6 +10,7 @@ import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsConte
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, getHistory, removeBookmark, removeHistory, clearBookmarks, clearHistory } from "@/lib/storage";
+import { docIdToUrl } from "@/lib/docUrl";
 import type { DocMeta } from "@/lib/docs";
 import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
@@ -164,9 +165,9 @@ function AboutTab() {
             </span>
             <span className="text-[11px] text-[var(--color-text-tertiary)]">MCBECD/site ↗</span>
           </a>
-          <Link href="/docs/" className={LINK_ROW}>
+          <Link href="/" className={LINK_ROW}>
             <span>{t("nav.docs")}</span>
-            <span className="text-[11px] text-[var(--color-text-tertiary)]">/docs/</span>
+            <span className="text-[11px] text-[var(--color-text-tertiary)]">/</span>
           </Link>
         </div>
       </Section>
@@ -429,7 +430,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       {bookmarkedDocs.map((doc) => (
                         <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] group">
                           <Link
-                            href={`/docs/${doc.id}/`}
+                            href={docIdToUrl(doc.id)}
                             className="flex items-center gap-2 flex-1 min-w-0 no-underline"
                             onClick={handleClose}
                           >
@@ -476,7 +477,7 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       {historyDocs.slice(0, 8).map((doc) => (
                         <div key={doc.id} className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--color-bg-tertiary)] transition-colors duration-[var(--duration-fast)] group">
                           <Link
-                            href={`/docs/${doc.id}/`}
+                            href={docIdToUrl(doc.id)}
                             className="flex items-center gap-2 flex-1 min-w-0 no-underline"
                             onClick={handleClose}
                           >

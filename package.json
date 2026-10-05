@@ -24,6 +24,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.31.0",
     "next": "^16.0.0",

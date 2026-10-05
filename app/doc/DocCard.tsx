@@ -6,7 +6,8 @@ import { Star, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
 import { getCommandTypeI18nKey } from "@/lib/categories";
-import { renderTitleWithCode } from "@/app/docs/renderTitle";
+import { docIdToUrl } from "@/lib/docUrl";
+import { renderTitleWithCode } from "@/app/doc/renderTitle";
 
 interface DocCardProps {
   doc: DocMeta;
@@ -19,10 +20,11 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
   const { t } = useLocale();
   const typeKey = getCommandTypeI18nKey(doc.category);
   const typeLabel = typeKey ? t(typeKey) : undefined;
+  const href = docIdToUrl(doc.id);
 
   return viewMode === "list" ? (
     <Link
-      href={`/docs/${doc.id}/`}
+      href={href}
       className="block group py-2 min-h-[44px] no-underline"
     >
       <div className="flex items-center gap-2.5 min-w-0">
@@ -44,7 +46,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
     </Link>
   ) : (
     <Link
-      href={`/docs/${doc.id}/`}
+      href={href}
       className="doc-card block group px-4 py-3.5 rounded-[var(--radius-lg)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
