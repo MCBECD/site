@@ -1,14 +1,3 @@
-// MCBECD 演示视频录制脚本 —— 完整功能走查版（节奏快、光标跟手）
-// 用法：
-//   npm install && npx playwright install chromium
-//   node record.mjs                     # 录线上站
-//   SITE_URL=http://localhost:8080 node record.mjs   # 录本地静态站
-//
-// 要点：
-//   - 系统鼠标指针替换为 AOSP 自定义光标（cursors/dark/*.svg），28px
-//   - 光标用 mousemove 事件实时跟随真实鼠标，不额外轮询，跟手不抖
-//   - 移动用非线性缓动（easeInOutQuint / Quart / Expo），快而不突兀
-
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -189,7 +178,7 @@ async function tour(page) {
   await page.keyboard.type("execute", { delay: 70 });
   await page.waitForTimeout(600);
   step("已搜索 execute");
-  await tryClick(page, "a[href*='/docs/commands/execute/']", { duration: 500, easing: easeInOutCirc });
+  await tryClick(page, "a[href*='/commands/execute/']", { duration: 500, easing: easeInOutCirc });
   await page.waitForTimeout(700); // 页面切换的视觉缓冲
   step("进入 execute 详情");
 
@@ -209,7 +198,7 @@ async function tour(page) {
   }
 
   /* 3) 返回列表 + Escape 清空搜索 */
-  await tryClick(page, "a[href='/docs/']", { easing: easeInOutCirc });
+  await tryClick(page, "a[href='/']", { easing: easeInOutCirc });
   await page.waitForTimeout(600);
   await page.keyboard.press("Escape");
   await page.waitForTimeout(500);

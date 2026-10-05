@@ -7,9 +7,9 @@ import { Search, X, LayoutList, List, ChevronRight, BookOpen } from "lucide-reac
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
-import { getCategoryBase, getBasicsOrder, getCommunityOrder } from "@/lib/categories";
-import { DocCard } from "./DocCard";
-import { DocPagination } from "./DocPagination";
+import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
+import { DocCard } from "@/app/doc/DocCard";
+import { DocPagination } from "@/app/doc/DocPagination";
 import type { DocMeta } from "@/lib/docs";
 
 type ViewMode = "card" | "list";
@@ -17,7 +17,7 @@ type ViewMode = "card" | "list";
 const PAGE_SIZE_CARD = 10;
 const DEBOUNCE_MS = 150;
 
-export function DocsPageClient() {
+export function DocsPanel() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
   const router = useRouter();
@@ -69,7 +69,7 @@ export function DocsPageClient() {
     if (p <= 0) params.delete("page");
     else params.set("page", String(p + 1));
     const qs = params.toString();
-    const url = `/docs/${qs ? `?${qs}` : ""}`;
+    const url = qs ? `/?${qs}` : "/";
     window.history.replaceState(null, "", url);
     router.replace(url, { scroll: false });
   }, [router]);
@@ -86,7 +86,7 @@ export function DocsPageClient() {
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
     const qs = params.toString();
-    const url = `/docs/${qs ? `?${qs}` : ""}`;
+    const url = qs ? `/?${qs}` : "/";
     window.history.replaceState(null, "", url);
     router.replace(url, { scroll: false });
   }, [router]);
@@ -189,13 +189,7 @@ export function DocsPageClient() {
       .filter((d) => getCategoryBase(d.category) === "commands" && !d.hidden)
       .sort((a, b) => cmpIdFilePart(a, b));
     const communityDocs = result
-      .filter((d) => getCategoryBase(d.category) === "community" && !d.hidden)
-      .sort((a, b) => {
-        const aO = getCommunityOrder(a.id);
-        const bO = getCommunityOrder(b.id);
-        if (aO !== bO) return aO - bO;
-        return cmpTitle(a, b);
-      });
+      .filter((d) => getCategoryBase(d.category) === "community" && !d.hidden);
 
     const filteredDocs = [...basicsDocs, ...commandsDocs, ...communityDocs];
 
@@ -220,7 +214,7 @@ export function DocsPageClient() {
         titleKey: "doc.filterBasics",
         docs: basicsDocs,
         trailingEntry: hiddenCount > 0 ? {
-          href: "/docs/hidden/",
+          href: "/hidden/",
           title: t("doc.hiddenCardTitle"),
           description: t("doc.hiddenCardDesc"),
           badge: hiddenCount,
@@ -299,7 +293,7 @@ export function DocsPageClient() {
     <div className="relative max-w-3xl mx-auto px-[var(--content-gutter)] pt-14 pb-24">
       {/* Hero */}
       <div className="mb-10">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] hero-enter mt-4">
           {t("doc.title")}
         </h1>
         <p className="text-[15px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">

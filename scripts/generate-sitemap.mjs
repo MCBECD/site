@@ -72,13 +72,18 @@ const today = new Date().toISOString().split("T")[0];
 
 const urls = [];
 urls.push(`  <url><loc>${escapeXml(SITE_URL)}/</loc><lastmod>${today}</lastmod><priority>1.0</priority></url>`);
-urls.push(`  <url><loc>${escapeXml(SITE_URL)}/docs/</loc><lastmod>${today}</lastmod><priority>0.9</priority></url>`);
+urls.push(`  <url><loc>${escapeXml(SITE_URL)}/hidden/</loc><lastmod>${today}</lastmod><priority>0.5</priority></url>`);
 
 for (const doc of docs) {
+  // Community content is served from Supabase, not the filesystem.
+  if (doc.id.startsWith("community/")) continue;
   const lastmod = doc.updatedAt ? doc.updatedAt.split("T")[0] : today;
-  const loc = `${escapeXml(SITE_URL)}/docs/${escapeXml(doc.id)}/`;
+  // basics/<name> → /<name>/ ; commands/<name> → /commands/<name>/
+  const locUrl = doc.id.startsWith("basics/")
+    ? `/${doc.id.slice("basics/".length)}/`
+    : `/${doc.id}/`;
   urls.push(
-    `  <url><loc>${loc}</loc><lastmod>${escapeXml(lastmod)}</lastmod><priority>0.8</priority></url>`
+    `  <url><loc>${escapeXml(SITE_URL)}${escapeXml(locUrl)}</loc><lastmod>${escapeXml(lastmod)}</lastmod><priority>0.8</priority></url>`
   );
 }
 

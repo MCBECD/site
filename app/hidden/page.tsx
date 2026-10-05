@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   title: HIDDEN_TITLE,
   description: HIDDEN_DESC,
   alternates: {
-    canonical: `${SITE_URL}/docs/hidden/`,
+    canonical: `${SITE_URL}/hidden/`,
   },
   openGraph: {
     title: `${HIDDEN_TITLE} - MCBECD`,
     description: HIDDEN_DESC,
-    url: `${SITE_URL}/docs/hidden/`,
+    url: `${SITE_URL}/hidden/`,
     siteName: "MCBECD",
   },
   twitter: {

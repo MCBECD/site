@@ -10,7 +10,7 @@ import { useLocale } from "@/contexts/LocaleContext";
 import type { DocContent } from "@/lib/docs";
 import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
 import { addHistory, toggleBookmark, isBookmarked, getBookmarks } from "@/lib/storage";
-import { renderTitleWithCode } from "@/app/docs/renderTitle";
+import { renderTitleWithCode } from "@/app/doc/renderTitle";
 
 interface DocDetailClientProps {
   doc: DocContent;
@@ -91,7 +91,7 @@ export function DocDetailClient({ doc, children }: DocDetailClientProps) {
         <div className="flex items-center justify-between h-12 px-3 sm:px-5 border-b border-[var(--color-border-light)]">
           <div className="flex items-center gap-2">
             <Link
-              href="/docs/"
+              href="/"
               className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]/60 min-h-[44px]"
             >
               <Home className="w-4 h-4" />
@@ -144,7 +144,7 @@ export function DocDetailClient({ doc, children }: DocDetailClientProps) {
               )}
             </div>
             {(doc.meta.author || doc.meta.updatedAt) && (
-              <span className="text-[12px] text-[var(--color-text-tertiary)]">
+              <span className="text-[12px] text-[var(--color-text-secondary)]">
                 {doc.meta.author}{doc.meta.author && doc.meta.updatedAt ? " · " : ""}{doc.meta.updatedAt ?? ""}
               </span>
             )}
