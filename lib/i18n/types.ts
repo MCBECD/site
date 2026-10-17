@@ -19,13 +19,11 @@ export interface Messages {
     backToList: string;
     backToTop: string;
     opensInNewTab: string;
-    cmdIconAlt: string;
     errorTitle: string;
     errorDesc: string;
     errorRetry: string;
     bookmark: string;
     unbookmark: string;
-    delete: string;
   };
   nav: {
     settings: string;
@@ -60,7 +58,6 @@ export interface Messages {
     bgPreset2: string;
     bgPreset3: string;
     bgUpload: string;
-    bgClear: string;
     bgOverlayOpacity: string;
     bgOverlayBlur: string;
     bgParallax: string;
@@ -91,11 +88,8 @@ export interface Messages {
     searchPlaceholder: string;
     resultCount: string;
     noResults: string;
-    home: string;
-    updatedAt: string;
     title: string;
     subtitle: string;
-    notFound: string;
     bookmarks: string;
     recent: string;
     noBookmarks: string;
@@ -112,39 +106,10 @@ export interface Messages {
     nextPage: string;
     clearSearch: string;
     switchToView: string;
-    bookmarksEmpty: string;
-    historyEmpty: string;
-  };
-  cmd: {
-    iconAlt: string;
-  };
-  landing: {
-    tagline: string;
-    ctaPrimary: string;
-    ctaSecondary: string;
-    feature1Title: string;
-    feature1Desc: string;
-    feature2Title: string;
-    feature2Desc: string;
-    feature3Title: string;
-    feature3Desc: string;
-    statCommands: string;
-    statLocales: string;
-    statLicense: string;
-    cmdGive: string;
-    cmdExecute: string;
-    cmdTellraw: string;
-    cmdScoreboard: string;
-    ctaSectionTitle: string;
-    ctaSectionDesc: string;
-    ctaSectionButton: string;
-    footerCopyright: string;
-    footerDisclaimer: string;
   };
   notFound: {
-    errorCode: string;
     description: string;
-    backHome: string;
+    backPrevious: string;
     browseDocs: string;
   };
 }

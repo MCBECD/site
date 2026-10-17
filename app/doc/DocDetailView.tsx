@@ -38,7 +38,9 @@ export function DocDetailView({ docId }: { docId: string }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBPAGE_JSON_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_JSON_LD) }} />
       <DocDetailClient doc={doc}>
-        <MDRenderer source={doc.rawContent} />
+        {/* @why 详情页要显示 ## 章节标题。此前没传 showHeadings，MDRenderer 会把
+            h2 渲染成 null，导致唯一使用 ## 分章的规范文档在站内丢失全部大章节标题。 */}
+        <MDRenderer source={doc.rawContent} showHeadings />
       </DocDetailClient>
     </>
   );

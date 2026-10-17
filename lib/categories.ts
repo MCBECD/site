@@ -46,11 +46,3 @@ export function getBasicsOrder(category?: string): number {
   const sub = getCategorySub(category);
   return sub !== undefined ? Number(sub) : Infinity;
 }
-
-/** Extract numeric prefix from a community doc filename (id sub-part). */
-export function getCommunityOrder(id: string): number {
-  const parts = id.split("/");
-  const filename = parts[parts.length - 1] ?? "";
-  const numMatch = filename.match(/^(\d+)/);
-  return numMatch ? Number(numMatch[1]) : Infinity;
-}

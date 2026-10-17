@@ -5,14 +5,14 @@ import { DocsProvider } from "@/contexts/DocsContext";
 import "@/styles/globals.css";
 
 const SITE_URL = "https://mcbecd.pages.dev";
-// TODO(seo-locale): SITE_TITLE and SITE_DESC should be locale-aware.
-// The site uses client-side i18n (static export), so server-rendered metadata
-// is always Chinese. Consider generating per-locale static pages or using
-// next-intl with rewrite-based routing to serve locale-specific metadata.
+
+/**
+ * @constraint 站点是 client-side i18n + 静态导出，服务端只能产出中文 metadata。
+ * SITE_TITLE / SITE_DESC / openGraph.locale / inLanguage / <html lang> 都受这条限制。
+ * 要做多语言 SEO，得改成按 locale 生成静态页（或 next-intl 的 rewrite 路由）。
+ */
 const SITE_TITLE = "MCBECD - Minecraft 基岩版命令库";
 const SITE_DESC = "社区贡献的 Minecraft 基岩版命令库 — 可直接复制使用的命令集合，涵盖 give、execute、tp、scoreboard 等核心命令";
-// TODO(seo-locale): English fallback descriptions for better international indexing:
-// const SITE_DESC_EN = "Community-driven Minecraft Bedrock command library — copy-paste commands for give, execute, tp, scoreboard and more";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -26,18 +26,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    // TODO(seo-locale): openGraph.locale is hardcoded. Should match the active locale.
-    // When locale routing is implemented, generate per-locale OG metadata.
     locale: "zh_CN",
     siteName: "MCBECD",
     title: SITE_TITLE,
     description: SITE_DESC,
-    // TODO(seo): Add an OG image for better social sharing previews.
-    // e.g. images: [{ url: "/og-image.png", width: 1200, height: 630, alt: SITE_TITLE }],
+    // TODO(seo): 还没有 OG 图，加上后把 twitter.card 一并改成 summary_large_image。
+    // images: [{ url: "/og-image.png", width: 1200, height: 630, alt: SITE_TITLE }],
   },
   twitter: {
-    // NOTE: Using "summary" because there is no OG image yet.
-    // Change to "summary_large_image" once an OG image is added above.
     card: "summary",
     title: SITE_TITLE,
     description: SITE_DESC,
@@ -60,7 +56,6 @@ const WEBSITE_JSON_LD = {
   name: "MCBECD",
   url: SITE_URL,
   description: SITE_DESC,
-  // TODO(seo-locale): inLanguage should be dynamically set per locale.
   inLanguage: "zh-CN",
 };
 
@@ -75,9 +70,6 @@ const ORGANIZATION_JSON_LD = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const docs = getAllDocs();
-  // TODO(seo-locale): lang attribute is hardcoded to zh-CN. The LocaleContext updates it
-  // client-side via useEffect, but SSR always renders zh-CN. When locale routing is
-  // implemented, generate per-locale HTML with the correct lang attribute.
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>

@@ -128,10 +128,6 @@ export function DocsPanel() {
   }, [resetPage]);
 
   useEffect(() => {
-    setPage(0);
-  }, [viewMode]);
-
-  useEffect(() => {
     const onScroll = () => {
       scrollYRef.current = window.scrollY;
     };
@@ -349,7 +345,13 @@ export function DocsPanel() {
           )}
         </div>
         <button
-          onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+          onClick={() => {
+            /* @why 切换视图时页码归零，这里显式重置。不能挂在 useEffect([viewMode]) 上：
+               那个 effect 挂载时也会跑一次，会把刚从 URL / localStorage 恢复的页码清成 0，
+               导致 ?page=2 和「上次看到第几页」全部失效。 */
+            setViewMode(viewMode === "card" ? "list" : "card");
+            resetPage();
+          }}
           aria-label={t("doc.switchToView", { mode: viewMode === "card" ? t("doc.viewList") : t("doc.viewCards") })}
           className="shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-[var(--radius-sm)]
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
