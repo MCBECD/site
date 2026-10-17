@@ -34,3 +34,6 @@ Thumbs.db
 
 # CI-generated
 public/version.json
+
+# Build output
+/public/sitemap.xml

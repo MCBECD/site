@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LocaleProvider } from "@/contexts/LocaleContext";
+// @why 断言走语言包而不是硬编码中文字面量：文案会改，测试不该跟着碎。
+import zhCN from "@/messages/zh-CN.json";
 
 function ThrowingChild({ shouldThrow }: { shouldThrow: boolean }) {
   if (shouldThrow) throw new Error("test crash");
@@ -41,9 +43,9 @@ describe("ErrorBoundary", () => {
       </ErrorBoundary>,
       { wrapper: Wrapper },
     );
-    expect(screen.getByText("出错了")).toBeInTheDocument();
-    expect(screen.getByText("页面遇到了一个意外错误，请尝试刷新页面。")).toBeInTheDocument();
-    expect(screen.getByText("重试")).toBeInTheDocument();
+    expect(screen.getByText(zhCN.common.errorTitle)).toBeInTheDocument();
+    expect(screen.getByText(zhCN.common.errorDesc)).toBeInTheDocument();
+    expect(screen.getByText(zhCN.common.errorRetry)).toBeInTheDocument();
   });
 
   it("renders custom fallback when provided", () => {

@@ -1,14 +1,16 @@
 /**
  * Route/category → URL prefix mapping.
  *
- * basics/<name>    → /<name>/
- * commands/<name>  → /commands/<name>/
- * community/<name> → /community/<name>/
+ * basics/<name>     → /<name>/
+ * commands/<name>   → /commands/<name>/
+ * community/<name>  → /community/<name>/
+ * standards/<name>  → /standards/<name>/
  */
 const CATEGORY_PREFIX: Record<string, string> = {
   basics: "",
   commands: "/commands",
   community: "/community",
+  standards: "/standards",
 };
 
 /** Convert a doc id (e.g. "commands/give") into its public URL path. */

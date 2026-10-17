@@ -73,8 +73,10 @@ function parseDocMeta(
 /**
  * @why 站点的唯一内容源是 Git 子模块 content/docs。社区文档与命令/基础文档同源，
  * 一并扫描；分类字符串会拼进静态路由参数，新增分类时必须同步路由。
+ * @gotcha standards 也在这里：规范文档 hidden=true，不占列表位置，但要能从
+ * /hidden/ 入口点进去。漏掉它，站内的「文档标准规范」就是空页面。
  */
-const SCAN_CATEGORIES = ["basics", "commands", "community"] as const;
+export const SCAN_CATEGORIES = ["basics", "commands", "community", "standards"] as const;
 
 /* ----------------------------------------------------------
  * Public API

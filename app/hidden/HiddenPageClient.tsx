@@ -6,7 +6,7 @@ import { LayoutList, List, ChevronLeft } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
-import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
+import { getBasicsOrder } from "@/lib/categories";
 import { DocCard } from "@/app/doc/DocCard";
 import { DocPagination } from "@/app/doc/DocPagination";
 import type { DocMeta } from "@/lib/docs";
@@ -72,10 +72,6 @@ export function HiddenPageClient() {
   }, [refreshBookmarks]);
 
   useEffect(() => {
-    setPage(0);
-  }, [viewMode]);
-
-  useEffect(() => {
     const onScroll = () => {
       scrollYRef.current = window.scrollY;
     };
@@ -110,8 +106,10 @@ export function HiddenPageClient() {
     const cmpTitle = (a: DocMeta, b: DocMeta) =>
       a.title.localeCompare(b.title, locale ?? "zh-CN");
 
+    // @gotcha 这里不能限定分类。旧代码写死 getCategoryBase(d.category) === "basics"，
+    // 而唯一的 hidden 文档（规范）在 standards/ 下，于是这一页永远显示「共 0 篇」。
     return docs
-      .filter((d) => d.hidden && getCategoryBase(d.category) === "basics")
+      .filter((d) => d.hidden)
       .sort((a, b) => {
         const aO = getBasicsOrder(a.category);
         const bO = getBasicsOrder(b.category);
@@ -129,7 +127,7 @@ export function HiddenPageClient() {
     | { type: "header"; sectionKey: string; titleKey: string };
   const sections = useMemo<Section[]>(() => {
     if (filteredDocs.length > 0) {
-      return [{ key: "basics", titleKey: "doc.filterBasics", docs: filteredDocs }];
+      return [{ key: "hidden", titleKey: "doc.hiddenSectionTitle", docs: filteredDocs }];
     }
     return [];
   }, [filteredDocs]);
@@ -197,7 +195,16 @@ export function HiddenPageClient() {
 
       <div className="flex justify-end mb-6 search-enter">
         <button
-          onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}
+          onClick={() => {
+            /* @why 同 DocsPanel：页码归零要在用户点击时做，挂在 [viewMode] 的 effect 上
+               会在挂载时也跑一次，把刚恢复的页码清掉。 */
+            setViewMode(viewMode === "card" ? "list" : "card");
+            setPage(0);
+            const params = new URLSearchParams(window.location.search);
+            params.delete("page");
+            const qs = params.toString();
+            window.history.replaceState(null, "", `/hidden/${qs ? `?${qs}` : ""}`);
+          }}
           aria-label={t("doc.switchToView", { mode: viewMode === "card" ? t("doc.viewList") : t("doc.viewCards") })}
           className="shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-[var(--radius-sm)]
             bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]
