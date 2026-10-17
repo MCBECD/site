@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search, X, LayoutList, List, ChevronRight, BookOpen } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -20,13 +19,17 @@ const DEBOUNCE_MS = 150;
 export function DocsPanel() {
   const { t, locale } = useLocale();
   const { docs } = useDocs();
-  const router = useRouter();
 
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(0);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("card");
+  /**
+   * @why 入场动画只在首次渲染播放。列表容器绑定了 page/viewMode 的 key，翻页会
+   * 整块重挂载；若每张卡都无条件播动画，翻页就要等动画跑完才看清内容。
+   */
+  const [animateIn, setAnimateIn] = useState(true);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const scrollYRef = useRef<number>(0);
@@ -60,19 +63,28 @@ export function DocsPanel() {
   const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
 
   useEffect(() => {
+    const id = setTimeout(() => setAnimateIn(false), 600);
+    return () => clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
     refreshBookmarks();
   }, [refreshBookmarks]);
 
+  /**
+   * @why 翻页只改 URL，不再走 Next 路由。此前同时调用 history.replaceState 与
+   * router.replace，后者会触发 App Router 重渲染，造成翻页延迟；两者叠加还会让
+   * 滚动位置停留在上一页的偏移处，视觉上像"跳到底部"。现在翻页后显式回到顶部。
+   */
   const navigatePage = useCallback((p: number) => {
     setPage(p);
     const params = new URLSearchParams(window.location.search);
     if (p <= 0) params.delete("page");
     else params.set("page", String(p + 1));
     const qs = params.toString();
-    const url = qs ? `/?${qs}` : "/";
-    window.history.replaceState(null, "", url);
-    router.replace(url, { scroll: false });
-  }, [router]);
+    window.history.replaceState(null, "", qs ? `/?${qs}` : "/");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   const handleToggleBookmark = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault();
@@ -86,10 +98,8 @@ export function DocsPanel() {
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
     const qs = params.toString();
-    const url = qs ? `/?${qs}` : "/";
-    window.history.replaceState(null, "", url);
-    router.replace(url, { scroll: false });
-  }, [router]);
+    window.history.replaceState(null, "", qs ? `/?${qs}` : "/");
+  }, []);
 
   const handleInput = useCallback((value: string) => {
     setQuery(value);
@@ -189,7 +199,9 @@ export function DocsPanel() {
       .filter((d) => getCategoryBase(d.category) === "commands" && !d.hidden)
       .sort((a, b) => cmpIdFilePart(a, b));
     const communityDocs = result
-      .filter((d) => getCategoryBase(d.category) === "community" && !d.hidden);
+      .filter((d) => getCategoryBase(d.category) === "community" && !d.hidden)
+      // @why 社区分区是首页的"推荐位"，新发布的教程排在最前。
+      .sort((a, b) => (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""));
 
     const filteredDocs = [...basicsDocs, ...commandsDocs, ...communityDocs];
 
@@ -208,6 +220,9 @@ export function DocsPanel() {
       return [{ key: "results", titleKey: "", docs: filteredDocs }];
     }
     const s: Section[] = [];
+    if (communityDocs.length > 0) {
+      s.push({ key: "community", titleKey: "doc.filterCommunity", docs: communityDocs });
+    }
     if (basicsDocs.length > 0 || hiddenCount > 0) {
       s.push({
         key: "basics",
@@ -223,9 +238,6 @@ export function DocsPanel() {
     }
     if (commandsDocs.length > 0) {
       s.push({ key: "commands", titleKey: "doc.filterCommands", docs: commandsDocs });
-    }
-    if (communityDocs.length > 0) {
-      s.push({ key: "community", titleKey: "doc.filterCommunity", docs: communityDocs });
     }
     return s;
   }, [basicsDocs, commandsDocs, communityDocs, filteredDocs, hiddenCount, isSearching, t]);
@@ -364,7 +376,7 @@ export function DocsPanel() {
         </div>
       ) : viewMode === "list" ? (
         <div
-          className="space-y-6"
+          className={`space-y-6${animateIn ? " list-enter" : ""}`}
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "sections"; sections: Section[] }).sections.map((section) => (
@@ -375,8 +387,8 @@ export function DocsPanel() {
                 </h3>
               )}
               <div className="space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-[var(--radius)] overflow-hidden bg-[var(--color-card-bg)]">
-                {section.docs.map((doc, i) => (
-                  <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+                {section.docs.map((doc) => (
+                  <div key={doc.id} className="doc-card-enter">
                     <DocCard
                       doc={doc}
                       isBookmarked={bookmarks.includes(doc.id)}
@@ -386,11 +398,7 @@ export function DocsPanel() {
                   </div>
                 ))}
                 {section.trailingEntry && (
-                  <div
-                    key={`entry-${section.trailingEntry.href}`}
-                    className="doc-card-enter"
-                    style={{ '--stagger-index': section.docs.length } as React.CSSProperties}
-                  >
+                  <div key={`entry-${section.trailingEntry.href}`} className="doc-card-enter">
                     <Link
                       href={section.trailingEntry.href}
                       className="doc-card flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-[calc(var(--radius)-2px)]
@@ -424,16 +432,16 @@ export function DocsPanel() {
         </div>
       ) : (
         <div
-          className="space-y-1.5"
+          className={`space-y-1.5${animateIn ? " list-enter" : ""}`}
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
-          {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item, i) => (
+          {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item) => (
             item.type === "header" ? (
-              <h3 key={`hdr-${item.sectionKey}`} className="text-[12px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] mt-4 mb-2 first:mt-0 px-0.5 section-header-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+              <h3 key={`hdr-${item.sectionKey}`} className="text-[12px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] mt-4 mb-2 first:mt-0 px-0.5">
                 {t(item.titleKey)}
               </h3>
             ) : item.type === "entry" ? (
-              <div key={`entry-${item.entry.href}`} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+              <div key={`entry-${item.entry.href}`} className="doc-card-enter">
                 <Link
                   href={item.entry.href}
                   className="doc-card block group px-4 py-4 rounded-[var(--radius-lg)]
@@ -466,7 +474,7 @@ export function DocsPanel() {
                 </Link>
               </div>
             ) : (
-              <div key={item.doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+              <div key={item.doc.id} className="doc-card-enter">
                 <DocCard
                   doc={item.doc}
                   isBookmarked={bookmarks.includes(item.doc.id)}

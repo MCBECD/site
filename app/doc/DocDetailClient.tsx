@@ -153,8 +153,7 @@ export function DocDetailClient({ doc, children }: DocDetailClientProps) {
 
         {/* Document body */}
         <div
-          className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter
-          prose max-w-none text-[15px] leading-relaxed
+          className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter prose max-w-none text-[15px] leading-relaxed
           prose-a:no-underline hover:prose-a:underline"
           onClick={handleBodyClick}
         >

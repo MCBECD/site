@@ -5,7 +5,6 @@ import { Sun, Moon, Monitor, Settings } from "lucide-react";
 import Link from "next/link";
 import { useSettings, type Theme } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface NavbarProps {
   onOpenSettings: () => void;
@@ -20,7 +19,6 @@ const THEMES: { key: Theme; icon: typeof Sun; titleKey: string }[] = [
 export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
   const { settings, updateSettings } = useSettings();
   const { t } = useLocale();
-  const { user, signOut, openLogin } = useAuth();
 
   const activeIndex = useMemo(
     () => THEMES.findIndex((th) => th.key === settings.theme),
@@ -114,34 +112,6 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
             );
           })}
         </div>
-
-        {user ? (
-          <div className="flex items-center gap-1.5 pl-1">
-            <span
-              className="hidden sm:inline-flex items-center max-w-[120px] truncate px-2.5 py-1.5 rounded-full bg-[var(--color-bg-tertiary)] text-[12px] text-[var(--color-text-secondary)]"
-              title={user.email ?? user.id}
-            >
-              {(user.email?.split("@")[0] ?? "用户")}
-            </span>
-            <button
-              onClick={() => signOut()}
-              className="flex items-center justify-center h-8 px-2.5 text-[12px] rounded-[var(--radius-sm)]
-                text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]
-                transition-colors duration-[var(--duration-fast)]"
-            >
-              退出
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={openLogin}
-            className="flex items-center justify-center h-8 px-3 text-[12px] font-medium rounded-full
-              text-[var(--color-on-accent)] bg-[var(--color-accent)] hover:opacity-90 active:scale-[0.95]
-              transition-[opacity,transform] duration-[var(--duration-fast)]"
-          >
-            登录
-          </button>
-        )}
 
         <button
           onClick={onOpenSettings}
