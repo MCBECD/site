@@ -5,12 +5,10 @@ on:
     paths:
       - "content/docs/**"
       - "**/*.md"
-      - "**/*.md"
   push:
     branches: [main]
     paths:
       - "content/docs/**"
-      - "**/*.md"
       - "**/*.md"
   workflow_dispatch:
   schedule:
@@ -32,7 +30,7 @@ jobs:
       - name: Run lychee
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --exclude-mail --exclude-localhost --exclude-loopback --exclude-private --max-concurrency 10 --timeout 10 "content/docs/**/*.md" "*.md" "CONTRIBUTING.md" "README.md"
+          args: --no-progress --exclude-localhost --exclude-loopback --exclude-private --max-concurrency 10 --timeout 10 "content/docs/**/*.md" "*.md" "CONTRIBUTING.md" "README.md"
           fail: true
           format: markdown
           jobSummary: true
