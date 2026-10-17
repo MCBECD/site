@@ -26,9 +26,6 @@
   to   { transform: translateX(0); }
 }
 
-/* ----------------------------------------------------------
- * Spring keyframes — single clean overshoot
- * ---------------------------------------------------------- */
 @keyframes springUp {
   from { opacity: 0; transform: translateY(24px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -46,6 +43,12 @@
 
 /* ----------------------------------------------------------
  * Animation utilities
+ *
+ * @why 首屏与列表入场动画（hero / doc-card / detail / tab-content）已移除。
+ * 列表容器绑定 page/query 的 key，翻页、搜索、切换视图时整块会重挂载，
+ * 每次重挂载全部卡片都要按 --stagger-index 逐个阶梯播放入场动画——
+ * 20 张卡片最慢要等约 1 秒才渲染完，这是「卡」的主因。
+ * 内容现在直接呈现；只在用户主动交互处保留动画（设置面板、下拉、Toast）。
  * ---------------------------------------------------------- */
 .overlay-in  { animation: fadeIn 0.2s var(--ease-out) both; }
 .overlay-out { animation: fadeIn 0.15s var(--ease-out) reverse both; }
@@ -90,47 +93,48 @@
   animation: tabInBackward 0.22s var(--ease-out) both;
 }
 
-/* Settings tab content staggered fade */
-.tab-content-enter > * {
-  animation: tabItemIn 0.28s var(--ease-out) both;
-}
-.tab-content-enter > *:nth-child(1) { animation-delay: 0.02s; }
-.tab-content-enter > *:nth-child(2) { animation-delay: 0.09s; }
-.tab-content-enter > *:nth-child(3) { animation-delay: 0.16s; }
-.tab-content-enter > *:nth-child(4) { animation-delay: 0.23s; }
-@keyframes tabItemIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 .page-fade-in { animation: fadeIn var(--duration-fast) var(--ease-out) both; }
 
-/* Docs page entrance */
+/* ----------------------------------------------------------
+ * 内容入场动画
+ *
+ * @why 列表容器绑定 page/query 的 key，翻页或搜索时整块重挂载、动画重播。
+ * 早先每张卡片还带 --stagger-index 的阶梯延迟（45ms × 序号），20 张卡最慢要
+ * 等约 1 秒才渲染完，这是「卡」的根源。现在去掉阶梯延迟：卡片在重挂载时
+ * 同时淡入上移（0.35s 内完成），既保留弹簧手感，又不会拖慢翻页。
+ * ---------------------------------------------------------- */
 .hero-enter {
-  animation: springUp 0.55s var(--ease-spring) both;
-}
-
-.hero-sub-enter {
-  animation: springFade 0.5s var(--ease-spring) 0.08s both;
-}
-
-.search-enter {
-  animation: springFade 0.45s var(--ease-spring) 0.18s both;
-}
-
-/* Doc cards staggered entrance */
-.doc-card-enter {
-  animation: springUp 0.4s var(--ease-spring) both;
-  animation-delay: calc(var(--stagger-index, 0) * 45ms + 0.2s);
-}
-
-/* Detail page entrance */
-.detail-enter {
   animation: springUp 0.5s var(--ease-spring) both;
 }
 
+.hero-sub-enter {
+  animation: springFade 0.45s var(--ease-spring) 0.06s both;
+}
+
+.search-enter {
+  animation: springFade 0.42s var(--ease-spring) 0.12s both;
+}
+
+/* @why 入场动画挂在列表容器上（由组件在首次渲染时加 .list-enter）。
+ * 若挂在每张卡片上，翻页重挂载会重播全部动画，导致"要等一秒才看到卡片"。 */
+.list-enter > * {
+  animation: springUp 0.35s var(--ease-spring) both;
+}
+
+.detail-enter {
+  animation: springUp 0.45s var(--ease-spring) both;
+}
+
 .detail-content-enter {
-  animation: springFade 0.4s var(--ease-spring-soft) 0.1s both;
+  animation: springFade 0.35s var(--ease-spring-soft) 0.06s both;
+}
+
+.tab-content-enter > * {
+  animation: tabItemIn 0.26s var(--ease-out) both;
+}
+@keyframes tabItemIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Toast */

@@ -59,20 +59,27 @@ const components = {
       </Link>
     );
   },
+  /**
+   * @why 外框（圆角 + 边框）由容器负责，表格本身只画内部分隔线。
+   * 旧写法让表格画外框、容器再用 overflow-hidden + 圆角裁剪，四角的边框必被切掉。
+   */
   table: ({ children, ...props }: JSX.IntrinsicElements["table"]) => (
-    <div className="overflow-x-auto overflow-hidden my-4 rounded-[var(--radius)]">
-      <table className="min-w-full border-collapse border border-[var(--color-border)]" {...props}>
+    <div className="overflow-x-auto my-4 rounded-[var(--radius)] border border-[var(--color-border)]">
+      <table
+        className="min-w-full border-collapse [&>tbody>tr:last-child>td]:border-b-0"
+        {...props}
+      >
         {children}
       </table>
     </div>
   ),
   th: ({ children, ...props }: JSX.IntrinsicElements["th"]) => (
-    <th className="border border-[var(--color-border)] px-4 py-2 text-left font-semibold bg-[var(--color-bg-tertiary)]" {...props}>
+    <th className="border-b border-r border-[var(--color-border)] px-4 py-2 text-left font-semibold bg-[var(--color-bg-tertiary)] last:border-r-0" {...props}>
       {children}
     </th>
   ),
   td: ({ children, ...props }: JSX.IntrinsicElements["td"]) => (
-    <td className="border border-[var(--color-border)] px-4 py-2" {...props}>
+    <td className="border-b border-r border-[var(--color-border)] px-4 py-2 last:border-r-0" {...props}>
       {children}
     </td>
   ),

@@ -70,8 +70,11 @@ function parseDocMeta(
   }
 }
 
-// Community docs are no longer parsed from the filesystem; they come from Supabase.
-const SCAN_CATEGORIES = ["basics", "commands"] as const;
+/**
+ * @why 站点的唯一内容源是 Git 子模块 content/docs。社区文档与命令/基础文档同源，
+ * 一并扫描；分类字符串会拼进静态路由参数，新增分类时必须同步路由。
+ */
+const SCAN_CATEGORIES = ["basics", "commands", "community"] as const;
 
 /* ----------------------------------------------------------
  * Public API
@@ -83,6 +86,8 @@ export function getAllDocs(): DocMeta[] {
 
   for (const category of SCAN_CATEGORIES) {
     const categoryDir = path.join(docsDir, category);
+    // @gotcha 分类目录可能尚未在 docs 仓库中创建；缺失时跳过而不是抛错。
+    if (!fs.existsSync(categoryDir)) continue;
     const entries = fs.readdirSync(categoryDir, { withFileTypes: true });
 
     for (const entry of entries)
@@ -106,9 +111,6 @@ export function getDocById(id: string): DocContent | null {
 
   const slashIndex = id.indexOf("/");
   const category = slashIndex === -1 ? "" : id.slice(0, slashIndex);
-
-  // Community content is served from Supabase, not the filesystem.
-  if (category === "community") return null;
 
   const filePath = path.join(docsDir, `${id}.md`);
   if (!fs.existsSync(filePath)) return null;

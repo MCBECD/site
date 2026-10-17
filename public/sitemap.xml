@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mcbecd.pages.dev/</loc><lastmod>2026-10-05</lastmod><priority>1.0</priority></url>
-  <url><loc>https://mcbecd.pages.dev/hidden/</loc><lastmod>2026-10-05</lastmod><priority>0.5</priority></url>
-  <url><loc>https://mcbecd.pages.dev/about/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/command-syntax/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/community-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/crossref-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/frontmatter-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/getting-started/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/glossary-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/naming-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/review-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/standards/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/standards.md-components-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/structure-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/tag-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/version-compat-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/writing-guide/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
-  <url><loc>https://mcbecd.pages.dev/writing-quality-standard/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
+  <url><loc>https://mcbecd.pages.dev/</loc><lastmod>2026-10-17</lastmod><priority>1.0</priority></url>
+  <url><loc>https://mcbecd.pages.dev/hidden/</loc><lastmod>2026-10-17</lastmod><priority>0.5</priority></url>
+  <url><loc>https://mcbecd.pages.dev/about/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority></url>
+  <url><loc>https://mcbecd.pages.dev/command-syntax/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority></url>
+  <url><loc>https://mcbecd.pages.dev/getting-started/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority></url>
   <url><loc>https://mcbecd.pages.dev/commands/ability/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
   <url><loc>https://mcbecd.pages.dev/commands/clear/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
   <url><loc>https://mcbecd.pages.dev/commands/clone/</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>

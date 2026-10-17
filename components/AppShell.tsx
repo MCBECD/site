@@ -10,7 +10,6 @@ import { PageTransition } from "@/components/PageTransition";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackgroundLayer } from "@/components/BackgroundLayer";
-import { AuthBoundary } from "@/components/auth";
 
 function ShellInner({ children }: { children: ReactNode }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -50,12 +49,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthBoundary>
-      <SettingsProvider>
-        <ThemeSync mounted={mounted}>
-          <SettingsAndLocale mounted={mounted}>{children}</SettingsAndLocale>
-        </ThemeSync>
-      </SettingsProvider>
-    </AuthBoundary>
+    <SettingsProvider>
+      <ThemeSync mounted={mounted}>
+        <SettingsAndLocale mounted={mounted}>{children}</SettingsAndLocale>
+      </ThemeSync>
+    </SettingsProvider>
   );
 }

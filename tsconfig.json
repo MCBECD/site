@@ -44,9 +44,6 @@
   "exclude": [
     "node_modules",
     ".next",
-    "content",
-    // Standalone sub-packages with their own package.json / tsconfig:
-    "animation",
-    "video-kit"
+    "content"
   ]
 }

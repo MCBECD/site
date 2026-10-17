@@ -215,7 +215,7 @@ export function HiddenPageClient() {
         </div>
       ) : viewMode === "list" ? (
         <div
-          className="space-y-6"
+          className="space-y-6 list-enter"
           key={`${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "sections"; sections: Section[] }).sections.map((section) => (
@@ -226,8 +226,8 @@ export function HiddenPageClient() {
                 </h3>
               )}
               <div className="space-y-0.5 px-4 py-2 border border-[var(--color-border)] rounded-[var(--radius)] overflow-hidden bg-[var(--color-card-bg)]">
-                {section.docs.map((doc, i) => (
-                  <div key={doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+                {section.docs.map((doc) => (
+                  <div key={doc.id} className="doc-card-enter">
                     <DocCard
                       doc={doc}
                       isBookmarked={bookmarks.includes(doc.id)}
@@ -242,12 +242,12 @@ export function HiddenPageClient() {
         </div>
       ) : (
         <div
-          className="space-y-1.5"
+          className="space-y-1.5 list-enter"
           key={`${safePage}-${viewMode}`}
         >
-          {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item, i) => (
+          {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item) => (
             item.type !== "header" && (
-              <div key={item.doc.id} className="doc-card-enter" style={{ '--stagger-index': i } as React.CSSProperties}>
+              <div key={item.doc.id} className="doc-card-enter">
                 <DocCard
                   doc={item.doc}
                   isBookmarked={bookmarks.includes(item.doc.id)}
