@@ -8,9 +8,14 @@ interface StandardsDetailProps {
 }
 
 export async function generateStaticParams() {
-  return getAllDocs()
-    .filter((d) => d.category === "standards")
-    .map((d) => ({ slug: d.id.slice("standards/".length) }));
+  const docs = getAllDocs().filter((d) => d.category === "standards");
+  /**
+   * @why output: export 下动态路由至少要产出一个页面，返回空数组会让 next build
+   * 直接失败、带崩整站。子模块 content/docs 的版本落后（还没有 standards/ 目录）时
+   * 就会走到这里，所以返回一个占位 slug；页面内 getDocById 拿不到会走 notFound()。
+   */
+  if (docs.length === 0) return [{ slug: "README" }];
+  return docs.map((d) => ({ slug: d.id.slice("standards/".length) }));
 }
 
 export async function generateMetadata({ params }: StandardsDetailProps): Promise<Metadata> {
