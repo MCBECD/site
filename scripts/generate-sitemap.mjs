@@ -59,7 +59,11 @@ function scanDocs(dir, prefix) {
       const docId = prefix
         ? `${prefix}/${entry.name.replace(/\.md$/, "")}`
         : entry.name.replace(/\.md$/, "");
-      results.push({ id: docId, updatedAt: data.updatedAt || "" });
+      results.push({
+        id: docId,
+        updatedAt: data.updatedAt || "",
+        hidden: data.hidden === "true",
+      });
     }
   }
 
@@ -75,8 +79,10 @@ urls.push(`  <url><loc>${escapeXml(SITE_URL)}/</loc><lastmod>${today}</lastmod><
 urls.push(`  <url><loc>${escapeXml(SITE_URL)}/hidden/</loc><lastmod>${today}</lastmod><priority>0.5</priority></url>`);
 
 for (const doc of docs) {
-  // Community content is served from Supabase, not the filesystem.
-  if (doc.id.startsWith("community/")) continue;
+  // @why hidden 文档（目前只有规范）站内仅从 /hidden/ 入口可达，不该出现在 sitemap。
+  // 旧代码这里按 "community 来自 Supabase" 跳过社区文档——那个假设早就不成立了，
+  // 社区文档就在 content/docs/community/ 里，被整批漏收录。
+  if (doc.hidden) continue;
   const lastmod = doc.updatedAt ? doc.updatedAt.split("T")[0] : today;
   // basics/<name> → /<name>/ ; commands/<name> → /commands/<name>/
   const locUrl = doc.id.startsWith("basics/")

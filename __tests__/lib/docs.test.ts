@@ -4,6 +4,7 @@ import path from "node:path";
 import {
   getAllDocs,
   getDocById,
+  SCAN_CATEGORIES,
 } from "@/lib/docs";
 
 const TEST_DOCS_DIR = path.join(process.cwd(), "content", "docs");
@@ -48,7 +49,9 @@ describe("docs.ts - Document Engine", () => {
       if (docs.length === 0) return;
       for (const doc of docs) {
         if (doc.category) {
-          const validBases = ["basics", "commands", "community"];
+          // @why 直接引用扫描白名单。此前这里抄了一份字面量，加分类时两边就会不同步，
+          // 测试挂掉但看不出是测试过期还是真有问题。
+          const validBases: readonly string[] = SCAN_CATEGORIES;
           const base = doc.category.includes("/") ? doc.category.split("/")[0] : doc.category;
           expect(validBases).toContain(base);
         }
