@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     versioning-strategy: increase
     labels:
       - "dependencies"
@@ -36,6 +36,15 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 2
     labels:
       - "dependencies"
       - "ci"
+    ignore:
+      # @why 这些 workflow 已从仓库移除（main 仅存 ci.yml / link-check.yml），
+      # 升级对应 action 无意义，且合并会把已删除的 workflow 文件重新引入。
+      - dependency-name: "actions/labeler"
+      - dependency-name: "actions/stale"
+      - dependency-name: "actions/upload-artifact"
+      - dependency-name: "amannn/action-semantic-pull-request"
+      - dependency-name: "marocchino/sticky-pull-request-comment"
