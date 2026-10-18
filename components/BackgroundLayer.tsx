@@ -55,6 +55,16 @@ const BackgroundLayer = memo(function BackgroundLayer() {
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [bg, setBg] = useState<{ s: number; tx: number; ty: number } | null>(null);
+  /**
+   * @why 背景图地址只存在 localStorage，服务端首帧不可能知道，图片必然是在
+   * hydration 之后才被插入。直接插入会"凭空砸出"一张全屏图，观感就是闪一下；
+   * 这里改为解码完成后淡入，与页面其余部分衔接。
+   */
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    setImgLoaded(false);
+  }, [settings.bgImage]);
 
   useEffect(() => {
     if (!bgEnabled) { setBg(null); return; }
@@ -114,11 +124,14 @@ const BackgroundLayer = memo(function BackgroundLayer() {
             alt=""
             aria-hidden="true"
             draggable={false}
+            onLoad={() => setImgLoaded(true)}
             className="fixed inset-0 w-full h-full z-[var(--z-bg-image)] pointer-events-none select-none object-cover"
             style={{
               transformOrigin: "0 0",
               transform: `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`,
               filter: imgFilter,
+              opacity: imgLoaded ? 1 : 0,
+              transition: "opacity 240ms var(--ease-out)",
               willChange: parallaxEnabled ? "transform" : undefined,
             }}
           />

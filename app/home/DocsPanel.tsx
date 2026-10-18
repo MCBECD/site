@@ -30,6 +30,14 @@ export function DocsPanel() {
    * 整块重挂载；若每张卡都无条件播动画，翻页就要等动画跑完才看清内容。
    */
   const [animateIn, setAnimateIn] = useState(true);
+  /**
+   * @why 静态导出的 HTML 里只能写死"card 视图 + 第 1 页"（服务端读不到
+   * localStorage）。hydration 后的 effect 会恢复上次的 page/viewMode，列表 key
+   * 随之变化 → 整块重挂载 → 入场动画再播一遍。用户体感就是"先闪出首页，
+   * 然后动画又重新播一次"。
+   * hydrated 把列表挡到状态恢复完成之后再绘制：首屏不闪、动画只播一次。
+   */
+  const [hydrated, setHydrated] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const scrollYRef = useRef<number>(0);
@@ -58,14 +66,20 @@ export function DocsPanel() {
       const savedPage = Number(saved.page);
       if (Number.isFinite(savedPage) && savedPage >= 0) setPage(savedPage);
     }
+
+    // 状态一次性恢复完再放行列表渲染，避免"默认第 1 页 → 恢复页"的二次重挂载。
+    setHydrated(true);
   }, []);
 
   const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
 
   useEffect(() => {
+    /* @why 计时从 hydration 完成起算。首帧到状态恢复之间可能已过去几百毫秒，
+       若从 mount 起算，恢复后那次重挂载会落在 600ms 之外，首屏动画就被吃掉了。 */
+    if (!hydrated) return;
     const id = setTimeout(() => setAnimateIn(false), 600);
     return () => clearTimeout(id);
-  }, []);
+  }, [hydrated]);
 
   useEffect(() => {
     refreshBookmarks();
@@ -378,7 +392,8 @@ export function DocsPanel() {
         </div>
       ) : viewMode === "list" ? (
         <div
-          className={`space-y-6${animateIn ? " list-enter" : ""}`}
+          className={`space-y-6 list-gate${animateIn && hydrated ? " list-enter" : ""}`}
+          data-hydrated={hydrated ? "true" : "false"}
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "sections"; sections: Section[] }).sections.map((section) => (
@@ -434,7 +449,8 @@ export function DocsPanel() {
         </div>
       ) : (
         <div
-          className={`space-y-1.5${animateIn ? " list-enter" : ""}`}
+          className={`space-y-1.5 list-gate${animateIn && hydrated ? " list-enter" : ""}`}
+          data-hydrated={hydrated ? "true" : "false"}
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item) => (

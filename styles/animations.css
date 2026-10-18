@@ -121,6 +121,15 @@
   animation: springUp 0.35s var(--ease-spring) both;
 }
 
+/* @why 静态导出的 HTML 只能写死默认视图（card / 第 1 页），真实页码与视图要等
+ * hydration 后从 localStorage 恢复。若让默认列表先画出来，用户会看到"首页闪一下
+ * 再跳到上次的位置，动画重播一遍"。
+ * 用 visibility 而非 display：保留占位高度，避免恢复时整页 CLS 跳动。
+ * 禁用 JS 时由 layout.tsx 的 <noscript> 覆盖为 visible。 */
+.list-gate[data-hydrated="false"] {
+  visibility: hidden;
+}
+
 .detail-enter {
   animation: springUp 0.45s var(--ease-spring) both;
 }

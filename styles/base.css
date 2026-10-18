@@ -3,19 +3,22 @@
  * ---------------------------------------------------------- */
 html {
   font-size: calc(16px * var(--font-size-multiplier));
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* @why 字体族必须挂在 body 上：next/font 的 variable class 加在 <body>
+ * （不能加 <html>，那里会被 inline 主题脚本与 React hydration 争夺 class 属性）。
+ * --font-sans / --font-mono 因此在 body 作用域定义，html 元素取不到。 */
 body {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   color: var(--color-text-primary);
   background: var(--color-bg-primary);
   overflow-x: hidden;
 }
 
 code, kbd {
-  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  font-family: var(--font-mono), "Fira Code", "Cascadia Code", monospace;
   font-variant-ligatures: none;
 }
 
