@@ -32,8 +32,5 @@ Thumbs.db
 .env.local
 .env.*.local
 
-# CI-generated
-public/version.json
-
 # Build output
-/public/sitemap.xml
+# sitemap.xml 现在由 app/sitemap.ts 在 next build 时直接产到 out/，不再落到 public/

@@ -25,6 +25,12 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
   display: "swap",
   variable: "--font-mono",
+  /**
+   * @why 等宽字体不进首屏 preload。它总共只服务代码块，而代码块在文档详情页、位于
+   * 首屏之下；`display: swap` 保证它到位前先显示回退等宽字体，不会阻塞渲染。
+   * 首屏少一条 30KB 的 preload，就少一份和关键 JS 抢带宽的竞争者。
+   */
+  preload: false,
 });
 
 const SITE_URL = "https://mcbecd.pages.dev";
@@ -100,6 +106,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             已经让 Next 自动输出同一条 preload，手写会产生重复的 Link 头（实测响应头
             里出现两次），白白占掉一次优先级排队。 */}
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+        {/* @why 构建号走 <meta> 而不是 /version.json：那个文件是 CI 产物，Cloudflare
+            Pages 独立构建时不存在（线上一直 404）。这里由 Server Component 直接渲染，
+            与谁在构建无关，也不额外发请求。SettingsPanel「关于」页从 meta 里读。 */}
+        <meta name="mcbecd-build" content={process.env.NEXT_PUBLIC_BUILD_ID || ""} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
@@ -115,22 +125,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`antialiased ${inter.variable} ${jetbrainsMono.variable}`}>
-        {/* @why 首屏列表在 hydration 前是 visibility:hidden（避免先闪出默认第 1 页
-            再被 localStorage 里的页码替换）。禁用 JS 时必须放行，否则列表永远不可见。
-            用 dangerouslySetInnerHTML：React 对 <noscript> 子节点在启用 JS 的浏览器里
-            按文本解析，普通 JSX 子节点会触发 hydration 不一致。 */}
-        <noscript
-          dangerouslySetInnerHTML={{
-            __html: "<style>.list-gate{visibility:visible !important}</style>",
-          }}
-        />
+        {/* @why 列表不再有任何"hydration 前先隐藏"的门控。
+            旧做法是 .list-gate 无条件 visibility:hidden 直到 React 接管，实测每个访客
+            都要盯着一块空白 1.4s（快网）到 4.4s（Slow 4G + 4× CPU）——这是"打开很慢"
+            最主要的体感来源，比任何字节优化都更伤。
+            代价：上次翻到第 N 页 / 用列表视图的回头客，会先看到第 1 页（或卡片视图），
+            hydration 完成后自然换成正确状态。一次内容替换，好过几秒空白。 */}
         <a
           href="#main-content"
           className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-[9999] focus-visible:px-4 focus-visible:py-2 focus-visible:rounded-[var(--radius-sm)] focus-visible:bg-[var(--color-accent)] focus-visible:text-[var(--color-on-accent)] focus-visible:text-[13px] focus-visible:font-semibold focus-visible:outline-none focus-visible:shadow-[var(--shadow-lg)]"
         >
           Skip to content
         </a>
-        <DocsProvider docs={docs}>
+        <DocsProvider index={docs.map(({ id, title, category }) => ({ id, title, category }))}>
           <AppShell>{children}</AppShell>
         </DocsProvider>
       </body>

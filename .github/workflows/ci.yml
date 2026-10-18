@@ -177,11 +177,8 @@ jobs:
 
       - run: npm ci --prefer-offline
 
-      - name: Generate version.json
-        run: |
-          BUILD=$(git rev-list --count HEAD)
-          echo "{\"build\":$BUILD}" > public/version.json
-
+      # @why 不再预生成 public/version.json：构建号由 next.config.ts 在构建期解析
+      # （CF_PAGES_COMMIT_SHA → git 短哈希）并内联进 bundle，与部署方无关。
       - run: npm run build
 
   # ─── Summary ───────────────────────────────────────────

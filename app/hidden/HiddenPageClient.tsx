@@ -4,7 +4,6 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { LayoutList, List, ChevronLeft } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
-import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
 import { getBasicsOrder } from "@/lib/categories";
 import { DocCard } from "@/app/doc/DocCard";
@@ -15,9 +14,8 @@ type ViewMode = "card" | "list";
 
 const PAGE_SIZE_CARD = 10;
 
-export function HiddenPageClient() {
+export function HiddenPageClient({ docs }: { docs: DocMeta[] }) {
   const { t, locale } = useLocale();
-  const { docs } = useDocs();
   const router = useRouter();
 
   const [page, setPage] = useState(0);
@@ -45,6 +43,7 @@ export function HiddenPageClient() {
       const savedPage = Number(saved.page);
       if (Number.isFinite(savedPage) && savedPage >= 0) setPage(savedPage);
     }
+
   }, []);
 
   const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
@@ -222,7 +221,7 @@ export function HiddenPageClient() {
         </div>
       ) : viewMode === "list" ? (
         <div
-          className="space-y-6 list-enter"
+          className="space-y-6"
           key={`${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "sections"; sections: Section[] }).sections.map((section) => (
@@ -249,7 +248,7 @@ export function HiddenPageClient() {
         </div>
       ) : (
         <div
-          className="space-y-1.5 list-enter"
+          className="space-y-1.5"
           key={`${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item) => (

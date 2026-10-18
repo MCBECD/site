@@ -4,7 +4,6 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { HoverPrefetchLink } from "@/components/HoverPrefetchLink";
 import { Search, X, LayoutList, List, ChevronRight, BookOpen } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
-import { useDocs } from "@/contexts/DocsContext";
 import { getBookmarks, toggleBookmark, saveDocsUIState, loadDocsUIState } from "@/lib/storage";
 import { getCategoryBase, getBasicsOrder } from "@/lib/categories";
 import { DocCard } from "@/app/doc/DocCard";
@@ -16,9 +15,8 @@ type ViewMode = "card" | "list";
 const PAGE_SIZE_CARD = 10;
 const DEBOUNCE_MS = 150;
 
-export function DocsPanel() {
+export function DocsPanel({ docs }: { docs: DocMeta[] }) {
   const { t, locale } = useLocale();
-  const { docs } = useDocs();
 
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -26,18 +24,15 @@ export function DocsPanel() {
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("card");
   /**
-   * @why 入场动画只在首次渲染播放。列表容器绑定了 page/viewMode 的 key，翻页会
-   * 整块重挂载；若每张卡都无条件播动画，翻页就要等动画跑完才看清内容。
+   * @why 列表首帧就渲染、就可见，没有任何"等 hydration"的门控。
+   *
+   * 旧做法是 .list-gate 无条件 visibility:hidden 到 hydrated，换来的只是"不闪"，
+   * 代价却是每个访客都要盯着一块空白直到 JS 跑完——实测列表可见时间 1.4s（快网）
+   * 到 4.4s（Slow 4G + 4× CPU），比任何字节优化都更伤体感。
+   *
+   * 代价是：上次翻到第 N 页、或用列表视图的回头客，会先看到第 1 页/卡片视图，
+   * hydration 后换成正确状态。一次内容替换，好过几秒空白。
    */
-  const [animateIn, setAnimateIn] = useState(true);
-  /**
-   * @why 静态导出的 HTML 里只能写死"card 视图 + 第 1 页"（服务端读不到
-   * localStorage）。hydration 后的 effect 会恢复上次的 page/viewMode，列表 key
-   * 随之变化 → 整块重挂载 → 入场动画再播一遍。用户体感就是"先闪出首页，
-   * 然后动画又重新播一次"。
-   * hydrated 把列表挡到状态恢复完成之后再绘制：首屏不闪、动画只播一次。
-   */
-  const [hydrated, setHydrated] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const scrollYRef = useRef<number>(0);
@@ -67,19 +62,9 @@ export function DocsPanel() {
       if (Number.isFinite(savedPage) && savedPage >= 0) setPage(savedPage);
     }
 
-    // 状态一次性恢复完再放行列表渲染，避免"默认第 1 页 → 恢复页"的二次重挂载。
-    setHydrated(true);
   }, []);
 
   const refreshBookmarks = useCallback(() => setBookmarks(getBookmarks()), []);
-
-  useEffect(() => {
-    /* @why 计时从 hydration 完成起算。首帧到状态恢复之间可能已过去几百毫秒，
-       若从 mount 起算，恢复后那次重挂载会落在 600ms 之外，首屏动画就被吃掉了。 */
-    if (!hydrated) return;
-    const id = setTimeout(() => setAnimateIn(false), 600);
-    return () => clearTimeout(id);
-  }, [hydrated]);
 
   useEffect(() => {
     refreshBookmarks();
@@ -392,8 +377,7 @@ export function DocsPanel() {
         </div>
       ) : viewMode === "list" ? (
         <div
-          className={`space-y-6 list-gate${animateIn && hydrated ? " list-enter" : ""}`}
-          data-hydrated={hydrated ? "true" : "false"}
+          className="space-y-6"
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "sections"; sections: Section[] }).sections.map((section) => (
@@ -449,8 +433,7 @@ export function DocsPanel() {
         </div>
       ) : (
         <div
-          className={`space-y-1.5 list-gate${animateIn && hydrated ? " list-enter" : ""}`}
-          data-hydrated={hydrated ? "true" : "false"}
+          className="space-y-1.5"
           key={`${debouncedQuery}-${safePage}-${viewMode}`}
         >
           {(pageRenderItems as { type: "items"; items: FlatItem[] }).items.map((item) => (

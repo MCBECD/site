@@ -1,30 +1,29 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { DocsProvider, useDocs } from "@/contexts/DocsContext";
-import type { DocMeta } from "@/lib/docs";
+import { DocsProvider, useDocs, type DocIndexEntry } from "@/contexts/DocsContext";
 
 function Consumer() {
-  const { docs, docMap } = useDocs();
+  const { index, docMap } = useDocs();
   return (
     <div>
-      <span data-testid="count">{docs.length}</span>
+      <span data-testid="count">{index.length}</span>
       <span data-testid="map-size">{docMap.size}</span>
-      <span data-testid="first-title">{docs[0]?.title}</span>
+      <span data-testid="first-title">{index[0]?.title}</span>
       <span data-testid="get-by-id">{docMap.get("cmd/give")?.title ?? "not found"}</span>
     </div>
   );
 }
 
-const MOCK_DOCS: DocMeta[] = [
-  { id: "cmd/give", title: "give 命令", description: "给予物品", tags: ["物品"], author: "MCBECD", updatedAt: "2025-01-01", category: "commands" },
-  { id: "cmd/tp", title: "tp 命令", description: "传送玩家", tags: ["传送"], category: "commands" },
+const MOCK_INDEX: DocIndexEntry[] = [
+  { id: "cmd/give", title: "give 命令", category: "commands" },
+  { id: "cmd/tp", title: "tp 命令", category: "commands" },
   { id: "cmd/say", title: "say 命令", category: "commands" },
 ];
 
 describe("DocsContext", () => {
-  it("provides docs array and docMap", () => {
+  it("provides index array and docMap", () => {
     render(
-      <DocsProvider docs={MOCK_DOCS}>
+      <DocsProvider index={MOCK_INDEX}>
         <Consumer />
       </DocsProvider>,
     );
@@ -38,7 +37,7 @@ describe("DocsContext", () => {
       return <span data-testid="result">{docMap.get("cmd/give")?.title ?? "not found"}</span>;
     }
     render(
-      <DocsProvider docs={MOCK_DOCS}>
+      <DocsProvider index={MOCK_INDEX}>
         <LookupConsumer />
       </DocsProvider>,
     );
@@ -51,25 +50,25 @@ describe("DocsContext", () => {
       return <span>{docMap.get("nonexistent")?.title ?? "not found"}</span>;
     }
     render(
-      <DocsProvider docs={MOCK_DOCS}>
+      <DocsProvider index={MOCK_INDEX}>
         <MissingConsumer />
       </DocsProvider>,
     );
     expect(screen.getByText("not found")).toBeInTheDocument();
   });
 
-  it("exposes all documents (hidden filtering happens in the list view)", () => {
-    const docs: DocMeta[] = [
+  it("keeps hidden documents in the index (filtering happens in the list view)", () => {
+    const index: DocIndexEntry[] = [
       { id: "a", title: "Visible A", category: "test" },
-      { id: "b", title: "Hidden B", hidden: true, category: "test" },
+      { id: "b", title: "Hidden B", category: "test" },
       { id: "c", title: "Visible C", category: "test" },
     ];
 
     function FilterConsumer() {
-      const { docs: visibleDocs, docMap } = useDocs();
+      const { index: entries, docMap } = useDocs();
       return (
         <div>
-          <span data-testid="visible-count">{visibleDocs.length}</span>
+          <span data-testid="visible-count">{entries.length}</span>
           <span data-testid="map-size">{docMap.size}</span>
           <span data-testid="map-has-hidden">{docMap.has("b") ? "yes" : "no"}</span>
         </div>
@@ -77,7 +76,7 @@ describe("DocsContext", () => {
     }
 
     render(
-      <DocsProvider docs={docs}>
+      <DocsProvider index={index}>
         <FilterConsumer />
       </DocsProvider>,
     );
@@ -85,6 +84,19 @@ describe("DocsContext", () => {
     expect(screen.getByTestId("visible-count").textContent).toBe("3");
     expect(screen.getByTestId("map-size").textContent).toBe("3");
     expect(screen.getByTestId("map-has-hidden").textContent).toBe("yes");
+  });
+
+  it("only carries id/title/category — full metadata must not reach the client boundary", () => {
+    function KeysConsumer() {
+      const { index } = useDocs();
+      return <span data-testid="keys">{Object.keys(index[0]!).sort().join(",")}</span>;
+    }
+    render(
+      <DocsProvider index={MOCK_INDEX}>
+        <KeysConsumer />
+      </DocsProvider>,
+    );
+    expect(screen.getByTestId("keys").textContent).toBe("category,id,title");
   });
 
   it("throws when useDocs is called outside provider", () => {

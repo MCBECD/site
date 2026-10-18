@@ -8,10 +8,9 @@ import { LOCALES } from "@/lib/i18n/types";
 import { getCategoryBase } from "@/lib/categories";
 import { useSettings, type Theme, type FontSize } from "@/contexts/SettingsContext";
 import { useLocale } from "@/contexts/LocaleContext";
-import { useDocs } from "@/contexts/DocsContext";
+import { useDocs, type DocIndexEntry } from "@/contexts/DocsContext";
 import { getBookmarks, getHistory, removeBookmark, removeHistory, clearBookmarks, clearHistory } from "@/lib/storage";
 import { docIdToUrl } from "@/lib/docUrl";
-import type { DocMeta } from "@/lib/docs";
 import { ColorThemePluginCard } from "./settings/ColorThemePluginCard";
 import { BackgroundImagePluginCard } from "./settings/BackgroundImagePluginCard";
 import { LocaleDropdown } from "./settings/LocaleDropdown";
@@ -73,19 +72,24 @@ const AUTHORS: { name: string; links: { href: string; label: string; icon: IconC
 
 function AboutTab() {
   const { t } = useLocale();
-  const { docs } = useDocs();
-  const [buildInfo, setBuildInfo] = useState<{ build: number; commit?: string } | null>(null);
+  const { index } = useDocs();
 
-  useEffect(() => {
-    fetch("/version.json")
-      .then((r) => r.json())
-      .then((data) => setBuildInfo(data))
-      .catch(() => { /* dev / offline */ });
-  }, []);
+  /**
+   * @why 构建号从 <meta name="mcbecd-build"> 读，不再 fetch("/version.json")。
+   * 那个文件由 CI 生成，而部署是 Cloudflare Pages 独立构建，产物里从来没有它——
+   * 线上是 404，"关于"页的版本行因此永远不显示，还白搭一次请求。
+   * meta 由 layout 在服务端渲染，值来自 next.config 解析的构建号。
+   */
+  const buildId = useMemo(
+    () => (typeof document === "undefined"
+      ? ""
+      : document.querySelector('meta[name="mcbecd-build"]')?.getAttribute("content") ?? ""),
+    [],
+  );
 
   const commandCount = useMemo(
-    () => docs.filter((d) => getCategoryBase(d.category) === "commands").length,
-    [docs],
+    () => index.filter((d) => getCategoryBase(d.category) === "commands").length,
+    [index],
   );
   const localeCount = LOCALES.length;
 
@@ -97,10 +101,10 @@ function AboutTab() {
             <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutVersionLabel")}</span>
             <span className="font-mono text-[var(--color-text-primary)]">v{APP_VERSION}</span>
           </div>
-          {buildInfo && (
+          {buildId && (
             <div className="flex justify-between items-center">
               <span className="text-[var(--color-text-tertiary)]">{t("settings.aboutBuildLabel")}</span>
-              <span className="font-mono text-[var(--color-text-primary)]">#{buildInfo.build}</span>
+              <span className="font-mono text-[var(--color-text-primary)]">{buildId}</span>
             </div>
           )}
         </div>
@@ -204,13 +208,13 @@ export function SettingsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: (
     refreshHistory();
   }, [refreshBookmarks, refreshHistory]);
 
-  const bookmarkedDocs: DocMeta[] = useMemo(
-    () => bookmarks.map((id) => docMap.get(id)).filter((d): d is DocMeta => !!d),
+  const bookmarkedDocs: DocIndexEntry[] = useMemo(
+    () => bookmarks.map((id) => docMap.get(id)).filter((d): d is DocIndexEntry => !!d),
     [bookmarks, docMap],
   );
 
-  const historyDocs: DocMeta[] = useMemo(
-    () => history.map((h) => docMap.get(h.id)).filter((d): d is DocMeta => !!d),
+  const historyDocs: DocIndexEntry[] = useMemo(
+    () => history.map((h) => docMap.get(h.id)).filter((d): d is DocIndexEntry => !!d),
     [history, docMap],
   );
 

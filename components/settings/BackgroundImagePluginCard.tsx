@@ -7,10 +7,18 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { SliderRow } from "./SliderRow";
 import { ToggleSwitch } from "./ToggleSwitch";
 
+/**
+ * @why 预设一律用 WebP：原图是 2000×1168 的 RGBA PNG，单张 1.45MB，一开背景插件
+ * 就要多下 1.5MB，而且正好砸在首屏 JS 竞争最激烈的时刻。转成 1920px WebP 后
+ * 分别是 61KB / 74KB / 47KB，体积降了一个数量级，肉眼无差别。
+ *
+ * @constraint 旧的 .png/.jpg 文件保留在 public/bg/ 下不要删：老用户 localStorage 里
+ * 存的是旧路径，删掉会让他们的背景图 404（不崩，但会突然变空白）。
+ */
 const BG_PRESETS = [
-  { value: "/bg/cargil-1.png", labelKey: "settings.bgPreset1" },
-  { value: "/bg/cargil-2.jpg", labelKey: "settings.bgPreset2" },
-  { value: "/bg/cargil-3.png", labelKey: "settings.bgPreset3" },
+  { value: "/bg/cargil-1.webp", labelKey: "settings.bgPreset1" },
+  { value: "/bg/cargil-2.webp", labelKey: "settings.bgPreset2" },
+  { value: "/bg/cargil-3.webp", labelKey: "settings.bgPreset3" },
 ];
 
 /** Allowed MIME types for background image uploads */

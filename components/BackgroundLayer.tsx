@@ -118,12 +118,15 @@ const BackgroundLayer = memo(function BackgroundLayer() {
       <div className="fixed inset-0 bg-[var(--color-bg-primary)] z-[var(--z-bg-base)]" aria-hidden="true" />
       {bgEnabled && bg && (
         <>
+          {/* @why decoding="async"：背景图在 hydration 后才插入，解码不该占用主线程，
+              也不该和首屏 JS 抢执行权。 */}
           <img
             ref={imgRef}
             src={settings.bgImage}
             alt=""
             aria-hidden="true"
             draggable={false}
+            decoding="async"
             onLoad={() => setImgLoaded(true)}
             className="fixed inset-0 w-full h-full z-[var(--z-bg-image)] pointer-events-none select-none object-cover"
             style={{

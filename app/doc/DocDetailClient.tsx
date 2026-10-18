@@ -1,166 +1,118 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, type ReactNode } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Home, Star, Check } from "lucide-react";
+import { Home, Star } from "lucide-react";
 import { DownloadButton } from "@/components/DownloadButton";
 import { CopyDropdown } from "./CopyDropdown";
 import { useLocale } from "@/contexts/LocaleContext";
-import type { DocContent } from "@/lib/docs";
+import type { DocMeta } from "@/lib/docs";
 import { getCategoryI18nKey, getCommandTypeI18nKey } from "@/lib/categories";
 import { addHistory, toggleBookmark, isBookmarked, getBookmarks } from "@/lib/storage";
 import { renderTitleWithCode } from "@/app/doc/renderTitle";
 
 interface DocDetailClientProps {
-  doc: DocContent;
-  children: ReactNode;
+  meta: DocMeta;
+  rawContent: string;
 }
 
-export function DocDetailClient({ doc, children }: DocDetailClientProps) {
+/**
+ * @why 这里只包"工具栏 + 头部元信息"，正文不再作为 children 传进来。
+ *
+ * 旧结构是 DocDetailClient 套住整篇正文，于是整个详情页只有这一层客户端组件，
+ * 正文被塞进它的 props 树里。现在正文由父级 Server Component 直接输出，客户端边界
+ * 只剩交互部件。
+ *
+ * @gotcha 别指望这个改动能把详情页体积砍半。App Router 的文档本身就会把整页的 RSC
+ * 载荷内联进 HTML（self.__next_f），所以"渲染结果存在两份"是框架行为，跟客户端边界
+ * 无关。实测这一改只省了约 10KB（/commands/execute/ 225KB → 215KB，gzip 34.7 → 31.7）。
+ * 真正的价值是把客户端职责收敛到按钮上，顺带干掉了原先挂在正文容器上的事件委托
+ * 和 createPortal 全局 Toast。
+ *
+ * @constraint 不要把它改回成"外层容器 + children"。
+ */
+export function DocDetailClient({ meta, rawContent }: DocDetailClientProps) {
   const { t } = useLocale();
   const [bookmarked, setBookmarked] = useState(false);
-  const categoryKey = getCategoryI18nKey(doc.meta.category);
+  const categoryKey = getCategoryI18nKey(meta.category);
   const categoryLabel = categoryKey ? t(categoryKey) : undefined;
-  const commandTypeKey = getCommandTypeI18nKey(doc.meta.category);
+  const commandTypeKey = getCommandTypeI18nKey(meta.category);
   const commandTypeLabel = commandTypeKey ? t(commandTypeKey) : undefined;
 
   useEffect(() => {
-    addHistory(doc.meta.id, doc.meta.title);
-    setBookmarked(isBookmarked(doc.meta.id));
-  }, [doc.meta.id, doc.meta.title]);
+    addHistory(meta.id, meta.title);
+    setBookmarked(isBookmarked(meta.id));
+  }, [meta.id, meta.title]);
 
   const handleToggleBookmark = useCallback(() => {
-    toggleBookmark(doc.meta.id);
-    setBookmarked(isBookmarked(doc.meta.id, getBookmarks()));
-  }, [doc.meta.id]);
+    toggleBookmark(meta.id);
+    setBookmarked(isBookmarked(meta.id, getBookmarks()));
+  }, [meta.id]);
 
-  const getContent = useCallback(() => doc.rawContent, [doc.rawContent]);
-
-  const [copied, setCopied] = useState(false);
-  const [leaving, setLeaving] = useState(false);
-  const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => {
-    return () => {
-      clearTimeout(copiedTimer.current);
-      clearTimeout(leaveTimer.current);
-    };
-  }, []);
-
-  const handleBodyClick = useCallback((e: React.MouseEvent) => {
-    const btn = (e.target as HTMLElement).closest?.("[data-code]");
-    if (!btn) return;
-    const code = btn.getAttribute("data-code");
-    if (code === null) return;
-    navigator.clipboard.writeText(code).then(() => {
-      if (copiedTimer.current) clearTimeout(copiedTimer.current);
-      if (leaveTimer.current) clearTimeout(leaveTimer.current);
-      setLeaving(false);
-      setCopied(true);
-      btn.classList.add("copied");
-      copiedTimer.current = setTimeout(() => {
-        setLeaving(true);
-        btn.classList.remove("copied");
-        leaveTimer.current = setTimeout(() => {
-          setCopied(false);
-          setLeaving(false);
-        }, 250);
-      }, 1500);
-    }).catch(() => {});
-  }, []);
-
-  const copyToast = copied
-    ? createPortal(
-        <div
-          role="status"
-          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[var(--z-toast)] flex items-center gap-2 rounded-[var(--radius)] px-4 py-2 text-[13px] font-medium shadow-[var(--shadow-lg)] border border-[var(--color-accent)] bg-[var(--color-toast-bg)] text-white ${leaving ? "toast-out" : "toast-in"}`}
-        >
-          <Check className="w-4 h-4" />
-          <span>{t("code.copied")}</span>
-        </div>,
-        document.body,
-      )
-    : null;
+  const getContent = useCallback(() => rawContent, [rawContent]);
 
   return (
-    <div className="max-w-3xl mx-auto px-[var(--content-gutter)] pt-8 pb-24">
-      <div className="doc-glass-card overflow-hidden detail-enter">
-        {/* Top action bar */}
-        <div className="flex items-center justify-between h-12 px-3 sm:px-5 border-b border-[var(--color-border-light)]">
-          <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]/60 min-h-[44px]"
-            >
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">{t("common.backToList")}</span>
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleToggleBookmark}
-              className={`w-11 h-11 flex items-center justify-center hover:text-[var(--color-accent)]/60 ${bookmarked
-                  ? "text-[var(--color-accent)]"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
-                }`}
-              aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
-            >
-              <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
-            </button>
-            <CopyDropdown rawContent={doc.rawContent} />
-            <DownloadButton
-              filename={doc.meta.id}
-              getContent={getContent}
-            />
-          </div>
+    <>
+      {/* Top action bar */}
+      <div className="flex items-center justify-between h-12 px-3 sm:px-5 border-b border-[var(--color-border-light)]">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]/60 min-h-[44px]"
+          >
+            <Home className="w-4 h-4" />
+            <span className="hidden sm:inline">{t("common.backToList")}</span>
+          </Link>
         </div>
 
-        {/* Title + metadata */}
-        <header className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
-          <h1 className="text-[20px] sm:text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
-            {...renderTitleWithCode(doc.meta.title, false)}
-          </h1>
-          {doc.meta.description && (
-            <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
-              {doc.meta.description}
-            </p>
-          )}
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex items-center gap-2">
-              {categoryLabel && (
-                <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
-                  {categoryLabel}
-                </span>
-              )}
-              {commandTypeLabel && (
-                <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
-                  <span className="text-[var(--color-accent)]/60">·</span>
-                  {commandTypeLabel}
-                </span>
-              )}
-            </div>
-            {(doc.meta.author || doc.meta.updatedAt) && (
-              <span className="text-[12px] text-[var(--color-text-secondary)]">
-                {doc.meta.author}{doc.meta.author && doc.meta.updatedAt ? " · " : ""}{doc.meta.updatedAt ?? ""}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleToggleBookmark}
+            className={`w-11 h-11 flex items-center justify-center hover:text-[var(--color-accent)]/60 ${bookmarked
+                ? "text-[var(--color-accent)]"
+                : "text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)]"
+              }`}
+            aria-label={bookmarked ? t("common.unbookmark") : t("common.bookmark")}
+          >
+            <Star className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
+          </button>
+          <CopyDropdown rawContent={rawContent} />
+          <DownloadButton filename={meta.id} getContent={getContent} />
+        </div>
+      </div>
+
+      {/* Title + metadata */}
+      <header className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3">
+        <h1 className="text-[20px] sm:text-[22px] font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
+          {...renderTitleWithCode(meta.title, false)}
+        </h1>
+        {meta.description && (
+          <p className="text-[13px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed">
+            {meta.description}
+          </p>
+        )}
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center gap-2">
+            {categoryLabel && (
+              <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
+                {categoryLabel}
+              </span>
+            )}
+            {commandTypeLabel && (
+              <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)]">
+                <span className="text-[var(--color-accent)]/60">·</span>
+                {commandTypeLabel}
               </span>
             )}
           </div>
-        </header>
-
-        {/* Document body */}
-        <div
-          className="px-4 sm:px-6 pt-5 pb-8 detail-content-enter prose max-w-none text-[15px] leading-relaxed
-          prose-a:no-underline hover:prose-a:underline"
-          onClick={handleBodyClick}
-        >
-          {children}
+          {(meta.author || meta.updatedAt) && (
+            <span className="text-[12px] text-[var(--color-text-secondary)]">
+              {meta.author}{meta.author && meta.updatedAt ? " · " : ""}{meta.updatedAt ?? ""}
+            </span>
+          )}
         </div>
-        {copyToast}
-      </div>
-    </div>
+      </header>
+    </>
   );
 }

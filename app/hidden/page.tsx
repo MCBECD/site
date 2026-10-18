@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { HiddenPageClient } from "./HiddenPageClient";
+import { getAllDocs } from "@/lib/docs";
 
 const SITE_URL = "https://mcbecd.pages.dev";
 const HIDDEN_TITLE = "文档标准规范";
@@ -26,9 +27,10 @@ export const metadata: Metadata = {
 };
 
 export default function HiddenPage() {
+  const docs = getAllDocs();
   return (
     <Suspense>
-      <HiddenPageClient />
+      <HiddenPageClient docs={docs} />
     </Suspense>
   );
 }

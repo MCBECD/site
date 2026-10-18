@@ -24,3 +24,8 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  # @why 站点只走 https（Pages 已强制），但没有 HSTS 时，任何一次 http:// 访问都要先付
+  # 一次 301 往返（实测 374ms）才轮到 TLS。加上之后浏览器会直接改写为 https。
+  # @constraint 不要随手加 includeSubDomains / preload：前者会波及无关子域，
+  # 后者一旦提交到预加载列表就极难回滚。
+  Strict-Transport-Security: max-age=31536000
