@@ -418,6 +418,7 @@ export function DocsPanel() {
                   <div key={`entry-${section.trailingEntry.href}`} className="doc-card-enter">
                     <Link
                       href={section.trailingEntry.href}
+                      prefetch={null}
                       className="doc-card flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-[calc(var(--radius)-2px)]
                         hover:bg-[var(--color-bg-tertiary)]/70 no-underline group transition-colors duration-[var(--duration-fast)]"
                     >
@@ -462,6 +463,7 @@ export function DocsPanel() {
               <div key={`entry-${item.entry.href}`} className="doc-card-enter">
                 <Link
                   href={item.entry.href}
+                  prefetch={null}
                   className="doc-card block group px-4 py-4 rounded-[var(--radius-lg)]
                     bg-[var(--color-card-bg)]
                     border border-[var(--color-border)]

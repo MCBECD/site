@@ -96,7 +96,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
-        <link rel="preload" href="/Logo.png" as="image" />
+        {/* @why 不再手写 Logo.png 的 preload：Navbar 里 <img fetchPriority="high">
+            已经让 Next 自动输出同一条 preload，手写会产生重复的 Link 头（实测响应头
+            里出现两次），白白占掉一次优先级排队。 */}
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <script
           type="application/ld+json"

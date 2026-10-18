@@ -7,7 +7,7 @@ import rehypeRaw from "rehype-raw";
 import { rehypeGithubAlerts } from "@/lib/md/rehype-github-alerts";
 import { remarkCommandBlocks } from "@/lib/md/remark-command-blocks";
 import { ExternalLink } from "./ExternalLink";
-import { CodeBlockClient } from "./CodeBlockClient";
+import { CodeBlock } from "./CodeBlock";
 
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
@@ -36,7 +36,7 @@ const components = {
     const match = /language-(\w+)/.exec(props.className ?? "");
     const lang = match ? match[1]! : "mcfunction";
 
-    return <CodeBlockClient lang={lang} code={code} />;
+    return <CodeBlock lang={lang} code={code} />;
   },
   a: ({ children, href, className, id, title }: JSX.IntrinsicElements["a"]) => {
     const safeHref = sanitizeHref(href);

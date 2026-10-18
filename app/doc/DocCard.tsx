@@ -25,6 +25,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
   return viewMode === "list" ? (
     <Link
       href={href}
+      prefetch={null}
       className="block group py-2 min-h-[44px] no-underline"
     >
       <div className="flex items-center gap-2.5 min-w-0">
@@ -47,6 +48,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
   ) : (
     <Link
       href={href}
+      prefetch={null}
       className="doc-card block group px-4 py-3.5 rounded-[var(--radius-lg)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
