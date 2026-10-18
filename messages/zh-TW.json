@@ -44,6 +44,8 @@
     "bgPreset1": "Cargil 1",
     "bgPreset2": "Cargil 2",
     "bgPreset3": "Cargil 3",
+    "bgPreset4": "彌散光",
+    "bgPreset4Desc": "跟隨深淺主題自動切換",
     "bgUpload": "上傳圖片",
     "bgOverlayOpacity": "遮罩透明度",
     "bgOverlayBlur": "模糊度",

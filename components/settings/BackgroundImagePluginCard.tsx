@@ -6,20 +6,16 @@ import { useLocale } from "@/contexts/LocaleContext";
 import { useSettings } from "@/contexts/SettingsContext";
 import { SliderRow } from "./SliderRow";
 import { ToggleSwitch } from "./ToggleSwitch";
+import { AURORA_BG, BG_PRESETS } from "@/lib/backgrounds";
 
 /**
- * @why 预设一律用 WebP：原图是 2000×1168 的 RGBA PNG，单张 1.45MB，一开背景插件
- * 就要多下 1.5MB，而且正好砸在首屏 JS 竞争最激烈的时刻。转成 1920px WebP 后
- * 分别是 61KB / 74KB / 47KB，体积降了一个数量级，肉眼无差别。
+ * @why 预设定义在 lib/backgrounds.ts，和 BackgroundLayer 共用一份。位图预设一律用
+ * WebP：原图是 2000×1168 的 RGBA PNG，单张 1.45MB，一开背景插件就要多下 1.5MB，
+ * 而且正好砸在首屏 JS 竞争最激烈的时刻。转成 1920px WebP 后分别是 61/74/47 KB。
  *
  * @constraint 旧的 .png/.jpg 文件保留在 public/bg/ 下不要删：老用户 localStorage 里
  * 存的是旧路径，删掉会让他们的背景图 404（不崩，但会突然变空白）。
  */
-const BG_PRESETS = [
-  { value: "/bg/cargil-1.webp", labelKey: "settings.bgPreset1" },
-  { value: "/bg/cargil-2.webp", labelKey: "settings.bgPreset2" },
-  { value: "/bg/cargil-3.webp", labelKey: "settings.bgPreset3" },
-];
 
 /** Allowed MIME types for background image uploads */
 const ALLOWED_IMAGE_TYPES = new Set([
@@ -118,7 +114,7 @@ export function BackgroundImagePluginCard() {
       {enabled && (
         <div className="px-4 pb-4 pt-1 border-t border-[var(--color-border)]">
           <div className="pt-4 space-y-3">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {BG_PRESETS.map((p) => (
                 <button
                   key={p.value}
@@ -128,14 +124,32 @@ export function BackgroundImagePluginCard() {
                       ? "ring-1 ring-[var(--color-accent)]"
                       : "hover:bg-[var(--color-bg-tertiary)]"}`}
                 >
-                  <span
-                    className="w-full h-12 rounded-[var(--radius-sm)] bg-cover bg-center border border-[var(--color-border)]"
-                    style={{ backgroundImage: `url(${p.value})` }}
-                  />
+                  {p.aurora ? (
+                    /* @why 弥散光是"两张皮肤"的预设（深色 + 浅色，实际用哪张由主题决定），
+                       所以缩略图刻意画成两张叠在一起，而不是一张——否则用户会以为它只有一版，
+                       在切主题后看到背景变了会当成 bug。 */
+                    <span className="relative w-full h-14">
+                      {/* 深色那版垫在下面、向右下错开，露出一条深色边角当作"第二张" */}
+                      <span className="absolute left-[16%] top-[16%] right-0 bottom-0 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-aurora-dark" />
+                      {/* 浅色那版压在上面，带描边和阴影，看得出是一张独立的卡 */}
+                      <span className="absolute left-0 top-0 right-[16%] bottom-[16%] rounded-[var(--radius-sm)] border border-[var(--color-border)] shadow-[var(--shadow-sm)] bg-aurora-light" />
+                    </span>
+                  ) : (
+                    <span
+                      className="w-full h-14 rounded-[var(--radius-sm)] bg-cover bg-center border border-[var(--color-border)]"
+                      style={{ backgroundImage: `url(${p.value})` }}
+                    />
+                  )}
                   <span className="text-[11px] text-[var(--color-text-secondary)]">{t(p.labelKey)}</span>
                 </button>
               ))}
             </div>
+
+            {settings.bgImage === AURORA_BG && (
+              <p className="text-[11px] text-[var(--color-text-tertiary)] leading-snug">
+                {t("settings.bgPreset4Desc")}
+              </p>
+            )}
 
             {uploadError && (
               <p className="text-[11px] text-[var(--color-accent)]">

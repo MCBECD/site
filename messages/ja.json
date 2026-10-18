@@ -44,6 +44,8 @@
     "bgPreset1": "Cargil 1",
     "bgPreset2": "Cargil 2",
     "bgPreset3": "Cargil 3",
+    "bgPreset4": "オーロラ",
+    "bgPreset4Desc": "ライト／ダークテーマに自動で追従します",
     "bgUpload": "画像をアップロード",
     "bgOverlayOpacity": "オーバーレイ",
     "bgOverlayBlur": "ぼかし",

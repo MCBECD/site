@@ -44,6 +44,8 @@
     "bgPreset1": "Cargil 1",
     "bgPreset2": "Cargil 2",
     "bgPreset3": "Cargil 3",
+    "bgPreset4": "Aurora",
+    "bgPreset4Desc": "Switches with your light/dark theme",
     "bgUpload": "Upload Image",
     "bgOverlayOpacity": "Overlay",
     "bgOverlayBlur": "Blur",

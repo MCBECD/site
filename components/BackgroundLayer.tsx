@@ -2,19 +2,7 @@
 
 import { useMemo, useEffect, useRef, useState, memo } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
-
-/**
- * Validate that a background image URL is safe to use as an <img src>.
- * Only allows:
- *   - Relative paths starting with "/"
- *   - data:image/* URLs (safe because browsers don't execute scripts from img src)
- * Rejects javascript:, vbscript:, and arbitrary external URLs that could be used for tracking.
- */
-function isSafeBgImage(url: string): boolean {
-  if (url.startsWith("/") && !url.startsWith("//")) return true;
-  if (url.startsWith("data:image/")) return true;
-  return false;
-}
+import { isAurora, isSafeBgImage } from "@/lib/backgrounds";
 
 /** Background image scale factor (slightly larger than viewport to avoid edges during parallax) */
 const BG_SCALE = 1.08;
@@ -31,6 +19,7 @@ const PARALLAX_LERP = 0.08;
 const BackgroundLayer = memo(function BackgroundLayer() {
   const { settings } = useSettings();
   const bgEnabled = !!settings.plugins["background-image"] && !!settings.bgImage && isSafeBgImage(settings.bgImage);
+  const aurora = isAurora(settings.bgImage);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -53,7 +42,7 @@ const BackgroundLayer = memo(function BackgroundLayer() {
     settings.bgOverlayBlur > 0 ? `blur(${settings.bgOverlayBlur}px)` : undefined,
     [settings.bgOverlayBlur]);
 
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
   const [bg, setBg] = useState<{ s: number; tx: number; ty: number } | null>(null);
   /**
    * @why 背景图地址只存在 localStorage，服务端首帧不可能知道，图片必然是在
@@ -63,7 +52,9 @@ const BackgroundLayer = memo(function BackgroundLayer() {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
-    setImgLoaded(false);
+    // @why 弥散光是 CSS 渐变，没有"解码完成"这回事；把它当成已加载，避免它被
+    // opacity:0 的淡入逻辑挡住。
+    setImgLoaded(isAurora(settings.bgImage));
   }, [settings.bgImage]);
 
   useEffect(() => {
@@ -118,17 +109,12 @@ const BackgroundLayer = memo(function BackgroundLayer() {
       <div className="fixed inset-0 bg-[var(--color-bg-primary)] z-[var(--z-bg-base)]" aria-hidden="true" />
       {bgEnabled && bg && (
         <>
-          {/* @why decoding="async"：背景图在 hydration 后才插入，解码不该占用主线程，
-              也不该和首屏 JS 抢执行权。 */}
-          <img
+          {/* @why 视差变换挂在包裹层上而不是素材本身：素材有两种（位图 <img> / 弥散光
+              渐变 <div>），变换与滤镜只写一份，两边的行为才不会走偏。 */}
+          <div
             ref={imgRef}
-            src={settings.bgImage}
-            alt=""
             aria-hidden="true"
-            draggable={false}
-            decoding="async"
-            onLoad={() => setImgLoaded(true)}
-            className="fixed inset-0 w-full h-full z-[var(--z-bg-image)] pointer-events-none select-none object-cover"
+            className="fixed inset-0 w-full h-full z-[var(--z-bg-image)] pointer-events-none select-none overflow-hidden"
             style={{
               transformOrigin: "0 0",
               transform: `translate(${bg.tx}px,${bg.ty}px) scale(${bg.s})`,
@@ -137,7 +123,24 @@ const BackgroundLayer = memo(function BackgroundLayer() {
               transition: "opacity 240ms var(--ease-out)",
               willChange: parallaxEnabled ? "transform" : undefined,
             }}
-          />
+          >
+            {aurora ? (
+              /* @why 深浅两版由 CSS 依据 <html class="dark"> 自动切换，这里只挂
+                 一个 .bg-aurora，不需要 JS 解析主题，也不会在切主题时闪烁。 */
+              <div className="absolute inset-0 bg-aurora" />
+            ) : (
+              /* @why decoding="async"：背景图在 hydration 后才插入，解码不该占用主线程，
+                  也不该和首屏 JS 抢执行权。 */
+              <img
+                src={settings.bgImage}
+                alt=""
+                draggable={false}
+                decoding="async"
+                onLoad={() => setImgLoaded(true)}
+                className="w-full h-full object-cover"
+              />
+            )}
+          </div>
           <div className="fixed inset-0 z-[var(--z-bg-overlay)]" style={overlayStyle} aria-hidden="true" />
         </>
       )}

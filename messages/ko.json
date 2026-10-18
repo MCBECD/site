@@ -44,6 +44,8 @@
     "bgPreset1": "Cargil 1",
     "bgPreset2": "Cargil 2",
     "bgPreset3": "Cargil 3",
+    "bgPreset4": "오로라",
+    "bgPreset4Desc": "라이트/다크 테마에 따라 자동 전환됩니다",
     "bgUpload": "이미지 업로드",
     "bgOverlayOpacity": "오버레이",
     "bgOverlayBlur": "흐림",

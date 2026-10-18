@@ -57,6 +57,8 @@ export interface Messages {
     bgPreset1: string;
     bgPreset2: string;
     bgPreset3: string;
+    bgPreset4: string;
+    bgPreset4Desc: string;
     bgUpload: string;
     bgOverlayOpacity: string;
     bgOverlayBlur: string;

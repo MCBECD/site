@@ -44,6 +44,8 @@
     "bgPreset1": "Cargil 1",
     "bgPreset2": "Cargil 2",
     "bgPreset3": "Cargil 3",
+    "bgPreset4": "Aurore",
+    "bgPreset4Desc": "Change automatiquement avec le thème clair/sombre",
     "bgUpload": "Télécharger une image",
     "bgOverlayOpacity": "Superposition",
     "bgOverlayBlur": "Flou",
