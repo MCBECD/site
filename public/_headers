@@ -1,12 +1,16 @@
 # Cloudflare Pages 响应头
 #
-# @why 站点是静态导出，所有 /_next/static/* 文件名都带内容哈希，可以永久缓存。
-# 若不在这里声明，Pages 会用默认的 `cache-control: public, max-age=0,
-# must-revalidate`，导致每次访问都要为 10+ 个 JS/CSS 字体文件各发一次条件请求。
-# 国内 RTT 200ms 量级时，这一串串行校验就是几秒的"打开很慢"。
+# @why 站点是静态导出，/_next/static/* 下文件名都带内容哈希，可以永久缓存。
+# 不声明时 Pages 会下发 `cache-control: public, max-age=0, must-revalidate`，
+# 每次访问都要为 10+ 个 JS/CSS/字体各发一次条件请求；国内 RTT 下这一串
+# 串行校验就是体感上的"打开很慢"。
 #
-# @why HTML 用 s-maxage 让边缘节点缓存 5 分钟。静态导出的首页内容只在部署时变化，
-# 边缘命中后 TTFB 从 ~1.1s 降到几十毫秒；代价是发版后最多 5 分钟的旧页面。
+# @constraint Pages 会把所有匹配规则的响应头「合并」而不是覆盖。若再给 `/*`
+# 声明 Cache-Control，两者会被拼成 `immutable, ... max-age=0`，长缓存直接失效。
+# 因此 HTML 不在这里声明缓存策略，沿用 Pages 对文档的默认行为（每次协商，
+# 静态导出内容本身没有服务端计算，协商成本只有一次 304）。
+#
+# @why Logo/bg 没有哈希，给一周而不是永久，换图后能自然失效。
 
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
@@ -18,6 +22,5 @@
   Cache-Control: public, max-age=604800
 
 /*
-  Cache-Control: public, max-age=0, s-maxage=300, must-revalidate
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
