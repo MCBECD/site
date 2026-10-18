@@ -1,0 +1,15 @@
+# 提交身份归并
+#
+# @why 历史提交混用 6 种「人」身份（容器默认名 Z User、旧机器 3-1415f、
+#       以及账号下 5 个不同邮箱），导致 git log / blame / 贡献统计被拆散。
+# @constraint 本文件只影响 git log、git blame、git shortlog 的显示。
+#       GitHub 网页的 Contributors 图不读取 .mailmap，需在账号
+#       Settings → Emails 中把这些邮箱全部添加并验证后才会合并。
+# @note dependabot 与 AI 工具身份不归并，保留独立便于识别自动提交。
+
+DingdingOvO <291264815+DingdingOvO@users.noreply.github.com> <dq12345678_2024@qq.com>
+DingdingOvO <291264815+DingdingOvO@users.noreply.github.com> <dingdingovo@gmail.com>
+DingdingOvO <291264815+DingdingOvO@users.noreply.github.com> <dingdingovo@users.noreply.github.com>
+DingdingOvO <291264815+DingdingOvO@users.noreply.github.com> <DingdingOvO@users.noreply.github.com>
+DingdingOvO <291264815+DingdingOvO@users.noreply.github.com> <F3-1415f@outlook.com>
+DingdingOvO <291264815+DingdingOvO@users.noreply.github.com> <z@container>
