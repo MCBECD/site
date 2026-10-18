@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
+import { HoverPrefetchLink } from "@/components/HoverPrefetchLink";
 import { Search, X, LayoutList, List, ChevronRight, BookOpen } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useDocs } from "@/contexts/DocsContext";
@@ -416,9 +416,8 @@ export function DocsPanel() {
                 ))}
                 {section.trailingEntry && (
                   <div key={`entry-${section.trailingEntry.href}`} className="doc-card-enter">
-                    <Link
+                    <HoverPrefetchLink
                       href={section.trailingEntry.href}
-                      prefetch={null}
                       className="doc-card flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-[calc(var(--radius)-2px)]
                         hover:bg-[var(--color-bg-tertiary)]/70 no-underline group transition-colors duration-[var(--duration-fast)]"
                     >
@@ -441,7 +440,7 @@ export function DocsPanel() {
                         </p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-[var(--duration-fast)]" />
-                    </Link>
+                    </HoverPrefetchLink>
                   </div>
                 )}
               </div>
@@ -461,9 +460,8 @@ export function DocsPanel() {
               </h3>
             ) : item.type === "entry" ? (
               <div key={`entry-${item.entry.href}`} className="doc-card-enter">
-                <Link
+                <HoverPrefetchLink
                   href={item.entry.href}
-                  prefetch={null}
                   className="doc-card block group px-4 py-4 rounded-[var(--radius-lg)]
                     bg-[var(--color-card-bg)]
                     border border-[var(--color-border)]
@@ -491,7 +489,7 @@ export function DocsPanel() {
                     </div>
                     <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-100 shrink-0 transition-opacity duration-[var(--duration-fast)]" />
                   </div>
-                </Link>
+                </HoverPrefetchLink>
               </div>
             ) : (
               <div key={item.doc.id} className="doc-card-enter">

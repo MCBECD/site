@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import Link from "next/link";
+import { HoverPrefetchLink } from "@/components/HoverPrefetchLink";
 import { Star, ChevronRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { DocMeta } from "@/lib/docs";
@@ -23,9 +23,8 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
   const href = docIdToUrl(doc.id);
 
   return viewMode === "list" ? (
-    <Link
+    <HoverPrefetchLink
       href={href}
-      prefetch={null}
       className="block group py-2 min-h-[44px] no-underline"
     >
       <div className="flex items-center gap-2.5 min-w-0">
@@ -44,11 +43,10 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
           </span>
         )}
       </div>
-    </Link>
+    </HoverPrefetchLink>
   ) : (
-    <Link
+    <HoverPrefetchLink
       href={href}
-      prefetch={null}
       className="doc-card block group px-4 py-3.5 rounded-[var(--radius-lg)]
         bg-[var(--color-card-bg)]
         border border-[var(--color-border)]
@@ -91,7 +89,7 @@ const DocCard = memo(function DocCard({ doc, isBookmarked, onBookmark, viewMode 
           </span>
         )}
       </div>
-    </Link>
+    </HoverPrefetchLink>
   );
 });
 
