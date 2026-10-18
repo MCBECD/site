@@ -5,6 +5,13 @@ html {
   font-size: calc(16px * var(--font-size-multiplier));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* @why 底色必须挂在 html 上，不能挂在 body。
+   * 背景图层（BackgroundLayer）用的是负 z-index：--z-bg-base:-30 / -image:-20 / -overlay:-10，
+   * 它们是 body 的子元素。body 只要有一层不透明背景，这层背景就画在负 z-index 子元素
+   * 之上，把整张背景图盖死——图片能加载、naturalWidth 正常、opacity 1，但屏幕上什么都没有。
+   * 这正是"背景图片功能用不了"的根因。
+   * 放到 html 后，body 背景变透明，画布底色由 html 提供，负 z-index 图层正常可见。 */
+  background: var(--color-bg-primary);
 }
 
 /* @why 字体族必须挂在 body 上：next/font 的 variable class 加在 <body>
@@ -13,7 +20,9 @@ html {
 body {
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   color: var(--color-text-primary);
-  background: var(--color-bg-primary);
+  /* @why 必须透明：底色由 html 提供，body 一上不透明背景就会盖住负 z-index 的背景图层。
+     详见 html 规则里的说明。 */
+  background: transparent;
   overflow-x: hidden;
 }
 
