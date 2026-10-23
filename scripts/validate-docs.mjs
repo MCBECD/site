@@ -20,6 +20,13 @@ const SKIP_FILES = new Set(["README.md", "CONTRIBUTING.md", "LICENSE"]);
 let errors = 0;
 let warnings = 0;
 
+/**
+ * @why 图片由 docs 仓库的 assets/ 提供，构建时由 copy-assets.mjs 复制到
+ * public/doc-assets。md 里写的是站点绝对路径，所以校验时要把前缀换回 assets/
+ * 才能判断文件到底在不在——否则图挂了一片，构建依然"成功"。
+ */
+const imageStats = { total: 0, missing: 0 };
+
 function parseFrontmatter(filePath) {
   const raw = fs.readFileSync(filePath, "utf-8");
   const match = /^---\r?\n([\s\S]*?)\r?\n---/;
@@ -90,6 +97,30 @@ function checkFile(filePath, id) {
     }
   }
 
+  // 图片检查：路径必须是 /doc-assets/...，且源文件要真的在 content/docs/assets 下
+  const imageRefs = [...raw.matchAll(/!\[[^\]]*\]\((\/doc-assets\/[^)\s]+)\)/g)].map((m) => m[1]);
+  const badPrefix = [...raw.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)]
+    .map((m) => m[1])
+    .filter((src) => !src.startsWith("/doc-assets/") && !/^https?:/i.test(src));
+
+  for (const src of badPrefix) {
+    console.error(`\x1b[31m[ERROR] ${id}\x1b[0m: 图片路径必须写成 /doc-assets/... ，当前为 ${src}`);
+    errors++;
+  }
+
+  const missing = imageRefs
+    .map((src) => src.replace(/^\/doc-assets\//, ""))
+    .filter((rel) => !fs.existsSync(path.join(DOCS_DIR, "assets", rel)));
+
+  imageStats.total += imageRefs.length;
+  imageStats.missing += missing.length;
+
+  if (missing.length > 0) {
+    console.warn(`\x1b[33m⚠ ${id}\x1b[0m: ${missing.length} 张图片待补`);
+    for (const rel of missing) console.warn(`    content/docs/assets/${rel}`);
+    warnings++;
+  }
+
   // 成功
   if (
     REQUIRED_FIELDS.every((f) => fm[f]) &&
@@ -109,5 +140,6 @@ if (!fs.existsSync(DOCS_DIR)) {
 console.log(`\n校验文档: ${DOCS_DIR}\n`);
 scanDir(DOCS_DIR);
 
-console.log(`\n---\n\x1b[32m通过\x1b[0m: ${errors === 0 ? "全部" : "部分"}  \x1b[31m错误: ${errors}\x1b[0m  \x1b[33m警告: ${warnings}\x1b[0m\n`);
+console.log(`\n---\n\x1b[32m通过\x1b[0m: ${errors === 0 ? "全部" : "部分"}  \x1b[31m错误: ${errors}\x1b[0m  \x1b[33m警告: ${warnings}\x1b[0m`);
+console.log(`图片: ${imageStats.total} 张引用，待补 ${imageStats.missing} 张\n`);
 process.exit(errors > 0 ? 1 : 0);

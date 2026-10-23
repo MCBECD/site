@@ -32,5 +32,8 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# 内容仓库的图片由 scripts/copy-assets.mjs 在构建前复制到这里，属于构建产物
+public/doc-assets/
+
 # Build output
 # sitemap.xml 现在由 app/sitemap.ts 在 next build 时直接产到 out/，不再落到 public/

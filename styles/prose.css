@@ -45,6 +45,10 @@
 
 /* Images (exclude cmd icons) */
 .prose img:not(.cmd-icon) {
+  /* @why 截图原始宽度常达 1600px，没有这两行会撑破正文容器并在移动端横向溢出 */
+  max-width: 100%;
+  height: auto;
+  display: block;
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
   margin: 1rem 0;

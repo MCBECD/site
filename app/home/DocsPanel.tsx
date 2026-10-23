@@ -304,7 +304,9 @@ export function DocsPanel({ docs }: { docs: DocMeta[] }) {
           {t("doc.title")}
         </h1>
         <p className="text-[15px] text-[var(--color-text-tertiary)] mt-3 hero-sub-enter max-w-lg leading-relaxed">
-          {t("doc.subtitle", { count: docs.length })}
+          {t("doc.subtitle", {
+            count: docs.filter((d) => d.category.split("/")[0] === "commands").length,
+          })}
         </p>
       </div>
 
