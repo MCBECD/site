@@ -222,3 +222,21 @@
     radial-gradient(54% 50% at 18% 92%, rgba(154, 44, 168, 0.45) 0%, rgba(154, 44, 168, 0) 64%),
     radial-gradient(40% 40% at 50% 46%, rgba(20, 22, 40, 0.6) 0%, rgba(20, 22, 40, 0) 72%);
 }
+
+/**
+ * 弥散光的柔化层。
+ *
+ * @why 五层 radial-gradient 直接叠出来时，每个色斑的边界是硬的，视觉上像几个圆
+ * 摆在一起，不像"弥散"。给内层再加一道大半径模糊，让相邻色斑互相渗透，
+ * 边界才会化开。
+ *
+ * @constraint blur 会让元素边缘向内收缩、露出父层底色，所以必须同时放大。
+ * scale(1.12) 盖掉四周那圈透明，父容器已 overflow-hidden，不会溢出滚动条。
+ *
+ * @performance 滤镜不加在视差外层：外层已有 transform + 用户可调的 imgFilter，
+ * 两者叠加会让每帧重新合成。分开写，模糊层只在首次合成时算一次。
+ */
+.bg-aurora {
+  filter: blur(70px);
+  transform: scale(1.12) translateZ(0);
+}
