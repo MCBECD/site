@@ -9,8 +9,13 @@
  * @constraint 只用 CSS 3D，不引 three.js：场景固定是方块网格，没有光照与阴影需求，
  * 一个 3D 库带来的 600KB 和初始化开销都不值。
  *
- * @gotcha 纹理来自 Mojang 官方资源包示例（github.com/Mojang/bedrock-samples），
- * 原始文件是 16×64 的四帧动画条，四帧完全相同，取首帧即可。
+ * @gotcha 纹理来自 Mojang 官方资源包示例（github.com/Mojang/bedrock-samples）。
+ * 每个文件是 16×64 的四帧 flipbook（ticks_per_frame=10），四帧图案相同、亮度不同，
+ * 游戏里表现为呼吸脉动。这里不播放动画，取第 2 帧（最亮帧），静态图才不会发暗。
+ *
+ * @constraint 六个面只用到四张图，按官方 blocks.json 的映射分配：
+ *   north=front  south=back  east/west=side  up/down=conditional_side
+ * 顶底共用同一张，底面必须再转 180°，否则从下方看图案是上下颠倒的。
  */
 
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -42,14 +47,26 @@ const BASE: Record<Exclude<BlockKind, "air">, string> = {
   "repeat-cond": "repeating_command_block",
 };
 
-/** 纹理按"正面 / 背面 / 侧面"三张，顶底沿用侧面。 */
+/**
+ * 六面纹理。
+ *
+ * @why 官方 blocks.json 里，命令方块的顶面和底面指向 `*_conditional_side`，
+ * 也就是 `*_conditional.png` 这张图 —— 它画的是带缺口的顶面图案，不是正面。
+ * 早先版本把这张图当成"有条件方块的正面"，导致有条件方块正面成了顶面花纹、
+ * 顶面反而用侧面图，六面方向全乱。
+ *
+ * @gotcha 有条件方块的四个非箭头面（东西两侧 + 顶底）都换成 conditional 版：
+ * 那个缺口就是游戏里"有条件"的视觉标记。正面与背面保持不变，因为箭头面
+ * 在两种状态下玩法含义相同，资源包也没有单独的 `*_conditional_front`。
+ */
 function facesOf(kind: Exclude<BlockKind, "air">) {
   const base = BASE[kind];
   const conditional = kind.endsWith("-cond");
   return {
-    front: `/blocks/${base}_${conditional ? "conditional" : "front"}.png`,
+    front: `/blocks/${base}_front.png`,
     back: `/blocks/${base}_back.png`,
-    side: `/blocks/${base}_side.png`,
+    side: `/blocks/${base}${conditional ? "_conditional" : "_side"}.png`,
+    updown: `/blocks/${base}_conditional.png`,
   };
 }
 
@@ -67,8 +84,8 @@ export interface CommandBlockSceneProps {
 
 export function CommandBlockScene({
   blocks,
-  cube = 48,
-  tilt = -30,
+  cube = 64,
+  tilt = -34,
   spin = -45,
 }: CommandBlockSceneProps) {
   const [rx, setRx] = useState(tilt);
@@ -155,8 +172,8 @@ export function CommandBlockScene({
               className="cb-cube"
               style={{ transform: `${pos} rotateY(${FACING_DEG[b.facing ?? 3]}deg)` }}
             >
-              <div className="cb-face cb-top" style={{ backgroundImage: `url(${t.side})` }} />
-              <div className="cb-face cb-bottom" style={{ backgroundImage: `url(${t.side})` }} />
+              <div className="cb-face cb-top" style={{ backgroundImage: `url(${t.updown})` }} />
+              <div className="cb-face cb-bottom" style={{ backgroundImage: `url(${t.updown})` }} />
               <div className="cb-face cb-front" style={{ backgroundImage: `url(${t.front})` }} />
               <div className="cb-face cb-back" style={{ backgroundImage: `url(${t.back})` }} />
               <div className="cb-face cb-left" style={{ backgroundImage: `url(${t.side})` }} />

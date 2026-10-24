@@ -330,7 +330,13 @@
   /* @why 各面比格子大 1px：面经过旋转后边界常落在半像素上，相邻方块之间会漏出
      一条背景缝，整体看上去像散开的一堆贴纸。多出半像素互相压住就够了。 */
   inset: -0.5px;
-  background-size: 100% 100%;
+  /* @why 官方纹理是 16×64 的四帧 flipbook（见 flipbook_textures.json，ticks_per_frame=10），
+     不是 16×16 的单图。把整张图当作面会得到四格竖排的压缩画面。这里纵向放大到 400%，
+     再用 background-position 取其中一帧。 */
+  background-size: 100% 400%;
+  /* @constraint 取第 2 帧：四帧图案相同、亮度递进，第 1 帧是脉动最暗的一刻，
+     用它做静态图整体会发暗。33.34% 正好落在第 2 帧起点。 */
+  background-position: 0 33.34%;
   background-repeat: no-repeat;
   /* @why 16×16 的方块纹理放大后会糊成色块，pixelated 保住像素颗粒感 */
   image-rendering: pixelated;
@@ -338,7 +344,9 @@
 }
 
 .cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)); }
-.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)); }
+/* @constraint 底面与顶面共用同一张图，必须再转 180°：从下方看时纹理才是正的，
+   否则顶面图案在底面上是上下颠倒的——这正是「一个 PNG 用在两个方向」的那件事。 */
+.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(180deg); }
 .cb-front  { transform: translateZ(calc(var(--cube) / 2)); }
 .cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)); }
 .cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)); }
@@ -355,9 +363,9 @@
  * 新建渲染上下文，可能破坏 3D 层级，也会让 pixelated 的像素边缘重新采样。
  */
 .cb-top    { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0); }
-.cb-left   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.08); }
-.cb-front  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.14); }
-.cb-right  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.2); }
+.cb-left   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.16); }
+.cb-front  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.1); }
+.cb-right  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.24); }
 .cb-back   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.24); }
 .cb-bottom { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.34); }
 

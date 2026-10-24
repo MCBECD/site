@@ -40,7 +40,7 @@ export function BlockLayout({ code }: { code: string }) {
         <code>{code}</code>
       </pre>
       <div className="overflow-hidden rounded-[var(--radius)] border border-[var(--color-border)]">
-        <CommandBlockScene blocks={blocks} cube={48} />
+        <CommandBlockScene blocks={blocks} cube={64} />
       </div>
     </div>
   );
