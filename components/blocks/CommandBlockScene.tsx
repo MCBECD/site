@@ -29,6 +29,11 @@ export type BlockKind =
   | "repeat-cond"
   | "air";
 
+export type FaceKey = "front" | "back" | "left" | "right" | "top" | "bottom";
+
+/** 每个面绕自身法线的旋转角度，单位度，取 0 / 90 / 180 / 270。 */
+export type FaceTurns = Partial<Record<FaceKey, number>>;
+
 export interface BlockSpec {
   x: number;
   y?: number;
@@ -36,7 +41,24 @@ export interface BlockSpec {
   kind: BlockKind;
   /** 箭头面朝向：2 北 / 3 南 / 4 西 / 5 东。省略按南。 */
   facing?: 2 | 3 | 4 | 5;
+  /**
+   * 逐面旋转，缺省值见 DEFAULT_TURNS。
+   *
+   * @why 官方六面只给四张图，顶底共用一张，底面必须转 180° 才是正的。既然要转，
+   * 就把"转多少"提到数据里：编辑器可以逐面调，渲染器照数字转，不再硬编码在 CSS。
+   */
+  faces?: FaceTurns;
 }
+
+/** 官方 blocks.json 的默认朝向：只有底面需要倒过来。 */
+export const DEFAULT_TURNS: Record<FaceKey, number> = {
+  front: 0,
+  back: 0,
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 180,
+};
 
 const BASE: Record<Exclude<BlockKind, "air">, string> = {
   impulse: "command_block",
@@ -80,6 +102,8 @@ export interface CommandBlockSceneProps {
   /** 初始俯仰与水平角。 */
   tilt?: number;
   spin?: number;
+  /** 高亮第几个方块（编辑器里标出当前选中项）。 */
+  selected?: number;
 }
 
 export function CommandBlockScene({
@@ -87,6 +111,7 @@ export function CommandBlockScene({
   cube = 64,
   tilt = -34,
   spin = -45,
+  selected,
 }: CommandBlockSceneProps) {
   const [rx, setRx] = useState(tilt);
   const [ry, setRy] = useState(spin);
@@ -169,15 +194,28 @@ export function CommandBlockScene({
           return (
             <div
               key={i}
-              className="cb-cube"
+              className={i === selected ? "cb-cube is-selected" : "cb-cube"}
               style={{ transform: `${pos} rotateY(${FACING_DEG[b.facing ?? 3]}deg)` }}
             >
-              <div className="cb-face cb-top" style={{ backgroundImage: `url(${t.updown})` }} />
-              <div className="cb-face cb-bottom" style={{ backgroundImage: `url(${t.updown})` }} />
-              <div className="cb-face cb-front" style={{ backgroundImage: `url(${t.front})` }} />
-              <div className="cb-face cb-back" style={{ backgroundImage: `url(${t.back})` }} />
-              <div className="cb-face cb-left" style={{ backgroundImage: `url(${t.side})` }} />
-              <div className="cb-face cb-right" style={{ backgroundImage: `url(${t.side})` }} />
+              {(
+                [
+                  ["top", t.updown],
+                  ["bottom", t.updown],
+                  ["front", t.front],
+                  ["back", t.back],
+                  ["left", t.side],
+                  ["right", t.side],
+                ] as [FaceKey, string][]
+              ).map(([face, url]) => (
+                <div
+                  key={face}
+                  className={`cb-face cb-${face}`}
+                  style={{
+                    backgroundImage: `url(${url})`,
+                    ["--turn" as string]: `${b.faces?.[face] ?? DEFAULT_TURNS[face]}deg`,
+                  }}
+                />
+              ))}
             </div>
           );
         })}

@@ -12,14 +12,15 @@
 
 import { useMemo } from "react";
 import { CommandBlockScene } from "./CommandBlockScene";
-import { parseLayout } from "@/lib/blocks/parseLayout";
+import { parseBlockSource } from "@/lib/blocks/parseLayout";
 
 export function BlockLayout({ code }: { code: string }) {
-  const { blocks, error } = useMemo(() => {
+  const { blocks, cube, error } = useMemo(() => {
     try {
-      return { blocks: parseLayout(code), error: null as string | null };
+      const r = parseBlockSource(code);
+      return { blocks: r.blocks, cube: r.cube ?? 64, error: null as string | null };
     } catch (e) {
-      return { blocks: [], error: e instanceof Error ? e.message : String(e) };
+      return { blocks: [], cube: 64, error: e instanceof Error ? e.message : String(e) };
     }
   }, [code]);
 
@@ -36,11 +37,11 @@ export function BlockLayout({ code }: { code: string }) {
     <div className="my-5 space-y-2">
       {/* @why 源码要跟着图一起显示：读者看到的是"这句话长什么样"，而不是凭空冒出一张图，
           否则不知道该怎么改。 */}
-      <pre className="overflow-x-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-4 py-3 text-[13px] leading-6">
+      <pre className="max-h-[260px] overflow-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-4 py-3 text-[13px] leading-6">
         <code>{code}</code>
       </pre>
       <div className="overflow-hidden rounded-[var(--radius)] border border-[var(--color-border)]">
-        <CommandBlockScene blocks={blocks} cube={64} />
+        <CommandBlockScene blocks={blocks} cube={cube} />
       </div>
     </div>
   );

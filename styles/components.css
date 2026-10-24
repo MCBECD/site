@@ -343,14 +343,21 @@
   backface-visibility: hidden;
 }
 
-.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)); }
-/* @constraint 底面与顶面共用同一张图，必须再转 180°：从下方看时纹理才是正的，
-   否则顶面图案在底面上是上下颠倒的——这正是「一个 PNG 用在两个方向」的那件事。 */
-.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(180deg); }
-.cb-front  { transform: translateZ(calc(var(--cube) / 2)); }
-.cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)); }
-.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)); }
-.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)); }
+/* @why 末尾都挂一个 rotate(var(--turn))：六面只用到四张图，同一个面在不同方向上
+   要靠旋转才摆正。角度由数据给（BlockSpec.faces），编辑器可以直接改，
+   缺省值见 DEFAULT_TURNS —— 底面 180°，其余 0°。 */
+.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
+.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 180deg)); }
+.cb-front  { transform: translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
+.cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
+.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
+.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
+
+/* 编辑器里选中方块：描边套在六个面上，3D 里也看得出来是哪一块 */
+.cb-cube.is-selected .cb-face {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
 
 /**
  * 六面明暗。

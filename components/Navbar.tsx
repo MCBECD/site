@@ -60,6 +60,7 @@ export const Navbar = memo(function Navbar({ onOpenSettings }: NavbarProps) {
 
   return (
     <nav
+      data-site-nav
       className="fixed top-0 left-0 right-0 z-[var(--z-navbar)] flex items-center h-[var(--navbar-height)] px-3 sm:px-5 bg-[var(--color-navbar-bg)] backdrop-blur-[var(--blur-md)] border-b border-[var(--color-border-light)]"
     >
       {/* Left: logo */}
