@@ -8,6 +8,7 @@ import { rehypeGithubAlerts } from "@/lib/md/rehype-github-alerts";
 import { remarkCommandBlocks } from "@/lib/md/remark-command-blocks";
 import { ExternalLink } from "./ExternalLink";
 import { CodeBlock } from "./CodeBlock";
+import { BlockLayout } from "./blocks/BlockLayout";
 
 function sanitizeHref(href: string | undefined): string {
   if (!href) return "";
@@ -35,6 +36,10 @@ const components = {
     const code = String(props.children);
     const match = /language-(\w+)/.exec(props.className ?? "");
     const lang = match ? match[1]! : "mcfunction";
+
+    /* @why 命令方块排布图走 ```cmdblock 代码块，和 ```mermaid 一个思路：
+       Markdown 本身没有画图语法，用围栏代码块 + 语言标记是生态里最通用的扩展方式。 */
+    if (lang === "cmdblock") return <BlockLayout code={code} />;
 
     return <CodeBlock lang={lang} code={code} />;
   },
