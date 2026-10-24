@@ -203,32 +203,30 @@
  * ---------------------------------------------------------- */
 .bg-aurora,
 .bg-aurora-light {
-  background-color: #eef0f8;
+  background-color: #f1f2f9;
   background-image:
-    radial-gradient(58% 52% at 12% 6%, rgba(255, 122, 168, 0.85) 0%, rgba(255, 122, 168, 0) 62%),
-    radial-gradient(52% 48% at 86% 10%, rgba(104, 152, 255, 0.8) 0%, rgba(104, 152, 255, 0) 64%),
-    radial-gradient(50% 54% at 80% 88%, rgba(88, 220, 196, 0.7) 0%, rgba(88, 220, 196, 0) 62%),
-    radial-gradient(54% 50% at 18% 92%, rgba(168, 138, 255, 0.8) 0%, rgba(168, 138, 255, 0) 64%),
-    radial-gradient(38% 38% at 50% 46%, rgba(255, 244, 214, 0.75) 0%, rgba(255, 244, 214, 0) 72%);
+    radial-gradient(95% 85% at 2% 0%, rgba(255, 118, 170, 1) 0%, rgba(255, 118, 170, 0) 62%),
+    radial-gradient(90% 80% at 100% 0%, rgba(104, 150, 255, 1) 0%, rgba(104, 150, 255, 0) 64%),
+    radial-gradient(92% 82% at 98% 100%, rgba(70, 220, 196, 0.95) 0%, rgba(70, 220, 196, 0) 64%),
+    radial-gradient(95% 85% at 0% 100%, rgba(170, 140, 255, 1) 0%, rgba(170, 140, 255, 0) 64%);
 }
 
 .bg-aurora-dark,
 .dark .bg-aurora {
-  background-color: #08080e;
+  background-color: #06060b;
   background-image:
-    radial-gradient(58% 52% at 12% 6%, rgba(126, 58, 176, 0.55) 0%, rgba(126, 58, 176, 0) 62%),
-    radial-gradient(52% 48% at 86% 10%, rgba(40, 84, 196, 0.5) 0%, rgba(40, 84, 196, 0) 64%),
-    radial-gradient(50% 54% at 80% 88%, rgba(0, 134, 148, 0.45) 0%, rgba(0, 134, 148, 0) 62%),
-    radial-gradient(54% 50% at 18% 92%, rgba(154, 44, 168, 0.45) 0%, rgba(154, 44, 168, 0) 64%),
-    radial-gradient(40% 40% at 50% 46%, rgba(20, 22, 40, 0.6) 0%, rgba(20, 22, 40, 0) 72%);
+    radial-gradient(95% 85% at 2% 0%, rgba(152, 62, 208, 0.92) 0%, rgba(152, 62, 208, 0) 62%),
+    radial-gradient(90% 80% at 100% 0%, rgba(42, 92, 226, 0.88) 0%, rgba(42, 92, 226, 0) 64%),
+    radial-gradient(92% 82% at 98% 100%, rgba(0, 160, 172, 0.76) 0%, rgba(0, 160, 172, 0) 64%),
+    radial-gradient(95% 85% at 0% 100%, rgba(180, 46, 192, 0.82) 0%, rgba(180, 46, 192, 0) 64%);
 }
 
 /**
  * 弥散光的柔化层。
  *
- * @why 五层 radial-gradient 直接叠出来时，每个色斑的边界是硬的，视觉上像几个圆
- * 摆在一起，不像"弥散"。给内层再加一道大半径模糊，让相邻色斑互相渗透，
- * 边界才会化开。
+ * @why 各层都做成从四角向内渗透的大色场（尺寸 110% 以上、衰减半径 60% 左右），
+ * 画面中间本来就已经重叠；但径向渐变的边界仍然是硬的，叠起来像几块圆片。
+ * 再加一道大半径模糊，重叠处才会融成连续过渡。
  *
  * @constraint blur 会让元素边缘向内收缩、露出父层底色，所以必须同时放大。
  * scale(1.12) 盖掉四周那圈透明，父容器已 overflow-hidden，不会溢出滚动条。
@@ -237,6 +235,6 @@
  * 两者叠加会让每帧重新合成。分开写，模糊层只在首次合成时算一次。
  */
 .bg-aurora {
-  filter: blur(70px);
+  filter: blur(48px);
   transform: scale(1.12) translateZ(0);
 }
