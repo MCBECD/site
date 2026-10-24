@@ -40,9 +40,14 @@ export function BlockLayout({ code }: { code: string }) {
       <pre className="max-h-[200px] overflow-auto rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-3 py-2 text-[13px] leading-6">
         <code>{code}</code>
       </pre>
-      {/* @constraint 立体图外面不再套边框：图本身有明暗和像素纹理，再围一个框等于两层
-          容器抢注意力，而且框比图大一圈，整篇文档看过去全是框。 */}
-      <CommandBlockScene blocks={blocks} cube={cube} />
+      {/* @why 立体图套一圈淡框：图有明暗和像素纹理，边框取 --color-border-light
+          这种几乎融进背景的色，只标出"这里是一块图"，不抢注意力。早年用重色
+          --color-border 加大内边距，框比图还大，整篇文档看过去全是框。
+          @constraint w-fit 让框贴着图：CommandBlockScene 会按当前视角的投影包围盒
+          给自己算出确定的宽高，父级必须收缩适应，否则又变成占满整行的大框。 */}
+      <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[var(--color-border-light)]">
+        <CommandBlockScene blocks={blocks} cube={cube} />
+      </div>
     </div>
   );
 }

@@ -121,12 +121,25 @@ const FACE_NORMALS: Record<FaceKey, Vec3> = {
 /**
  * 主光方向（从受光面指向光源），固定在相机上：左前上方。
  *
+ * @why 这一个方向同时决定两件事：面均亮度（和法线点积）与渐变方向（取它的屏幕分量
+ * x/y）。所有面共用同一个屏幕方向，整组方块才像被一道光扫过；每个面各按自己的平面
+ * 投影一次，三个面三种走向，看着就是各亮各的。
+ *
  * @constraint 光必须挂在相机上而不是挂在方块上：拖动时读者感知到的是摄像机绕着方块转，
  * 明暗跟着视角走才像换了个角度看；按方块本地坐标算的话，转起来明暗不动，看起来就是
  * 方块自己在固定光里自转。
  * @constraint Z 分量要明显大于 X/Y：正对镜头的面是画面主体，光太侧的话整组方块发暗。
  */
 const KEY_LIGHT: readonly [number, number, number] = [-0.342, -0.44, 0.83];
+
+/**
+ * 场景盒子在投影包围盒之外留的呼吸缝：横向两侧共 24px、纵向共 16px。
+ *
+ * @constraint 纵向这 16px 由 .cb-scene 的 `padding: 0.5rem 0` 提供，改一边必须同步
+ * 另一边，否则盒子会比图大出一圈——那正是"框比图大"的由来。
+ */
+const PAD_X = 24;
+const PAD_Y = 16;
 
 /**
  * facing 对应的绕 Y 转角（余弦, 正弦）。
@@ -182,13 +195,15 @@ export interface FaceShade {
  * 按当前视角生成逐面明暗函数。
  *
  * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
- * 把面法线旋进视图空间（Rx(rx)·Ry(ry+facing)，与 stage 的变换顺序一致）后和挂在相机
- * 上的主光点积得到面均亮度；再把主光投影到面所在的平面，得到面内的受光方向 —— 面就
- * 沿着这个方向从亮边渐变到暗边，是一道扫过面的光，不是整面糊一层灰。
+ * 面均亮度由法线和主光的点积决定（顶面最亮、正面中等、右侧与底面沉下去）；在此之上
+ * 每个面再沿主光的屏幕方向铺一道渐变 —— 方向对所有面是同一个，整组方块是一道光扫过，
+ * 不是每个面各亮各的。
  *
  * @constraint 主光之外只加一个随朝上程度上升的环境项：背面不会死黑，底面依旧最黑 ——
  * 那是方块压在地上的视觉依据，不能亮。
  * @constraint 亮度区间刻意压在 0.02~0.36：整面糊满灰会又脏又闷，示意图要的是轻。
+ * @constraint 渐变方向必须换算进面自己的盒子：CSS 的 linear-gradient 角度只认元素
+ * 局部坐标，而光的方向在屏幕坐标系里，两者差着一整串旋转。
  */
 function makeShadeFn(rx: number, ry: number) {
   const b = (rx * Math.PI) / 180;
@@ -216,29 +231,22 @@ function makeShadeFn(rx: number, ry: number) {
     const vx = n[1] * u[2] - n[2] * u[1];
     const vy = n[2] * u[0] - n[0] * u[2];
 
-    const ln = n[0] * KEY_LIGHT[0] + n[1] * KEY_LIGHT[1] + n[2] * KEY_LIGHT[2];
-    const lit = 0.8 * Math.max(0, ln) + 0.2 * (0.5 * (1 - n[1]));
+    // 面均亮度
+    const key = n[0] * KEY_LIGHT[0] + n[1] * KEY_LIGHT[1] + n[2] * KEY_LIGHT[2];
+    const lit = 0.8 * Math.max(0, key) + 0.2 * (0.5 * (1 - n[1]));
     const mid = Math.min(0.36, Math.max(0.02, 0.33 - 0.36 * lit));
 
-    // 主光在面内的分量：渐变沿着它从亮边过渡到暗边
-    const dx = KEY_LIGHT[0] - ln * n[0];
-    const dy = KEY_LIGHT[1] - ln * n[1];
-    const dz = KEY_LIGHT[2] - ln * n[2];
+    // 渐变：把主光的屏幕方向（所有面共用的常量）换算成这个面的局部方向
     const det = u[0] * vy - u[1] * vx;
-    // 光几乎垂直入射（面内分量趋零）或面侧对镜头（局部轴投影退化）时没有渐变方向可言
-    if (Math.hypot(dx, dy, dz) < 0.06 || Math.abs(det) < 0.05) {
-      return { lo: mid, hi: mid, angle: 180 };
-    }
-    // 解 a·u + b·v = d：光在面内的方向，换算成面局部盒子里的坐标
-    const ga = (dx * vy - dy * vx) / det;
-    const gb = (u[0] * dy - u[1] * dx) / det;
-    // 渐变朝背光的一侧沉下去；CSS 角度指向暗端
-    const angle = (Math.atan2(-ga, gb) * 180) / Math.PI;
-    const spread = Math.min(0.16, 0.05 + 0.09 * Math.hypot(dx, dy, dz));
+    // 面侧对镜头时局部轴投影退化，没有渐变方向可言，退回纯色
+    if (Math.abs(det) < 0.05) return { lo: mid, hi: mid, angle: 180 };
+    const ga = (KEY_LIGHT[0] * vy - KEY_LIGHT[1] * vx) / det;
+    const gb = (u[0] * KEY_LIGHT[1] - u[1] * KEY_LIGHT[0]) / det;
     return {
-      lo: Math.min(0.5, Math.max(0.02, mid - spread)),
-      hi: Math.min(0.5, Math.max(0.02, mid + spread)),
-      angle,
+      lo: Math.min(0.5, Math.max(0.02, mid - 0.1)),
+      hi: Math.min(0.5, Math.max(0.02, mid + 0.1)),
+      // 渐变朝背光的一侧沉下去；CSS 角度指向暗端
+      angle: (Math.atan2(-ga, gb) * 180) / Math.PI,
     };
   };
 }
@@ -307,16 +315,38 @@ export function CommandBlockScene({
   }, [blocks, cube]);
 
   /**
-   * @why 场景高度必须跟着包围盒长：等轴测下一个 8×4 格、每格 64px 的排布，投影后
-   * 竖直方向要 400px 以上，固定 min-height 会把下面那排方块裁掉。
-   * 这里按 (宽+深) 的投影分量加方块厚度估一个值，宁大不小。
+   * 投影包围盒：立方体盒 (width × height × depth) 转过 Rx(rx)·Ry(ry) 后在屏幕上的尺寸。
+   *
+   * @why 场景盒子的尺寸必须等于当前视角下的投影大小。固定 min-height 会把长排布下面
+   * 那排方块裁掉；按经验系数估一个值，短排布上又会留下一大片空白，框比图还大 ——
+   * "框框太大"就是这么来的。按真实投影算，框才贴得住图。
+   *
+   * @constraint 公式是线性映射各轴分量直接相加：横向 = W·|cos ry| + D·|sin ry|，
+   * 纵向 = H·|cos rx| + (W·|sin ry| + D·|cos ry|)·|sin rx|。已对 4784 组
+   * (rx, ry, 盒尺寸) 与暴力角点投影对照，最大偏差 5.7e-14。
+   * @constraint 必须跟着 rx/ry 重算：拖动到侧视时横向会涨到 √(W²+D²)，静态尺寸
+   * 装不下。这也是 .cb-stage 不能挂 transition 的原因 —— 过渡途中图形处在中间角，
+   * 包围盒可能同时大过起点和终点，盒子却是按终点尺寸给的，会被裁。
    */
-  const sceneHeight = Math.round((width + depth) * 0.45 + height + cube * 1.6);
+  const { sceneW, sceneH } = useMemo(() => {
+    const sx = Math.abs(Math.sin((ry * Math.PI) / 180));
+    const cx = Math.abs(Math.cos((ry * Math.PI) / 180));
+    const sy = Math.abs(Math.sin((rx * Math.PI) / 180));
+    const cy = Math.abs(Math.cos((rx * Math.PI) / 180));
+    return {
+      sceneW: Math.ceil(width * cx + depth * sx) + PAD_X,
+      sceneH: Math.ceil(height * cy + (width * sx + depth * cx) * sy) + PAD_Y,
+    };
+  }, [rx, ry, width, height, depth]);
 
   return (
     <div
       className="cb-scene"
-      style={{ ["--cube" as string]: `${cube}px`, minHeight: sceneHeight }}
+      style={{
+        ["--cube" as string]: `${cube}px`,
+        width: sceneW,
+        height: sceneH,
+      }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

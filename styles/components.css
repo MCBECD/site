@@ -290,15 +290,16 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 2rem 0;
   /* @why 不用透视投影，改用正交（等轴测）：透视会把侧对镜头的面压成一条窄边，
      读者分不清哪面是箭头面。正交下三个面等宽，正好是示意图要的观感。 */
   perspective: none;
   cursor: grab;
   touch-action: none;
   user-select: none;
-  /* @why 只留一圈呼吸缝：方块转起来四角会探出包围盒估算，全撑满会贴边甚至被裁。
-     早年用 2rem 是把图关在一个大边框里看，框比图还大，已经不需要了。 */
+  /* @why 只留一圈呼吸缝：方块转起来四角会探出包围盒，全撑满会贴边甚至被裁。
+     早年用 2rem 是把图关在一个大边框里看，框比图还大，已经不需要了。
+     @constraint 纵向这 8px 上下的缝是 CommandBlockScene 里 PAD_Y 的一部分，
+     改这边距必须同步那边常量。 */
   padding: 0.5rem 0;
 }
 
@@ -315,7 +316,9 @@
   width: 0;
   height: 0;
   transform-style: preserve-3d;
-  transition: transform 60ms linear;
+  /* @constraint 不能给 transform 挂 transition：场景盒子的尺寸是按当前视角的投影
+     包围盒实时算的，过渡途中图形停在中间角，包围盒可能同时大过起点和终点，
+     盒子却按终点尺寸给，画面会被裁。指针移动本身就是按帧更新的，过渡只会添延迟。 */
 }
 
 .cb-cube {
@@ -368,15 +371,17 @@
  *
  * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
  * 系数由 JS 按当前视角算好写进三个变量：--shade-lo/--shade-hi 是渐变两端的压暗量，
- * --grad 是渐变角度（指向暗端）。主光挂在相机左前上方，每个面沿着"光在面内的投影
- * 方向"从亮边过渡到暗边 —— 是一道扫过面的光，不是整面糊一层灰。拖动时明暗跟着视角
- * 走，读起来是摄像机绕着方块转，而不是方块在固定光里自转。
+ * --grad 是渐变角度（指向暗端）。主光挂在相机左前上方，每个面沿着同一道屏幕方向
+ * 从亮边过渡到暗边 —— 一整组方块是被一道光扫过，不是每个面各亮各的，也不是整面糊灰。
+ * 拖动时明暗跟着视角走，读起来是摄像机绕着方块转，而不是方块在固定光里自转。
  *
  * @constraint 渐变必须画在 ::before 上，不能并进 background-image：面上本来就有一层
  * 纹理背景，内联样式还会再写一次 backgroundImage，两层抢同一个属性；而且
  * image-rendering: pixelated 会连渐变一起糙化。伪元素是独立盒子，只放渐变。
  * @constraint backface-visibility: hidden 是继承属性，::before 没有自己的 transform，
  * 所以面翻过去时它跟着一起藏，不会剩下一块飘着的渐变。
+ * @constraint --grad 的 fallback 只在没有 JS 渲染时兜底；角度由 JS 按视角算，
+ * 写在每个面的内联样式里，和 DEFAULT_TURNS 一样属于"数据给、CSS 兜底"。
  */
 .cb-face::before {
   content: "";
