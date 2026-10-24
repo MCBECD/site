@@ -1,0 +1,172 @@
+"use client";
+
+/**
+ * CommandBlockScene —— 用官方方块纹理把命令方块的排布画成立体图。
+ *
+ * @why 文档里讲"这条链怎么摆"，用文字描述"指令 1 在箭头起点、2 到 9 依次指向它"
+ * 读者很难在脑子里拼出来，截图又改不动。这里按坐标画立方体，改一个字符就能重画。
+ *
+ * @constraint 只用 CSS 3D，不引 three.js：场景固定是方块网格，没有光照与阴影需求，
+ * 一个 3D 库带来的 600KB 和初始化开销都不值。
+ *
+ * @gotcha 纹理来自 Mojang 官方资源包示例（github.com/Mojang/bedrock-samples），
+ * 原始文件是 16×64 的四帧动画条，四帧完全相同，取首帧即可。
+ */
+
+import { useCallback, useMemo, useRef, useState } from "react";
+
+export type BlockKind =
+  | "impulse"
+  | "impulse-cond"
+  | "chain"
+  | "chain-cond"
+  | "repeat"
+  | "repeat-cond"
+  | "air";
+
+export interface BlockSpec {
+  x: number;
+  y?: number;
+  z?: number;
+  kind: BlockKind;
+  /** 箭头面朝向：2 北 / 3 南 / 4 西 / 5 东。省略按南。 */
+  facing?: 2 | 3 | 4 | 5;
+}
+
+const BASE: Record<Exclude<BlockKind, "air">, string> = {
+  impulse: "command_block",
+  "impulse-cond": "command_block",
+  chain: "chain_command_block",
+  "chain-cond": "chain_command_block",
+  repeat: "repeating_command_block",
+  "repeat-cond": "repeating_command_block",
+};
+
+/** 纹理按"正面 / 背面 / 侧面"三张，顶底沿用侧面。 */
+function facesOf(kind: Exclude<BlockKind, "air">) {
+  const base = BASE[kind];
+  const conditional = kind.endsWith("-cond");
+  return {
+    front: `/blocks/${base}_${conditional ? "conditional" : "front"}.png`,
+    back: `/blocks/${base}_back.png`,
+    side: `/blocks/${base}_side.png`,
+  };
+}
+
+/** 面朝 +Z 时为 0 度；东(+X) 是 +90，北(-Z) 是 180，西(-X) 是 270。 */
+const FACING_DEG: Record<number, number> = { 3: 0, 5: 90, 2: 180, 4: 270 };
+
+export interface CommandBlockSceneProps {
+  blocks: BlockSpec[];
+  /** 单个方块边长，默认 56。 */
+  cube?: number;
+  /** 初始俯仰与水平角。 */
+  tilt?: number;
+  spin?: number;
+}
+
+export function CommandBlockScene({
+  blocks,
+  cube = 56,
+  tilt = -24,
+  spin = -34,
+}: CommandBlockSceneProps) {
+  const [rx, setRx] = useState(tilt);
+  const [ry, setRy] = useState(spin);
+  const drag = useRef<{ x: number; y: number } | null>(null);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    drag.current = { x: e.clientX, y: e.clientY };
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+  }, []);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!drag.current) return;
+    const dx = e.clientX - drag.current.x;
+    const dy = e.clientY - drag.current.y;
+    drag.current = { x: e.clientX, y: e.clientY };
+    setRy((v) => v + dx * 0.45);
+    setRx((v) => Math.max(-80, Math.min(80, v - dy * 0.45)));
+  }, []);
+
+  const onPointerUp = useCallback(() => {
+    drag.current = null;
+  }, []);
+
+  /** 包围盒决定舞台尺寸，方块以左上角为原点摆放，最后整体居中。 */
+  const { width, depth, height, spanX, spanZ, spanY } = useMemo(() => {
+    const xs = blocks.map((b) => b.x);
+    const zs = blocks.map((b) => b.z ?? 0);
+    const ys = blocks.map((b) => b.y ?? 0);
+    const minX = Math.min(...xs, 0);
+    const maxX = Math.max(...xs, 0);
+    const minZ = Math.min(...zs, 0);
+    const maxZ = Math.max(...zs, 0);
+    const maxY = Math.max(...ys, 0);
+    return {
+      width: (maxX - minX + 1) * cube,
+      depth: (maxZ - minZ + 1) * cube,
+      height: (maxY + 1) * cube,
+      spanX: minX,
+      spanZ: minZ,
+      spanY: 0,
+    };
+  }, [blocks, cube]);
+
+  return (
+    <div
+      className="cb-scene"
+      style={{ ["--cube" as string]: `${cube}px` }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    >
+      <div
+        className="cb-stage"
+        style={{
+          width,
+          height,
+          transform: `rotateX(${rx}deg) rotateY(${ry}deg)`,
+          marginLeft: -depth / 2,
+        }}
+      >
+        {blocks.map((b, i) => {
+          const y = b.y ?? 0;
+          const z = b.z ?? 0;
+          const pos = `translate3d(${(b.x - spanX) * cube}px, ${(spanY - y) * cube}px, ${(z - spanZ) * cube}px)`;
+          if (b.kind === "air") {
+            // @why 空气也要六个面：只画一个平面的话，它在 3D 里会贴在地上像块地毯，
+            // 读者分不清"这里空着一格"和"这里没有方块"。
+            return (
+              <div
+                key={i}
+                className="cb-cube"
+                style={{ transform: `${pos} rotateY(${FACING_DEG[b.facing ?? 3]}deg)` }}
+              >
+                {["top", "bottom", "front", "back", "left", "right"].map((f) => (
+                  <div key={f} className={`cb-face cb-air-face cb-${f}`} />
+                ))}
+              </div>
+            );
+          }
+          const t = facesOf(b.kind);
+          return (
+            <div
+              key={i}
+              className="cb-cube"
+              style={{ transform: `${pos} rotateY(${FACING_DEG[b.facing ?? 3]}deg)` }}
+            >
+              <div className="cb-face cb-top" style={{ backgroundImage: `url(${t.side})` }} />
+              <div className="cb-face cb-bottom" style={{ backgroundImage: `url(${t.side})` }} />
+              <div className="cb-face cb-front" style={{ backgroundImage: `url(${t.front})` }} />
+              <div className="cb-face cb-back" style={{ backgroundImage: `url(${t.back})` }} />
+              <div className="cb-face cb-left" style={{ backgroundImage: `url(${t.side})` }} />
+              <div className="cb-face cb-right" style={{ backgroundImage: `url(${t.side})` }} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

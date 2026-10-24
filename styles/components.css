@@ -277,3 +277,64 @@
   transform: scale(1.12) translateZ(0);
 }
 
+
+/* ----------------------------------------------------------
+ * 命令方块立体图（CommandBlockScene）
+ *
+ * @why 纯 CSS 3D：场景是固定网格，没有光照/阴影需求，不值得为它引一个 3D 库。
+ * 每个方块是一个 transform-style: preserve-3d 的盒子，六个面贴官方纹理，
+ * 整体靠 stage 的 rotateX/rotateY 转，拖拽改的是这两个角。
+ * ---------------------------------------------------------- */
+.cb-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--cube) * 2.6);
+  padding: 2rem 0;
+  perspective: 1100px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.cb-scene:active {
+  cursor: grabbing;
+}
+
+.cb-stage {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 60ms linear;
+}
+
+.cb-cube {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--cube);
+  height: var(--cube);
+  transform-style: preserve-3d;
+}
+
+.cb-face {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  /* @why 16×16 的方块纹理放大后会糊成色块，pixelated 保住像素颗粒感 */
+  image-rendering: pixelated;
+  backface-visibility: hidden;
+}
+
+.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)); }
+.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)); }
+.cb-front  { transform: translateZ(calc(var(--cube) / 2)); }
+.cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)); }
+.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)); }
+.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)); }
+
+/* 空气：六面都是虚线玻璃，围出一个空腔，比单张平面更容易读成"空着一格" */
+.cb-air-face {
+  border: 1px dashed rgba(148, 163, 184, 0.55);
+  background: rgba(148, 163, 184, 0.07);
+}
