@@ -353,12 +353,6 @@
 .cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 90deg)); }
 .cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 270deg)); }
 
-/* 高亮指定方块：描边套在六个面上，3D 里也看得出来是哪一块 */
-.cb-cube.is-selected .cb-face {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -2px;
-}
-
 /**
  * 六面明暗：每个面叠一层固定透明度的纯黑。
  *

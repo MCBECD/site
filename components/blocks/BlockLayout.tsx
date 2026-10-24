@@ -12,15 +12,14 @@
 
 import { useMemo } from "react";
 import { CommandBlockScene } from "./CommandBlockScene";
-import { parseBlockSource } from "@/lib/blocks/parseLayout";
+import { parseLayout } from "@/lib/blocks/parseLayout";
 
 export function BlockLayout({ code }: { code: string }) {
-  const { blocks, cube, error } = useMemo(() => {
+  const { blocks, error } = useMemo(() => {
     try {
-      const r = parseBlockSource(code);
-      return { blocks: r.blocks, cube: r.cube ?? 64, error: null as string | null };
+      return { blocks: parseLayout(code), error: null as string | null };
     } catch (e) {
-      return { blocks: [], cube: 64, error: e instanceof Error ? e.message : String(e) };
+      return { blocks: [], error: e instanceof Error ? e.message : String(e) };
     }
   }, [code]);
 
@@ -47,7 +46,7 @@ export function BlockLayout({ code }: { code: string }) {
           给自己算出确定的宽高（不随交互变化），父级必须收缩适应，
           否则又变成占满整行的大框。 */}
       <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[var(--color-border-light)]">
-        <CommandBlockScene blocks={blocks} cube={cube} />
+        <CommandBlockScene blocks={blocks} />
       </div>
     </div>
   );

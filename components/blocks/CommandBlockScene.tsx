@@ -32,9 +32,6 @@ export type BlockKind =
 
 export type FaceKey = "front" | "back" | "left" | "right" | "top" | "bottom";
 
-/** 每个面绕自身法线的旋转角度，单位度，取 0 / 90 / 180 / 270。 */
-export type FaceTurns = Partial<Record<FaceKey, number>>;
-
 export interface BlockSpec {
   x: number;
   y?: number;
@@ -42,24 +39,14 @@ export interface BlockSpec {
   kind: BlockKind;
   /** 箭头面朝向：2 北 / 3 南 / 4 西 / 5 东。省略按南。 */
   facing?: 2 | 3 | 4 | 5;
-  /**
-   * 逐面旋转，缺省值见 DEFAULT_TURNS。
-   *
-   * @why 官方六面只给四张图，每张图摊到哪个面上该转多少，是这一类方块共有的固定值。
-   * 默认值按类目统一给，新增方块种类自动继承；只有个别方块要例外时才逐面覆盖。
-   */
-  faces?: FaceTurns;
 }
 
 /**
- * 命令方块这一类的默认摆面角度。
+ * 六面摆面角度，照官方纹理逐面调试确认：顶 180°、底 0°（顶底共用 conditional
+ * 那张图，两个方向都要摆正）；左 90°、右 270°（左右共用 side 那张图，斜槽方向相反）。
  *
- * @why 定义为类目默认，而不是写死在某个方块或某段 CSS 里：以后新增方块种类
- *（新的条件变体、新纹理）自动继承同一套角度，不会冒出"新方块图案是倒的"这种坑；
- * 个别方块要例外时用 BlockSpec.faces 逐面覆盖。
- *
- * 角度照官方纹理逐面调试确认：顶 180°、底 0°（顶底共用 conditional 那张图，
- * 两个方向都要摆正）；左 90°、右 270°（左右共用 side 那张图，斜槽方向相反）。
+ * @constraint CSS 里 .cb-xxx 的 fallback 必须和这里逐项一致：内联 --turn 由 JS
+ * 写入，fallback 只在没有 JS 渲染时兜底，两边对不上就会出现同类方块两种朝向。
  */
 export const DEFAULT_TURNS: Record<FaceKey, number> = {
   front: 0,
@@ -142,20 +129,13 @@ export interface CommandBlockSceneProps {
   blocks: BlockSpec[];
   /** 单个方块边长，默认 64。 */
   cube?: number;
-  /** 初始俯仰与水平角。 */
-  tilt?: number;
-  spin?: number;
-  /** 高亮第几个方块。 */
-  selected?: number;
 }
 
-export function CommandBlockScene({
-  blocks,
-  cube = 64,
-  tilt = -34,
-  spin = -45,
-  selected,
-}: CommandBlockSceneProps) {
+/** 固定视角：俯仰 -34°、水平 -45°，等轴测下三个面等宽，是示意图的标准机位。 */
+const TILT = -34;
+const SPIN = -45;
+
+export function CommandBlockScene({ blocks, cube = 64 }: CommandBlockSceneProps) {
   /** 包围盒决定舞台尺寸，方块以左上角为原点摆放，最后整体居中。 */
   const { width, depth, height, spanX, spanZ, spanY } = useMemo(() => {
     const xs = blocks.map((b) => b.x);
@@ -177,28 +157,41 @@ export function CommandBlockScene({
   }, [blocks, cube]);
 
   /**
-   * 投影包围盒：立方体盒 (width × height × depth) 转过 Rx(tilt)·Ry(spin) 后在屏幕上的尺寸。
+   * 投影包围盒：把立方体盒的 8 个角点真正过一遍 Rx(TILT)·Ry(SPIN)，取屏幕 min/max。
    *
-   * @why 场景盒子的尺寸必须等于当前视角下的投影大小。固定 min-height 会把长排布下面
-   * 那排方块裁掉；按经验系数估一个值，短排布上又会留下一大片空白，框比图还大 ——
-   * "框框太大"就是这么来的。按真实投影算，框才贴得住图。
+   * @why 场景盒子的尺寸必须等于投影大小：固定 min-height 会把长排布下面那排裁掉，
+   * 估一个系数又会有大有小。角点暴力投影没有闭式公式可背错，任何角度都精确。
    *
-   * @constraint 公式是线性映射各轴分量直接相加：横向 = W·|cos ry| + D·|sin ry|，
-   * 纵向 = H·|cos rx| + (W·|sin ry| + D·|cos ry|)·|sin rx|。已对 4784 组
-   * (rx, ry, 盒尺寸) 与暴力角点投影对照，最大偏差 5.7e-14。
-   * @constraint 视角固定（tilt/spin 是 props 不随交互变），包围盒只算一次，
-   * 框的尺寸永远不变 —— 动态缩放的框是之前被明确否掉的方案。
+   * @constraint 旋转顺序必须和 .cb-stage 的 transform 一致：CSS 里 rotateX 在前，
+   * 即先对点做 Ry(SPIN) 再做 Rx(TILT)（最外层变换最后作用）。
+   * @constraint 视角固定不随交互变，包围盒只算一次，框的尺寸永远不变 ——
+   * 动态缩放的框是之前被明确否掉的方案。
    */
   const { sceneW, sceneH } = useMemo(() => {
-    const sx = Math.abs(Math.sin((spin * Math.PI) / 180));
-    const cx = Math.abs(Math.cos((spin * Math.PI) / 180));
-    const sy = Math.abs(Math.sin((tilt * Math.PI) / 180));
-    const cy = Math.abs(Math.cos((tilt * Math.PI) / 180));
+    const s = Math.sin((SPIN * Math.PI) / 180);
+    const c = Math.cos((SPIN * Math.PI) / 180);
+    const sb = Math.sin((TILT * Math.PI) / 180);
+    const cb = Math.cos((TILT * Math.PI) / 180);
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const cx of [-0.5, 0.5]) {
+      for (const cy of [-0.5, 0.5]) {
+        for (const cz of [-0.5, 0.5]) {
+          const x = cx * width, y = cy * height, z = cz * depth;
+          const x1 = x * c + z * s;      // Ry：屏幕 x
+          const z1 = -x * s + z * c;
+          const y1 = y * cb - z1 * sb;   // Rx：屏幕 y
+          if (x1 < minX) minX = x1;
+          if (x1 > maxX) maxX = x1;
+          if (y1 < minY) minY = y1;
+          if (y1 > maxY) maxY = y1;
+        }
+      }
+    }
     return {
-      sceneW: Math.ceil(width * cx + depth * sx) + PAD_X,
-      sceneH: Math.ceil(height * cy + (width * sx + depth * cx) * sy) + PAD_Y,
+      sceneW: Math.ceil(maxX - minX) + PAD_X,
+      sceneH: Math.ceil(maxY - minY) + PAD_Y,
     };
-  }, [tilt, spin, width, height, depth]);
+  }, [width, height, depth]);
 
   return (
     <div
@@ -211,7 +204,7 @@ export function CommandBlockScene({
     >
       <div
         className="cb-stage"
-        style={{ transform: `rotateX(${tilt}deg) rotateY(${spin}deg)` }}
+        style={{ transform: `rotateX(${TILT}deg) rotateY(${SPIN}deg)` }}
       >
         {blocks.map((b, i) => {
           const y = b.y ?? 0;
@@ -239,7 +232,7 @@ export function CommandBlockScene({
           return (
             <div
               key={i}
-              className={i === selected ? "cb-cube is-selected" : "cb-cube"}
+              className="cb-cube"
               style={{ transform: `${pos} rotateY(${FACING_DEG[b.facing ?? 3]}deg)` }}
             >
               {(
@@ -252,7 +245,7 @@ export function CommandBlockScene({
                   ["right", t.side],
                 ] as [FaceKey, string][]
               ).map(([face, url]) => {
-                const turn = b.faces?.[face] ?? DEFAULT_TURNS[face];
+                const turn = DEFAULT_TURNS[face];
                 return (
                   <div
                     key={face}
