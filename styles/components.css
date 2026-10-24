@@ -342,38 +342,38 @@
   backface-visibility: hidden;
 }
 
-/* @why 每个面直接写死旋转角：六面只用到四张图，顶底共用一张、左右共用一张，
-   游戏里左右两面各指各的（朝东与朝西的斜槽方向相反），顶底也是同一张图的两个方向。
-   180/0/90/270 是调试确认的摆正角度，写死在 CSS 里，所有方块（含字符网格）都朝对。 */
-.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)) rotate(180deg); }
-.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(0deg); }
+/* @why 末尾都挂一个 rotate(var(--turn))：六面只用到四张图，同一个面在不同方向上
+   要靠旋转才摆正。角度由数据给（BlockSpec.faces），缺省值见 DEFAULT_TURNS ——
+   命令方块这一类的统一默认：顶 180°、底 0°、左 90°、右 270°。
+   @constraint 这里的 fallback 必须和 DEFAULT_TURNS 逐项一致：JS 会给每个面内联
+   --turn，fallback 只在没有 JS 渲染时才生效，两边对不上就会出现同类方块两种朝向。 */
+.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 180deg)); }
+.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
 .cb-front  { transform: translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
 .cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
-.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)) rotate(90deg); }
-.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)) rotate(270deg); }
+.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 90deg)); }
+.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 270deg)); }
 
-/* 编辑器里选中方块：描边套在六个面上，3D 里也看得出来是哪一块 */
+/* 高亮指定方块：描边套在六个面上，3D 里也看得出来是哪一块 */
 .cb-cube.is-selected .cb-face {
   outline: 2px solid var(--color-accent);
   outline-offset: -2px;
 }
 
 /**
- * 六面明暗。
+ * 六面明暗（相机相对光照）。
  *
- * @why 游戏里方块靠环境光照把六个面区分开，纯 CSS 渲染没有光照，六个面一样亮时
- * 立方体会退化成一张平面拼贴，方向感全没了。这里按"光从左前上方来"压暗各面：
- * 顶面最亮，左面次之，正面再暗一点，背面与底面最沉。
+ * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
+ * 压暗系数由 JS 按当前视角算好写进 --shade：主光挂在相机左前上方，另加一项随朝上
+ * 程度上升的环境光。拖动时明暗跟着视角走，读起来是摄像机绕着方块转，而不是方块在
+ * 固定光里自转。顶面最亮、正面中等、右侧与底面沉下去。
  *
  * @constraint 用 inset box-shadow 而不是 filter: brightness —— filter 会给元素
  * 新建渲染上下文，可能破坏 3D 层级，也会让 pixelated 的像素边缘重新采样。
  */
-.cb-top    { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0); }
-.cb-left   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.16); }
-.cb-front  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.1); }
-.cb-right  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.24); }
-.cb-back   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.24); }
-.cb-bottom { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.34); }
+.cb-face {
+  box-shadow: inset 0 0 0 999px rgba(0, 0, 0, var(--shade, 0.25));
+}
 
 /* 空气不吃这套明暗，否则虚线框会被压在深色里看不见 */
 .cb-air-face {

@@ -15,7 +15,8 @@
  *
  * @constraint 六个面只用到四张图，按官方 blocks.json 的映射分配：
  *   north=front  south=back  east/west=side  up/down=conditional_side
- * 顶底共用同一张，底面必须再转 180°，否则从下方看图案是上下颠倒的。
+ * 顶底共用一张、左右共用一张，四张图摊到六个面上各要转一个角度才是正的，
+ * 角度见 DEFAULT_TURNS。
  */
 
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -44,20 +45,29 @@ export interface BlockSpec {
   /**
    * 逐面旋转，缺省值见 DEFAULT_TURNS。
    *
-   * @why 官方六面只给四张图，顶底共用一张，底面必须转 180° 才是正的。既然要转，
-   * 就把"转多少"提到数据里：编辑器可以逐面调，渲染器照数字转，不再硬编码在 CSS。
+   * @why 官方六面只给四张图，每张图摊到哪个面上该转多少，是这一类方块共有的固定值。
+   * 默认值按类目统一给，新增方块种类自动继承；只有个别方块要例外时才逐面覆盖。
    */
   faces?: FaceTurns;
 }
 
-/** 官方 blocks.json 的默认朝向：只有底面需要倒过来。 */
+/**
+ * 命令方块这一类的默认摆面角度。
+ *
+ * @why 定义为类目默认，而不是写死在某个方块或某段 CSS 里：以后新增方块种类
+ *（新的条件变体、新纹理）自动继承同一套角度，不会冒出"新方块图案是倒的"这种坑；
+ * 个别方块要例外时用 BlockSpec.faces 逐面覆盖。
+ *
+ * 角度照官方纹理逐面调试确认：顶 180°、底 0°（顶底共用 conditional 那张图，
+ * 两个方向都要摆正）；左 90°、右 270°（左右共用 side 那张图，斜槽方向相反）。
+ */
 export const DEFAULT_TURNS: Record<FaceKey, number> = {
   front: 0,
   back: 0,
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 180,
+  left: 90,
+  right: 270,
+  top: 180,
+  bottom: 0,
 };
 
 const BASE: Record<Exclude<BlockKind, "air">, string> = {
@@ -94,6 +104,73 @@ function facesOf(kind: Exclude<BlockKind, "air">) {
 
 /** 面朝 +Z 时为 0 度；东(+X) 是 +90，北(-Z) 是 180，西(-X) 是 270。 */
 const FACING_DEG: Record<number, number> = { 3: 0, 5: 90, 2: 180, 4: 270 };
+
+/** 六面法线，CSS 坐标系：X 右、Y 下、Z 朝观察者。 */
+const FACE_NORMALS: Record<FaceKey, readonly [number, number, number]> = {
+  front: [0, 0, 1],
+  back: [0, 0, -1],
+  right: [1, 0, 0],
+  left: [-1, 0, 0],
+  top: [0, -1, 0],
+  bottom: [0, 1, 0],
+};
+
+/**
+ * 主光方向（从受光面指向光源），固定在相机上：左前上方。
+ *
+ * @constraint 光必须挂在相机上而不是挂在方块上：拖动时读者感知到的是摄像机绕着方块转，
+ * 明暗跟着视角走才像换了个角度看；按方块本地坐标算的话，转起来明暗不动，看起来就是
+ * 方块自己在固定光里自转。
+ */
+const KEY_LIGHT: readonly [number, number, number] = [-0.45, -0.6, 0.66];
+
+/**
+ * facing 对应的绕 Y 转角（余弦, 正弦）。
+ *
+ * @why facing 只有四个方向，cos/sin 恰好是精确的 0/±1，查表比逐面算三角函数准也快。
+ * @constraint 未知朝向按南（3，即正对观察者）处理，总比把方块转飞好。
+ */
+const FACING_CS: Record<number, readonly [number, number]> = {
+  3: [1, 0],
+  5: [0, 1],
+  2: [-1, 0],
+  4: [0, -1],
+};
+
+/**
+ * 按当前视角生成"逐面压暗系数"函数（0 = 全黑，1 = 不压暗）。
+ *
+ * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
+ * 把面法线旋进视图空间（Rx(rx)·Ry(ry+facing)，与 stage 的变换顺序一致）后和挂在
+ * 相机上的主光点积：顶面最亮、正面中等、右侧与底面沉下去。
+ *
+ * @constraint 主光之外只加一个随朝上程度上升的环境项：背面不会死黑，底面依旧最黑 ——
+ * 那是方块压在地上的视觉依据，不能亮。
+ */
+function makeShadeFn(rx: number, ry: number) {
+  const b = (rx * Math.PI) / 180;
+  const cb = Math.cos(b);
+  const sb = Math.sin(b);
+  const a = (ry * Math.PI) / 180;
+  const ca = Math.cos(a);
+  const sa = Math.sin(a);
+  return (n: readonly [number, number, number], facing: number): number => {
+    // Ry(ry)·Ry(facing) = Ry(ry+facing)：把 facing 折进 ry 的三角值里，只算一次
+    const [cf, sf] = FACING_CS[facing] ?? [1, 0];
+    const c = ca * cf - sa * sf;
+    const s = sa * cf + ca * sf;
+    // Ry：x1 = x·c + z·s，z1 = -x·s + z·c
+    const x1 = n[0] * c + n[2] * s;
+    const z1 = -n[0] * s + n[2] * c;
+    // Rx：y2 = y·cb - z1·sb，z2 = y·sb + z1·cb
+    const y2 = n[1] * cb - z1 * sb;
+    const z2 = n[1] * sb + z1 * cb;
+    const key = Math.max(0, x1 * KEY_LIGHT[0] + y2 * KEY_LIGHT[1] + z2 * KEY_LIGHT[2]);
+    const hemi = 0.5 * (1 - y2);
+    const lit = 0.8 * key + 0.2 * hemi;
+    return Math.min(0.52, Math.max(0.04, 0.52 - 0.48 * lit));
+  };
+}
 
 export interface CommandBlockSceneProps {
   blocks: BlockSpec[];
@@ -134,6 +211,9 @@ export function CommandBlockScene({
   const onPointerUp = useCallback(() => {
     drag.current = null;
   }, []);
+
+  /** 明暗跟着视角走：只有 rx/ry 变了才重算，见 makeShadeFn。 */
+  const shadeFor = useMemo(() => makeShadeFn(rx, ry), [rx, ry]);
 
   /** 包围盒决定舞台尺寸，方块以左上角为原点摆放，最后整体居中。 */
   const { width, depth, height, spanX, spanZ, spanY } = useMemo(() => {
@@ -220,6 +300,7 @@ export function CommandBlockScene({
                   style={{
                     backgroundImage: `url(${url})`,
                     ["--turn" as string]: `${b.faces?.[face] ?? DEFAULT_TURNS[face]}deg`,
+                    ["--shade" as string]: shadeFor(FACE_NORMALS[face], b.facing ?? 3).toFixed(3),
                   }}
                 />
               ))}
