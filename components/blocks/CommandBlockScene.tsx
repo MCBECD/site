@@ -67,9 +67,9 @@ export interface CommandBlockSceneProps {
 
 export function CommandBlockScene({
   blocks,
-  cube = 56,
-  tilt = -24,
-  spin = -34,
+  cube = 48,
+  tilt = -30,
+  spin = -45,
 }: CommandBlockSceneProps) {
   const [rx, setRx] = useState(tilt);
   const [ry, setRy] = useState(spin);
@@ -124,17 +124,15 @@ export function CommandBlockScene({
     >
       <div
         className="cb-stage"
-        style={{
-          width,
-          height,
-          transform: `rotateX(${rx}deg) rotateY(${ry}deg)`,
-          marginLeft: -depth / 2,
-        }}
+        style={{ transform: `rotateX(${rx}deg) rotateY(${ry}deg)` }}
       >
         {blocks.map((b, i) => {
           const y = b.y ?? 0;
           const z = b.z ?? 0;
-          const pos = `translate3d(${(b.x - spanX) * cube}px, ${(spanY - y) * cube}px, ${(z - spanZ) * cube}px)`;
+          /* 让整组方块以舞台中心为原点，旋转时才是绕着图形本身转，而不是绕左上角甩 */
+          const pos = `translate3d(${(b.x - spanX) * cube - width / 2 + cube / 2}px, ${
+            (spanY - y) * cube - height / 2 + cube / 2
+          }px, ${(z - spanZ) * cube - depth / 2 + cube / 2}px)`;
           if (b.kind === "air") {
             // @why 空气也要六个面：只画一个平面的话，它在 3D 里会贴在地上像块地毯，
             // 读者分不清"这里空着一格"和"这里没有方块"。

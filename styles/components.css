@@ -289,9 +289,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(var(--cube) * 2.6);
+  position: relative;
+  min-height: calc(var(--cube) * 4);
   padding: 2rem 0;
-  perspective: 1100px;
+  /* @why 不用透视投影，改用正交（等轴测）：透视会把侧对镜头的面压成一条窄边，
+     读者分不清哪面是箭头面。正交下三个面等宽，正好是示意图要的观感。 */
+  perspective: none;
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -302,7 +305,13 @@
 }
 
 .cb-stage {
-  position: relative;
+  /* @why 舞台是 0 尺寸、绝对定位在容器正中：图形的坐标本来就以方块组中心为原点，
+     舞台一旦有宽高，旋转会绕着那个盒子的左上偏移，整组图形就被甩出容器外。 */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
   transform-style: preserve-3d;
   transition: transform 60ms linear;
 }
@@ -318,7 +327,9 @@
 
 .cb-face {
   position: absolute;
-  inset: 0;
+  /* @why 各面比格子大 1px：面经过旋转后边界常落在半像素上，相邻方块之间会漏出
+     一条背景缝，整体看上去像散开的一堆贴纸。多出半像素互相压住就够了。 */
+  inset: -0.5px;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   /* @why 16×16 的方块纹理放大后会糊成色块，pixelated 保住像素颗粒感 */
@@ -332,6 +343,28 @@
 .cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)); }
 .cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)); }
 .cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)); }
+
+/**
+ * 六面明暗。
+ *
+ * @why 游戏里方块靠环境光照把六个面区分开，纯 CSS 渲染没有光照，六个面一样亮时
+ * 立方体会退化成一张平面拼贴，方向感全没了。这里按"光从左前上方来"压暗各面：
+ * 顶面最亮，左面次之，正面再暗一点，背面与底面最沉。
+ *
+ * @constraint 用 inset box-shadow 而不是 filter: brightness —— filter 会给元素
+ * 新建渲染上下文，可能破坏 3D 层级，也会让 pixelated 的像素边缘重新采样。
+ */
+.cb-top    { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0); }
+.cb-left   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.08); }
+.cb-front  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.14); }
+.cb-right  { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.2); }
+.cb-back   { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.24); }
+.cb-bottom { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.34); }
+
+/* 空气不吃这套明暗，否则虚线框会被压在深色里看不见 */
+.cb-air-face {
+  box-shadow: none !important;
+}
 
 /* 空气：六面都是虚线玻璃，围出一个空腔，比单张平面更容易读成"空着一格" */
 .cb-air-face {
