@@ -5,12 +5,25 @@
 # 每次访问都要为 10+ 个 JS/CSS/字体各发一次条件请求；国内 RTT 下这一串
 # 串行校验就是体感上的"打开很慢"。
 #
-# @constraint Pages 会把所有匹配规则的响应头「合并」而不是覆盖。若再给 `/*`
-# 声明 Cache-Control，两者会被拼成 `immutable, ... max-age=0`，长缓存直接失效。
-# 因此 HTML 不在这里声明缓存策略，沿用 Pages 对文档的默认行为（每次协商，
-# 静态导出内容本身没有服务端计算，协商成本只有一次 304）。
+# @why HTML 文档必须几乎不缓存：CF Pages 对 HTML 默认下发 `s-maxage=604800`（7 天），
+# 导致每次部署的新内容被边缘缓存挡住整整一周——文档改了线上却看不到，排查极难。
+# 因此这里显式给 `/*` 设 `max-age=0, must-revalidate`，让 HTML 每次都回源校验。
+#
+# @constraint CF 会把所有匹配规则的同名响应头「按顺序拼接」，浏览器取最后一个 max-age。
+# 所以 `/*`（短缓存）必须排在 `/_next/static/*` 等长期规则之前：资产规则靠后重新声明
+# 长缓存、覆盖掉前面的 0，HTML 只命中 `/*` 因而拿到 0。顺序不能反。
 #
 # @why Logo/bg 没有哈希，给一周而不是永久，换图后能自然失效。
+
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # @why 站点只走 https（Pages 已强制），但没有 HSTS 时，任何一次 http:// 访问都要先付
+  # 一次 301 往返（实测 374ms）才轮到 TLS。加上之后浏览器会直接改写为 https。
+  # @constraint 不要随手加 includeSubDomains / preload：前者会波及无关子域，
+  # 后者一旦提交到预加载列表就极难回滚。
+  Strict-Transport-Security: max-age=31536000
 
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
@@ -20,12 +33,3 @@
 
 /bg/*
   Cache-Control: public, max-age=604800
-
-/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  # @why 站点只走 https（Pages 已强制），但没有 HSTS 时，任何一次 http:// 访问都要先付
-  # 一次 301 往返（实测 374ms）才轮到 TLS。加上之后浏览器会直接改写为 https。
-  # @constraint 不要随手加 includeSubDomains / preload：前者会波及无关子域，
-  # 后者一旦提交到预加载列表就极难回滚。
-  Strict-Transport-Security: max-age=31536000
