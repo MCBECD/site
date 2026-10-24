@@ -283,7 +283,7 @@
  *
  * @why 纯 CSS 3D：场景是固定网格，没有光照/阴影需求，不值得为它引一个 3D 库。
  * 每个方块是一个 transform-style: preserve-3d 的盒子，六个面贴官方纹理，
- * 整体靠 stage 的 rotateX/rotateY 转，拖拽改的是这两个角。
+ * 整体靠 stage 的 rotateX/rotateY 转一个固定视角，不跟交互。
  * ---------------------------------------------------------- */
 .cb-scene {
   display: flex;
@@ -293,18 +293,12 @@
   /* @why 不用透视投影，改用正交（等轴测）：透视会把侧对镜头的面压成一条窄边，
      读者分不清哪面是箭头面。正交下三个面等宽，正好是示意图要的观感。 */
   perspective: none;
-  cursor: grab;
-  touch-action: none;
   user-select: none;
-  /* @why 只留一圈呼吸缝：方块转起来四角会探出包围盒，全撑满会贴边甚至被裁。
-     早年用 2rem 是把图关在一个大边框里看，框比图还大，已经不需要了。
-     @constraint 纵向这 8px 上下的缝是 CommandBlockScene 里 PAD_Y 的一部分，
+  /* @why 一圈呼吸缝：全撑满会贴边甚至被裁。早年用 2rem 是把图关在一个大边框里看，
+     框比图还大；贴太近又是"框太小"。每边 8px 是留白的一部分，大头在 PAD 常量里。
+     @constraint 纵向这 16px 是 CommandBlockScene 里 PAD_Y 的一部分，
      改这边距必须同步那边常量。 */
   padding: 0.5rem 0;
-}
-
-.cb-scene:active {
-  cursor: grabbing;
 }
 
 .cb-stage {
@@ -316,9 +310,8 @@
   width: 0;
   height: 0;
   transform-style: preserve-3d;
-  /* @constraint 不能给 transform 挂 transition：场景盒子的尺寸是按当前视角的投影
-     包围盒实时算的，过渡途中图形停在中间角，包围盒可能同时大过起点和终点，
-     盒子却按终点尺寸给，画面会被裁。指针移动本身就是按帧更新的，过渡只会添延迟。 */
+  /* @constraint 不能给 transform 挂 transition：场景盒子的尺寸是按固定视角的投影
+     包围盒算的，过渡途中图形停在中间角，包围盒可能装不下，画面会被裁。 */
 }
 
 .cb-cube {

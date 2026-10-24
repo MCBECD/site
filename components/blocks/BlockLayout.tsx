@@ -7,7 +7,7 @@
  * 这里接住异常，直接在原位置显示红色提示，作者打开页面就能看到哪一行写错了。
  *
  * @gotcha 这个组件必须标 use client：parseLayout 在浏览器里也要跑一次
- * （SSG 生成的 HTML 只是首帧，水合后拖拽视角需要重新计算）。
+ * （SSG 生成的 HTML 只是首帧，水合后需要重新计算排布）。
  */
 
 import { useMemo } from "react";
@@ -43,8 +43,9 @@ export function BlockLayout({ code }: { code: string }) {
       {/* @why 立体图套一圈淡框：图有明暗和像素纹理，边框取 --color-border-light
           这种几乎融进背景的色，只标出"这里是一块图"，不抢注意力。早年用重色
           --color-border 加大内边距，框比图还大，整篇文档看过去全是框。
-          @constraint w-fit 让框贴着图：CommandBlockScene 会按当前视角的投影包围盒
-          给自己算出确定的宽高，父级必须收缩适应，否则又变成占满整行的大框。 */}
+          @constraint w-fit 让框贴着图：CommandBlockScene 会按固定视角的投影包围盒
+          给自己算出确定的宽高（不随交互变化），父级必须收缩适应，
+          否则又变成占满整行的大框。 */}
       <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[var(--color-border-light)]">
         <CommandBlockScene blocks={blocks} cube={cube} />
       </div>

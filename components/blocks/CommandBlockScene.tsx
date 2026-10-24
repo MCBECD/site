@@ -19,7 +19,7 @@
  * 角度见 DEFAULT_TURNS。
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 
 export type BlockKind =
   | "impulse"
@@ -112,7 +112,7 @@ const FACING_DEG: Record<number, number> = { 3: 0, 5: 90, 2: 180, 4: 270 };
  * 还是忽明忽暗，示意图根本不需要真实光照。固定透明度所见即所得：顶面不压、
  * 底面最黑（方块压在地上的视觉依据），两侧比正背面深一档拉开立体感。
  *
- * @constraint 不随视角变化是有意为之：拖动时方块像在固定光里自转，对示意图够用；
+ * @constraint 不随视角变化是有意为之：方块永远处在同一道固定光里，对示意图够用；
  * 透明度写在面的内联样式 --shade 上，CSS 里 rgba(0,0,0,var(--shade)) 消费，
  * fallback 值必须和这里逐项一致（见 components.css 的 .cb-face::before）。
  */
@@ -126,13 +126,17 @@ const FACE_SHADE: Record<FaceKey, number> = {
 };
 
 /**
- * 场景盒子在投影包围盒之外留的呼吸缝：横向两侧共 24px、纵向共 16px。
+ * 场景盒子在投影包围盒之外留的呼吸缝：横纵各加在总缝上。
  *
- * @constraint 纵向这 16px 由 .cb-scene 的 `padding: 0.5rem 0` 提供，改一边必须同步
- * 另一边，否则盒子会比图大出一圈——那正是"框比图大"的由来。
+ * @why 视角固定后包围盒永远不变，呼吸缝就是框与图之间的全部留白。
+ * 每边 32px（PAD_X=64、PAD_Y=48 加上 .cb-scene 的 `padding: 0.5rem 0` 共 16px）
+ * 大约一格方块的宽度，贴太近显得框比图还挤，留太宽又回到"框比图大"的老毛病。
+ *
+ * @constraint 纵向另有 16px 由 .cb-scene 的 `padding: 0.5rem 0` 提供，改一边必须
+ * 同步另一边，两边加起来才是真实留白。
  */
-const PAD_X = 24;
-const PAD_Y = 16;
+const PAD_X = 64;
+const PAD_Y = 48;
 
 export interface CommandBlockSceneProps {
   blocks: BlockSpec[];
@@ -152,28 +156,6 @@ export function CommandBlockScene({
   spin = -45,
   selected,
 }: CommandBlockSceneProps) {
-  const [rx, setRx] = useState(tilt);
-  const [ry, setRy] = useState(spin);
-  const drag = useRef<{ x: number; y: number } | null>(null);
-
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    drag.current = { x: e.clientX, y: e.clientY };
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  }, []);
-
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!drag.current) return;
-    const dx = e.clientX - drag.current.x;
-    const dy = e.clientY - drag.current.y;
-    drag.current = { x: e.clientX, y: e.clientY };
-    setRy((v) => v + dx * 0.45);
-    setRx((v) => Math.max(-80, Math.min(80, v - dy * 0.45)));
-  }, []);
-
-  const onPointerUp = useCallback(() => {
-    drag.current = null;
-  }, []);
-
   /** 包围盒决定舞台尺寸，方块以左上角为原点摆放，最后整体居中。 */
   const { width, depth, height, spanX, spanZ, spanY } = useMemo(() => {
     const xs = blocks.map((b) => b.x);
@@ -195,7 +177,7 @@ export function CommandBlockScene({
   }, [blocks, cube]);
 
   /**
-   * 投影包围盒：立方体盒 (width × height × depth) 转过 Rx(rx)·Ry(ry) 后在屏幕上的尺寸。
+   * 投影包围盒：立方体盒 (width × height × depth) 转过 Rx(tilt)·Ry(spin) 后在屏幕上的尺寸。
    *
    * @why 场景盒子的尺寸必须等于当前视角下的投影大小。固定 min-height 会把长排布下面
    * 那排方块裁掉；按经验系数估一个值，短排布上又会留下一大片空白，框比图还大 ——
@@ -204,20 +186,19 @@ export function CommandBlockScene({
    * @constraint 公式是线性映射各轴分量直接相加：横向 = W·|cos ry| + D·|sin ry|，
    * 纵向 = H·|cos rx| + (W·|sin ry| + D·|cos ry|)·|sin rx|。已对 4784 组
    * (rx, ry, 盒尺寸) 与暴力角点投影对照，最大偏差 5.7e-14。
-   * @constraint 必须跟着 rx/ry 重算：拖动到侧视时横向会涨到 √(W²+D²)，静态尺寸
-   * 装不下。这也是 .cb-stage 不能挂 transition 的原因 —— 过渡途中图形处在中间角，
-   * 包围盒可能同时大过起点和终点，盒子却是按终点尺寸给的，会被裁。
+   * @constraint 视角固定（tilt/spin 是 props 不随交互变），包围盒只算一次，
+   * 框的尺寸永远不变 —— 动态缩放的框是之前被明确否掉的方案。
    */
   const { sceneW, sceneH } = useMemo(() => {
-    const sx = Math.abs(Math.sin((ry * Math.PI) / 180));
-    const cx = Math.abs(Math.cos((ry * Math.PI) / 180));
-    const sy = Math.abs(Math.sin((rx * Math.PI) / 180));
-    const cy = Math.abs(Math.cos((rx * Math.PI) / 180));
+    const sx = Math.abs(Math.sin((spin * Math.PI) / 180));
+    const cx = Math.abs(Math.cos((spin * Math.PI) / 180));
+    const sy = Math.abs(Math.sin((tilt * Math.PI) / 180));
+    const cy = Math.abs(Math.cos((tilt * Math.PI) / 180));
     return {
       sceneW: Math.ceil(width * cx + depth * sx) + PAD_X,
       sceneH: Math.ceil(height * cy + (width * sx + depth * cx) * sy) + PAD_Y,
     };
-  }, [rx, ry, width, height, depth]);
+  }, [tilt, spin, width, height, depth]);
 
   return (
     <div
@@ -227,14 +208,10 @@ export function CommandBlockScene({
         width: sceneW,
         height: sceneH,
       }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
     >
       <div
         className="cb-stage"
-        style={{ transform: `rotateX(${rx}deg) rotateY(${ry}deg)` }}
+        style={{ transform: `rotateX(${tilt}deg) rotateY(${spin}deg)` }}
       >
         {blocks.map((b, i) => {
           const y = b.y ?? 0;
