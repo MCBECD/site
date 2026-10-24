@@ -10,24 +10,3 @@
 @import "./components.css";
 @import "./animations.css";
 @import "./print.css";
-
-/* ----------------------------------------------------------
- * 编辑器工具页（/editor）
- *
- * @why 编辑器要独占整个视口，但根 layout 无条件渲染站点外壳（导航、侧栏）。
- * 页面级 layout 去掉不掉它，只能由 html[data-editor] 这个标记把外壳藏起来。
- * @constraint 标记由 EditorClient 在挂载时写入、卸载时删除，不写进服务端 HTML，
- * 否则静态导出后这个标记会残留到其他页面。
- * ---------------------------------------------------------- */
-html[data-editor] [data-site-nav] {
-  display: none;
-}
-
-html[data-editor] body {
-  overflow: hidden;
-}
-
-/* 编辑器的 3D 预览要撑满左栏，否则方块会挤在顶部一小块里 */
-html[data-editor] .cb-scene {
-  height: 100%;
-}

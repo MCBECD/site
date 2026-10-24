@@ -290,7 +290,6 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  min-height: calc(var(--cube) * 4);
   padding: 2rem 0;
   /* @why 不用透视投影，改用正交（等轴测）：透视会把侧对镜头的面压成一条窄边，
      读者分不清哪面是箭头面。正交下三个面等宽，正好是示意图要的观感。 */

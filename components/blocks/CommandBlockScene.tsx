@@ -155,10 +155,17 @@ export function CommandBlockScene({
     };
   }, [blocks, cube]);
 
+  /**
+   * @why 场景高度必须跟着包围盒长：等轴测下一个 8×4 格、每格 64px 的排布，投影后
+   * 竖直方向要 400px 以上，固定 min-height 会把下面那排方块裁掉。
+   * 这里按 (宽+深) 的投影分量加方块厚度估一个值，宁大不小。
+   */
+  const sceneHeight = Math.round((width + depth) * 0.45 + height + cube * 1.6);
+
   return (
     <div
       className="cb-scene"
-      style={{ ["--cube" as string]: `${cube}px` }}
+      style={{ ["--cube" as string]: `${cube}px`, minHeight: sceneHeight }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
