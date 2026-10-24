@@ -1,0 +1,35 @@
+name: Sync docs submodule
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-submodule
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Bump content/docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: 拉到 docs 最新并提交指针
+        run: |
+          git submodule update --remote --recursive content/docs
+          if git diff --quiet -- content/docs; then
+            echo "子模块已是最新，无需提交"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/docs
+          git commit -m "chore: 同步 docs 子模块到最新"
+          git push

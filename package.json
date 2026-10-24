@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/copy-assets.mjs",
+    "prebuild": "node scripts/sync-submodule.mjs && node scripts/copy-assets.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
