@@ -18,9 +18,9 @@ export function BlockLayout({ code }: { code: string }) {
   const { blocks, cube, error } = useMemo(() => {
     try {
       const r = parseBlockSource(code);
-      return { blocks: r.blocks, cube: r.cube ?? 44, error: null as string | null };
+      return { blocks: r.blocks, cube: r.cube ?? 64, error: null as string | null };
     } catch (e) {
-      return { blocks: [], cube: 44, error: e instanceof Error ? e.message : String(e) };
+      return { blocks: [], cube: 64, error: e instanceof Error ? e.message : String(e) };
     }
   }, [code]);
 

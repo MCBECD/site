@@ -140,7 +140,7 @@ const PAD_Y = 48;
 
 export interface CommandBlockSceneProps {
   blocks: BlockSpec[];
-  /** 单个方块边长，默认 44。 */
+  /** 单个方块边长，默认 64。 */
   cube?: number;
   /** 初始俯仰与水平角。 */
   tilt?: number;
@@ -151,7 +151,7 @@ export interface CommandBlockSceneProps {
 
 export function CommandBlockScene({
   blocks,
-  cube = 44,
+  cube = 64,
   tilt = -34,
   spin = -45,
   selected,
