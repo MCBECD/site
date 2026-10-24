@@ -32,9 +32,6 @@ export type BlockKind =
 
 export type FaceKey = "front" | "back" | "left" | "right" | "top" | "bottom";
 
-/** 三维向量，CSS 坐标系：X 右、Y 下、Z 朝观察者。 */
-type Vec3 = readonly [number, number, number];
-
 /** 每个面绕自身法线的旋转角度，单位度，取 0 / 90 / 180 / 270。 */
 export type FaceTurns = Partial<Record<FaceKey, number>>;
 
@@ -108,29 +105,25 @@ function facesOf(kind: Exclude<BlockKind, "air">) {
 /** 面朝 +Z 时为 0 度；东(+X) 是 +90，北(-Z) 是 180，西(-X) 是 270。 */
 const FACING_DEG: Record<number, number> = { 3: 0, 5: 90, 2: 180, 4: 270 };
 
-/** 六面法线，CSS 坐标系：X 右、Y 下、Z 朝观察者。 */
-const FACE_NORMALS: Record<FaceKey, Vec3> = {
-  front: [0, 0, 1],
-  back: [0, 0, -1],
-  right: [1, 0, 0],
-  left: [-1, 0, 0],
-  top: [0, -1, 0],
-  bottom: [0, 1, 0],
-};
-
 /**
- * 主光方向（从受光面指向光源），固定在相机上：左前上方。
+ * 逐面固定的压暗量：面上叠一层 rgba(0,0,0,α) 的纯色半透明黑。
  *
- * @why 这一个方向同时决定两件事：面均亮度（和法线点积）与渐变方向（取它的屏幕分量
- * x/y）。所有面共用同一个屏幕方向，整组方块才像被一道光扫过；每个面各按自己的平面
- * 投影一次，三个面三种走向，看着就是各亮各的。
+ * @why 之前按视角算法线点积 + 屏幕方向渐变，六面明暗跟着拖拽变，调了十几轮
+ * 还是忽明忽暗，示意图根本不需要真实光照。固定透明度所见即所得：顶面不压、
+ * 底面最黑（方块压在地上的视觉依据），两侧比正背面深一档拉开立体感。
  *
- * @constraint 光必须挂在相机上而不是挂在方块上：拖动时读者感知到的是摄像机绕着方块转，
- * 明暗跟着视角走才像换了个角度看；按方块本地坐标算的话，转起来明暗不动，看起来就是
- * 方块自己在固定光里自转。
- * @constraint Z 分量要明显大于 X/Y：正对镜头的面是画面主体，光太侧的话整组方块发暗。
+ * @constraint 不随视角变化是有意为之：拖动时方块像在固定光里自转，对示意图够用；
+ * 透明度写在面的内联样式 --shade 上，CSS 里 rgba(0,0,0,var(--shade)) 消费，
+ * fallback 值必须和这里逐项一致（见 components.css 的 .cb-face::before）。
  */
-const KEY_LIGHT: readonly [number, number, number] = [-0.342, -0.44, 0.83];
+const FACE_SHADE: Record<FaceKey, number> = {
+  top: 0,
+  bottom: 0.3,
+  front: 0.08,
+  back: 0.14,
+  left: 0.2,
+  right: 0.2,
+};
 
 /**
  * 场景盒子在投影包围盒之外留的呼吸缝：横向两侧共 24px、纵向共 16px。
@@ -140,116 +133,6 @@ const KEY_LIGHT: readonly [number, number, number] = [-0.342, -0.44, 0.83];
  */
 const PAD_X = 24;
 const PAD_Y = 16;
-
-/**
- * facing 对应的绕 Y 转角（余弦, 正弦）。
- *
- * @why facing 只有四个方向，cos/sin 恰好是精确的 0/±1，查表比逐面算三角函数准也快。
- * @constraint 未知朝向按南（3，即正对观察者）处理，总比把方块转飞好。
- */
-const FACING_CS: Record<number, readonly [number, number]> = {
-  3: [1, 0],
-  5: [0, 1],
-  2: [-1, 0],
-  4: [0, -1],
-};
-
-/**
- * 面的局部 +x 轴在立方体坐标系里的方向。
- *
- * @why CSS 的 linear-gradient 角度是相对元素盒子的，而光的方向在视图坐标系里，两者
- * 相差一整串旋转。要知道面的局部轴朝哪，才能把"光从哪来"换算成"渐变朝哪边沉"。
- * @constraint 六个朝向必须和 components.css 里 .cb-xxx 的 transform 逐项对应：
- * 那边改一个角，这边不改，渐变方向就会整体偏。
- */
-function faceAxisX(face: FaceKey, turnDeg: number): Vec3 {
-  const t = (turnDeg * Math.PI) / 180;
-  const c = Math.cos(t);
-  const s = Math.sin(t);
-  switch (face) {
-    case "front":
-      return [c, s, 0];
-    case "back":
-      return [-c, s, 0];
-    case "left":
-      return [0, s, c];
-    case "right":
-      return [0, s, -c];
-    case "top":
-      return [c, 0, s];
-    case "bottom":
-      return [c, 0, -s];
-  }
-}
-
-export interface FaceShade {
-  /** 渐变亮端（朝光那一侧）的压暗系数。 */
-  lo: number;
-  /** 渐变暗端（背光那一侧）的压暗系数。 */
-  hi: number;
-  /** CSS linear-gradient 角度，指向暗端。 */
-  angle: number;
-}
-
-/**
- * 按当前视角生成逐面明暗函数。
- *
- * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
- * 面均亮度由法线和主光的点积决定（顶面最亮、正面中等、右侧与底面沉下去）；在此之上
- * 每个面再沿主光的屏幕方向铺一道渐变 —— 方向对所有面是同一个，整组方块是一道光扫过，
- * 不是每个面各亮各的。
- *
- * @constraint 主光之外只加一个随朝上程度上升的环境项：背面不会死黑，底面依旧最黑 ——
- * 那是方块压在地上的视觉依据，不能亮。
- * @constraint 亮度区间刻意压在 0.02~0.36：整面糊满灰会又脏又闷，示意图要的是轻。
- * @constraint 渐变方向必须换算进面自己的盒子：CSS 的 linear-gradient 角度只认元素
- * 局部坐标，而光的方向在屏幕坐标系里，两者差着一整串旋转。
- */
-function makeShadeFn(rx: number, ry: number) {
-  const b = (rx * Math.PI) / 180;
-  const cb = Math.cos(b);
-  const sb = Math.sin(b);
-  const a = (ry * Math.PI) / 180;
-  const ca = Math.cos(a);
-  const sa = Math.sin(a);
-  return (face: FaceKey, turnDeg: number, facing: number): FaceShade => {
-    // Ry(ry)·Ry(facing) = Ry(ry+facing)：把 facing 折进 ry 的三角值里，只算一次
-    const [cf, sf] = FACING_CS[facing] ?? [1, 0];
-    const c = ca * cf - sa * sf;
-    const s = sa * cf + ca * sf;
-    // 视图旋转 V = Rx(rx)·Ry(ry+facing)
-    const view = (v: Vec3): Vec3 => {
-      // Ry：x1 = x·c + z·s，z1 = -x·s + z·c
-      const x1 = v[0] * c + v[2] * s;
-      const z1 = -v[0] * s + v[2] * c;
-      // Rx：y2 = y·cb - z1·sb，z2 = y·sb + z1·cb
-      return [x1, v[1] * cb - z1 * sb, v[1] * sb + z1 * cb];
-    };
-    const n = view(FACE_NORMALS[face]);
-    const u = view(faceAxisX(face, turnDeg));
-    // 面的局部 +y 轴 = 法线 × 局部 +x 轴，(u, v, n) 保持正交
-    const vx = n[1] * u[2] - n[2] * u[1];
-    const vy = n[2] * u[0] - n[0] * u[2];
-
-    // 面均亮度
-    const key = n[0] * KEY_LIGHT[0] + n[1] * KEY_LIGHT[1] + n[2] * KEY_LIGHT[2];
-    const lit = 0.8 * Math.max(0, key) + 0.2 * (0.5 * (1 - n[1]));
-    const mid = Math.min(0.36, Math.max(0.02, 0.33 - 0.36 * lit));
-
-    // 渐变：把主光的屏幕方向（所有面共用的常量）换算成这个面的局部方向
-    const det = u[0] * vy - u[1] * vx;
-    // 面侧对镜头时局部轴投影退化，没有渐变方向可言，退回纯色
-    if (Math.abs(det) < 0.05) return { lo: mid, hi: mid, angle: 180 };
-    const ga = (KEY_LIGHT[0] * vy - KEY_LIGHT[1] * vx) / det;
-    const gb = (u[0] * KEY_LIGHT[1] - u[1] * KEY_LIGHT[0]) / det;
-    return {
-      lo: Math.min(0.5, Math.max(0.02, mid - 0.1)),
-      hi: Math.min(0.5, Math.max(0.02, mid + 0.1)),
-      // 渐变朝背光的一侧沉下去；CSS 角度指向暗端
-      angle: (Math.atan2(-ga, gb) * 180) / Math.PI,
-    };
-  };
-}
 
 export interface CommandBlockSceneProps {
   blocks: BlockSpec[];
@@ -290,9 +173,6 @@ export function CommandBlockScene({
   const onPointerUp = useCallback(() => {
     drag.current = null;
   }, []);
-
-  /** 明暗跟着视角走：只有 rx/ry 变了才重算，见 makeShadeFn。 */
-  const shadeFor = useMemo(() => makeShadeFn(rx, ry), [rx, ry]);
 
   /** 包围盒决定舞台尺寸，方块以左上角为原点摆放，最后整体居中。 */
   const { width, depth, height, spanX, spanZ, spanY } = useMemo(() => {
@@ -396,7 +276,6 @@ export function CommandBlockScene({
                 ] as [FaceKey, string][]
               ).map(([face, url]) => {
                 const turn = b.faces?.[face] ?? DEFAULT_TURNS[face];
-                const shade = shadeFor(face, turn, b.facing ?? 3);
                 return (
                   <div
                     key={face}
@@ -404,9 +283,7 @@ export function CommandBlockScene({
                     style={{
                       backgroundImage: `url(${url})`,
                       ["--turn" as string]: `${turn}deg`,
-                      ["--shade-lo" as string]: shade.lo.toFixed(3),
-                      ["--shade-hi" as string]: shade.hi.toFixed(3),
-                      ["--grad" as string]: `${shade.angle.toFixed(1)}deg`,
+                      ["--shade" as string]: `${FACE_SHADE[face]}`,
                     }}
                   />
                 );

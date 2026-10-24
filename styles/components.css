@@ -367,31 +367,25 @@
 }
 
 /**
- * 六面明暗（相机相对光照）。
+ * 六面明暗：每个面叠一层固定透明度的纯黑。
  *
- * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
- * 系数由 JS 按当前视角算好写进三个变量：--shade-lo/--shade-hi 是渐变两端的压暗量，
- * --grad 是渐变角度（指向暗端）。主光挂在相机左前上方，每个面沿着同一道屏幕方向
- * 从亮边过渡到暗边 —— 一整组方块是被一道光扫过，不是每个面各亮各的，也不是整面糊灰。
- * 拖动时明暗跟着视角走，读起来是摄像机绕着方块转，而不是方块在固定光里自转。
+ * @why 之前按视角算法线点积 + 屏幕方向渐变，明暗跟着拖拽变，调了十几轮还是忽明忽暗。
+ * 示意图不需要光照模拟 —— 透明度由 JS 按面写死在 --shade（见 CommandBlockScene 的
+ * FACE_SHADE：顶面不压、底面最黑、两侧比正背面深一档），这里只负责叠色。
  *
- * @constraint 渐变必须画在 ::before 上，不能并进 background-image：面上本来就有一层
+ * @constraint 必须画在 ::before 上，不能并进 background-image：面上本来就有一层
  * 纹理背景，内联样式还会再写一次 backgroundImage，两层抢同一个属性；而且
- * image-rendering: pixelated 会连渐变一起糙化。伪元素是独立盒子，只放渐变。
+ * image-rendering: pixelated 会把纹理连同覆盖层一起糙化，伪元素是独立盒子不受影响。
  * @constraint backface-visibility: hidden 是继承属性，::before 没有自己的 transform，
- * 所以面翻过去时它跟着一起藏，不会剩下一块飘着的渐变。
- * @constraint --grad 的 fallback 只在没有 JS 渲染时兜底；角度由 JS 按视角算，
- * 写在每个面的内联样式里，和 DEFAULT_TURNS 一样属于"数据给、CSS 兜底"。
+ * 面翻过去时它跟着一起藏，不会剩下一块飘着的黑。
+ * @constraint 这里的 fallback 只在没有 JS 渲染时兜底，必须和 FACE_SHADE 逐项一致：
+ * fallback 是 0.14，对应 back 的值。
  */
 .cb-face::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    var(--grad, 180deg),
-    rgba(0, 0, 0, var(--shade-lo, 0.08)),
-    rgba(0, 0, 0, var(--shade-hi, 0.2))
-  );
+  background: rgba(0, 0, 0, var(--shade, 0.14));
   pointer-events: none;
 }
 
