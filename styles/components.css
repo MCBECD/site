@@ -342,15 +342,15 @@
   backface-visibility: hidden;
 }
 
-/* @why 末尾都挂一个 rotate(var(--turn))：六面只用到四张图，同一个面在不同方向上
-   要靠旋转才摆正。角度由数据给（BlockSpec.faces），编辑器可以直接改，
-   缺省值见 DEFAULT_TURNS —— 底面 180°，其余 0°。 */
-.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
-.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 180deg)); }
+/* @why 每个面直接写死旋转角：六面只用到四张图，顶底共用一张、左右共用一张，
+   游戏里左右两面各指各的（朝东与朝西的斜槽方向相反），顶底也是同一张图的两个方向。
+   180/0/90/270 是调试确认的摆正角度，写死在 CSS 里，所有方块（含字符网格）都朝对。 */
+.cb-top    { transform: rotateX(90deg)  translateZ(calc(var(--cube) / 2)) rotate(180deg); }
+.cb-bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2)) rotate(0deg); }
 .cb-front  { transform: translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
 .cb-back   { transform: rotateY(180deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
-.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
-.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)) rotate(var(--turn, 0deg)); }
+.cb-left   { transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2)) rotate(90deg); }
+.cb-right  { transform: rotateY(90deg)  translateZ(calc(var(--cube) / 2)) rotate(270deg); }
 
 /* 编辑器里选中方块：描边套在六个面上，3D 里也看得出来是哪一块 */
 .cb-cube.is-selected .cb-face {
