@@ -32,6 +32,9 @@ export type BlockKind =
 
 export type FaceKey = "front" | "back" | "left" | "right" | "top" | "bottom";
 
+/** 三维向量，CSS 坐标系：X 右、Y 下、Z 朝观察者。 */
+type Vec3 = readonly [number, number, number];
+
 /** 每个面绕自身法线的旋转角度，单位度，取 0 / 90 / 180 / 270。 */
 export type FaceTurns = Partial<Record<FaceKey, number>>;
 
@@ -106,7 +109,7 @@ function facesOf(kind: Exclude<BlockKind, "air">) {
 const FACING_DEG: Record<number, number> = { 3: 0, 5: 90, 2: 180, 4: 270 };
 
 /** 六面法线，CSS 坐标系：X 右、Y 下、Z 朝观察者。 */
-const FACE_NORMALS: Record<FaceKey, readonly [number, number, number]> = {
+const FACE_NORMALS: Record<FaceKey, Vec3> = {
   front: [0, 0, 1],
   back: [0, 0, -1],
   right: [1, 0, 0],
@@ -121,8 +124,9 @@ const FACE_NORMALS: Record<FaceKey, readonly [number, number, number]> = {
  * @constraint 光必须挂在相机上而不是挂在方块上：拖动时读者感知到的是摄像机绕着方块转，
  * 明暗跟着视角走才像换了个角度看；按方块本地坐标算的话，转起来明暗不动，看起来就是
  * 方块自己在固定光里自转。
+ * @constraint Z 分量要明显大于 X/Y：正对镜头的面是画面主体，光太侧的话整组方块发暗。
  */
-const KEY_LIGHT: readonly [number, number, number] = [-0.45, -0.6, 0.66];
+const KEY_LIGHT: readonly [number, number, number] = [-0.342, -0.44, 0.83];
 
 /**
  * facing 对应的绕 Y 转角（余弦, 正弦）。
@@ -138,14 +142,53 @@ const FACING_CS: Record<number, readonly [number, number]> = {
 };
 
 /**
- * 按当前视角生成"逐面压暗系数"函数（0 = 全黑，1 = 不压暗）。
+ * 面的局部 +x 轴在立方体坐标系里的方向。
+ *
+ * @why CSS 的 linear-gradient 角度是相对元素盒子的，而光的方向在视图坐标系里，两者
+ * 相差一整串旋转。要知道面的局部轴朝哪，才能把"光从哪来"换算成"渐变朝哪边沉"。
+ * @constraint 六个朝向必须和 components.css 里 .cb-xxx 的 transform 逐项对应：
+ * 那边改一个角，这边不改，渐变方向就会整体偏。
+ */
+function faceAxisX(face: FaceKey, turnDeg: number): Vec3 {
+  const t = (turnDeg * Math.PI) / 180;
+  const c = Math.cos(t);
+  const s = Math.sin(t);
+  switch (face) {
+    case "front":
+      return [c, s, 0];
+    case "back":
+      return [-c, s, 0];
+    case "left":
+      return [0, s, c];
+    case "right":
+      return [0, s, -c];
+    case "top":
+      return [c, 0, s];
+    case "bottom":
+      return [c, 0, -s];
+  }
+}
+
+export interface FaceShade {
+  /** 渐变亮端（朝光那一侧）的压暗系数。 */
+  lo: number;
+  /** 渐变暗端（背光那一侧）的压暗系数。 */
+  hi: number;
+  /** CSS linear-gradient 角度，指向暗端。 */
+  angle: number;
+}
+
+/**
+ * 按当前视角生成逐面明暗函数。
  *
  * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
- * 把面法线旋进视图空间（Rx(rx)·Ry(ry+facing)，与 stage 的变换顺序一致）后和挂在
- * 相机上的主光点积：顶面最亮、正面中等、右侧与底面沉下去。
+ * 把面法线旋进视图空间（Rx(rx)·Ry(ry+facing)，与 stage 的变换顺序一致）后和挂在相机
+ * 上的主光点积得到面均亮度；再把主光投影到面所在的平面，得到面内的受光方向 —— 面就
+ * 沿着这个方向从亮边渐变到暗边，是一道扫过面的光，不是整面糊一层灰。
  *
  * @constraint 主光之外只加一个随朝上程度上升的环境项：背面不会死黑，底面依旧最黑 ——
  * 那是方块压在地上的视觉依据，不能亮。
+ * @constraint 亮度区间刻意压在 0.02~0.36：整面糊满灰会又脏又闷，示意图要的是轻。
  */
 function makeShadeFn(rx: number, ry: number) {
   const b = (rx * Math.PI) / 180;
@@ -154,38 +197,66 @@ function makeShadeFn(rx: number, ry: number) {
   const a = (ry * Math.PI) / 180;
   const ca = Math.cos(a);
   const sa = Math.sin(a);
-  return (n: readonly [number, number, number], facing: number): number => {
+  return (face: FaceKey, turnDeg: number, facing: number): FaceShade => {
     // Ry(ry)·Ry(facing) = Ry(ry+facing)：把 facing 折进 ry 的三角值里，只算一次
     const [cf, sf] = FACING_CS[facing] ?? [1, 0];
     const c = ca * cf - sa * sf;
     const s = sa * cf + ca * sf;
-    // Ry：x1 = x·c + z·s，z1 = -x·s + z·c
-    const x1 = n[0] * c + n[2] * s;
-    const z1 = -n[0] * s + n[2] * c;
-    // Rx：y2 = y·cb - z1·sb，z2 = y·sb + z1·cb
-    const y2 = n[1] * cb - z1 * sb;
-    const z2 = n[1] * sb + z1 * cb;
-    const key = Math.max(0, x1 * KEY_LIGHT[0] + y2 * KEY_LIGHT[1] + z2 * KEY_LIGHT[2]);
-    const hemi = 0.5 * (1 - y2);
-    const lit = 0.8 * key + 0.2 * hemi;
-    return Math.min(0.52, Math.max(0.04, 0.52 - 0.48 * lit));
+    // 视图旋转 V = Rx(rx)·Ry(ry+facing)
+    const view = (v: Vec3): Vec3 => {
+      // Ry：x1 = x·c + z·s，z1 = -x·s + z·c
+      const x1 = v[0] * c + v[2] * s;
+      const z1 = -v[0] * s + v[2] * c;
+      // Rx：y2 = y·cb - z1·sb，z2 = y·sb + z1·cb
+      return [x1, v[1] * cb - z1 * sb, v[1] * sb + z1 * cb];
+    };
+    const n = view(FACE_NORMALS[face]);
+    const u = view(faceAxisX(face, turnDeg));
+    // 面的局部 +y 轴 = 法线 × 局部 +x 轴，(u, v, n) 保持正交
+    const vx = n[1] * u[2] - n[2] * u[1];
+    const vy = n[2] * u[0] - n[0] * u[2];
+
+    const ln = n[0] * KEY_LIGHT[0] + n[1] * KEY_LIGHT[1] + n[2] * KEY_LIGHT[2];
+    const lit = 0.8 * Math.max(0, ln) + 0.2 * (0.5 * (1 - n[1]));
+    const mid = Math.min(0.36, Math.max(0.02, 0.33 - 0.36 * lit));
+
+    // 主光在面内的分量：渐变沿着它从亮边过渡到暗边
+    const dx = KEY_LIGHT[0] - ln * n[0];
+    const dy = KEY_LIGHT[1] - ln * n[1];
+    const dz = KEY_LIGHT[2] - ln * n[2];
+    const det = u[0] * vy - u[1] * vx;
+    // 光几乎垂直入射（面内分量趋零）或面侧对镜头（局部轴投影退化）时没有渐变方向可言
+    if (Math.hypot(dx, dy, dz) < 0.06 || Math.abs(det) < 0.05) {
+      return { lo: mid, hi: mid, angle: 180 };
+    }
+    // 解 a·u + b·v = d：光在面内的方向，换算成面局部盒子里的坐标
+    const ga = (dx * vy - dy * vx) / det;
+    const gb = (u[0] * dy - u[1] * dx) / det;
+    // 渐变朝背光的一侧沉下去；CSS 角度指向暗端
+    const angle = (Math.atan2(-ga, gb) * 180) / Math.PI;
+    const spread = Math.min(0.16, 0.05 + 0.09 * Math.hypot(dx, dy, dz));
+    return {
+      lo: Math.min(0.5, Math.max(0.02, mid - spread)),
+      hi: Math.min(0.5, Math.max(0.02, mid + spread)),
+      angle,
+    };
   };
 }
 
 export interface CommandBlockSceneProps {
   blocks: BlockSpec[];
-  /** 单个方块边长，默认 56。 */
+  /** 单个方块边长，默认 44。 */
   cube?: number;
   /** 初始俯仰与水平角。 */
   tilt?: number;
   spin?: number;
-  /** 高亮第几个方块（编辑器里标出当前选中项）。 */
+  /** 高亮第几个方块。 */
   selected?: number;
 }
 
 export function CommandBlockScene({
   blocks,
-  cube = 64,
+  cube = 44,
   tilt = -34,
   spin = -45,
   selected,
@@ -293,17 +364,23 @@ export function CommandBlockScene({
                   ["left", t.side],
                   ["right", t.side],
                 ] as [FaceKey, string][]
-              ).map(([face, url]) => (
-                <div
-                  key={face}
-                  className={`cb-face cb-${face}`}
-                  style={{
-                    backgroundImage: `url(${url})`,
-                    ["--turn" as string]: `${b.faces?.[face] ?? DEFAULT_TURNS[face]}deg`,
-                    ["--shade" as string]: shadeFor(FACE_NORMALS[face], b.facing ?? 3).toFixed(3),
-                  }}
-                />
-              ))}
+              ).map(([face, url]) => {
+                const turn = b.faces?.[face] ?? DEFAULT_TURNS[face];
+                const shade = shadeFor(face, turn, b.facing ?? 3);
+                return (
+                  <div
+                    key={face}
+                    className={`cb-face cb-${face}`}
+                    style={{
+                      backgroundImage: `url(${url})`,
+                      ["--turn" as string]: `${turn}deg`,
+                      ["--shade-lo" as string]: shade.lo.toFixed(3),
+                      ["--shade-hi" as string]: shade.hi.toFixed(3),
+                      ["--grad" as string]: `${shade.angle.toFixed(1)}deg`,
+                    }}
+                  />
+                );
+              })}
             </div>
           );
         })}

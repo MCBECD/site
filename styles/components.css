@@ -297,6 +297,9 @@
   cursor: grab;
   touch-action: none;
   user-select: none;
+  /* @why 只留一圈呼吸缝：方块转起来四角会探出包围盒估算，全撑满会贴边甚至被裁。
+     早年用 2rem 是把图关在一个大边框里看，框比图还大，已经不需要了。 */
+  padding: 0.5rem 0;
 }
 
 .cb-scene:active {
@@ -364,20 +367,32 @@
  * 六面明暗（相机相对光照）。
  *
  * @why 纯 CSS 3D 没有光照，六面一样亮时立方体会退化成一张平面拼贴，方向感全没了。
- * 压暗系数由 JS 按当前视角算好写进 --shade：主光挂在相机左前上方，另加一项随朝上
- * 程度上升的环境光。拖动时明暗跟着视角走，读起来是摄像机绕着方块转，而不是方块在
- * 固定光里自转。顶面最亮、正面中等、右侧与底面沉下去。
+ * 系数由 JS 按当前视角算好写进三个变量：--shade-lo/--shade-hi 是渐变两端的压暗量，
+ * --grad 是渐变角度（指向暗端）。主光挂在相机左前上方，每个面沿着"光在面内的投影
+ * 方向"从亮边过渡到暗边 —— 是一道扫过面的光，不是整面糊一层灰。拖动时明暗跟着视角
+ * 走，读起来是摄像机绕着方块转，而不是方块在固定光里自转。
  *
- * @constraint 用 inset box-shadow 而不是 filter: brightness —— filter 会给元素
- * 新建渲染上下文，可能破坏 3D 层级，也会让 pixelated 的像素边缘重新采样。
+ * @constraint 渐变必须画在 ::before 上，不能并进 background-image：面上本来就有一层
+ * 纹理背景，内联样式还会再写一次 backgroundImage，两层抢同一个属性；而且
+ * image-rendering: pixelated 会连渐变一起糙化。伪元素是独立盒子，只放渐变。
+ * @constraint backface-visibility: hidden 是继承属性，::before 没有自己的 transform，
+ * 所以面翻过去时它跟着一起藏，不会剩下一块飘着的渐变。
  */
-.cb-face {
-  box-shadow: inset 0 0 0 999px rgba(0, 0, 0, var(--shade, 0.25));
+.cb-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    var(--grad, 180deg),
+    rgba(0, 0, 0, var(--shade-lo, 0.08)),
+    rgba(0, 0, 0, var(--shade-hi, 0.2))
+  );
+  pointer-events: none;
 }
 
 /* 空气不吃这套明暗，否则虚线框会被压在深色里看不见 */
-.cb-air-face {
-  box-shadow: none !important;
+.cb-air-face::before {
+  display: none;
 }
 
 /* 空气：六面都是虚线玻璃，围出一个空腔，比单张平面更容易读成"空着一格" */
