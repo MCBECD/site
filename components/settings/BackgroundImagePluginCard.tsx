@@ -130,9 +130,13 @@ export function BackgroundImagePluginCard() {
                        在切主题后看到背景变了会当成 bug。 */
                     <span className="relative w-full h-14">
                       {/* 深色那版垫在下面、向右下错开，露出一条深色边角当作"第二张" */}
-                      <span className="absolute left-[16%] top-[16%] right-0 bottom-0 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-aurora-dark" />
+                      <span className="absolute left-[16%] top-[16%] right-0 bottom-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--color-border)]">
+                        <span className="block h-full w-full bg-aurora-dark" />
+                      </span>
                       {/* 浅色那版压在上面，带描边和阴影，看得出是一张独立的卡 */}
-                      <span className="absolute left-0 top-0 right-[16%] bottom-[16%] rounded-[var(--radius-sm)] border border-[var(--color-border)] shadow-[var(--shadow-sm)] bg-aurora-light" />
+                      <span className="absolute left-0 top-0 right-[16%] bottom-[16%] overflow-hidden rounded-[var(--radius-sm)] border border-[var(--color-border)] shadow-[var(--shadow-sm)]">
+                        <span className="block h-full w-full bg-aurora-light" />
+                      </span>
                     </span>
                   ) : (
                     <span
